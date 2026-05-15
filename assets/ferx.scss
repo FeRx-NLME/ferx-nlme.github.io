@@ -375,6 +375,22 @@ h2 { letter-spacing: -0.02em; }
   transition: transform 220ms ease;
   &:hover { transform: rotate(0deg) scale(1.02); }
 }
+
+// ── Inline sticker (hero placement) ───────────────
+.sticker-stage-inline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 12px 8px;
+}
+.sticker-sm {
+  width: 100%;
+  max-width: 200px;
+  filter: drop-shadow(0 12px 24px rgba($slate-ink, 0.16)) drop-shadow(0 2px 4px rgba($slate-ink, 0.10));
+  transform: rotate(-3deg);
+  transition: transform 220ms ease;
+  &:hover { transform: rotate(0deg) scale(1.04); }
+}
 @media (max-width: 960px) {
   .about-grid { grid-template-columns: 1fr; gap: 32px; }
 }
