@@ -227,6 +227,22 @@ call-time value overrides a different value from <code>[fit_options]</code>.
 Inspect <code>fit$model_file_settings</code> and <code>fit$call_settings</code> to
 audit the full picture.</p></dd>
 
+
+<dt id="arg-output">output<a class="anchor" aria-label="anchor" href="#arg-output"></a></dt>
+<dd><p>Optional path to a <code>.fitrx</code> file. When non-<code>NULL</code>,
+<code><a href="ferx_save_fit.html">ferx_save_fit</a></code> is invoked on the result so the fit is
+persisted to disk in a portable, cross-language bundle (zip of JSON +
+CSV) before the function returns. Equivalent to calling
+<code>ferx_save_fit(fit, output)</code> after the fit. See the format
+reference in the ferx-core docs for the on-disk schema.</p></dd>
+
+
+<dt id="arg-include-data">include_data<a class="anchor" aria-label="anchor" href="#arg-include-data"></a></dt>
+<dd><p>Logical. Only meaningful with <code>output</code>. When
+<code>TRUE</code>, embeds the input <code>data</code> CSV verbatim inside the
+<code>.fitrx</code> bundle so the file is self-contained. Default
+<code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>

@@ -385,6 +385,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
+    <a class="nav-link" href="https://ferx-nlme.github.io/ferx-book/"> 
+<span class="menu-text">Book</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./faq.html"> 
 <span class="menu-text">FAQ</span></a>
   </li>  
@@ -449,8 +453,9 @@ ul.task-list li input[type="checkbox"] {
 </header><section id="ferx-development" class="level1"><h1>ferx (development)</h1>
 <section id="new-features" class="level2"><h2 class="anchored" data-anchor-id="new-features">New features</h2>
 <ul>
-<li>
-<code>ferx_fit()</code> now returns <code>$gradient_used</code> — the inner-loop gradient method the engine actually used (<code>"ad"</code>, <code>"fd"</code>, or <code>"N/A"</code>). When <code>gradient = "auto"</code> it shows which branch resolved at fit time; ODE models silently fall back from AD to FD even when <code>gradient = "ad"</code> was requested, and this field surfaces that fallback without needing to read warnings. The raw engine labels are also exposed as <code>$gradient_method_inner</code> / <code>$gradient_method_outer</code>. <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> shows both requested and used; <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> formats them as <code>auto (requested) -&gt; ad (used)</code> (ferx-core#1).</li>
+<li><p><code>ferx_simulate_with_uncertainty()</code> — simulate observations while propagating population parameter uncertainty in addition to the usual between-subject (eta) and residual (eps) variability. For each parameter set drawn from the uncertainty distribution (<code>method = "asymptotic"</code> uses <code>fit$cov_matrix</code>; <code>method = "sir"</code> reuses SIR resamples) the standard simulator runs <code>n_sim_per_draw</code> replicates. Output is a long data frame with a leading <code>DRAW</code> column so downstream code can compute uncertainty-aware prediction bands. Requires <code>covariance = TRUE</code> for asymptotic mode; SIR mode requires <code>sir = TRUE</code> and <code>sir_keep_samples = TRUE</code> (passed via <code>settings</code>) at fit time. <code>ferx_fit()</code> now also exposes <code>sir_resamples</code>, <code>sir_resamples_n</code>, and <code>sir_resamples_dim</code> for downstream consumers. Pairs with ferx-core#7.</p></li>
+<li><p><code>ferx_simulate()</code> output now includes a leading <code>DRAW</code> column (always <code>1</code> for non-uncertainty paths) for forward compatibility with <code>ferx_simulate_with_uncertainty()</code>. Downstream code that uses <code>subset(sim, ...)</code> or column selection by name is unaffected.</p></li>
+<li><p><code>ferx_fit()</code> now returns <code>$gradient_used</code> — the inner-loop gradient method the engine actually used (<code>"ad"</code>, <code>"fd"</code>, or <code>"N/A"</code>). When <code>gradient = "auto"</code> it shows which branch resolved at fit time; ODE models silently fall back from AD to FD even when <code>gradient = "ad"</code> was requested, and this field surfaces that fallback without needing to read warnings. The raw engine labels are also exposed as <code>$gradient_method_inner</code> / <code>$gradient_method_outer</code>. <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> shows both requested and used; <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> formats them as <code>auto (requested) -&gt; ad (used)</code> (ferx-core#1).</p></li>
 </ul></section><section id="breaking-changes" class="level2"><h2 class="anchored" data-anchor-id="breaking-changes">Breaking changes</h2>
 <ul>
 <li>
@@ -459,6 +464,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
 </ul></section><section id="bug-fixes" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes">Bug fixes</h2>
 <ul>
+<li><p><code>ferx_model_validate()</code> no longer flags <code>[initial_values]</code> as a missing required section. The block was removed from the engine in <a href="https://github.com/FeRx-NLME/ferx-core/commit/e5e934d">ferx-core e5e934d</a> — theta / omega / sigma initial values are read from <code>[parameters]</code> and the parser silently ignores any leftover <code>[initial_values]</code> block. The R-side validator and <code>ferx_model_new()</code> templates hadn’t been updated. Now: validator’s <code>required_sections</code> drops <code>initial_values</code>, all five <code>ferx_model_new()</code> templates and every bundled <code>.ferx</code> example file emit the trimmed shape, and a regression test guards against the block creeping back into templates (#16).</p></li>
 <li><p><code>ferx_set_section()</code> now applies copy-on-write when the underlying <code>ferx_model</code> points at a file inside the installed <code>ferx</code> package directory (e.g.&nbsp;a model returned by <code>ferx_example()</code>). The file is copied to <code><a href="https://rdrr.io/r/base/tempfile.html">tempdir()</a></code> before editing and the returned <code>ferx_model</code>’s <code>$model</code> field is updated to the copy, preventing accidental modification of bundled examples. Plain-path callers are unaffected — passing a path string still edits in place (#80).</p></li>
 <li><p><code>ferx_check_init()</code> now accepts a <code>ferx_model</code> as its first argument (in addition to a plain path), so it can be placed directly in a pipe: <code>ex$data |&gt; ferx_model(ex$model) |&gt; ferx_check_init()</code>. When a <code>ferx_model</code> is supplied and <code>data</code> is not, the data path on the object is used (#79).</p></li>
 </ul></section><section id="documentation" class="level2"><h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
