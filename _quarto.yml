@@ -79,13 +79,15 @@ format:
   html:
     theme:
       light: [cosmo, assets/ferx.scss]
-      dark: [darkly, assets/ferx-dark.scss]
+      dark: [cosmo, assets/ferx-dark.scss]
     css: styles.css
     toc: true
     toc-depth: 3
     code-link: true
     code-copy: true
     code-overflow: wrap
-    highlight-style: github
+    highlight-style:
+      light: github
+      dark: github-dark
     mainfont: "IBM Plex Sans"
     monofont: "JetBrains Mono"
