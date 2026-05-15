@@ -1,145 +1,5 @@
 [
   {
-    "objectID": "model-dsl/structural-model.html",
-    "href": "model-dsl/structural-model.html",
-    "title": "Structural Model",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
-    "objectID": "model-dsl/error-model.html",
-    "href": "model-dsl/error-model.html",
-    "title": "Error Model",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
-    "objectID": "model-dsl/fit-options.html",
-    "href": "model-dsl/fit-options.html",
-    "title": "Fit Options",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "ferx",
-    "section": "",
-    "text": "open-source NLME · v0.1.2\n\n\nFe·Rx\n\n\nA nonlinear mixed-effects engine for population PK/PD, written in Rust.\n\nferx fits models defined in a small, readable DSL — bracket-sectioned .ferx files — powered by a Rust backend with Enzyme automatic differentiation for exact gradients. FOCE/FOCEI estimation. MIT-licensed.\n\n\n26 — iron, the element   2026 — launch year   MIT — license\n\n\n\nR devtools::install_github(\"FeRx-NLME/ferx-r\")\n\n\nsh docker build -t ferx:latest .\n\n\n\n\n\n\n\n\n\n\n[warfarin_pk.ferx] model\n\n# one-compartment oral PK — warfarin\n\n[parameters]\n  theta TVCL(0.2, 0.001, 10.0)\n  theta TVV(10.0, 0.1, 500.0)\n  theta TVKA(1.5, 0.01, 50.0)\n  omega ETA_CL ~ 0.09\n  omega ETA_V  ~ 0.04\n  omega ETA_KA ~ 0.30\n  sigma PROP_ERR ~ 0.02\n\n[individual_parameters]\n  CL = TVCL * exp(ETA_CL)\n  V  = TVV  * exp(ETA_V)\n  KA = TVKA * exp(ETA_KA)\n\n[structural_model]\n  pk one_cpt_oral(cl=CL, v=V, ka=KA)\n\n[error_model]\n  DV ~ proportional(PROP_ERR)"
-  },
-  {
-    "objectID": "learn/model-workflow.html",
-    "href": "learn/model-workflow.html",
-    "title": "Model Workflow",
-    "section": "",
-    "text": "Note\n\n\n\nThis article is in progress."
-  },
-  {
-    "objectID": "learn/diagnostics.html",
-    "href": "learn/diagnostics.html",
-    "title": "Diagnostics",
-    "section": "",
-    "text": "Note\n\n\n\nThis article is in progress."
-  },
-  {
-    "objectID": "learn/simulation.html",
-    "href": "learn/simulation.html",
-    "title": "Simulation",
-    "section": "",
-    "text": "Note\n\n\n\nThis article is in progress."
-  },
-  {
-    "objectID": "ferx-core/autodiff.html",
-    "href": "ferx-core/autodiff.html",
-    "title": "Autodiff",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
-    "objectID": "ferx-core/ode-solver.html",
-    "href": "ferx-core/ode-solver.html",
-    "title": "Ode Solver",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
-    "objectID": "ferx-core/architecture.html",
-    "href": "ferx-core/architecture.html",
-    "title": "Architecture",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
-    "objectID": "ferx-core/overview.html",
-    "href": "ferx-core/overview.html",
-    "title": "Overview",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
-    "objectID": "ferx-core/estimation.html",
-    "href": "ferx-core/estimation.html",
-    "title": "Estimation",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
-    "objectID": "ferx-core/pk-models.html",
-    "href": "ferx-core/pk-models.html",
-    "title": "Pk Models",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
-    "objectID": "get-started.html",
-    "href": "get-started.html",
-    "title": "Get started",
-    "section": "",
-    "text": "R ≥ 4.1\nRust / Cargo (rustup.rs)\nOptionally: Enzyme toolchain for autodiff (rustup toolchain install enzyme)"
-  },
-  {
-    "objectID": "get-started.html#requirements",
-    "href": "get-started.html#requirements",
-    "title": "Get started",
-    "section": "",
-    "text": "R ≥ 4.1\nRust / Cargo (rustup.rs)\nOptionally: Enzyme toolchain for autodiff (rustup toolchain install enzyme)"
-  },
-  {
-    "objectID": "get-started.html#install",
-    "href": "get-started.html#install",
-    "title": "Get started",
-    "section": "Install",
-    "text": "Install\nremotes::install_github(\"FeRx-NLME/ferx-r\")\nFor a dev build without autodiff (faster, ~2 min):\nFERX_NO_AUTODIFF=1 R CMD INSTALL --no-lock ."
-  },
-  {
-    "objectID": "get-started.html#run-the-warfarin-example",
-    "href": "get-started.html#run-the-warfarin-example",
-    "title": "Get started",
-    "section": "Run the warfarin example",
-    "text": "Run the warfarin example\nlibrary(ferx)\npaths &lt;- ferx_example(\"warfarin\")\nfit   &lt;- ferx_fit(paths$model, paths$data)\nprint(fit)\nsummary(fit)"
-  },
-  {
-    "objectID": "get-started.html#next-steps",
-    "href": "get-started.html#next-steps",
-    "title": "Get started",
-    "section": "Next steps",
-    "text": "Next steps\n\nModel workflow — full fitting workflow\nModel DSL — write your own .ferx model files\nReference — function documentation"
-  },
-  {
-    "objectID": "learn/model-editing.html",
-    "href": "learn/model-editing.html",
-    "title": "Model Editing",
-    "section": "",
-    "text": "Note\n\n\n\nThis article is in progress."
-  },
-  {
-    "objectID": "learn/parameter-transforms.html",
-    "href": "learn/parameter-transforms.html",
-    "title": "Parameter Transforms",
-    "section": "",
-    "text": "Note\n\n\n\nThis article is in progress."
-  },
-  {
     "objectID": "changelog.html",
     "href": "changelog.html",
     "title": "Changelog",
@@ -203,13 +63,6 @@
     "text": "Bug fixes\n\nprint.ferx_fit() now uses the exact coefficient of variation formula for EXP(OMEGA) log-normal parameters: sqrt(exp(omega) - 1) * 100 instead of the approximation sqrt(omega) * 100 (doi:10.1002/psp4.12507). Applied only when eta_param_types == \"log_normal\" (defaults to log-normal when the field is absent). Display for logit, additive, and custom ETA types is deferred to #53.\nferx_model_section(): fixed a descending-index bug where an empty section body (header immediately followed by another header) returned lines in reverse instead of character(0).\nferx_model_set_section(): fixed a last-section splice bug where seq.int(end+1, length) produced a descending sequence and appended NA plus a duplicate line when replacing the last section in a file.\nferx_estimates(): estimate_natural is now NA when SE is unavailable, matching the documented contract that all natural-scale columns are NA when the covariance step was not run. Previously the back-transform was always populated for log and logit thetas regardless of SE.\n.ferx_model_type() (used by ferx_model_inspect()): now returns \"X-cpt IV infusion\" for *_infusion PK models, matching the label the Rust engine attaches post-fit. Previously the pre-fit label dropped the IV token.\nprint.ferx_fit(): the logit-ETA +/-1SD summary line is now ASCII; the previous ± rendered as &lt;U+00B1&gt; under non-UTF-8 locales."
   },
   {
-    "objectID": "model-dsl/overview.html",
-    "href": "model-dsl/overview.html",
-    "title": "Overview",
-    "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
-  },
-  {
     "objectID": "model-dsl/odes.html",
     "href": "model-dsl/odes.html",
     "title": "Odes",
@@ -217,9 +70,156 @@
     "text": "Note\n\n\n\nThis page is in progress."
   },
   {
+    "objectID": "model-dsl/overview.html",
+    "href": "model-dsl/overview.html",
+    "title": "Overview",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
+    "objectID": "model-dsl/fit-options.html",
+    "href": "model-dsl/fit-options.html",
+    "title": "Fit Options",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
+    "objectID": "ferx-core/autodiff.html",
+    "href": "ferx-core/autodiff.html",
+    "title": "Autodiff",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
+    "objectID": "ferx-core/estimation.html",
+    "href": "ferx-core/estimation.html",
+    "title": "Estimation",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
+    "objectID": "ferx-core/ode-solver.html",
+    "href": "ferx-core/ode-solver.html",
+    "title": "Ode Solver",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
+    "objectID": "learn/model-workflow.html",
+    "href": "learn/model-workflow.html",
+    "title": "Model Workflow",
+    "section": "",
+    "text": "Note\n\n\n\nThis article is in progress."
+  },
+  {
+    "objectID": "learn/model-editing.html",
+    "href": "learn/model-editing.html",
+    "title": "Model Editing",
+    "section": "",
+    "text": "Note\n\n\n\nThis article is in progress."
+  },
+  {
+    "objectID": "learn/parameter-transforms.html",
+    "href": "learn/parameter-transforms.html",
+    "title": "Parameter Transforms",
+    "section": "",
+    "text": "Note\n\n\n\nThis article is in progress."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ferx",
+    "section": "",
+    "text": "open-source NLME · v0.1.2\n\n\nFe·Rx\n\n\nA nonlinear mixed-effects engine for population PK/PD, written in Rust.\n\nferx fits models defined in a small, readable DSL — bracket-sectioned .ferx files — powered by a Rust backend with Enzyme automatic differentiation for exact gradients. FOCE/FOCEI estimation. MIT-licensed.\n\n\n26 — iron, the element   2026 — launch year   MIT — license\n\n\n\nR devtools::install_github(\"FeRx-NLME/ferx-r\")\n\n\nsh docker build -t ferx:latest .\n\n\n\n\n\n\n\n\n\n\n[warfarin_pk.ferx] model\n\n# one-compartment oral PK — warfarin\n\n[parameters]\n  theta TVCL(0.2, 0.001, 10.0)\n  theta TVV(10.0, 0.1, 500.0)\n  theta TVKA(1.5, 0.01, 50.0)\n  omega ETA_CL ~ 0.09\n  omega ETA_V  ~ 0.04\n  omega ETA_KA ~ 0.30\n  sigma PROP_ERR ~ 0.02\n\n[individual_parameters]\n  CL = TVCL * exp(ETA_CL)\n  V  = TVV  * exp(ETA_V)\n  KA = TVKA * exp(ETA_KA)\n\n[structural_model]\n  pk one_cpt_oral(cl=CL, v=V, ka=KA)\n\n[error_model]\n  DV ~ proportional(PROP_ERR)"
+  },
+  {
+    "objectID": "learn/diagnostics.html",
+    "href": "learn/diagnostics.html",
+    "title": "Diagnostics",
+    "section": "",
+    "text": "Note\n\n\n\nThis article is in progress."
+  },
+  {
+    "objectID": "learn/simulation.html",
+    "href": "learn/simulation.html",
+    "title": "Simulation",
+    "section": "",
+    "text": "Note\n\n\n\nThis article is in progress."
+  },
+  {
+    "objectID": "get-started.html",
+    "href": "get-started.html",
+    "title": "Get started",
+    "section": "",
+    "text": "R ≥ 4.1\nRust / Cargo (rustup.rs)\nOptionally: Enzyme toolchain for autodiff (rustup toolchain install enzyme)"
+  },
+  {
+    "objectID": "get-started.html#requirements",
+    "href": "get-started.html#requirements",
+    "title": "Get started",
+    "section": "",
+    "text": "R ≥ 4.1\nRust / Cargo (rustup.rs)\nOptionally: Enzyme toolchain for autodiff (rustup toolchain install enzyme)"
+  },
+  {
+    "objectID": "get-started.html#install",
+    "href": "get-started.html#install",
+    "title": "Get started",
+    "section": "Install",
+    "text": "Install\nremotes::install_github(\"FeRx-NLME/ferx-r\")\nFor a dev build without autodiff (faster, ~2 min):\nFERX_NO_AUTODIFF=1 R CMD INSTALL --no-lock ."
+  },
+  {
+    "objectID": "get-started.html#run-the-warfarin-example",
+    "href": "get-started.html#run-the-warfarin-example",
+    "title": "Get started",
+    "section": "Run the warfarin example",
+    "text": "Run the warfarin example\nlibrary(ferx)\npaths &lt;- ferx_example(\"warfarin\")\nfit   &lt;- ferx_fit(paths$model, paths$data)\nprint(fit)\nsummary(fit)"
+  },
+  {
+    "objectID": "get-started.html#next-steps",
+    "href": "get-started.html#next-steps",
+    "title": "Get started",
+    "section": "Next steps",
+    "text": "Next steps\n\nModel workflow — full fitting workflow\nModel DSL — write your own .ferx model files\nReference — function documentation"
+  },
+  {
+    "objectID": "ferx-core/pk-models.html",
+    "href": "ferx-core/pk-models.html",
+    "title": "Pk Models",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
+    "objectID": "ferx-core/overview.html",
+    "href": "ferx-core/overview.html",
+    "title": "Overview",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
+    "objectID": "ferx-core/architecture.html",
+    "href": "ferx-core/architecture.html",
+    "title": "Architecture",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
     "objectID": "model-dsl/parameters.html",
     "href": "model-dsl/parameters.html",
     "title": "Parameters",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
+    "objectID": "model-dsl/error-model.html",
+    "href": "model-dsl/error-model.html",
+    "title": "Error Model",
+    "section": "",
+    "text": "Note\n\n\n\nThis page is in progress."
+  },
+  {
+    "objectID": "model-dsl/structural-model.html",
+    "href": "model-dsl/structural-model.html",
+    "title": "Structural Model",
     "section": "",
     "text": "Note\n\n\n\nThis page is in progress."
   }
