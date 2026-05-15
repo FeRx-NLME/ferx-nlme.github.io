@@ -2,6 +2,198 @@
 title: "Architecture"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+## Data flow
+
+```
+.ferx model file  ──► parser/model_parser.rs  ──► CompiledModel
+NONMEM CSV        ──► io/datareader.rs         ──► Population
+                                                        │
+                                               api::fit()
+                                                        │
+                              ┌─────────────────────────┤
+                              │                         │
+                    outer_optimizer            inner_optimizer
+                    (population θ, Ω, σ)     (per-subject EBE η)
+                              │                         │
+                         pk/  or  ode/           stats/likelihood
+                    (predictions)              (NLL evaluation)
+                              │
+                         FitResult  ──► R via extendr FFI
+```
+
+The outer optimizer iterates over population parameters (theta, omega, sigma).
+For each candidate parameter set it calls the inner optimizer once per subject
+to find the empirical Bayes estimate (EBE) of that subject's random effects.
+Predictions are routed to the analytical PK models in `pk/` or the RK45 ODE
+solver in `ode/`, depending on whether the model file has an `[odes]` block.
+
+## FFI boundary
+
+ferx-r wraps ferx-core via [extendr](https://extendr.github.io/). The glue
+layer in `src/rust/src/lib.rs` (ferx-r repo) exposes three `#[extendr]`
+functions:
+
+- `ferx_rust_fit` — calls `api::run_model_with_data`, returns a named R list
+- `ferx_rust_simulate` — calls `api::simulate`, returns an R data frame
+- `ferx_rust_predict` — calls `api::predict`, returns an R data frame
+
+Conversion helpers:
+
+- `fit_result_to_list()` — unpacks `FitResult` into an R list (theta, omega,
+  sigma, SEs, OFV/AIC/BIC, diagnostics, model structure, warnings)
+- `sdtab_to_dataframe()` — converts `Vec<SdtabRow>` into a data frame with
+  columns PRED, IPRED, CWRES, IWRES, and one column per ETA
+
+## Key types
+
+### `Subject`
+
+Holds all per-subject data after the NONMEM CSV is parsed.
+
+```rust
+pub struct Subject {
+    pub id: String,
+    pub doses: Vec<DoseEvent>,
+    pub obs_times: Vec<f64>,
+    pub observations: Vec<f64>,
+    pub obs_cmts: Vec<usize>,
+    pub covariates: HashMap<String, f64>,           // static (first non-missing)
+    pub dose_covariates: Vec<HashMap<String, f64>>, // LOCF snapshot per dose event
+    pub obs_covariates: Vec<HashMap<String, f64>>,  // LOCF snapshot per observation
+    pub cens: Vec<u8>,       // 0 = observed, 1 = BLOQ (LLOQ stored in observations)
+    pub occasions: Vec<u32>, // IOV occasion index per observation; empty if no IOV
+    // ...
+}
+```
+
+When a subject has no time-varying covariates, `dose_covariates` and
+`obs_covariates` are empty and callers fall through to the static `covariates`
+map. Methods `obs_cov(j)` / `dose_cov(k)` encapsulate this fallback.
+
+### `DoseEvent`
+
+```rust
+pub struct DoseEvent {
+    pub time: f64,
+    pub amt: f64,
+    pub cmt: usize,
+    pub rate: f64,
+    pub duration: f64,  // derived: amt / rate when rate > 0, else 0
+    pub ss: bool,
+    pub ii: f64,
+}
+```
+
+### `PkParams`
+
+Fixed-size array instead of `HashMap<String, f64>` — required for Enzyme AD.
+
+```rust
+pub struct PkParams {
+    pub values: [f64; 8],  // MAX_PK_PARAMS = 8
+}
+// Index:  0=CL  1=V  2=Q  3=V2  4=KA  5=F  6=Q3  7=V3
+```
+
+`F` defaults to 1.0. Unused slots default to 0.0.
+
+### `ModelParameters`
+
+The full set of population parameters under estimation.
+
+```rust
+pub struct ModelParameters {
+    pub theta: Vec<f64>,
+    pub theta_names: Vec<String>,
+    pub theta_lower: Vec<f64>,
+    pub theta_upper: Vec<f64>,
+    pub theta_fixed: Vec<bool>,
+    pub omega: OmegaMatrix,  // caches Cholesky factor + free_mask
+    pub sigma: SigmaVector,
+    // ...
+}
+```
+
+`OmegaMatrix` caches the Cholesky factor alongside the full matrix and carries
+a `free_mask` (`DMatrix<bool>`) that records which off-diagonal entries are
+free parameters versus structural zeros from `block_omega` declarations.
+
+## Internal parameterisation
+
+The outer optimizer works on an unconstrained packed vector `x`:
+
+```
+x = [log(theta_free), chol(Omega_BSV), log(sigma), chol(Omega_IOV)]
+```
+
+- **Theta**: log-transformed to enforce positivity; unpacked with `exp()`
+- **Omega**: lower Cholesky factor; diagonal elements log-transformed;
+  unpacked with `L * L'`
+- **Sigma**: log-transformed, same as theta
+
+This ensures the optimizer never visits invalid parameter regions (negative
+variances, non-positive-definite omega). Parameter scaling (`scale_params =
+true`) additionally normalizes the packed vector to O(1) before each optimizer
+call to improve conditioning when parameters span several orders of magnitude.
+
+## Parallelism
+
+The outer optimizer evaluates subjects in parallel via
+[rayon](https://docs.rs/rayon):
+
+```rust
+let subject_nlls: Vec<f64> = population
+    .subjects
+    .par_iter()
+    .map(|subject| foce_subject_nll(subject, &params, &model))
+    .collect();
+```
+
+The inner optimizer (EBE search) is per-subject and single-threaded; no nested
+parallelism is used. Thread count is controlled by `FitOptions::n_threads`,
+forwarded to rayon's global thread pool at the start of each fit call.
+
+## Source tree
+
+```
+src/
+├── api.rs                     public entry points
+├── types.rs                   Subject, DoseEvent, PkParams, ModelParameters, FitResult
+├── lib.rs                     crate root
+├── build_info.rs              compile-time build metadata
+├── cancel.rs                  cooperative cancellation token
+├── parser/
+│   └── model_parser.rs        .ferx DSL → CompiledModel
+├── io/
+│   ├── datareader.rs          read_nonmem_csv → Population
+│   └── output.rs              sdtab / YAML writer
+├── estimation/
+│   ├── outer_optimizer.rs     population-level loop, NLopt/BFGS dispatch
+│   ├── inner_optimizer.rs     per-subject EBE, gradient resolution (AD/FD)
+│   ├── saem.rs                SAEM with MH sampling, two-phase schedule
+│   ├── gauss_newton.rs        Gauss-Newton / BHHH with LM damping
+│   ├── trust_region.rs        Newton trust-region (Steihaug CG subproblem)
+│   ├── parameterization.rs    mu-referencing, log/logit transforms, pack/unpack
+│   ├── sir.rs                 SIR importance resampling
+│   └── trace.rs               iteration trace CSV writer
+├── pk/
+│   ├── one_compartment.rs     1-cpt IV bolus/infusion/oral analytical solutions
+│   ├── two_compartment.rs     2-cpt analytical solutions, Vieta macro-rate constants
+│   ├── three_compartment.rs   3-cpt IV bolus/infusion, Cardano characteristic roots
+│   └── event_driven.rs        multi-dose superposition, TV-covariate dispatch
+├── ode/
+│   ├── solver.rs              RK45 Dormand-Prince adaptive integrator
+│   └── predictions.rs         event handling, break-time construction
+├── stats/
+│   ├── likelihood.rs          FOCE/FOCEI NLL, CWRES, population objective
+│   ├── residual_error.rs      IWRES, residual variance by error model type
+│   └── special.rs             log-gamma, logit, log-normal CDF
+├── ad/
+│   ├── dual.rs                Dual<f64> forward-mode number type
+│   ├── ad_gradients.rs        Enzyme reverse-mode gradient entry points
+│   ├── event_driven_ad.rs     AD-compatible event-driven propagator
+│   └── event_driven_ad_jac.rs Jacobian accumulation for Enzyme reverse mode
+└── bin/
+    ├── run_model.rs           CLI entry point
+    └── generate_data.rs       synthetic data generator
+```

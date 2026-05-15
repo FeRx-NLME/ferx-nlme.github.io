@@ -2,6 +2,68 @@
 title: "Overview"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+ferx-core is the Rust computation engine that powers the ferx R package. It
+implements the full nonlinear mixed effects (NLME) modeling pipeline: model
+parsing, data ingestion, population parameter estimation (FOCE/FOCEI, SAEM,
+Gauss-Newton), simulation, and prediction. The R package (ferx-r) is a thin
+wrapper that exposes this engine via an extendr FFI boundary.
+
+The crate is named `ferx-nlme` and lives at
+[github.com/FeRx-NLME/ferx-core](https://github.com/FeRx-NLME/ferx-core).
+ferx-r references it as a path dependency in `src/rust/Cargo.toml`.
+
+## Stack position
+
+```
+R API  (ferx-r:  R/*.R)
+  └─► extendr FFI  (ferx-r:  src/rust/src/lib.rs)
+        └─► ferx-core  (estimation, PK, ODE, autodiff)
+```
+
+The FFI layer exposes three `#[extendr]` functions — `ferx_rust_fit`,
+`ferx_rust_simulate`, `ferx_rust_predict` — and converts ferx-core result
+types into R lists and data frames via `fit_result_to_list()` and
+`sdtab_to_dataframe()`. All heavy computation stays inside ferx-core.
+
+## Crate modules
+
+| Module | File(s) | Responsibility |
+|---|---|---|
+| `api` | `api.rs` | Public entry points: `run_model_with_data`, `simulate`, `predict` |
+| `types` | `types.rs` | Shared types: `Subject`, `DoseEvent`, `PkParams`, `ModelParameters`, `Population`, `FitResult` |
+| `parser` | `parser/model_parser.rs` | Parses `.ferx` model files into a `CompiledModel` |
+| `io` | `io/datareader.rs`, `io/output.rs` | NONMEM CSV reader, sdtab writer |
+| `estimation` | `estimation/outer_optimizer.rs`, `inner_optimizer.rs`, `saem.rs`, `trust_region.rs`, `gauss_newton.rs`, `parameterization.rs`, `sir.rs`, `trace.rs` | FOCE/FOCEI, SAEM, Gauss-Newton, SIR, iteration trace |
+| `pk` | `pk/one_compartment.rs`, `two_compartment.rs`, `three_compartment.rs`, `event_driven.rs` | Analytical 1/2/3-cpt PK models and event dispatch |
+| `ode` | `ode/solver.rs`, `ode/predictions.rs` | RK45 (Dormand-Prince) adaptive ODE solver |
+| `stats` | `stats/likelihood.rs`, `residual_error.rs`, `special.rs` | FOCE/FOCEI NLL, CWRES/IWRES, special functions |
+| `ad` | `ad/dual.rs`, `ad/ad_gradients.rs`, `ad/event_driven_ad.rs` | Forward-mode `Dual` type and Enzyme reverse-mode AD wrappers |
+
+## Key return type: `FitResult`
+
+`FitResult` is the struct returned through the FFI to R. Its principal fields:
+
+| Field | Type | Description |
+|---|---|---|
+| `converged` | `bool` | Whether the outer optimizer converged |
+| `method` | `String` | Estimation method used (e.g. `"focei"`) |
+| `gradient_used` | `String` | AD mode resolved at runtime (`"enzyme"`, `"dual"`, `"finite_differences"`) |
+| `ofv` | `f64` | Objective function value (−2 log-likelihood) |
+| `aic` | `f64` | Akaike information criterion |
+| `bic` | `f64` | Bayesian information criterion |
+| `theta` | `Vec<f64>` | Final population fixed-effect estimates |
+| `theta_names` | `Vec<String>` | Names matching `theta` |
+| `se_theta` | `Vec<f64>` | Standard errors for theta (requires `covariance = true`) |
+| `omega` | `DMatrix<f64>` | Final between-subject variability matrix |
+| `se_omega` | `Vec<f64>` | Standard errors for omega elements |
+| `sigma` | `Vec<f64>` | Residual error estimates |
+| `sdtab` | `Vec<SdtabRow>` | Per-observation diagnostics: PRED, IPRED, CWRES, IWRES, ETAs |
+| `warnings` | `Vec<String>` | Non-fatal warnings emitted during the run |
+
+## Further reading
+
+- [Architecture](architecture.qmd) — data flow, FFI boundary, key types, parallelism, source tree
+- [Estimation](estimation.qmd) — FOCE/FOCEI, SAEM, Gauss-Newton, IOV, SIR
+- [Analytical PK models](pk-models.qmd) — 1/2/3-compartment closed-form solutions
+- [ODE solver](ode-solver.qmd) — RK45 adaptive integrator and event handling
+- [Autodiff](autodiff.qmd) — `Dual` type and Enzyme reverse-mode integration

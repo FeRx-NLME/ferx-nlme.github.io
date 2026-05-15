@@ -1,7 +1,263 @@
 ---
-title: "Estimation"
+title: "Estimation (FOCE/FOCEI)"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+ferx-core supports five estimation methods: FOCE, FOCEI, SAEM, Gauss-Newton,
+and a GN+FOCEI hybrid. FOCEI is the default. All methods share the same
+two-loop structure: an outer loop over population parameters and an inner loop
+over per-subject empirical Bayes estimates (EBEs).
+
+## FOCE vs FOCEI
+
+**FOCE** (First-Order Conditional Estimation) linearises the model around the
+EBE η̂ and evaluates the residual variance R at the population mean (η = 0):
+
+$$\text{OFV}_i = (y - f_0)^T \tilde{R}^{-1} (y - f_0) + \log|\tilde{R}|$$
+
+where $f_0 = f(\hat{\eta}) - H\hat{\eta}$ and $\tilde{R} = H\Omega H^T + R(f_0)$.
+
+**FOCEI** adds the *interaction* term — the residual variance $V(\hat{\eta})$
+is evaluated at η̂ rather than η = 0, capturing the dependence of residual
+error on individual predictions:
+
+$$\text{OFV}_i = (y - \hat{f})^T V^{-1} (y - \hat{f}) + \hat{\eta}^T \Omega^{-1} \hat{\eta} + \log|\tilde{R}|$$
+
+FOCEI is more accurate when the error model is proportional or combined.
+Use FOCE only for additive-error models where the interaction term is zero.
+
+## The two-loop structure
+
+### Outer loop — population parameters
+
+Minimises the population OFV = Σᵢ OFVᵢ over θ, Ω, σ. Parameters are
+internally log-transformed (theta, sigma) and Cholesky-factored (omega) so the
+optimizer works on an unconstrained packed vector:
+
+```
+x = [log(θ_free), chol(Ω_BSV), log(σ), chol(Ω_IOV)]
+```
+
+Available optimizers (set via `optimizer` in `[fit_options]`):
+
+| Key | Algorithm | Notes |
+|---|---|---|
+| `slsqp` | NLopt SLSQP | **Default.** Gradient-based, handles bounds well |
+| `bobyqa` | NLopt BOBYQA | Derivative-free; robust when FD gradients are noisy |
+| `nlopt_lbfgs` | NLopt L-BFGS | Good for large parameter spaces |
+| `mma` | NLopt MMA | Method of Moving Asymptotes |
+| `bfgs` | Built-in BFGS | Quasi-Newton with backtracking line search |
+| `lbfgs` | Built-in L-BFGS | Memory-efficient BFGS |
+| `trust_region` | Newton trust-region (argmin) | Uses FD Hessian; Steihaug CG subproblem |
+
+**Global search:** setting `global_search = true` runs NLopt CRS2-LM
+(Controlled Random Search) as a gradient-free pre-search before the local
+optimizer. Helps escape local minima on poorly-identified models. Budget is
+controlled by `global_maxeval` (default: `200 * (n_params + 1)`).
+
+### Inner loop — empirical Bayes estimates
+
+Minimises the individual NLL per subject independently (parallelised via rayon):
+
+$$\text{NLL}(\eta) = \frac{1}{2}\left[\eta^T\Omega^{-1}\eta + \log|\Omega| + \sum_j\left(\frac{(y_j - f_j(\hat{\eta}))^2}{V_j(\hat{\eta})} + \log V_j(\hat{\eta})\right)\right]$$
+
+Uses L-BFGS with automatic differentiation gradients (preferred) or finite
+differences. Falls back to Nelder-Mead simplex if L-BFGS fails to converge.
+
+**Warm starting:** EBEs from the previous outer iteration seed the inner
+optimizer, drastically reducing inner iterations in later stages when
+parameters change slowly.
+
+**EBE convergence guard:** if more than `max_unconverged_frac` (default 0.1)
+of subjects have unconverged EBEs, the outer optimizer receives OFV = ∞ for
+that step, preventing convergence to a solution with unreliable EBEs.
+
+## Convergence criteria
+
+| Loop | Criterion | Default |
+|---|---|---|
+| Outer | gradient norm < `outer_gtol` | `1e-6` |
+| Outer | max iterations | `maxiter = 500` |
+| Inner | gradient norm < `inner_tol` | `1e-4` |
+| Inner | max iterations | `inner_maxiter = 200` |
+
+`inner_tol = 1e-4` matches the precision of NONMEM's default inner-loop
+convergence (SIGDIGITS ≈ 3). Tighter values over-converge EBEs relative to the
+Sheiner-Beal linearisation error and can slow FOCEI fits 10–15× without
+changing the final OFV.
+
+## OFV / AIC / BIC
+
+$$\text{OFV} = -2\log L \qquad \text{AIC} = \text{OFV} + 2p \qquad \text{BIC} = \text{OFV} + p\log N$$
+
+where $p$ is the number of estimated parameters and $N$ is the number of
+observations.
+
+## Covariance step
+
+When `covariance = true`, ferx computes the observed Fisher information matrix
+via finite-difference Hessian of the population OFV at convergence:
+
+- **Standard errors** = $\sqrt{\text{diag}(\hat{\Sigma})}$
+- **%RSE** = $|\text{SE} / \hat{\theta}| \times 100$
+- **Omega SEs** derived via delta method from the Cholesky parameterisation
+
+## SAEM
+
+Stochastic Approximation EM replaces the deterministic inner loop with
+Metropolis-Hastings sampling, following the Monolix two-phase schedule:
+
+- **Phase 1 (exploration, γ = 1):** rapid basin finding; default 150 iterations
+- **Phase 2 (convergence, γ = 1/k):** decreasing-weight average; default 250 iterations
+
+Each SAEM iteration:
+
+1. **E-step:** sample η per subject via MH random walk
+   ($\eta_\text{prop} = \eta + \delta_i \cdot L \cdot z$, $z \sim N(0,I)$)
+2. **SA update:** $S_2 \leftarrow (1-\gamma_k)S_2 + \gamma_k \cdot \frac{1}{N}\sum_i \eta_i\eta_i^T$
+3. **M-step for Ω:** $\Omega_k = S_2$ (closed form, with structural zeros projected out)
+4. **M-step for θ and σ:** NLopt minimises the conditional observation NLL with
+   ETAs fixed. When `mu_referencing = true` (default), log-normal thetas use the
+   closed-form EM update instead: $\log\theta_j \leftarrow \log\theta_j + \gamma_k\overline{\eta_j}$
+5. **Adaptation:** per-subject MH step sizes $\delta_i$ adjusted every
+   `adapt_interval` iterations to target ~40% acceptance rate
+
+Post-SAEM: standard FOCE inner loop refines EBEs from the SAEM ETAs, then
+FOCE OFV, AIC, BIC, and (optionally) the covariance matrix are computed so
+results are directly comparable with FOCE fits.
+
+```
+[fit_options]
+  method        = saem
+  n_exploration = 150
+  n_convergence = 250
+  n_mh_steps    = 3
+  seed          = 12345
+  covariance    = true
+```
+
+SAEM + FOCEI polish (recommended for complex models):
+
+```
+[fit_options]
+  method     = [saem, focei]
+  covariance = true
+```
+
+**Limitation:** SAEM is not supported with IOV models.
+
+## Gauss-Newton
+
+The Gauss-Newton optimizer exploits the nonlinear-least-squares structure of
+the FOCE objective using the BHHH Hessian approximation:
+
+$$H_\text{BHHH} = 4 \sum_i g_i g_i^T$$
+
+where $g_i = \nabla_x \text{NLL}_i$ is the per-subject gradient. Levenberg-Marquardt
+damping $H_\text{LM} = H_\text{BHHH} + \lambda\,\text{diag}(H_\text{BHHH})$ stabilises
+steps away from the minimum; $\lambda$ adapts: ×0.3 on success, ×10 on rejection.
+
+| Method | Key | Description |
+|---|---|---|
+| Pure GN | `gn` | Typically converges in 10–30 iterations |
+| GN + FOCEI hybrid | `gn_hybrid` | GN finds the basin; FOCEI polishes (up to 100 iter via SLSQP) |
+
+Use `gn` for fast feedback during model development; `gn_hybrid` when you want
+robustness as well as speed.
+
+## Inter-Occasion Variability (IOV)
+
+IOV models occasion-to-occasion shifts in PK parameters within a subject.
+Kappa (κ) is the IOV random effect, re-drawn independently per occasion:
+
+$$\kappa_{ik} \sim \mathcal{N}(0, \Omega_\text{IOV})$$
+
+**Option A — diagonal IOV** (independent kappas):
+
+```
+[parameters]
+  kappa KAPPA_CL ~ 0.05
+  kappa KAPPA_V  ~ 0.03
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL + KAPPA_CL)
+
+[fit_options]
+  iov_column = OCC
+```
+
+**Option B — block IOV** (correlated kappas):
+
+```
+block_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]
+```
+
+Mixed Option A + B declarations are supported; a name may not appear in both.
+
+The inner loop uses `find_ebe_iov` instead of `find_ebe` when kappas are
+present, jointly optimising BSV etas and all per-occasion kappas. The outer
+loop packs IOV omega after sigma in the packed vector. **AD is not used for IOV
+gradients** — finite differences are used instead.
+
+## Sampling Importance Resampling (SIR)
+
+SIR is an optional post-estimation step that provides non-parametric parameter
+uncertainty estimates, more robust than the asymptotic covariance matrix for
+small datasets or boundary estimates.
+
+1. Draw M parameter vectors from $\mathcal{N}(\hat{\theta}, \hat{\Sigma})$
+2. Compute importance weights from OFV differences
+3. Resample m vectors proportional to weights
+
+The effective sample size (ESS) diagnostic indicates fit quality: ESS > m is
+excellent; ESS < 100 suggests the proposal is a poor match.
+
+```
+[fit_options]
+  method        = focei
+  covariance    = true
+  sir           = true
+  sir_samples   = 1000
+  sir_resamples = 250
+  sir_seed      = 42
+```
+
+Reference: Dosne et al. (2017), *J Pharmacokinet Pharmacodyn* 44(6):539-562.
+
+## Mu-referencing
+
+When `mu_referencing = true` (default), ferx detects log-normal parameters
+from `[individual_parameters]` and re-centres ETA estimates on the current
+population mean each inner iteration. This improves conditioning for the SAEM
+M-step (closed-form EM update) and speeds inner-loop convergence for
+gradient-based methods. Disable with `mu_referencing = false` to reproduce
+pre-automatic-mu behaviour.
+
+## Key fit_options reference
+
+| Key | Default | Description |
+|---|---|---|
+| `method` | `focei` | `foce`, `focei`, `saem`, `gn`, `gn_hybrid`, or a list e.g. `[saem, focei]` |
+| `maxiter` | `500` | Max outer iterations |
+| `covariance` | `true` | Compute covariance matrix and SEs |
+| `optimizer` | `slsqp` | See optimizer table above |
+| `inner_maxiter` | `200` | Max inner (EBE) iterations per subject |
+| `inner_tol` | `1e-4` | Inner convergence gradient-norm tolerance |
+| `scale_params` | `true` | Scale packed parameters to O(1) before optimizer |
+| `global_search` | `false` | Run CRS2-LM pre-search before local optimizer |
+| `bloq_method` | `drop` | `drop` or `m3` (Beal M3 likelihood for BLOQ rows) |
+| `iov_column` | — | Name of occasion column (required for IOV models) |
+| `optimizer_trace` | `false` | Write per-iteration CSV to `/tmp/ferx_trace_<pid>.csv` |
+
+## Relevant source files
+
+| File | Role |
+|---|---|
+| `estimation/outer_optimizer.rs` | `optimize_population()`, NLopt/BFGS/trust-region dispatch |
+| `estimation/inner_optimizer.rs` | `find_ebe()`, gradient resolution (AD vs FD), EBE warm-start |
+| `estimation/saem.rs` | SAEM algorithm, MH sampling, two-phase schedule |
+| `estimation/gauss_newton.rs` | Gauss-Newton / BHHH with LM damping and line search |
+| `estimation/trust_region.rs` | Newton trust-region with Steihaug CG subproblem |
+| `estimation/parameterization.rs` | Pack/unpack, mu-referencing, log/Cholesky transforms |
+| `estimation/sir.rs` | SIR importance resampling |
+| `stats/likelihood.rs` | `foce_subject_nll()`, `foce_population_nll()`, CWRES |
+| `stats/residual_error.rs` | Residual variance by error model, IWRES |

@@ -1,7 +1,109 @@
 ---
-title: "Ode Solver"
+title: "ODE Solver"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+ferx-core includes an adaptive Runge-Kutta solver for models whose structural
+equations cannot be expressed analytically. It is invoked whenever a `.ferx`
+model file contains an `[odes]` block; analytical PK models bypass it entirely.
+
+## Algorithm: Dormand-Prince RK45
+
+The solver implements the **Dormand-Prince** method (also called RK45 or
+DOPRI5) — the same family as Julia's `Tsit5()`. It is an explicit, embedded
+Runge-Kutta pair:
+
+- **5th-order** solution used for advancing the state
+- **4th-order** embedded solution used only for error estimation
+- 7 function evaluations per step (the last stage is reused as the first of
+  the next step — FSAL property)
+
+The Butcher tableau coefficients are hardcoded in `ode/solver.rs` from the
+original Dormand & Prince (1980) paper.
+
+**Default tolerances:**
+
+| Parameter | Default |
+|---|---|
+| `abstol` | `1e-6` |
+| `reltol` | `1e-4` |
+| `max_steps` | `10 000` |
+| `initial_dt` | `0.1` |
+| `min_dt` | `1e-12` |
+
+These are appropriate for typical PK ODE systems (2–5 states, smooth dynamics,
+concentration units in μg/mL or mg/L). Tighter tolerances can be set via
+`[fit_options]` if needed.
+
+## Adaptive step control
+
+At each candidate step the solver computes the scaled error norm:
+
+```
+err = ‖(y₅ − y₄) / (abstol + reltol · |y₅|)‖₂ / √n
+```
+
+- If `err ≤ 1`: step accepted; next step size scaled up by `min(5, 0.9 · err^(-0.2))`
+- If `err > 1`: step rejected and retried at `max(0.2, 0.9 · err^(-0.25)) · h`
+
+The solver errors if `h` falls below `min_dt` (signals a stiff or ill-posed
+system) or if the step count exceeds `max_steps`.
+
+## Event handling
+
+PK dose events create discontinuities in the ODE state that the solver cannot
+step across. `ode/predictions.rs` handles this by:
+
+1. Collecting all dose times and infusion-end times as **break points**
+2. Integrating segment by segment between consecutive break points
+3. At each bolus dose (EVID = 1), applying the state update: `u[cmt] += amt`
+4. For infusions, adding `+rate` to the compartment derivative for the
+   duration of the infusion via a closure wrapper around the user RHS
+
+```rust
+// Conceptual: infusion added to the RHS during [t_start, t_end]
+let rhs_with_infusions = |u, params, t, du| {
+    user_rhs(u, params, t, du);
+    for (cmt_idx, rate) in &active_infusions {
+        du[*cmt_idx] += rate;
+    }
+};
+```
+
+Break times are constructed so that each integration segment is either fully
+inside or fully outside every infusion window — no float-equality check is
+needed at the segment interior.
+
+## Defining an ODE model
+
+The `[odes]` section of a `.ferx` file specifies the right-hand side using a
+simple expression DSL. Derivatives are written as `d/dt(STATE)`:
+
+```
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) = KA * depot - (CL / V) * central
+```
+
+Individual parameters from `[individual_parameters]` (CL, V, KA, …) are
+available as symbols. The observable compartment is matched to the `CMT` column
+in the data.
+
+## When to use ODE vs analytical
+
+| Situation | Recommendation |
+|---|---|
+| 1-cpt or 2-cpt oral/IV, standard dosing | Use analytical (`pk one_cpt_oral(...)`) |
+| PD link model, transit compartments, enterohepatic circulation | Use `[odes]` |
+| Saturable elimination (Michaelis-Menten), parallel pathways | Use `[odes]` |
+
+Analytical models are typically 10–50× faster per likelihood evaluation and
+support the Enzyme AD gradient path. ODE models currently fall back to
+finite-difference gradients.
+
+## Relevant source files
+
+| File | Role |
+|---|---|
+| `ode/solver.rs` | `solve_ode()`, Dormand-Prince coefficients, adaptive step loop |
+| `ode/predictions.rs` | `ode_predictions()`, event handling, break-time construction |
+| `ode/mod.rs` | Module re-exports |

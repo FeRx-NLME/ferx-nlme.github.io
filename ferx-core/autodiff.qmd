@@ -1,7 +1,133 @@
 ---
-title: "Autodiff"
+title: "Autodiff (Enzyme)"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+ferx-core uses automatic differentiation (AD) to compute exact gradients of
+the FOCEI individual NLL with respect to the ETA vector. Exact gradients make
+the inner L-BFGS loop faster and more reliable than finite differences,
+especially as the number of random effects grows.
+
+## Why exact gradients matter
+
+The FOCEI inner loop calls $\nabla_\eta \text{NLL}(\eta)$ at every L-BFGS
+step. For a model with $n_\eta$ random effects, central finite differences
+require $2n_\eta$ model evaluations per gradient call. Reverse-mode AD
+computes the full gradient in ~1–3 forward passes regardless of $n_\eta$.
+
+Empirically (measured with `FERX_TIME_GRADIENTS=1` on 1-cpt oral and 2-cpt
+infusion models): reverse-mode AD is **1.5–5× faster** per L-BFGS gradient
+call than central FD across the tested range of models, even accounting for the
+tape/backward overhead.
+
+## Enzyme
+
+ferx uses [Enzyme](https://enzyme.mit.edu) — a compiler plugin that
+differentiates LLVM IR directly. It is not a symbolic or trace-based AD
+library; it transforms the compiled bitcode of the forward pass into its
+reverse (adjoint) at compile time.
+
+**Build requirements:**
+
+- `channel = "enzyme"` in `rust-toolchain.toml` (a custom Rust fork)
+- `-Z autodiff=Enable` in `.cargo/config.toml` (ferx-r's build script writes this automatically)
+- Only required at **compile time** — the resulting binary has the AD tape
+  baked in and runs on any system
+
+**CI / no-Enzyme builds:** set `FERX_NO_AUTODIFF=1` before building. ferx
+falls back to central finite differences. All fits still work; wall time
+increases ~2–5× on large $n_\eta$ models.
+
+## Three gradient paths
+
+The path is resolved **per subject at runtime** in
+`estimation/inner_optimizer.rs::resolve_gradient_method()`:
+
+| Path | Enum variant | When used |
+|---|---|---|
+| `AdSingleSnapshot` | Enzyme reverse-mode, one per-subject TV snapshot | Subject has no time-varying covariates; analytical PK model |
+| `AdEventDriven` | Enzyme reverse-mode, per-event TV arrays | Subject has time-varying covariates; model is 1-cpt or 2-cpt IV (bolus/infusion) |
+| `Fd` | Central finite differences | `FERX_NO_AUTODIFF=1`, ODE model, model has no `tv_fn`, or TV-cov on unsupported model |
+
+`AdSingleSnapshot` is the common fast path. `AdEventDriven` ensures that
+covariate values at each dose/observation time are correctly propagated through
+the gradient when a subject's weight or other covariate changes over time.
+ODE models currently have no AD path and always use FD.
+
+```rust
+// Simplified resolve_gradient_method logic
+fn resolve_gradient_method(model: &CompiledModel, subject: &Subject) -> InnerGradientMethod {
+    #[cfg(not(feature = "autodiff"))]
+    return InnerGradientMethod::Fd;
+
+    if model.tv_fn.is_none() { return InnerGradientMethod::Fd; }
+    if subject.has_tv_covariates() {
+        if supports_event_driven_ad(model.pk_model) {
+            InnerGradientMethod::AdEventDriven
+        } else {
+            InnerGradientMethod::Fd
+        }
+    } else {
+        InnerGradientMethod::AdSingleSnapshot
+    }
+}
+```
+
+The resolved path is stored in `FitResult::gradient_used` and exposed to R as
+`fit$gradient_used`.
+
+## `Dual` — forward-mode type
+
+`ad/dual.rs` defines a `Dual` struct for forward-mode AD through the expression
+evaluator and PK model equations. It is **not** the hot Enzyme path — it is
+used for the model DSL expression interpreter and for contexts where Enzyme is
+unavailable.
+
+```rust
+#[derive(Debug, Clone, Copy)]
+pub struct Dual {
+    pub val: f64,
+    pub deriv: f64,
+}
+
+impl Dual {
+    pub fn variable(val: f64) -> Self { Self { val, deriv: 1.0 } }
+    pub fn constant(val: f64) -> Self { Self { val, deriv: 0.0 } }
+}
+```
+
+Operations implement the chain rule automatically:
+
+```rust
+let x = Dual::variable(2.0);   // x = 2, dx/dx = 1
+let y = x.exp();               // y = e², dy/dx = e²
+let z = y * Dual::constant(3.0); // z = 3e², dz/dx = 3e²
+```
+
+Supported operations: `exp`, `ln`, `sqrt`, `sin`, `cos`, `abs`, arithmetic
+operators, and comparison (treats derivatives as zero for control-flow
+branching — appropriate for the smooth functions in PK models).
+
+## Building without Enzyme
+
+```bash
+# Install without Enzyme (for development, CI, Windows)
+FERX_NO_AUTODIFF=1 R CMD INSTALL --no-lock .
+
+# Or for the Rust crate directly
+cargo build --no-default-features --features ci
+```
+
+With `FERX_NO_AUTODIFF=1`, the `autodiff` feature flag is disabled, the
+Enzyme-gated `#[cfg(feature = "autodiff")]` blocks compile out, and
+`resolve_gradient_method` always returns `Fd`. The `gradient_used` field in
+`FitResult` reports `"finite_differences"`.
+
+## Relevant source files
+
+| File | Role |
+|---|---|
+| `ad/dual.rs` | `Dual<f64>` forward-mode number type and arithmetic impls |
+| `ad/ad_gradients.rs` | Enzyme reverse-mode gradient entry points (`#[autodiff]`) |
+| `ad/event_driven_ad.rs` | AD-compatible event-driven propagator for TV-covariate subjects |
+| `ad/event_driven_ad_jac.rs` | Jacobian accumulation for Enzyme reverse mode |
+| `estimation/inner_optimizer.rs` | `resolve_gradient_method()`, gradient dispatch, timing counters |
