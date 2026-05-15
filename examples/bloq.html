@@ -528,6 +528,19 @@ window.Quarto = {
 
 
 <p>This example shows how to fit a model to data containing observations below the lower limit of quantification (BLOQ) using Beal’s <strong>M3 method</strong>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For background on the M3 likelihood, see <a href="https://ferx-nlme.github.io/ferx-book/chapters/09-bloq-m3.html">Chapter 9 (BLOQ &amp; M3)</a> in the ferx book.</p>
+</div>
+</div>
 <p>Instead of dropping BLOQ rows — which biases terminal-phase parameter estimates — each censored observation contributes its censoring probability to the likelihood:</p>
 <p><span class="math display">\[P(y &lt; \text{LLOQ} \mid \theta, \eta) = \Phi\!\left(\frac{\text{LLOQ} - f}{\sqrt{V}}\right)\]</span></p>
 <section id="dataset" class="level2">
