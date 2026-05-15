@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Editing ferx model files programmatically – ferx</title>
+<title>Example: Inter-occasion variability (IOV) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -462,14 +462,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#starting-from-scratch" id="toc-starting-from-scratch" class="nav-link active" data-scroll-target="#starting-from-scratch">Starting from scratch</a></li>
-  <li><a href="#inspecting-a-section" id="toc-inspecting-a-section" class="nav-link" data-scroll-target="#inspecting-a-section">Inspecting a section</a></li>
-  <li><a href="#scripted-read-modify-write" id="toc-scripted-read-modify-write" class="nav-link" data-scroll-target="#scripted-read-modify-write">Scripted read-modify-write</a></li>
-  <li><a href="#console-only-workflow-create-tweak-fit" id="toc-console-only-workflow-create-tweak-fit" class="nav-link" data-scroll-target="#console-only-workflow-create-tweak-fit">Console-only workflow: create, tweak, fit</a></li>
-  <li><a href="#opening-a-model-in-an-editor" id="toc-opening-a-model-in-an-editor" class="nav-link" data-scroll-target="#opening-a-model-in-an-editor">Opening a model in an editor</a></li>
-  <li><a href="#validating-a-model-file" id="toc-validating-a-model-file" class="nav-link" data-scroll-target="#validating-a-model-file">Validating a model file</a></li>
-  <li><a href="#overwrite-guards" id="toc-overwrite-guards" class="nav-link" data-scroll-target="#overwrite-guards">Overwrite guards</a></li>
-  <li><a href="#function-reference" id="toc-function-reference" class="nav-link" data-scroll-target="#function-reference">Function reference</a></li>
+  <li><a href="#when-to-use-iov" id="toc-when-to-use-iov" class="nav-link active" data-scroll-target="#when-to-use-iov">When to use IOV</a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
+  <li><a href="#option-a-diagonal-iov-independent-kappas" id="toc-option-a-diagonal-iov-independent-kappas" class="nav-link" data-scroll-target="#option-a-diagonal-iov-independent-kappas">Option A — diagonal IOV (independent kappas)</a></li>
+  <li><a href="#option-b-correlated-iov-block_kappa" id="toc-option-b-correlated-iov-block_kappa" class="nav-link" data-scroll-target="#option-b-correlated-iov-block_kappa">Option B — correlated IOV (<code>block_kappa</code>)</a></li>
+  <li><a href="#in-r" id="toc-in-r" class="nav-link" data-scroll-target="#in-r">In R</a></li>
+  <li><a href="#interpreting-output" id="toc-interpreting-output" class="nav-link" data-scroll-target="#interpreting-output">Interpreting output</a></li>
+  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -479,7 +479,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Editing ferx model files programmatically</h1>
+<h1 class="title">Example: Inter-occasion variability (IOV)</h1>
 </div>
 
 
@@ -496,173 +496,113 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>ferx model files (<code>.ferx</code>) are plain text, so you can create and modify them entirely from R without opening an editor. This article covers the functions that support that workflow.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>See also <code>vignette("model-editing")</code> in the R package for a runnable version.</p>
-</div>
-</div>
-<hr>
-<section id="starting-from-scratch" class="level2">
-<h2 class="anchored" data-anchor-id="starting-from-scratch">Starting from scratch</h2>
-<p><code>ferx_model_new()</code> writes a skeleton <code>.ferx</code> file for one of five built-in templates: <code>"1cpt_oral"</code> (default), <code>"1cpt_iv"</code>, <code>"2cpt_oral"</code>, <code>"2cpt_iv"</code>, and <code>"ode"</code>.</p>
-<p>Pass <code>print = TRUE</code> to preview a template in the console without writing any file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(<span class="at">print =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(<span class="at">template =</span> <span class="st">"2cpt_iv"</span>, <span class="at">print =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>To write a file, supply a path. Pass <code>edit = FALSE</code> to skip opening your editor:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(<span class="st">"my_model.ferx"</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
+<p>This example extends the one-compartment oral warfarin model to account for occasion-to-occasion variability in clearance.</p>
+<section id="when-to-use-iov" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-iov">When to use IOV</h2>
+<p>Use IOV when:</p>
+<ul>
+<li>Subjects have data from multiple study periods (crossover designs, multiple visits)</li>
+<li>You expect within-subject PK variability across periods larger than pure residual error</li>
+<li>NONMEM models used <code>OMEGA BLOCK SAME</code> syntax for one or more parameters</li>
+</ul>
 </section>
-<section id="inspecting-a-section" class="level2">
-<h2 class="anchored" data-anchor-id="inspecting-a-section">Inspecting a section</h2>
-<p><code>ferx_model_section()</code> extracts and prints the body of a named section:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The return value is the character vector of lines (invisibly):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">ferx_model_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>params</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
+<section id="dataset" class="level2">
+<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
+<p>Add an integer occasion-index column (<code>OCC</code>) to the dataset:</p>
+<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,MDV,OCC
+1,0,.,1,100,1,1,1
+1,1,9.49,0,.,.,0,1
+1,2,14.42,0,.,.,0,1
+1,3,17.56,0,.,.,0,1
+1,24,.,1,100,1,1,2
+1,25,10.1,0,.,.,0,2
+1,26,8.2,0,.,.,0,2</code></pre>
+<p>Dose records and observation records in the same period share the same OCC value. The occasion index can be any positive integers; they do not need to be consecutive.</p>
 </section>
-<section id="scripted-read-modify-write" class="level2">
-<h2 class="anchored" data-anchor-id="scripted-read-modify-write">Scripted read-modify-write</h2>
-<p>The extract → modify → write-back pattern changes a model programmatically without an editor:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Work in a fresh temp file</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".ferx"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file.copy</span>(ex<span class="sc">$</span>model, model_path)</span>
+<section id="option-a-diagonal-iov-independent-kappas" class="level2">
+<h2 class="anchored" data-anchor-id="option-a-diagonal-iov-independent-kappas">Option A — diagonal IOV (independent kappas)</h2>
+<pre><code>[parameters]
+  theta TVCL(0.2, 0.001, 10.0)
+  theta TVV(10.0, 0.1, 500.0)
+  theta TVKA(1.5, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.09    # between-subject variability in CL
+  omega ETA_V  ~ 0.04
+  omega ETA_KA ~ 0.30
+
+  kappa KAPPA_CL ~ 0.01  # inter-occasion variability in CL
+
+  sigma PROP_ERR ~ 0.02
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL + KAPPA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = focei
+  iov_column = OCC
+  covariance = true</code></pre>
+<p>Key additions vs a standard model:</p>
+<ol type="1">
+<li><code>kappa KAPPA_CL ~ 0.01</code> — declares IOV on CL with starting variance 0.01</li>
+<li><code>+ KAPPA_CL</code> in the CL expression — kappa enters just like a BSV eta</li>
+<li><code>iov_column = OCC</code> — tells ferx which dataset column carries occasion labels</li>
+</ol>
+</section>
+<section id="option-b-correlated-iov-block_kappa" class="level2">
+<h2 class="anchored" data-anchor-id="option-b-correlated-iov-block_kappa">Option B — correlated IOV (<code>block_kappa</code>)</h2>
+<p>If IOV on CL and V are expected to covary across occasions:</p>
+<pre><code>block_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]</code></pre>
+<p>The three values are the lower triangle of Ω_IOV:</p>
+<ul>
+<li><code>0.05</code> = Var(KAPPA_CL)</li>
+<li><code>0.01</code> = Cov(KAPPA_CL, KAPPA_V)</li>
+<li><code>0.03</code> = Var(KAPPA_V)</li>
+</ul>
+<pre><code>[individual_parameters]
+  CL = TVCL * exp(ETA_CL + KAPPA_CL)
+  V  = TVV  * exp(ETA_V  + KAPPA_V)
+  KA = TVKA * exp(ETA_KA)</code></pre>
+</section>
+<section id="in-r" class="level2">
+<h2 class="anchored" data-anchor-id="in-r">In R</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(<span class="st">"warfarin_iov.ferx"</span>, <span class="st">"warfarin_occ.csv"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fit</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Shows KAPPA (IOV) Estimates block alongside the standard OMEGA output</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the section</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">ferx_model_section</span>(model_path, <span class="st">"parameters"</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Modify: raise the TVCL initial value from 0.134 to 0.5</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"TVCL</span><span class="sc">\\</span><span class="st">([^,]+,"</span>, <span class="st">"TVCL(0.5,"</span>, lines)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Write back</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(model_path, <span class="st">"parameters"</span>, lines)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(model_path, <span class="st">"parameters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>ferx_model_set_section()</code> replaces only the targeted section; all other sections are left untouched.</p>
-<hr>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>omega_iov        <span class="co"># IOV omega matrix</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ebe_kappas       <span class="co"># per-subject, per-occasion kappa EBEs (list of lists)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="console-only-workflow-create-tweak-fit" class="level2">
-<h2 class="anchored" data-anchor-id="console-only-workflow-create-tweak-fit">Console-only workflow: create, tweak, fit</h2>
-<p>From nothing to an estimated model without opening a text editor:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"run1.ferx"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Write a skeleton</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(model_path, <span class="at">template =</span> <span class="st">"1cpt_oral"</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Switch method to FOCEI</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(model_path, <span class="st">"fit_options"</span>, <span class="fu">c</span>(</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  method     = focei"</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  maxiter    = 300"</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  covariance = true"</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Fit</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(model_path, ex<span class="sc">$</span>data)</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
+<section id="interpreting-output" class="level2">
+<h2 class="anchored" data-anchor-id="interpreting-output">Interpreting output</h2>
+<p>The console summary gains a <code>KAPPA (IOV) Estimates</code> block:</p>
+<pre><code>--- KAPPA (IOV) Estimates ---
+  KAPPA_CL = 0.041200  (CV% = 20.3)  SE = 0.008000</code></pre>
+<p>For Option B with off-diagonal correlations a <code>Correlations</code> block follows the diagonal entries.</p>
+<p><strong>EBE kappas</strong> are returned in <code>FitResult.ebe_kappas</code> but are not yet emitted as columns in the sdtab CSV. Per-kappa shrinkage is not yet computed.</p>
 </section>
-<section id="opening-a-model-in-an-editor" class="level2">
-<h2 class="anchored" data-anchor-id="opening-a-model-in-an-editor">Opening a model in an editor</h2>
-<p><code>ferx_model_edit()</code> copies a bundled example to a destination directory and opens it in your editor:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy the bundled warfarin model to tempdir() and open it</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>my_model <span class="ot">&lt;-</span> <span class="fu">ferx_model_edit</span>(ex<span class="sc">$</span>model, <span class="at">dest =</span> <span class="fu">tempdir</span>())</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># After editing, save the result under a new name</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_edit</span>(<span class="st">"run1.ferx"</span>, <span class="at">save_as =</span> <span class="st">"run2.ferx"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>dest</code> argument controls where the copy lands. If the source file is already outside the installed package directory, <code>ferx_model_edit()</code> edits it in place unless <code>dest</code> is set explicitly.</p>
-<hr>
+<section id="tips" class="level2">
+<h2 class="anchored" data-anchor-id="tips">Tips</h2>
+<ul>
+<li><strong>Start with IOV on CL only</strong> — the most commonly occasion-sensitive parameter. Add IOV on other parameters only when the OFV improvement justifies it.</li>
+<li><strong>Compare OFV</strong> between BSV-only and IOV models: the difference is a likelihood-ratio test for the added IOV variance. For a variance parameter at the boundary (H₀: σ² = 0), the asymptotic null is a 50:50 mixture of a point mass at 0 and χ²₁.</li>
+<li><strong>SAEM is not supported</strong> with IOV — use <code>foce</code> or <code>focei</code>.</li>
+</ul>
 </section>
-<section id="validating-a-model-file" class="level2">
-<h2 class="anchored" data-anchor-id="validating-a-model-file">Validating a model file</h2>
-<p><code>ferx_model_validate()</code> checks that all required sections are present and reports the result. Use it after creating or editing a model to catch missing sections before running the optimizer:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_validate</span>(ex<span class="sc">$</span>model)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [ok] All required sections present: parameters, individual_parameters,</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      structural_model, error_model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A model missing required sections produces a clear list:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bad <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".ferx"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">c</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"[parameters]"</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  theta TVCL(1.0, 0.001, 100.0)"</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"[structural_model]"</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  pk one_cpt_oral(cl=CL, v=V, ka=KA)"</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>), bad)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_validate</span>(bad)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [missing] individual_parameters</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [missing] error_model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-<section id="overwrite-guards" class="level2">
-<h2 class="anchored" data-anchor-id="overwrite-guards">Overwrite guards</h2>
-<p>By default <code>ferx_model_new()</code> refuses to overwrite an existing file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".ferx"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(model_path, <span class="at">edit =</span> <span class="cn">FALSE</span>)            <span class="co"># creates the file</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model_new</span>(model_path, <span class="at">edit =</span> <span class="cn">FALSE</span>),          <span class="co"># would overwrite — error</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) <span class="fu">message</span>(<span class="fu">conditionMessage</span>(e))</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: file already exists. Use overwrite = TRUE to replace it.</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Opt in explicitly:</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(model_path, <span class="at">template =</span> <span class="st">"1cpt_iv"</span>, <span class="at">overwrite =</span> <span class="cn">TRUE</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-<section id="function-reference" class="level2">
-<h2 class="anchored" data-anchor-id="function-reference">Function reference</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Function</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>ferx_model_new()</code></td>
-<td>Write a skeleton <code>.ferx</code> file from a template</td>
-</tr>
-<tr class="even">
-<td><code>ferx_model_section()</code></td>
-<td>Extract the body of a named section</td>
-</tr>
-<tr class="odd">
-<td><code>ferx_model_set_section()</code></td>
-<td>Replace the body of a named section</td>
-</tr>
-<tr class="even">
-<td><code>ferx_get_section()</code></td>
-<td>Print a section mid-pipe (returns object unchanged)</td>
-</tr>
-<tr class="odd">
-<td><code>ferx_set_section()</code></td>
-<td>Rewrite a section mid-pipe (returns object unchanged)</td>
-</tr>
-<tr class="even">
-<td><code>ferx_model_edit()</code></td>
-<td>Copy + open a model in your editor</td>
-</tr>
-<tr class="odd">
-<td><code>ferx_model_validate()</code></td>
-<td>Check that all required sections are present</td>
-</tr>
-</tbody>
-</table>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See also</h2>
+<ul>
+<li><a href="../model-dsl/parameters.html#kappa-inter-occasion-variability">Parameters — Kappa</a></li>
+<li><a href="../model-dsl/fit-options.html">Fit Options — iov_column</a></li>
+<li><a href="../ferx-core/data-format.html#occasion-column-iov">Data Format — Occasion column</a></li>
+</ul>
 
 
 </section>

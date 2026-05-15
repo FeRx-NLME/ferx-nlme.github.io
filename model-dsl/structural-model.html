@@ -312,6 +312,10 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Parameters</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../model-dsl/individual-parameters.html">
+ <span class="dropdown-text">Individual parameters</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../model-dsl/structural-model.html">
  <span class="dropdown-text">Structural model</span></a>
   </li>  
@@ -326,6 +330,29 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../model-dsl/fit-options.html">
  <span class="dropdown-text">Fit options</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Examples</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
+        <li>
+    <a class="dropdown-item" href="../examples/covariates.html">
+ <span class="dropdown-text">Covariate model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/iov.html">
+ <span class="dropdown-text">Inter-occasion variability</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/bloq.html">
+ <span class="dropdown-text">BLOQ (M3 method)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/ode-model.html">
+ <span class="dropdown-text">ODE model (Michaelis-Menten)</span></a>
   </li>  
     </ul>
   </li>
@@ -371,6 +398,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
+    <a class="nav-link" href="../faq.html"> 
+<span class="menu-text">FAQ</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../changelog.html"> 
 <span class="menu-text">Changelog</span></a>
   </li>  
@@ -391,8 +422,22 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#analytical-pk-models" id="toc-analytical-pk-models" class="nav-link active" data-scroll-target="#analytical-pk-models">Analytical PK models</a>
+  <ul class="collapse">
+  <li><a href="#available-models" id="toc-available-models" class="nav-link" data-scroll-target="#available-models">Available models</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  <li><a href="#bioavailability" id="toc-bioavailability" class="nav-link" data-scroll-target="#bioavailability">Bioavailability</a></li>
+  <li><a href="#dose-handling" id="toc-dose-handling" class="nav-link" data-scroll-target="#dose-handling">Dose handling</a></li>
+  <li><a href="#numerical-stability" id="toc-numerical-stability" class="nav-link" data-scroll-target="#numerical-stability">Numerical stability</a></li>
+  </ul></li>
+  <li><a href="#ode-models" id="toc-ode-models" class="nav-link" data-scroll-target="#ode-models">ODE models</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -417,21 +462,154 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This page is in progress.</p>
-</div>
-</div>
+<p>The <code>[structural_model]</code> block specifies the pharmacokinetic model used to generate predictions.</p>
+<section id="analytical-pk-models" class="level2">
+<h2 class="anchored" data-anchor-id="analytical-pk-models">Analytical PK models</h2>
+<p>For standard compartmental models, use the <code>pk</code> keyword with a model function:</p>
+<pre><code>pk MODEL_NAME(param=VALUE, param=VALUE, ...)</code></pre>
+<p>Named arguments map individual-parameter symbols (from <code>[individual_parameters]</code>) to the model’s PK slots.</p>
+<section id="available-models" class="level3">
+<h3 class="anchored" data-anchor-id="available-models">Available models</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model function</th>
+<th>Compartments</th>
+<th>Route</th>
+<th>Required parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>one_cpt_iv_bolus</code></td>
+<td>1</td>
+<td>IV bolus</td>
+<td><code>cl</code>, <code>v</code></td>
+</tr>
+<tr class="even">
+<td><code>one_cpt_iv_infusion</code></td>
+<td>1</td>
+<td>IV infusion</td>
+<td><code>cl</code>, <code>v</code></td>
+</tr>
+<tr class="odd">
+<td><code>one_cpt_oral</code></td>
+<td>1</td>
+<td>Oral</td>
+<td><code>cl</code>, <code>v</code>, <code>ka</code></td>
+</tr>
+<tr class="even">
+<td><code>one_cpt_oral_f</code></td>
+<td>1</td>
+<td>Oral with bioavailability</td>
+<td><code>cl</code>, <code>v</code>, <code>ka</code>, <code>f</code></td>
+</tr>
+<tr class="odd">
+<td><code>two_cpt_iv_bolus</code></td>
+<td>2</td>
+<td>IV bolus</td>
+<td><code>cl</code>, <code>v1</code>, <code>q</code>, <code>v2</code></td>
+</tr>
+<tr class="even">
+<td><code>two_cpt_iv_infusion</code></td>
+<td>2</td>
+<td>IV infusion</td>
+<td><code>cl</code>, <code>v1</code>, <code>q</code>, <code>v2</code></td>
+</tr>
+<tr class="odd">
+<td><code>two_cpt_oral</code></td>
+<td>2</td>
+<td>Oral</td>
+<td><code>cl</code>, <code>v1</code>, <code>q</code>, <code>v2</code>, <code>ka</code></td>
+</tr>
+<tr class="even">
+<td><code>two_cpt_oral_f</code></td>
+<td>2</td>
+<td>Oral with bioavailability</td>
+<td><code>cl</code>, <code>v1</code>, <code>q</code>, <code>v2</code>, <code>ka</code>, <code>f</code></td>
+</tr>
+<tr class="odd">
+<td><code>three_cpt_iv_bolus</code></td>
+<td>3</td>
+<td>IV bolus</td>
+<td><code>cl</code>, <code>v1</code>, <code>q2</code>, <code>v2</code>, <code>q3</code>, <code>v3</code></td>
+</tr>
+<tr class="even">
+<td><code>three_cpt_iv_infusion</code></td>
+<td>3</td>
+<td>IV infusion</td>
+<td><code>cl</code>, <code>v1</code>, <code>q2</code>, <code>v2</code>, <code>q3</code>, <code>v3</code></td>
+</tr>
+<tr class="odd">
+<td><code>three_cpt_oral</code></td>
+<td>3</td>
+<td>Oral</td>
+<td><code>cl</code>, <code>v1</code>, <code>q2</code>, <code>v2</code>, <code>q3</code>, <code>v3</code>, <code>ka</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples" class="level3">
+<h3 class="anchored" data-anchor-id="examples">Examples</h3>
+<p>One-compartment oral:</p>
+<pre><code>[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)</code></pre>
+<p>Two-compartment IV bolus:</p>
+<pre><code>[structural_model]
+  pk two_cpt_iv_bolus(cl=CL, v1=V1, q=Q, v2=V2)</code></pre>
+<p>Two-compartment oral:</p>
+<pre><code>[structural_model]
+  pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)</code></pre>
+</section>
+<section id="bioavailability" class="level3">
+<h3 class="anchored" data-anchor-id="bioavailability">Bioavailability</h3>
+<p>For oral models, bioavailability (F) defaults to 1.0. Two ways to estimate it:</p>
+<ol type="1">
+<li><p><strong>Dedicated slot</strong> — use the <code>_f</code> model variant and pass <code>f=F</code>:</p>
+<pre><code>pk one_cpt_oral_f(cl=CL, v=V, ka=KA, f=F)</code></pre></li>
+<li><p><strong>Auto-detected</strong> — define <code>F</code> in <code>[individual_parameters]</code>; the oral PK functions pick it up automatically without needing the <code>_f</code> variant.</p></li>
+</ol>
+<p>For logit-normal bioavailability — to constrain F ∈ (0, 1) — see <a href="../model-dsl/individual-parameters.html#logit-normal-bioavailability">Individual Parameters — Logit-normal bioavailability</a>.</p>
+</section>
+<section id="dose-handling" class="level3">
+<h3 class="anchored" data-anchor-id="dose-handling">Dose handling</h3>
+<p>Analytical models support:</p>
+<ul>
+<li><strong>Bolus doses</strong> — instantaneous input (default when <code>RATE=0</code> in data)</li>
+<li><strong>Infusions</strong> — zero-order input (when <code>RATE&gt;0</code> in data)</li>
+<li><strong>Steady-state</strong> — pre-computed concentrations (when <code>SS=1</code> and <code>II&gt;0</code>)</li>
+<li><strong>Dose superposition</strong> — multiple doses summed via superposition</li>
+</ul>
+</section>
+<section id="numerical-stability" class="level3">
+<h3 class="anchored" data-anchor-id="numerical-stability">Numerical stability</h3>
+<p>Analytical solutions include special handling for degenerate cases:</p>
+<ul>
+<li><strong>Near-equal rate constants</strong> — when KA ≈ k, L’Hôpital’s rule avoids division by near-zero</li>
+<li><strong>Two-compartment eigenvalues</strong> — Vieta’s formula (<code>β = d/α</code>) avoids catastrophic cancellation when the discriminant is small</li>
+</ul>
+<p>See <a href="../ferx-core/pk-models.html">Analytical PK Models</a> for the full mathematical reference.</p>
+</section>
+</section>
+<section id="ode-models" class="level2">
+<h2 class="anchored" data-anchor-id="ode-models">ODE models</h2>
+<p>For non-standard kinetics (e.g.&nbsp;saturable elimination, TMDD), use the ODE specification:</p>
+<pre><code>[structural_model]
+  ode(obs_cmt=COMPARTMENT_NAME, states=[state1, state2, ...])</code></pre>
+<ul>
+<li><strong>obs_cmt</strong> — the compartment whose amount is compared to DV</li>
+<li><strong>states</strong> — list of state variable names (compartments), 1-indexed in data</li>
+</ul>
+<p>See <a href="../model-dsl/odes.html">ODE Models</a> for the full ODE syntax and solver reference.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -855,7 +1033,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

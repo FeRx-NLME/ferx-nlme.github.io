@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Diagnostics – ferx</title>
+<title>Post-fit diagnostics – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -76,6 +111,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -312,6 +376,10 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Parameters</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../model-dsl/individual-parameters.html">
+ <span class="dropdown-text">Individual parameters</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../model-dsl/structural-model.html">
  <span class="dropdown-text">Structural model</span></a>
   </li>  
@@ -326,6 +394,29 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../model-dsl/fit-options.html">
  <span class="dropdown-text">Fit options</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Examples</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
+        <li>
+    <a class="dropdown-item" href="../examples/covariates.html">
+ <span class="dropdown-text">Covariate model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/iov.html">
+ <span class="dropdown-text">Inter-occasion variability</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/bloq.html">
+ <span class="dropdown-text">BLOQ (M3 method)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/ode-model.html">
+ <span class="dropdown-text">ODE model (Michaelis-Menten)</span></a>
   </li>  
     </ul>
   </li>
@@ -371,6 +462,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
+    <a class="nav-link" href="../faq.html"> 
+<span class="menu-text">FAQ</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../changelog.html"> 
 <span class="menu-text">Changelog</span></a>
   </li>  
@@ -391,8 +486,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#parameter-estimates-ferx_estimates" id="toc-parameter-estimates-ferx_estimates" class="nav-link active" data-scroll-target="#parameter-estimates-ferx_estimates">Parameter estimates — <code>ferx_estimates()</code></a></li>
+  <li><a href="#parameter-correlation-matrix-ferx_cor_matrix" id="toc-parameter-correlation-matrix-ferx_cor_matrix" class="nav-link" data-scroll-target="#parameter-correlation-matrix-ferx_cor_matrix">Parameter correlation matrix — <code>ferx_cor_matrix()</code></a></li>
+  <li><a href="#eta-covariate-correlations-ferx_eta_cov" id="toc-eta-covariate-correlations-ferx_eta_cov" class="nav-link" data-scroll-target="#eta-covariate-correlations-ferx_eta_cov">ETA-covariate correlations — <code>ferx_eta_cov()</code></a></li>
+  <li><a href="#goodness-of-fit-plots-from-fitsdtab" id="toc-goodness-of-fit-plots-from-fitsdtab" class="nav-link" data-scroll-target="#goodness-of-fit-plots-from-fitsdtab">Goodness-of-fit plots from <code>fit$sdtab</code></a></li>
+  <li><a href="#other-ferx_fit-fields" id="toc-other-ferx_fit-fields" class="nav-link" data-scroll-target="#other-ferx_fit-fields">Other <code>ferx_fit</code> fields</a></li>
+  <li><a href="#convergence-diagnostics-ferx_check_init" id="toc-convergence-diagnostics-ferx_check_init" class="nav-link" data-scroll-target="#convergence-diagnostics-ferx_check_init">Convergence diagnostics — <code>ferx_check_init()</code></a></li>
+  <li><a href="#optimizer-trace-ferx_trace-ferx_plot_trace" id="toc-optimizer-trace-ferx_trace-ferx_plot_trace" class="nav-link" data-scroll-target="#optimizer-trace-ferx_trace-ferx_plot_trace">Optimizer trace — <code>ferx_trace()</code> / <code>ferx_plot_trace()</code></a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -400,7 +507,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Diagnostics</h1>
+<h1 class="title">Post-fit diagnostics</h1>
 </div>
 
 
@@ -417,21 +524,175 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This article is in progress.</p>
-</div>
-</div>
+<p>After fitting, ferx returns a rich <code>ferx_fit</code> object with all the diagnostics needed for model evaluation. This article covers the key diagnostic functions and fields.</p>
+<hr>
+<section id="parameter-estimates-ferx_estimates" class="level2">
+<h2 class="anchored" data-anchor-id="parameter-estimates-ferx_estimates">Parameter estimates — <code>ferx_estimates()</code></h2>
+<p><code>ferx_estimates()</code> collects all estimated parameters (theta, omega, sigma) into a tidy data frame. Run it after any fit that used <code>covariance = TRUE</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   param           transform    estimate      se  rse_pct  lower_95  upper_95</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVCL            identity       0.134  0.0108     8.1     0.113     0.155</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVV             identity       7.94   0.420      5.3     7.12      8.76</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVKA            identity       1.07   0.160     14.9     0.756     1.38</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_CL)   variance       0.042  0.012     28.6    0.019     0.066</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_V)    variance       0.020  0.009     44.9    0.002     0.037</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_KA)   variance       0.157  0.048     30.6    0.063     0.251</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   PROP_ERR        proportional   0.011  0.001      9.1    0.009     0.013</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Columns:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>param</code></td>
+<td>Parameter name</td>
+</tr>
+<tr class="even">
+<td><code>transform</code></td>
+<td>Scale used by the estimator (<code>"identity"</code>, <code>"log"</code>, <code>"logit"</code>, <code>"variance"</code> for omega)</td>
+</tr>
+<tr class="odd">
+<td><code>estimate</code></td>
+<td>Point estimate on the estimation scale</td>
+</tr>
+<tr class="even">
+<td><code>se</code></td>
+<td>Standard error (requires <code>covariance = TRUE</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>rse_pct</code></td>
+<td>Relative SE: |SE / estimate| × 100</td>
+</tr>
+<tr class="even">
+<td><code>lower_95</code>, <code>upper_95</code></td>
+<td>95% CI on the estimation scale</td>
+</tr>
+<tr class="odd">
+<td><code>estimate_natural</code></td>
+<td>Back-transformed estimate (logit theta only)</td>
+</tr>
+<tr class="even">
+<td><code>lower_95_natural</code>, <code>upper_95_natural</code></td>
+<td>Back-transformed CI (logit theta only)</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../learn/parameter-transforms.html">Parameter transforms</a> for how the <code>transform</code> column relates to log-normal, logit-normal, and additive ETAs.</p>
+<hr>
+</section>
+<section id="parameter-correlation-matrix-ferx_cor_matrix" class="level2">
+<h2 class="anchored" data-anchor-id="parameter-correlation-matrix-ferx_cor_matrix">Parameter correlation matrix — <code>ferx_cor_matrix()</code></h2>
+<p><code>ferx_cor_matrix()</code> converts the estimated parameter covariance matrix to correlations. A value near ±1 between two parameters signals a structural identifiability problem worth investigating:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_cor_matrix</span>(fit)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                TVCL   TVV  TVKA  ...</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVCL         1.00  0.12  0.03</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVV          0.12  1.00 -0.07</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVKA         0.03 -0.07  1.00</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>High correlations between <code>CL</code> and <code>V</code> often arise in poorly-sampled datasets where absorption and elimination are not separately identifiable.</p>
+<hr>
+</section>
+<section id="eta-covariate-correlations-ferx_eta_cov" class="level2">
+<h2 class="anchored" data-anchor-id="eta-covariate-correlations-ferx_eta_cov">ETA-covariate correlations — <code>ferx_eta_cov()</code></h2>
+<p><code>ferx_eta_cov()</code> computes Pearson correlations between individual ETA estimates (EBEs) and numeric covariate columns. Identifies covariates worth including in a formal covariate search:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit, data)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   eta      covariate    r   p_val  flag</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL   AGE       0.41  0.003   [!]</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V    WT        0.31  0.021   [!]</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA   AGE       0.12  0.281</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>[!]</code> flags correlations with |r| ≥ 0.3 as candidates for formal covariate testing. Pass the data frame (not the path); any numeric column that is constant within a subject and not a standard NONMEM column (TIME, DV, AMT, EVID, MDV, CMT, RATE) is treated as a covariate.</p>
+<hr>
+</section>
+<section id="goodness-of-fit-plots-from-fitsdtab" class="level2">
+<h2 class="anchored" data-anchor-id="goodness-of-fit-plots-from-fitsdtab">Goodness-of-fit plots from <code>fit$sdtab</code></h2>
+<p><code>fit$sdtab</code> is a data frame with one row per observation containing PRED, IPRED, CWRES, and IWRES:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sdtab <span class="ot">&lt;-</span> fit<span class="sc">$</span>sdtab</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Standard GOF plots</strong> with ggplot2:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs PRED</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, DV)) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs PRED"</span>, <span class="at">x =</span> <span class="st">"Population prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs IPRED</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(IPRED, DV)) <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs IPRED"</span>, <span class="at">x =</span> <span class="st">"Individual prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs TIME</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(TIME, CWRES)) <span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>),</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>), <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs TIME"</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs PRED</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, CWRES)) <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>),</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>), <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs PRED"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="other-ferx_fit-fields" class="level2">
+<h2 class="anchored" data-anchor-id="other-ferx_fit-fields">Other <code>ferx_fit</code> fields</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ofv                  <span class="co"># objective function value (-2 log-likelihood)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>aic                  <span class="co"># AIC = OFV + 2p</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>bic                  <span class="co"># BIC = OFV + p*ln(N)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>converged            <span class="co"># TRUE if the outer optimizer converged</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>method               <span class="co"># estimation method used</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>gradient_used        <span class="co"># "enzyme", "dual", or "finite_differences"</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings             <span class="co"># non-fatal warnings from the run</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ebe_etas             <span class="co"># empirical Bayes ETAs per subject (data frame)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>individual_estimates <span class="co"># individual PK parameters (CL, V, KA, ...) per subject</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>eta_normality        <span class="co"># Shapiro-Wilk normality test p-value per ETA</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eta        <span class="co"># ETA shrinkage per random effect</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eps        <span class="co"># EPS shrinkage (scalar)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Shrinkage</strong> — values near 1 indicate that the data are not informative about a random effect:</p>
+<p><span class="math display">\[\text{ETA shrinkage}_k = 1 - \frac{\text{SD}(\hat{\eta}_k)}{\sqrt{\omega_{kk}}} \qquad \text{EPS shrinkage} = 1 - \text{SD}(\text{IWRES})\]</span></p>
+<hr>
+</section>
+<section id="convergence-diagnostics-ferx_check_init" class="level2">
+<h2 class="anchored" data-anchor-id="convergence-diagnostics-ferx_check_init">Convergence diagnostics — <code>ferx_check_init()</code></h2>
+<p>Before committing to a long fit, run a 5-iteration pilot to confirm the OFV is decreasing from the initial values:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>chk <span class="ot">&lt;-</span> <span class="fu">ferx_check_init</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>chk<span class="sc">$</span>summary</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   n_iter  ofv_start  ofv_end  ofv_drop  converged</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#        5     -180.2   -186.3      6.1      FALSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="optimizer-trace-ferx_trace-ferx_plot_trace" class="level2">
+<h2 class="anchored" data-anchor-id="optimizer-trace-ferx_trace-ferx_plot_trace">Optimizer trace — <code>ferx_trace()</code> / <code>ferx_plot_trace()</code></h2>
+<p>When <code>optimizer_trace = TRUE</code> is passed to <code>ferx_fit()</code>, ferx writes a per-iteration CSV. Read and plot it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>tr <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)          <span class="co"># data frame with one row per outer iteration</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tr[, <span class="fu">c</span>(<span class="st">"iter"</span>, <span class="st">"ofv"</span>, <span class="st">"grad_norm"</span>)])</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit)           <span class="co"># two-panel plot: OFV + method-specific metric</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit, <span class="at">log_ofv =</span> <span class="cn">TRUE</span>)  <span class="co"># OFV on log scale (OFV - min(OFV))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ferx_trace()</code> with no argument recalls the trace from the last <code>ferx_fit()</code> call in the current session:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>()    <span class="co"># same as ferx_trace(fit) after the above</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>See <a href="../ferx-core/output.html#optimizer-trace-csv">Output Reference — Optimizer trace CSV</a> for the full column reference.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -855,7 +1116,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Parameter Transforms – ferx</title>
+<title>Parameter transforms: log, logit, and additive ETAs – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -76,6 +111,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -312,6 +376,10 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Parameters</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../model-dsl/individual-parameters.html">
+ <span class="dropdown-text">Individual parameters</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../model-dsl/structural-model.html">
  <span class="dropdown-text">Structural model</span></a>
   </li>  
@@ -326,6 +394,29 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../model-dsl/fit-options.html">
  <span class="dropdown-text">Fit options</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Examples</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
+        <li>
+    <a class="dropdown-item" href="../examples/covariates.html">
+ <span class="dropdown-text">Covariate model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/iov.html">
+ <span class="dropdown-text">Inter-occasion variability</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/bloq.html">
+ <span class="dropdown-text">BLOQ (M3 method)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/ode-model.html">
+ <span class="dropdown-text">ODE model (Michaelis-Menten)</span></a>
   </li>  
     </ul>
   </li>
@@ -371,6 +462,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
+    <a class="nav-link" href="../faq.html"> 
+<span class="menu-text">FAQ</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../changelog.html"> 
 <span class="menu-text">Changelog</span></a>
   </li>  
@@ -391,8 +486,18 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#log-normal-etas-default" id="toc-log-normal-etas-default" class="nav-link active" data-scroll-target="#log-normal-etas-default">Log-normal ETAs (default)</a></li>
+  <li><a href="#logit-normal-eta-bioavailability" id="toc-logit-normal-eta-bioavailability" class="nav-link" data-scroll-target="#logit-normal-eta-bioavailability">Logit-normal ETA (bioavailability)</a></li>
+  <li><a href="#additive-eta-lag-time" id="toc-additive-eta-lag-time" class="nav-link" data-scroll-target="#additive-eta-lag-time">Additive ETA (lag time)</a></li>
+  <li><a href="#mixing-transforms-in-one-model" id="toc-mixing-transforms-in-one-model" class="nav-link" data-scroll-target="#mixing-transforms-in-one-model">Mixing transforms in one model</a></li>
+  <li><a href="#summary-table" id="toc-summary-table" class="nav-link" data-scroll-target="#summary-table">Summary table</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -400,7 +505,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Parameter Transforms</h1>
+<h1 class="title">Parameter transforms: log, logit, and additive ETAs</h1>
 </div>
 
 
@@ -417,21 +522,168 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
+<p>ferx supports three parameterisation styles for individual parameters:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Style</th>
+<th>DSL pattern</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Log-normal</strong></td>
+<td><code>P = TVP * exp(ETA_P)</code></td>
+<td>Most PK parameters (CL, V, KA) — positive by construction</td>
+</tr>
+<tr class="even">
+<td><strong>Logit-normal</strong></td>
+<td><code>P = inv_logit(logit(THETA_P) + ETA_P)</code></td>
+<td>Fractions/probabilities (F, bioavailability) — bounded (0, 1)</td>
+</tr>
+<tr class="odd">
+<td><strong>Additive</strong></td>
+<td><code>P = TVP + ETA_P</code></td>
+<td>Parameters with natural additive variability (lag time, threshold)</td>
+</tr>
+</tbody>
+</table>
+<p>The optimiser always works on the unbounded or transformed scale; ferx back-transforms to the natural scale when reporting results.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This article is in progress.</p>
+<p>See also <code>vignette("parameter-transforms")</code> in the R package for a runnable version.</p>
 </div>
 </div>
+<hr>
+<section id="log-normal-etas-default" class="level2">
+<h2 class="anchored" data-anchor-id="log-normal-etas-default">Log-normal ETAs (default)</h2>
+<p>The standard warfarin model uses log-normal ETAs for CL, V, and KA:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>After fitting, <code>print()</code> reports omega as <code>[log-normal]</code> with a CV%:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Omega (between-subject variability):</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL  [log-normal]  var = 0.0423   CV% = 21.1</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V   [log-normal]  var = 0.0198   CV% = 14.2</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA  [log-normal]  var = 0.157    CV% = 40.9</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The CV% is derived from the log-scale variance as:</p>
+<p><span class="math display">\[\text{CV\%} = 100 \times \sqrt{\exp(\omega) - 1}\]</span></p>
+<p>For small variances this is approximately <span class="math inline">\(100\sqrt{\omega}\)</span>, but the exact formula is always used.</p>
+<p><code>ferx_estimates()</code> returns omega rows with <code>transform = "variance"</code> (all omega rows use this label regardless of ETA parameterisation style — the log-normal interpretation is conveyed by <code>print.ferx_fit()</code>, not the tidy table):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param              transform  estimate      se  rse_pct  lower_95  upper_95</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_CL)      variance     0.0423  0.0121     28.6    0.0186    0.0660</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_V)       variance     0.0198  0.0089     44.9    0.0024    0.0372</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_KA)      variance     0.1570  0.0480     30.6    0.0629    0.2511</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="logit-normal-eta-bioavailability" class="level2">
+<h2 class="anchored" data-anchor-id="logit-normal-eta-bioavailability">Logit-normal ETA (bioavailability)</h2>
+<p>When a parameter is a fraction bounded between 0 and 1, use <code>inv_logit</code> / <code>logit</code> to ensure individual values stay in (0, 1):</p>
+<pre><code>F = inv_logit(logit(THETA_F) + ETA_F)</code></pre>
+<p><code>THETA_F</code> is specified on the natural (0, 1) scale in <code>[parameters]</code>. When <code>ETA_F = 0</code>, <code>F_i = THETA_F</code> exactly (the logit and inv_logit cancel). The omega for <code>ETA_F</code> is the variance on the logit scale.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ex_logit <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_logit_f"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex_logit<span class="sc">$</span>model)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>fit_logit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_logit<span class="sc">$</span>model, ex_logit<span class="sc">$</span>data)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>fit_logit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ferx_estimates()</code> populates <code>estimate_natural</code>, <code>lower_95_natural</code>, and <code>upper_95_natural</code> for logit-transformed thetas. The CI is computed symmetrically on the logit scale and back-transformed through <code>inv_logit</code>, giving an asymmetric interval on the (0, 1) scale:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">ferx_estimates</span>(fit_logit)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>est[est<span class="sc">$</span>param <span class="sc">==</span> <span class="st">"THETA_F"</span>, ]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   param    transform  estimate    se  rse_pct  estimate_natural  lower_95_natural  upper_95_natural</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   THETA_F  logit        0.847  0.143     16.9             0.700             0.638             0.755</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The omega for <code>ETA_F</code> has <code>transform = "variance"</code> (same label as all omega rows):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>est[est<span class="sc">$</span>param <span class="sc">==</span> <span class="st">"OMEGA(ETA_F)"</span>, ]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param         transform  estimate     se  rse_pct</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_F)  variance     0.0631  0.028     44.4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="additive-eta-lag-time" class="level2">
+<h2 class="anchored" data-anchor-id="additive-eta-lag-time">Additive ETA (lag time)</h2>
+<p>When the BSV on a parameter is additive — for example, a lag time where the subject-level deviation is in hours — use a plain sum:</p>
+<pre><code>TLAG = TVTLAG + ETA_TLAG</code></pre>
+<p><code>ETA_TLAG</code> follows N(0, ω_TLAG), so individual lag times are normally distributed around <code>TVTLAG</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ex_add <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_additive_eta"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex_add<span class="sc">$</span>model)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fit_add <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_add<span class="sc">$</span>model, ex_add<span class="sc">$</span>data)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>fit_add</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA_TLAG  [additive]  SD = 0.56 h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ferx_estimates()</code> returns <code>transform = "variance"</code> for the omega element (all omega rows). The <code>estimate</code> is the variance in the original units (hours²); no back-transform is applied:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit_add)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param              transform  estimate     se  rse_pct</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_TLAG)    variance     0.312   0.098     31.4</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># SD in original units = sqrt(0.312) ≈ 0.56 h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="mixing-transforms-in-one-model" class="level2">
+<h2 class="anchored" data-anchor-id="mixing-transforms-in-one-model">Mixing transforms in one model</h2>
+<p>All three styles can appear in the same model:</p>
+<pre><code>[individual_parameters]
+  CL   = TVCL  * exp(ETA_CL)                    # log-normal
+  V1   = TVV1  * exp(ETA_V1)                    # log-normal
+  KA   = TVKA  * exp(ETA_KA)                    # log-normal
+  F    = inv_logit(logit(THETA_F) + ETA_F)      # logit-normal
+  TLAG = TVTLAG + ETA_TLAG                      # additive</code></pre>
+<p>Each ETA is handled independently; the omega matrix contains the corresponding variances on their respective scales.</p>
+<hr>
+</section>
+<section id="summary-table" class="level2">
+<h2 class="anchored" data-anchor-id="summary-table">Summary table</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Transform</th>
+<th>Omega interpretation</th>
+<th><code>print()</code> label</th>
+<th><code>ferx_estimates()</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Log-normal</td>
+<td>Variance on log scale</td>
+<td><code>[log-normal]</code> + CV%</td>
+<td><code>transform = "variance"</code>, symmetric CI on log-var scale</td>
+</tr>
+<tr class="even">
+<td>Logit-normal</td>
+<td>Variance on logit scale</td>
+<td><code>[logit]</code> + SD_logit + ±1 SD interval</td>
+<td><code>transform = "variance"</code>; logit theta gets <code>estimate_natural</code> etc.</td>
+</tr>
+<tr class="odd">
+<td>Additive</td>
+<td>Variance in original units</td>
+<td><code>[additive]</code> + SD</td>
+<td><code>transform = "variance"</code>, symmetric CI in original units²</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -855,7 +1107,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

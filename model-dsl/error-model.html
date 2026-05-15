@@ -76,6 +76,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -312,6 +341,10 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Parameters</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../model-dsl/individual-parameters.html">
+ <span class="dropdown-text">Individual parameters</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../model-dsl/structural-model.html">
  <span class="dropdown-text">Structural model</span></a>
   </li>  
@@ -326,6 +359,29 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../model-dsl/fit-options.html">
  <span class="dropdown-text">Fit options</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Examples</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
+        <li>
+    <a class="dropdown-item" href="../examples/covariates.html">
+ <span class="dropdown-text">Covariate model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/iov.html">
+ <span class="dropdown-text">Inter-occasion variability</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/bloq.html">
+ <span class="dropdown-text">BLOQ (M3 method)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/ode-model.html">
+ <span class="dropdown-text">ODE model (Michaelis-Menten)</span></a>
   </li>  
     </ul>
   </li>
@@ -371,6 +427,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
+    <a class="nav-link" href="../faq.html"> 
+<span class="menu-text">FAQ</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../changelog.html"> 
 <span class="menu-text">Changelog</span></a>
   </li>  
@@ -391,8 +451,23 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#syntax" id="toc-syntax" class="nav-link active" data-scroll-target="#syntax">Syntax</a></li>
+  <li><a href="#available-error-models" id="toc-available-error-models" class="nav-link" data-scroll-target="#available-error-models">Available error models</a>
+  <ul class="collapse">
+  <li><a href="#additive" id="toc-additive" class="nav-link" data-scroll-target="#additive">Additive</a></li>
+  <li><a href="#proportional" id="toc-proportional" class="nav-link" data-scroll-target="#proportional">Proportional</a></li>
+  <li><a href="#combined" id="toc-combined" class="nav-link" data-scroll-target="#combined">Combined</a></li>
+  </ul></li>
+  <li><a href="#sigma-scale" id="toc-sigma-scale" class="nav-link" data-scroll-target="#sigma-scale">Sigma scale</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  <li><a href="#impact-on-estimation" id="toc-impact-on-estimation" class="nav-link" data-scroll-target="#impact-on-estimation">Impact on estimation</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -417,21 +492,101 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This page is in progress.</p>
-</div>
-</div>
+<p>The <code>[error_model]</code> block defines the residual error structure, specifying how observed data (<code>DV</code>) relates to model predictions.</p>
+<section id="syntax" class="level2">
+<h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
+<pre><code>DV ~ ERROR_TYPE(SIGMA_PARAMS)</code></pre>
+</section>
+<section id="available-error-models" class="level2">
+<h2 class="anchored" data-anchor-id="available-error-models">Available error models</h2>
+<section id="additive" class="level3">
+<h3 class="anchored" data-anchor-id="additive">Additive</h3>
+<pre><code>DV ~ additive(SIGMA_NAME)</code></pre>
+<p>The residual variance is constant across all predictions:</p>
+<p><span class="math display">\[\text{Var}(DV) = \sigma^2\]</span></p>
+<p>Use when measurement error is independent of concentration (e.g.&nbsp;an assay with fixed precision).</p>
+</section>
+<section id="proportional" class="level3">
+<h3 class="anchored" data-anchor-id="proportional">Proportional</h3>
+<pre><code>DV ~ proportional(SIGMA_NAME)</code></pre>
+<p>The residual variance scales with the predicted value:</p>
+<p><span class="math display">\[\text{Var}(DV) = (\sigma \cdot f)^2\]</span></p>
+<p>where <span class="math inline">\(f\)</span> is the model prediction. Use when measurement error increases with concentration — the most common error model in PK.</p>
+</section>
+<section id="combined" class="level3">
+<h3 class="anchored" data-anchor-id="combined">Combined</h3>
+<pre><code>DV ~ combined(SIGMA_PROP, SIGMA_ADD)</code></pre>
+<p>Combines proportional and additive components:</p>
+<p><span class="math display">\[\text{Var}(DV) = (\sigma_1 \cdot f)^2 + \sigma_2^2\]</span></p>
+<p>Use when both proportional and additive error sources are present. Requires two sigma parameters in <code>[parameters]</code>.</p>
+</section>
+</section>
+<section id="sigma-scale" class="level2">
+<h2 class="anchored" data-anchor-id="sigma-scale">Sigma scale</h2>
+<p><strong>All sigma parameters are estimated and reported on the standard-deviation scale, not the variance scale.</strong> This applies to both proportional and additive components.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Error model</th>
+<th><code>sigma = X</code> means …</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>proportional</code></td>
+<td>Residual SD scales as <span class="math inline">\(X \cdot f\)</span>, i.e.&nbsp;<strong>CV% = <span class="math inline">\(X \times 100\)</span></strong></td>
+</tr>
+<tr class="even">
+<td><code>additive</code></td>
+<td>Residual SD is <span class="math inline">\(X\)</span> in the units of DV</td>
+</tr>
+<tr class="odd">
+<td><code>combined</code></td>
+<td>First sigma is proportional (CV-style), second is additive (units of DV)</td>
+</tr>
+</tbody>
+</table>
+<p>So <code>sigma PROP_ERR ~ 0.1</code> for a proportional model is a <strong>10% CV</strong> initial value, not 1%. Likewise, the SE on a proportional sigma is on the SD scale — multiply by 100 for an SE in CV-percentage points.</p>
+<p>The fit YAML emits both the SD (<code>estimate</code>) and the variance (<code>variance: estimate²</code>); for proportional components it also emits <code>cv_pct = estimate * 100</code>.</p>
+</section>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<p>Proportional error (most common):</p>
+<pre><code>[parameters]
+  sigma PROP_ERR ~ 0.01
+
+[error_model]
+  DV ~ proportional(PROP_ERR)</code></pre>
+<p>Additive error:</p>
+<pre><code>[parameters]
+  sigma ADD_ERR ~ 1.0
+
+[error_model]
+  DV ~ additive(ADD_ERR)</code></pre>
+<p>Combined error:</p>
+<pre><code>[parameters]
+  sigma PROP_ERR ~ 0.1
+  sigma ADD_ERR  ~ 0.5
+
+[error_model]
+  DV ~ combined(PROP_ERR, ADD_ERR)</code></pre>
+</section>
+<section id="impact-on-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="impact-on-estimation">Impact on estimation</h2>
+<p>The error model affects:</p>
+<ul>
+<li><strong>IWRES</strong> — <span class="math inline">\((DV - IPRED) / \sqrt{\text{Var}}\)</span> — individual weighted residual</li>
+<li><strong>CWRES</strong> — accounts for uncertainty in random-effect estimates via the conditional variance <span class="math inline">\(\tilde{R}\)</span></li>
+<li><strong>OFV</strong> — the likelihood includes <span class="math inline">\(\log(\text{Var})\)</span> terms, so error model structure directly influences parameter estimates</li>
+</ul>
+<p>FOCEI is recommended when the error model is proportional or combined, because the interaction between residual error and individual predictions is captured exactly (rather than evaluated at η = 0 as in FOCE).</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -855,7 +1010,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

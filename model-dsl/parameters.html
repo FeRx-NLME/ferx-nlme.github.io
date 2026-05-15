@@ -76,6 +76,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -312,6 +341,10 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Parameters</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../model-dsl/individual-parameters.html">
+ <span class="dropdown-text">Individual parameters</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../model-dsl/structural-model.html">
  <span class="dropdown-text">Structural model</span></a>
   </li>  
@@ -326,6 +359,29 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../model-dsl/fit-options.html">
  <span class="dropdown-text">Fit options</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Examples</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
+        <li>
+    <a class="dropdown-item" href="../examples/covariates.html">
+ <span class="dropdown-text">Covariate model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/iov.html">
+ <span class="dropdown-text">Inter-occasion variability</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/bloq.html">
+ <span class="dropdown-text">BLOQ (M3 method)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/ode-model.html">
+ <span class="dropdown-text">ODE model (Michaelis-Menten)</span></a>
   </li>  
     </ul>
   </li>
@@ -371,6 +427,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
+    <a class="nav-link" href="../faq.html"> 
+<span class="menu-text">FAQ</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../changelog.html"> 
 <span class="menu-text">Changelog</span></a>
   </li>  
@@ -391,8 +451,30 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#theta-fixed-effects" id="toc-theta-fixed-effects" class="nav-link active" data-scroll-target="#theta-fixed-effects">Theta (fixed effects)</a></li>
+  <li><a href="#omega-between-subject-variability" id="toc-omega-between-subject-variability" class="nav-link" data-scroll-target="#omega-between-subject-variability">Omega (between-subject variability)</a>
+  <ul class="collapse">
+  <li><a href="#diagonal-omega" id="toc-diagonal-omega" class="nav-link" data-scroll-target="#diagonal-omega">Diagonal omega</a></li>
+  <li><a href="#block-omega-correlated-random-effects" id="toc-block-omega-correlated-random-effects" class="nav-link" data-scroll-target="#block-omega-correlated-random-effects">Block omega (correlated random effects)</a></li>
+  <li><a href="#declaration-order" id="toc-declaration-order" class="nav-link" data-scroll-target="#declaration-order">Declaration order</a></li>
+  </ul></li>
+  <li><a href="#kappa-inter-occasion-variability" id="toc-kappa-inter-occasion-variability" class="nav-link" data-scroll-target="#kappa-inter-occasion-variability">Kappa (inter-occasion variability)</a>
+  <ul class="collapse">
+  <li><a href="#diagonal-kappa-option-a" id="toc-diagonal-kappa-option-a" class="nav-link" data-scroll-target="#diagonal-kappa-option-a">Diagonal kappa — Option A</a></li>
+  <li><a href="#block-kappa-option-b-correlated-iov" id="toc-block-kappa-option-b-correlated-iov" class="nav-link" data-scroll-target="#block-kappa-option-b-correlated-iov">Block kappa — Option B (correlated IOV)</a></li>
+  <li><a href="#using-kappas-in-individual-parameters" id="toc-using-kappas-in-individual-parameters" class="nav-link" data-scroll-target="#using-kappas-in-individual-parameters">Using kappas in individual parameters</a></li>
+  <li><a href="#mixed-diagonal-and-block-kappa" id="toc-mixed-diagonal-and-block-kappa" class="nav-link" data-scroll-target="#mixed-diagonal-and-block-kappa">Mixed diagonal and block kappa</a></li>
+  </ul></li>
+  <li><a href="#sigma-residual-error" id="toc-sigma-residual-error" class="nav-link" data-scroll-target="#sigma-residual-error">Sigma (residual error)</a></li>
+  <li><a href="#parameter-level-correlation-in-output" id="toc-parameter-level-correlation-in-output" class="nav-link" data-scroll-target="#parameter-level-correlation-in-output">Parameter-level correlation in output</a></li>
+  <li><a href="#complete-examples" id="toc-complete-examples" class="nav-link" data-scroll-target="#complete-examples">Complete examples</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -417,21 +499,193 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This page is in progress.</p>
-</div>
-</div>
+<p>The <code>[parameters]</code> block defines all model parameters: fixed effects (theta), between-subject variability (omega), residual error (sigma), and inter-occasion variability (kappa).</p>
+<section id="theta-fixed-effects" class="level2">
+<h2 class="anchored" data-anchor-id="theta-fixed-effects">Theta (fixed effects)</h2>
+<pre><code>theta NAME(initial_value, lower_bound, upper_bound)</code></pre>
+<ul>
+<li><strong>NAME</strong> — parameter name, referenced in <code>[individual_parameters]</code></li>
+<li><strong>initial_value</strong> — starting value for estimation</li>
+<li><strong>lower_bound</strong> — lower bound constraint (must be &gt; 0; parameters are log-transformed internally)</li>
+<li><strong>upper_bound</strong> — upper bound constraint</li>
+</ul>
+<pre><code>theta TVCL(0.134, 0.001, 10.0)
+theta TVV(8.1, 0.1, 500.0)
+theta TVKA(1.0, 0.01, 50.0)</code></pre>
+</section>
+<section id="omega-between-subject-variability" class="level2">
+<h2 class="anchored" data-anchor-id="omega-between-subject-variability">Omega (between-subject variability)</h2>
+<section id="diagonal-omega" class="level3">
+<h3 class="anchored" data-anchor-id="diagonal-omega">Diagonal omega</h3>
+<pre><code>omega NAME ~ variance</code></pre>
+<ul>
+<li><strong>NAME</strong> — random effect name, referenced as <code>ETA_NAME</code> in <code>[individual_parameters]</code></li>
+<li><strong>variance</strong> — initial variance estimate (diagonal element of the omega matrix)</li>
+</ul>
+<pre><code>omega ETA_CL ~ 0.07
+omega ETA_V  ~ 0.02
+omega ETA_KA ~ 0.40</code></pre>
+<p>The coefficient of variation (CV%) is approximately <code>sqrt(variance) * 100</code> for log-normally distributed parameters. For example, <code>omega ETA_CL ~ 0.09</code> corresponds to ~30% CV.</p>
+</section>
+<section id="block-omega-correlated-random-effects" class="level3">
+<h3 class="anchored" data-anchor-id="block-omega-correlated-random-effects">Block omega (correlated random effects)</h3>
+<p>To estimate correlations between random effects, use <code>block_omega</code>:</p>
+<pre><code>block_omega (NAME1, NAME2, ...) = [lower_triangle_values]</code></pre>
+<p>The values are the lower triangle of the covariance matrix, specified row-wise. For a 2×2 block:</p>
+<pre><code>block_omega (ETA_CL, ETA_V) = [var_CL, cov_CL_V, var_V]</code></pre>
+<p>For a 3×3 block:</p>
+<pre><code>block_omega (ETA_CL, ETA_V, ETA_KA) = [var_CL, cov_CL_V, var_V, cov_CL_KA, cov_V_KA, var_KA]</code></pre>
+<section id="visualising-the-lower-triangle" class="level4">
+<h4 class="anchored" data-anchor-id="visualising-the-lower-triangle">Visualising the lower triangle</h4>
+<p>For an N×N block you supply N·(N+1)/2 values, walked row by row through the lower triangle (row 1 has 1 value, row 2 has 2, …, row N has N values):</p>
+<pre><code>          ETA_1   ETA_2   ETA_3   ETA_4
+        ┌                                ┐
+ETA_1   │  v[0]                          │
+ETA_2   │  v[1]   v[2]                   │
+ETA_3   │  v[3]   v[4]    v[5]           │
+ETA_4   │  v[6]   v[7]    v[8]    v[9]   │
+        └                                ┘</code></pre>
+<p>Diagonal entries are variances; off-diagonals are covariances. Set off-diagonals to <code>0.0</code> as initial values — the fit will recover correlations from the data.</p>
+</section>
+<section id="converting-diagonal-omegas-to-a-block" class="level4">
+<h4 class="anchored" data-anchor-id="converting-diagonal-omegas-to-a-block">Converting diagonal omegas to a block</h4>
+<p>A common pattern: replace all-diagonal omegas with a single correlated block. Each <code>omega</code> variance becomes a diagonal entry; off-diagonals start at <code>0.0</code>:</p>
+<pre><code># Before: four diagonal omegas
+omega ETA_CL ~ 0.1
+omega ETA_V1 ~ 0.1
+omega ETA_Q  ~ 0.1
+omega ETA_V2 ~ 0.1
+
+# After: 4×4 block (10 values: 1+2+3+4)
+block_omega (ETA_CL, ETA_V1, ETA_Q, ETA_V2) = [
+  0.1,
+  0.0, 0.1,
+  0.0, 0.0, 0.1,
+  0.0, 0.0, 0.0, 0.1
+]</code></pre>
+<p>Multi-line and single-line layouts are equivalent — line breaks inside <code>[...]</code> are ignored. Row 2 is <code>cov(CL,V1) var(V1)</code>, row 3 is <code>cov(CL,Q) cov(V1,Q) var(Q)</code>, etc.</p>
+</section>
+<section id="mixing-diagonal-and-block" class="level4">
+<h4 class="anchored" data-anchor-id="mixing-diagonal-and-block">Mixing diagonal and block</h4>
+<p>You can mix <code>omega</code> (uncorrelated) and <code>block_omega</code> (correlated) declarations:</p>
+<pre><code>block_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]
+omega ETA_KA ~ 0.40</code></pre>
+<p>This estimates a 3×3 omega where ETA_CL and ETA_V are correlated (2×2 block), but ETA_KA is independent.</p>
+</section>
+</section>
+<section id="declaration-order" class="level3">
+<h3 class="anchored" data-anchor-id="declaration-order">Declaration order</h3>
+<p>The order of <code>omega</code> and <code>block_omega</code> lines determines ETA indexing throughout the model: in the omega matrix and all output. For example:</p>
+<pre><code>block_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]
+omega ETA_KA ~ 0.40</code></pre>
+<p>produces ETA order <code>[ETA_CL, ETA_V, ETA_KA]</code> (indices 1, 2, 3).</p>
+</section>
+</section>
+<section id="kappa-inter-occasion-variability" class="level2">
+<h2 class="anchored" data-anchor-id="kappa-inter-occasion-variability">Kappa (inter-occasion variability)</h2>
+<p>IOV is declared with <code>kappa</code> (independent per-parameter) or <code>block_kappa</code> (correlated across parameters). Kappa parameters must be paired with <code>iov_column</code> in <code>[fit_options]</code> and an occasion column in the dataset.</p>
+<p>See also: <a href="../ferx-core/estimation.html#inter-occasion-variability-iov">estimation — IOV</a>.</p>
+<section id="diagonal-kappa-option-a" class="level3">
+<h3 class="anchored" data-anchor-id="diagonal-kappa-option-a">Diagonal kappa — Option A</h3>
+<pre><code>kappa NAME ~ variance
+kappa NAME ~ variance FIX</code></pre>
+<p>Each <code>kappa</code> line adds one diagonal element to the IOV omega matrix. Occasions are independent.</p>
+<pre><code>kappa KAPPA_CL ~ 0.05
+kappa KAPPA_V  ~ 0.03</code></pre>
+</section>
+<section id="block-kappa-option-b-correlated-iov" class="level3">
+<h3 class="anchored" data-anchor-id="block-kappa-option-b-correlated-iov">Block kappa — Option B (correlated IOV)</h3>
+<pre><code>block_kappa (NAME1, NAME2, ...) = [lower_triangle_values]
+block_kappa (NAME1, NAME2, ...) = [lower_triangle_values] FIX</code></pre>
+<p>Mirrors the <code>block_omega</code> syntax. For a 2×2 block:</p>
+<pre><code>block_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]</code></pre>
+<p>where <code>0.05</code> = Var(KAPPA_CL), <code>0.01</code> = Cov(KAPPA_CL, KAPPA_V), <code>0.03</code> = Var(KAPPA_V).</p>
+</section>
+<section id="using-kappas-in-individual-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="using-kappas-in-individual-parameters">Using kappas in individual parameters</h3>
+<p>Reference kappa names exactly like BSV etas:</p>
+<pre><code>[individual_parameters]
+  CL = TVCL * exp(ETA_CL + KAPPA_CL)
+  V  = TVV  * exp(ETA_V  + KAPPA_V)
+  KA = TVKA * exp(ETA_KA)           # no IOV on absorption</code></pre>
+<p>Kappas can be combined freely — a parameter can carry BSV only, IOV only, or both.</p>
+</section>
+<section id="mixed-diagonal-and-block-kappa" class="level3">
+<h3 class="anchored" data-anchor-id="mixed-diagonal-and-block-kappa">Mixed diagonal and block kappa</h3>
+<pre><code>block_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]
+kappa KAPPA_KA ~ 0.10</code></pre>
+<p>A name may not appear in both <code>kappa</code> and <code>block_kappa</code> — this is a parse error.</p>
+</section>
+</section>
+<section id="sigma-residual-error" class="level2">
+<h2 class="anchored" data-anchor-id="sigma-residual-error">Sigma (residual error)</h2>
+<pre><code>sigma NAME ~ value</code></pre>
+<ul>
+<li><strong>NAME</strong> — residual error parameter name, referenced in <code>[error_model]</code></li>
+<li><strong>value</strong> — initial value</li>
+</ul>
+<pre><code>sigma PROP_ERR ~ 0.01
+sigma ADD_ERR  ~ 1.0</code></pre>
+<p><strong>Sigma is always on the standard-deviation scale</strong>, not the variance scale. <code>sigma PROP_ERR ~ 0.1</code> for a proportional model is a <strong>10% CV</strong> initial value.</p>
+<p>See <a href="../model-dsl/error-model.html">Error Model</a> for how each sigma is interpreted.</p>
+</section>
+<section id="parameter-level-correlation-in-output" class="level2">
+<h2 class="anchored" data-anchor-id="parameter-level-correlation-in-output">Parameter-level correlation in output</h2>
+<p>When a <code>block_omega</code> (or <code>block_kappa</code>) is estimated, ferx reports a parameter-level correlation for each off-diagonal pair:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>ETA pair</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Both lognormal (<code>THETA * exp(ETA)</code>)</td>
+<td><span class="math inline">\((e^{\omega_{ij}} - 1) / \sqrt{(e^{\omega_{ii}} - 1)(e^{\omega_{jj}} - 1)}\)</span></td>
+</tr>
+<tr class="even">
+<td>Both additive (<code>THETA + ETA</code>)</td>
+<td><span class="math inline">\(\omega_{ij} / \sqrt{\omega_{ii} \cdot \omega_{jj}}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Mixed / complex</td>
+<td>Falls back to eta-level; warning added to <code>FitResult.warnings</code></td>
+</tr>
+</tbody>
+</table>
+<p>The lognormal formula reflects the correlation between the actual PK parameters (CL, V) rather than their underlying normal variates.</p>
+</section>
+<section id="complete-examples" class="level2">
+<h2 class="anchored" data-anchor-id="complete-examples">Complete examples</h2>
+<p>Diagonal omega (no correlations):</p>
+<pre><code>[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01</code></pre>
+<p>Block omega (correlated CL and V):</p>
+<pre><code>[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  block_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01</code></pre>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -855,7 +1109,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

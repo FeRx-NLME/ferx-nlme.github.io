@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Editing ferx model files programmatically – ferx</title>
+<title>FAQ – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,66 +23,31 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c7996399ee3efbb3c94d3741158479a6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-4150e552e6099c4b22d8f49097b96794.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c7996399ee3efbb3c94d3741158479a6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-d9a983dffe988fd7048c92bccdb205f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-c7996399ee3efbb3c94d3741158479a6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4150e552e6099c4b22d8f49097b96794.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-c7996399ee3efbb3c94d3741158479a6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-d9a983dffe988fd7048c92bccdb205f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -112,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -284,11 +249,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
+    <img src="./assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">ferx</span>
     </a>
   </div>
@@ -299,7 +264,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../get-started.html"> 
+    <a class="nav-link" href="./get-started.html"> 
 <span class="menu-text">Get started</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -308,29 +273,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-learn">    
         <li>
-    <a class="dropdown-item" href="../learn/model-workflow.html">
+    <a class="dropdown-item" href="./learn/model-workflow.html">
  <span class="dropdown-text">Model workflow</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../learn/model-editing.html">
+    <a class="dropdown-item" href="./learn/model-editing.html">
  <span class="dropdown-text">Model editing</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../learn/parameter-transforms.html">
+    <a class="dropdown-item" href="./learn/parameter-transforms.html">
  <span class="dropdown-text">Parameter transforms</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../learn/diagnostics.html">
+    <a class="dropdown-item" href="./learn/diagnostics.html">
  <span class="dropdown-text">Diagnostics</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../learn/simulation.html">
+    <a class="dropdown-item" href="./learn/simulation.html">
  <span class="dropdown-text">Simulation</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="../reference/index.html"> 
+    <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">Reference</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -339,31 +304,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-model-dsl">    
         <li>
-    <a class="dropdown-item" href="../model-dsl/overview.html">
+    <a class="dropdown-item" href="./model-dsl/overview.html">
  <span class="dropdown-text">Overview</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../model-dsl/parameters.html">
+    <a class="dropdown-item" href="./model-dsl/parameters.html">
  <span class="dropdown-text">Parameters</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../model-dsl/individual-parameters.html">
+    <a class="dropdown-item" href="./model-dsl/individual-parameters.html">
  <span class="dropdown-text">Individual parameters</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../model-dsl/structural-model.html">
+    <a class="dropdown-item" href="./model-dsl/structural-model.html">
  <span class="dropdown-text">Structural model</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../model-dsl/odes.html">
+    <a class="dropdown-item" href="./model-dsl/odes.html">
  <span class="dropdown-text">ODE models</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../model-dsl/error-model.html">
+    <a class="dropdown-item" href="./model-dsl/error-model.html">
  <span class="dropdown-text">Error model</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../model-dsl/fit-options.html">
+    <a class="dropdown-item" href="./model-dsl/fit-options.html">
  <span class="dropdown-text">Fit options</span></a>
   </li>  
     </ul>
@@ -374,19 +339,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
         <li>
-    <a class="dropdown-item" href="../examples/covariates.html">
+    <a class="dropdown-item" href="./examples/covariates.html">
  <span class="dropdown-text">Covariate model</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../examples/iov.html">
+    <a class="dropdown-item" href="./examples/iov.html">
  <span class="dropdown-text">Inter-occasion variability</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../examples/bloq.html">
+    <a class="dropdown-item" href="./examples/bloq.html">
  <span class="dropdown-text">BLOQ (M3 method)</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../examples/ode-model.html">
+    <a class="dropdown-item" href="./examples/ode-model.html">
  <span class="dropdown-text">ODE model (Michaelis-Menten)</span></a>
   </li>  
     </ul>
@@ -397,35 +362,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-ferx-core">    
         <li>
-    <a class="dropdown-item" href="../ferx-core/overview.html">
+    <a class="dropdown-item" href="./ferx-core/overview.html">
  <span class="dropdown-text">Overview</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/architecture.html">
+    <a class="dropdown-item" href="./ferx-core/architecture.html">
  <span class="dropdown-text">Architecture</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/data-format.html">
+    <a class="dropdown-item" href="./ferx-core/data-format.html">
  <span class="dropdown-text">Data format</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/estimation.html">
+    <a class="dropdown-item" href="./ferx-core/estimation.html">
  <span class="dropdown-text">Estimation (FOCE/FOCEI)</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/autodiff.html">
+    <a class="dropdown-item" href="./ferx-core/autodiff.html">
  <span class="dropdown-text">Autodiff (Enzyme)</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/pk-models.html">
+    <a class="dropdown-item" href="./ferx-core/pk-models.html">
  <span class="dropdown-text">Analytical PK models</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/ode-solver.html">
+    <a class="dropdown-item" href="./ferx-core/ode-solver.html">
  <span class="dropdown-text">ODE solver</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/output.html">
+    <a class="dropdown-item" href="./ferx-core/output.html">
  <span class="dropdown-text">Output reference</span></a>
   </li>  
     </ul>
@@ -433,11 +398,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../faq.html"> 
+    <a class="nav-link active" href="./faq.html" aria-current="page"> 
 <span class="menu-text">FAQ</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../changelog.html"> 
+    <a class="nav-link" href="./changelog.html"> 
 <span class="menu-text">Changelog</span></a>
   </li>  
   <li class="nav-item compact">
@@ -462,14 +427,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#starting-from-scratch" id="toc-starting-from-scratch" class="nav-link active" data-scroll-target="#starting-from-scratch">Starting from scratch</a></li>
-  <li><a href="#inspecting-a-section" id="toc-inspecting-a-section" class="nav-link" data-scroll-target="#inspecting-a-section">Inspecting a section</a></li>
-  <li><a href="#scripted-read-modify-write" id="toc-scripted-read-modify-write" class="nav-link" data-scroll-target="#scripted-read-modify-write">Scripted read-modify-write</a></li>
-  <li><a href="#console-only-workflow-create-tweak-fit" id="toc-console-only-workflow-create-tweak-fit" class="nav-link" data-scroll-target="#console-only-workflow-create-tweak-fit">Console-only workflow: create, tweak, fit</a></li>
-  <li><a href="#opening-a-model-in-an-editor" id="toc-opening-a-model-in-an-editor" class="nav-link" data-scroll-target="#opening-a-model-in-an-editor">Opening a model in an editor</a></li>
-  <li><a href="#validating-a-model-file" id="toc-validating-a-model-file" class="nav-link" data-scroll-target="#validating-a-model-file">Validating a model file</a></li>
-  <li><a href="#overwrite-guards" id="toc-overwrite-guards" class="nav-link" data-scroll-target="#overwrite-guards">Overwrite guards</a></li>
-  <li><a href="#function-reference" id="toc-function-reference" class="nav-link" data-scroll-target="#function-reference">Function reference</a></li>
+  <li><a href="#mu-referencing" id="toc-mu-referencing" class="nav-link active" data-scroll-target="#mu-referencing">Mu-referencing</a></li>
+  <li><a href="#conditional-logic" id="toc-conditional-logic" class="nav-link" data-scroll-target="#conditional-logic">Conditional logic</a></li>
+  <li><a href="#optimizer" id="toc-optimizer" class="nav-link" data-scroll-target="#optimizer">Optimizer selection</a></li>
+  <li><a href="#block-omega" id="toc-block-omega" class="nav-link" data-scroll-target="#block-omega">Block omega</a></li>
+  <li><a href="#sigma-scale" id="toc-sigma-scale" class="nav-link" data-scroll-target="#sigma-scale">Sigma scale</a></li>
+  <li><a href="#focei-vs-foce" id="toc-focei-vs-foce" class="nav-link" data-scroll-target="#focei-vs-foce">FOCEI vs FOCE</a></li>
+  <li><a href="#ode-vs-analytical" id="toc-ode-vs-analytical" class="nav-link" data-scroll-target="#ode-vs-analytical">ODE vs analytical</a></li>
+  <li><a href="#porting-nonmem" id="toc-porting-nonmem" class="nav-link" data-scroll-target="#porting-nonmem">Porting from NONMEM</a></li>
+  <li><a href="#gradient-methods" id="toc-gradient-methods" class="nav-link" data-scroll-target="#gradient-methods">Gradient methods</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -479,7 +445,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Editing ferx model files programmatically</h1>
+<h1 class="title">FAQ</h1>
 </div>
 
 
@@ -496,131 +462,128 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>ferx model files (<code>.ferx</code>) are plain text, so you can create and modify them entirely from R without opening an editor. This article covers the functions that support that workflow.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>See also <code>vignette("model-editing")</code> in the R package for a runnable version.</p>
-</div>
-</div>
-<hr>
-<section id="starting-from-scratch" class="level2">
-<h2 class="anchored" data-anchor-id="starting-from-scratch">Starting from scratch</h2>
-<p><code>ferx_model_new()</code> writes a skeleton <code>.ferx</code> file for one of five built-in templates: <code>"1cpt_oral"</code> (default), <code>"1cpt_iv"</code>, <code>"2cpt_oral"</code>, <code>"2cpt_iv"</code>, and <code>"ode"</code>.</p>
-<p>Pass <code>print = TRUE</code> to preview a template in the console without writing any file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(<span class="at">print =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(<span class="at">template =</span> <span class="st">"2cpt_iv"</span>, <span class="at">print =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>To write a file, supply a path. Pass <code>edit = FALSE</code> to skip opening your editor:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(<span class="st">"my_model.ferx"</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="mu-referencing" class="level2">
+<h2 class="anchored" data-anchor-id="mu-referencing">Mu-referencing</h2>
+<p><strong>Do I need to write explicit MU-referencing like in NONMEM or nlmixr2?</strong></p>
+<p><strong>No.</strong> You do not need to write an explicit <code>MU_i</code> intermediate variable. ferx detects the same structure automatically from the right-hand side of each <code>[individual_parameters]</code> line.</p>
+<p>In NONMEM and nlmixr2, MU-referencing is required in SAEM because the conjugate-Gibbs E-step is only valid when the ETA→THETA relationship is strictly linear on a transformed scale. In ferx, you simply write the individual-parameter expression naturally:</p>
+<pre><code>CL = TVCL * exp(ETA_CL)              # detected: multiplicative / log-normal
+CL = exp(log(TVCL) + ETA_CL)         # detected: canonical MU form
+CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)  # detected: with covariate
+CL = TVCL + ETA_CL                   # detected: additive</code></pre>
+<p>The parser records the ETA→THETA mapping and re-centres the inner-loop ETA search at each outer iteration.</p>
+<p>Patterns <strong>not</strong> auto-detected (falls back to <code>eta = 0</code> start):</p>
+<ul>
+<li>Two or more free thetas in the product (<code>TVCL * TVSCALE * exp(ETA_CL)</code>) — ambiguous anchor</li>
+<li>Compound eta expressions inside exp (<code>exp(ETA_CL + ETA_OCC)</code>)</li>
+</ul>
+<p>Mu-referencing affects convergence speed and robustness, not the final MLE. Disable with <code>mu_referencing = false</code> in <code>[fit_options]</code> to reproduce pre-automatic behaviour.</p>
 <hr>
 </section>
-<section id="inspecting-a-section" class="level2">
-<h2 class="anchored" data-anchor-id="inspecting-a-section">Inspecting a section</h2>
-<p><code>ferx_model_section()</code> extracts and prints the body of a named section:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The return value is the character vector of lines (invisibly):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">ferx_model_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>params</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="conditional-logic" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-logic">Conditional logic</h2>
+<p><strong>Can I use <code>if</code> / <code>else</code> statements like in NONMEM or nlmixr2?</strong></p>
+<p><strong>Yes.</strong> Two forms are supported in <code>[individual_parameters]</code> and <code>[odes]</code>:</p>
+<pre><code># Block form
+if (WT &gt; 70) {
+  CL = TVCL * (WT / 70)^0.75 * exp(ETA_CL)
+} else if (SEX == 1) {
+  CL = TVCL * 1.2 * exp(ETA_CL)
+} else {
+  CL = TVCL * exp(ETA_CL)
+}
+
+# Inline (ternary) form
+CL = if (SEX == 1) TVCL * 1.5 else TVCL</code></pre>
+<p>Compared to NONMEM: C-style <code>{braces}</code> and operators (<code>&gt;</code>, <code>==</code>, <code>&amp;&amp;</code>) rather than Fortran-style <code>IF THEN … ENDIF</code> and <code>.GT.</code>, <code>.LE.</code>, etc.</p>
+<p>Compared to nlmixr2: near-verbatim match — replace <code>&lt;-</code> with <code>=</code>.</p>
+<p><strong>Caveat:</strong> <code>==</code> and <code>!=</code> do bitwise float comparison. They work for integer-coded covariates (<code>SEX == 1</code>) but are unreliable for continuous thresholds. Prefer <code>WT &gt;= 70 &amp;&amp; WT &lt; 80</code> over <code>WT == 75</code>.</p>
+<p><strong>Caveat:</strong> when a parameter is assigned inside an <code>if</code> block, mu-reference detection is skipped for that parameter. See <a href="./model-dsl/individual-parameters.html#interaction-with-mu-referencing">Individual Parameters</a>.</p>
 <hr>
 </section>
-<section id="scripted-read-modify-write" class="level2">
-<h2 class="anchored" data-anchor-id="scripted-read-modify-write">Scripted read-modify-write</h2>
-<p>The extract → modify → write-back pattern changes a model programmatically without an editor:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Work in a fresh temp file</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".ferx"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file.copy</span>(ex<span class="sc">$</span>model, model_path)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the section</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">ferx_model_section</span>(model_path, <span class="st">"parameters"</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Modify: raise the TVCL initial value from 0.134 to 0.5</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"TVCL</span><span class="sc">\\</span><span class="st">([^,]+,"</span>, <span class="st">"TVCL(0.5,"</span>, lines)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Write back</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(model_path, <span class="st">"parameters"</span>, lines)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(model_path, <span class="st">"parameters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>ferx_model_set_section()</code> replaces only the targeted section; all other sections are left untouched.</p>
+<section id="optimizer" class="level2">
+<h2 class="anchored" data-anchor-id="optimizer">Optimizer selection</h2>
+<p><strong>Which outer optimizer should I pick?</strong></p>
+<p><code>slsqp</code> (the default) is the right choice for most models — it is fast, handles box constraints cleanly, and behaves well on the log-transformed parameter scale.</p>
+<p>Reach for a different optimizer when SLSQP misbehaves:</p>
+<ul>
+<li><strong><code>bobyqa</code></strong> — derivative-free, robust when FOCE’s FD gradients are noisy and SLSQP stalls or oscillates. Slower per iteration on smooth problems.</li>
+<li><strong><code>trust_region</code></strong> — second-order Newton trust-region. Can be faster near convergence; tune the CG budget with <code>steihaug_max_iters</code> (default 50) for models with more than ~50 packed parameters.</li>
+<li><strong><code>lbfgs</code> / <code>bfgs</code></strong> — fall back to these only when NLopt is unavailable.</li>
+</ul>
+<p>See <a href="./model-dsl/fit-options.html#optimizer-choices">Fit Options — Optimizer choices</a>.</p>
 <hr>
 </section>
-<section id="console-only-workflow-create-tweak-fit" class="level2">
-<h2 class="anchored" data-anchor-id="console-only-workflow-create-tweak-fit">Console-only workflow: create, tweak, fit</h2>
-<p>From nothing to an estimated model without opening a text editor:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"run1.ferx"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Write a skeleton</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(model_path, <span class="at">template =</span> <span class="st">"1cpt_oral"</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Switch method to FOCEI</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(model_path, <span class="st">"fit_options"</span>, <span class="fu">c</span>(</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  method     = focei"</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  maxiter    = 300"</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  covariance = true"</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Fit</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(model_path, ex<span class="sc">$</span>data)</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="block-omega" class="level2">
+<h2 class="anchored" data-anchor-id="block-omega">Block omega</h2>
+<p><strong>How do I switch from diagonal to block omega?</strong></p>
+<p>Each <code>omega</code> variance becomes a diagonal entry; off-diagonals start at <code>0.0</code>:</p>
+<pre><code># Before
+omega ETA_CL ~ 0.1
+omega ETA_V1 ~ 0.1
+omega ETA_Q  ~ 0.1
+
+# After (3×3 block, 6 values: 1+2+3)
+block_omega (ETA_CL, ETA_V1, ETA_Q) = [
+  0.1,
+  0.0, 0.1,
+  0.0, 0.0, 0.1
+]</code></pre>
+<p>Block omega regularises poorly-identified parameters by letting them share variability. Starting all off-diagonals at <code>0.0</code> lets the fit recover the correlations from the data. See <a href="./model-dsl/parameters.html#block-omega-correlated-random-effects">Parameters — Block omega</a>.</p>
 <hr>
 </section>
-<section id="opening-a-model-in-an-editor" class="level2">
-<h2 class="anchored" data-anchor-id="opening-a-model-in-an-editor">Opening a model in an editor</h2>
-<p><code>ferx_model_edit()</code> copies a bundled example to a destination directory and opens it in your editor:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy the bundled warfarin model to tempdir() and open it</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>my_model <span class="ot">&lt;-</span> <span class="fu">ferx_model_edit</span>(ex<span class="sc">$</span>model, <span class="at">dest =</span> <span class="fu">tempdir</span>())</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># After editing, save the result under a new name</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_edit</span>(<span class="st">"run1.ferx"</span>, <span class="at">save_as =</span> <span class="st">"run2.ferx"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>dest</code> argument controls where the copy lands. If the source file is already outside the installed package directory, <code>ferx_model_edit()</code> edits it in place unless <code>dest</code> is set explicitly.</p>
+<section id="sigma-scale" class="level2">
+<h2 class="anchored" data-anchor-id="sigma-scale">Sigma scale</h2>
+<p><strong>Is sigma estimated on the SD scale or the variance scale?</strong></p>
+<p><strong>SD scale.</strong> <code>sigma PROP_ERR ~ 0.1</code> for a proportional model is a <strong>10% CV</strong> initial value.</p>
+<p>The fit YAML emits both <code>estimate</code> (SD) and <code>variance</code> (SD²). For proportional components it also emits <code>cv_pct = estimate * 100</code>. See <a href="./model-dsl/error-model.html#sigma-scale">Error Model — Sigma scale</a>.</p>
 <hr>
 </section>
-<section id="validating-a-model-file" class="level2">
-<h2 class="anchored" data-anchor-id="validating-a-model-file">Validating a model file</h2>
-<p><code>ferx_model_validate()</code> checks that all required sections are present and reports the result. Use it after creating or editing a model to catch missing sections before running the optimizer:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_validate</span>(ex<span class="sc">$</span>model)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [ok] All required sections present: parameters, individual_parameters,</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      structural_model, error_model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A model missing required sections produces a clear list:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bad <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".ferx"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">c</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"[parameters]"</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  theta TVCL(1.0, 0.001, 100.0)"</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"[structural_model]"</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  pk one_cpt_oral(cl=CL, v=V, ka=KA)"</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>), bad)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_validate</span>(bad)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [missing] individual_parameters</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [missing] error_model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="focei-vs-foce" class="level2">
+<h2 class="anchored" data-anchor-id="focei-vs-foce">FOCEI vs FOCE</h2>
+<p><strong>When should I use FOCEI instead of FOCE?</strong></p>
+<p>Use FOCEI (default) whenever the error model is proportional or combined. FOCE evaluates the residual variance at η = 0 (population mean); FOCEI evaluates it at the individual EBE η̂, capturing the dependence between residual error and individual predictions.</p>
+<p>For a purely additive error model, FOCE and FOCEI are equivalent (the interaction term is zero). Using FOCE for additive-error models can save a small amount of computation.</p>
 <hr>
 </section>
-<section id="overwrite-guards" class="level2">
-<h2 class="anchored" data-anchor-id="overwrite-guards">Overwrite guards</h2>
-<p>By default <code>ferx_model_new()</code> refuses to overwrite an existing file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".ferx"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(model_path, <span class="at">edit =</span> <span class="cn">FALSE</span>)            <span class="co"># creates the file</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model_new</span>(model_path, <span class="at">edit =</span> <span class="cn">FALSE</span>),          <span class="co"># would overwrite — error</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) <span class="fu">message</span>(<span class="fu">conditionMessage</span>(e))</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: file already exists. Use overwrite = TRUE to replace it.</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Opt in explicitly:</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(model_path, <span class="at">template =</span> <span class="st">"1cpt_iv"</span>, <span class="at">overwrite =</span> <span class="cn">TRUE</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="ode-vs-analytical" class="level2">
+<h2 class="anchored" data-anchor-id="ode-vs-analytical">ODE vs analytical</h2>
+<p><strong>When must I use an ODE model?</strong></p>
+<p>Use an ODE model when the kinetics cannot be expressed as a sum of exponentials:</p>
+<ul>
+<li>Saturable (Michaelis-Menten) elimination</li>
+<li>Target-mediated drug disposition (TMDD)</li>
+<li>Transit compartment absorption</li>
+<li>Custom multi-compartment structures</li>
+</ul>
+<p>For standard first-order kinetics use the analytical models (<code>one_cpt_oral</code>, <code>two_cpt_oral</code>, etc.) — they are 10–100× faster and support Enzyme autodiff gradients. See <a href="./model-dsl/odes.html#when-to-use-ode-vs-analytical">ODE Models</a>.</p>
 <hr>
 </section>
-<section id="function-reference" class="level2">
-<h2 class="anchored" data-anchor-id="function-reference">Function reference</h2>
+<section id="porting-nonmem" class="level2">
+<h2 class="anchored" data-anchor-id="porting-nonmem">Porting from NONMEM</h2>
+<p><strong>How do I port a NONMEM model to ferx?</strong></p>
+<ol type="1">
+<li>Drop all <code>$ABBR</code>, <code>$MU_i</code>, <code>$SIZE</code> boilerplate — not needed in ferx.</li>
+<li>Translate <code>$PK</code> assignments to <code>[individual_parameters]</code> expressions with <code>=</code> instead of <code>=</code>.</li>
+<li>Replace <code>THETA(i)</code>, <code>ETA(i)</code>, <code>EPS(i)</code> with descriptive names (<code>TVCL</code>, <code>ETA_CL</code>, <code>PROP_ERR</code>).</li>
+<li>If the NONMEM model uses explicit <code>MU_i = LOG(THETA(i))</code> lines, drop them — ferx detects the mu-reference automatically.</li>
+<li>Map <code>$SUBROUTINE ADVAN</code> to the equivalent ferx <code>pk</code> function:
+<ul>
+<li>ADVAN1 → <code>one_cpt_iv_bolus</code></li>
+<li>ADVAN2 → <code>one_cpt_oral</code></li>
+<li>ADVAN3 → <code>two_cpt_iv_bolus</code></li>
+<li>ADVAN4 → <code>two_cpt_oral</code></li>
+<li>ADVAN11 → <code>three_cpt_iv_bolus</code></li>
+<li>ADVAN12 → <code>three_cpt_oral</code></li>
+</ul></li>
+<li>Map <code>$ERROR</code> to <code>[error_model]</code>. Remember sigma is on the <strong>SD scale</strong> in ferx (not variance).</li>
+</ol>
+<hr>
+</section>
+<section id="gradient-methods" class="level2">
+<h2 class="anchored" data-anchor-id="gradient-methods">Gradient methods</h2>
+<p><strong>When does Enzyme autodiff kick in, and when does ferx fall back to finite differences?</strong></p>
+<p>The gradient path is resolved per-subject at runtime:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -628,41 +591,26 @@ Tip
 </colgroup>
 <thead>
 <tr class="header">
-<th>Function</th>
-<th>Purpose</th>
+<th>Path</th>
+<th>When used</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>ferx_model_new()</code></td>
-<td>Write a skeleton <code>.ferx</code> file from a template</td>
+<td><code>AdSingleSnapshot</code> (Enzyme reverse-mode)</td>
+<td>Subject has no time-varying covariates; analytical PK model</td>
 </tr>
 <tr class="even">
-<td><code>ferx_model_section()</code></td>
-<td>Extract the body of a named section</td>
+<td><code>AdEventDriven</code> (Enzyme reverse-mode, event-driven)</td>
+<td>Subject has TV covariates; 1- or 2-cpt analytical model</td>
 </tr>
 <tr class="odd">
-<td><code>ferx_model_set_section()</code></td>
-<td>Replace the body of a named section</td>
-</tr>
-<tr class="even">
-<td><code>ferx_get_section()</code></td>
-<td>Print a section mid-pipe (returns object unchanged)</td>
-</tr>
-<tr class="odd">
-<td><code>ferx_set_section()</code></td>
-<td>Rewrite a section mid-pipe (returns object unchanged)</td>
-</tr>
-<tr class="even">
-<td><code>ferx_model_edit()</code></td>
-<td>Copy + open a model in your editor</td>
-</tr>
-<tr class="odd">
-<td><code>ferx_model_validate()</code></td>
-<td>Check that all required sections are present</td>
+<td><code>Fd</code> (central finite differences)</td>
+<td><code>FERX_NO_AUTODIFF=1</code> build, ODE model, or TV-cov on 3-cpt model</td>
 </tr>
 </tbody>
 </table>
+<p><code>fit$gradient_used</code> (in R) shows which path was resolved. See <a href="./ferx-core/autodiff.html">Autodiff</a> for details.</p>
 
 
 </section>
