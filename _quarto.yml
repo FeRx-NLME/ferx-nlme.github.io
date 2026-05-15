@@ -2,15 +2,21 @@ project:
   type: website
   output-dir: _site
 
+brand: _brand.yml
+
 website:
   title: "ferx"
-  description: "Fast nonlinear mixed effects modeling with Rust"
-  favicon: assets/favicon.png
+  description: "Fast nonlinear mixed effects modeling with a Rust backend"
+  favicon: assets/ferx-favicon.svg
   site-url: https://ferx-nlme.github.io
   repo-url: https://github.com/FeRx-NLME/ferx-r
   repo-actions: [issue]
 
   navbar:
+    logo: assets/ferx-dsl-brackets.svg
+    logo-alt: "ferx"
+    background: "#F7F6F3"
+    foreground: "#1A2332"
     left:
       - text: "Get started"
         href: get-started.qmd
@@ -61,17 +67,24 @@ website:
         href: changelog.qmd
       - icon: github
         href: https://github.com/FeRx-NLME
+        aria-label: GitHub
 
   page-footer:
-    left: "Built with [Quarto](https://quarto.org). © FeRx-NLME."
-    right:
-      - icon: github
-        href: https://github.com/FeRx-NLME
+    background: "#F7F6F3"
+    border: true
+    left: "© 2026 FeRx-NLME · MIT licensed"
+    right: "Fe · 26 · Rx · 2026"
 
 format:
   html:
-    theme: [cosmo, assets/ferx.scss]
+    theme:
+      light: [cosmo, assets/ferx.scss]
+    css: styles.css
     toc: true
     toc-depth: 3
     code-link: true
+    code-copy: true
+    code-overflow: wrap
     highlight-style: github
+    mainfont: "IBM Plex Sans"
+    monofont: "JetBrains Mono"

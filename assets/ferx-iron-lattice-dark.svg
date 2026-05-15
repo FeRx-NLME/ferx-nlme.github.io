@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" width="140" height="140">
+  
+
+  <g stroke="#F2EBDD" stroke-width="1.4" fill="none">
+    <path d="M 25 35 L 115 35 L 115 115 L 25 115 Z"></path>
+    <path d="M 25 35 L 42 18 L 132 18 L 115 35"></path>
+    <path d="M 115 115 L 132 98 L 132 18"></path>
+    <path d="M 25 115 L 42 98 L 132 98" stroke-dasharray="3 3" opacity="0.35"></path>
+    <path d="M 42 98 L 42 18" stroke-dasharray="3 3" opacity="0.35"></path>
+  </g>
+
+  <g stroke="#F2EBDD" stroke-width="0.7" fill="none" opacity="0.25">
+    <line x1="25" y1="35" x2="132" y2="98"></line>
+    <line x1="115" y1="35" x2="42" y2="98"></line>
+    <line x1="25" y1="115" x2="132" y2="18"></line>
+    <line x1="115" y1="115" x2="42" y2="18"></line>
+  </g>
+
+  <g fill="#F2EBDD">
+    <circle cx="25" cy="35" r="5"></circle>
+    <circle cx="115" cy="35" r="5"></circle>
+    <circle cx="25" cy="115" r="5"></circle>
+    <circle cx="115" cy="115" r="5"></circle>
+    <circle cx="42" cy="18" r="5"></circle>
+    <circle cx="132" cy="18" r="5"></circle>
+    <circle cx="132" cy="98" r="5"></circle>
+    <circle cx="42" cy="98" r="4.5" opacity="0.4"></circle>
+  </g>
+
+  <circle cx="78" cy="66" r="8.5" fill="#D89968"></circle>
+</svg>

@@ -1,0 +1,53 @@
+# ferx brand tokens
+# Use with Quarto's brand feature (Quarto >= 1.6)
+
+meta:
+  name: ferx
+  link: https://github.com/FeRx-NLME/ferx-r
+
+color:
+  palette:
+    # Slate palette (primary)
+    slate-canvas:      "#F7F6F3"
+    slate-canvas-deep: "#EAE8E2"
+    slate-ink:         "#1A2332"
+    slate-soft:        "#455066"
+    slate-teal:        "#1F6B7A"
+    slate-amber:       "#C8893E"
+    # Oxide palette (accent)
+    oxide-cream:       "#F2EBDD"
+    oxide-charcoal:    "#232020"
+    oxide-patina:      "#4A6B5D"
+    oxide-rust:        "#C9582A"
+    oxide-copper:      "#D89968"
+    white:             "#FFFFFF"
+  foreground: "#1A2332"
+  background: "#F7F6F3"
+  primary:    "#1F6B7A"
+  secondary:  "#455066"
+  success:    "#4A6B5D"
+  danger:     "#C9582A"
+  warning:    "#C8893E"
+  info:       "#1F6B7A"
+
+typography:
+  base:
+    family: "IBM Plex Sans"
+    weight: 400
+    size: 1rem
+    line-height: 1.55
+  headings:
+    family: "Fraunces"
+    weight: 500
+    style: normal
+  monospace:
+    family: "JetBrains Mono"
+    weight: 400
+
+logo:
+  images:
+    light: assets/ferx-dsl-brackets.svg
+    dark:  assets/ferx-dsl-brackets-dark.svg
+  small:
+    light: assets/ferx-favicon.svg
+    dark:  assets/ferx-favicon.svg

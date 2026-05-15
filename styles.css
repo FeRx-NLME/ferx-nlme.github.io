@@ -1,0 +1,19 @@
+/* styles.css — extra rules that don't need SCSS variables */
+
+/* smooth transitions on theme changes */
+body {
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+/* tighten code block line-height */
+pre code {
+  line-height: 1.65;
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 280" width="280" height="280">
+  
+  
+  <rect x="18" y="18" width="250" height="250" rx="16" fill="#C9582A"></rect>
+  <rect x="18" y="18" width="250" height="250" rx="16" fill="none" stroke="#232020" stroke-width="2.5"></rect>
+  
+  <rect x="10" y="10" width="250" height="250" rx="16" fill="#F2EBDD"></rect>
+  <rect x="10" y="10" width="250" height="250" rx="16" fill="none" stroke="#232020" stroke-width="2.5"></rect>
+  
+  <text x="30" y="42" font-family="&#39;JetBrains Mono&#39;, monospace" font-size="16" font-weight="600" fill="#232020">26</text>
+  
+  <text x="240" y="42" font-family="&#39;JetBrains Mono&#39;, monospace" font-size="14" font-weight="500" fill="#C9582A" text-anchor="end" letter-spacing="0.5">2026</text>
+  
+  <text x="135" y="155" font-family="&#39;JetBrains Mono&#39;, monospace" font-size="72" font-weight="700" text-anchor="middle" dominant-baseline="central" letter-spacing="-3">
+    <tspan fill="#232020">Fe</tspan><tspan fill="#C9582A" dx="3" font-weight="500">·</tspan><tspan fill="#C9582A" dx="3">R</tspan><tspan fill="#C9582A" font-style="italic">x</tspan>
+  </text>
+  
+  <text x="135" y="238" font-family="&#39;JetBrains Mono&#39;, monospace" font-size="9" text-anchor="middle" fill="#8A8174" letter-spacing="1.5" text-transform="uppercase">IRON <tspan fill="#C9582A">·</tspan> PRESCRIPTION</text>
+</svg>
