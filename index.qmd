@@ -1,0 +1,29 @@
+---
+title: "ferx"
+subtitle: "Fast nonlinear mixed effects modeling with a Rust backend"
+page-layout: full
+toc: false
+---
+
+ferx provides FOCE/FOCEI estimation with exact gradients via the Enzyme autodiff toolchain.
+It supports analytical PK models (1- and 2-compartment) and ODE-based models, with a clean R API backed by a high-performance Rust engine ([ferx-core](https://github.com/FeRx-NLME/ferx-core)).
+
+## Install
+
+```r
+# Requires Rust (cargo) — see Get started for full setup
+remotes::install_github("FeRx-NLME/ferx-r")
+```
+
+## Quick example
+
+```r
+library(ferx)
+paths <- ferx_example("warfarin")
+fit   <- ferx_fit(paths$model, paths$data)
+print(fit)
+```
+
+---
+
+[Get started →](get-started.qmd)

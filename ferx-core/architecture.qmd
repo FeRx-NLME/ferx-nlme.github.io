@@ -1,0 +1,7 @@
+---
+title: "Architecture"
+---
+
+::: {.callout-note}
+This page is in progress.
+:::

@@ -1,0 +1,37 @@
+---
+title: "Get started"
+---
+
+## Requirements
+
+- R ≥ 4.1
+- Rust / Cargo (`rustup.rs`)
+- Optionally: Enzyme toolchain for autodiff (`rustup toolchain install enzyme`)
+
+## Install
+
+```r
+remotes::install_github("FeRx-NLME/ferx-r")
+```
+
+For a dev build without autodiff (faster, ~2 min):
+
+```bash
+FERX_NO_AUTODIFF=1 R CMD INSTALL --no-lock .
+```
+
+## Run the warfarin example
+
+```r
+library(ferx)
+paths <- ferx_example("warfarin")
+fit   <- ferx_fit(paths$model, paths$data)
+print(fit)
+summary(fit)
+```
+
+## Next steps
+
+- [Model workflow](learn/model-workflow.qmd) — full fitting workflow
+- [Model DSL](model-dsl/overview.qmd) — write your own `.ferx` model files
+- [Reference](reference/index.html) — function documentation

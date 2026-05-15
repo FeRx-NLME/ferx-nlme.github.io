@@ -1,0 +1,11 @@
+---
+title: "Changelog"
+---
+
+```{r}
+#| echo: false
+#| results: asis
+# Read NEWS.md from ferx-r at build time
+news <- readLines("../ferx-r/NEWS.md")
+cat(news, sep = "\n")
+```

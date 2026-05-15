@@ -1,0 +1,61 @@
+name: Build and deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::pkgdown
+            any::remotes
+
+      # Install ferx-r to build pkgdown reference
+      - name: Install ferx-r (no autodiff)
+        env:
+          FERX_NO_AUTODIFF: "1"
+        run: |
+          git clone --depth 1 https://github.com/FeRx-NLME/ferx-r /tmp/ferx-r
+          R CMD INSTALL --no-lock /tmp/ferx-r
+
+      # Build pkgdown reference only (no vignettes — those live in learn/)
+      - name: Build pkgdown reference
+        run: |
+          Rscript -e '
+            setwd("/tmp/ferx-r")
+            pkgdown::build_reference(override = list(destination = "/tmp/pkgdown-ref"))
+          '
+
+      # Copy pkgdown reference output into the Quarto site
+      - name: Copy reference into site
+        run: |
+          mkdir -p reference
+          cp -r /tmp/pkgdown-ref/reference/* reference/
+          # Copy pkgdown assets (css/js) needed for reference pages
+          cp -r /tmp/pkgdown-ref/assets reference/assets 2>/dev/null || true
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render Quarto site
+        run: quarto render
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          cname: ferx-nlme.github.io
