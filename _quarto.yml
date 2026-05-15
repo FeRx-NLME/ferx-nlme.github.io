@@ -103,6 +103,8 @@ format:
       light: [cosmo, assets/ferx.scss]
       dark: [cosmo, assets/ferx-dark.scss]
     css: styles.css
+    include-after-body:
+      text: '<script src="assets/dark-code-panels.js"></script>'
     toc: true
     toc-depth: 3
     code-link: true

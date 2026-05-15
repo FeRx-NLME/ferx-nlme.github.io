@@ -15,17 +15,85 @@ pre code {
   content: url('assets/ferx-dsl-brackets-dark.svg');
 }
 
-/* dark mode: ensure fenced code blocks are visible */
-[data-bs-theme="dark"] pre.sourceCode,
-[data-bs-theme="dark"] div.sourceCode,
-[data-bs-theme="dark"] pre:not(.sourceCode) {
-  background-color: #181C24 !important;
-  border-color: rgba(236, 231, 218, 0.10) !important;
+/* dark mode: style all code blocks as ferx code panels */
+[data-bs-theme="dark"] div.sourceCode {
+  background-color: #1E222D !important;
+  border: 1px solid rgba(236, 231, 218, 0.10) !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4) !important;
+  margin: 1.5rem 0 !important;
 }
-[data-bs-theme="dark"] pre code,
+
+/* panel header bar — populated by dark-code-panels.js */
+[data-bs-theme="dark"] div.sourceCode > .ferx-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(236, 231, 218, 0.10);
+  background-color: #1E222D;
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  color: #9099AB;
+}
+[data-bs-theme="dark"] div.sourceCode > .ferx-panel-head .ph-dots {
+  display: inline-flex;
+  gap: 5px;
+  margin-right: 4px;
+}
+[data-bs-theme="dark"] div.sourceCode > .ferx-panel-head .ph-dots i {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(236, 231, 218, 0.20);
+  display: inline-block;
+}
+[data-bs-theme="dark"] div.sourceCode > .ferx-panel-head .ph-br {
+  color: #5FB5C8;
+  font-weight: 700;
+}
+[data-bs-theme="dark"] div.sourceCode > .ferx-panel-head .ph-file {
+  color: #ECE7DA;
+  font-weight: 600;
+}
+
+/* label overlay via a sibling-free approach: use the caption if present, else static */
+[data-bs-theme="dark"] div.sourceCode > pre {
+  background-color: #181C24 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  padding: 16px !important;
+}
+
 [data-bs-theme="dark"] div.sourceCode code {
   color: #ECE7DA !important;
   background-color: transparent !important;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* inline code (not inside a sourceCode block) */
+[data-bs-theme="dark"] code:not(.sourceCode) {
+  color: #E07B4A !important;
+  background-color: #181C24 !important;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* don't double-style .code-panel blocks on the homepage */
+[data-bs-theme="dark"] .code-panel div.sourceCode {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+[data-bs-theme="dark"] .code-panel div.sourceCode::before {
+  display: none !important;
+}
+[data-bs-theme="dark"] .code-panel div.sourceCode > pre {
+  padding: 0 !important;
 }
 
 /* reduced motion */
