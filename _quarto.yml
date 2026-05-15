@@ -20,6 +20,8 @@ website:
     background: light
     foreground: light
     left:
+      - text: "Book"
+        href: https://ferx-nlme.github.io/ferx-book/
       - text: "Get started"
         href: get-started.qmd
       - text: "Learn"
@@ -80,8 +82,6 @@ website:
             href: ferx-core/ode-solver.qmd
           - text: "Output reference"
             href: ferx-core/output.qmd
-      - text: "Book"
-        href: https://ferx-nlme.github.io/ferx-book/
     right:
       - text: "FAQ"
         href: faq.qmd
