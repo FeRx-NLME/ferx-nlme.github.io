@@ -14,7 +14,7 @@ The optimiser always works on the unbounded or transformed scale; ferx
 back-transforms to the natural scale when reporting results.
 
 ::: {.callout-tip}
-See also `vignette("parameter-transforms")` in the R package for a runnable version.
+For a deeper treatment with CV% formulas and worked examples, see [Chapter 7 (Parameter transforms)](https://ferx-nlme.github.io/ferx-book/chapters/07-parameter-transforms.html) in the ferx book.
 :::
 
 ---

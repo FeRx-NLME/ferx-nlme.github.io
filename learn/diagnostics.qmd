@@ -6,6 +6,10 @@ After fitting, ferx returns a rich `ferx_fit` object with all the diagnostics
 needed for model evaluation. This article covers the key diagnostic functions
 and fields.
 
+::: {.callout-tip}
+For a complete diagnostics walkthrough with plots, see [Chapter 5 (Diagnostics)](https://ferx-nlme.github.io/ferx-book/chapters/05-diagnostics.html) in the ferx book.
+:::
+
 ---
 
 ## Parameter estimates — `ferx_estimates()`

@@ -5,6 +5,10 @@ title: "Simulation and prediction"
 ferx provides two post-fit prediction functions and a built-in simulation mode
 for model validation.
 
+::: {.callout-tip}
+For a full VPC walkthrough, see [Chapter 6 (Simulation & VPC)](https://ferx-nlme.github.io/ferx-book/chapters/06-simulation-vpc.html) in the ferx book.
+:::
+
 ---
 
 ## `ferx_simulate()` — stochastic simulation

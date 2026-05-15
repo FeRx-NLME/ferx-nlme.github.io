@@ -5,6 +5,10 @@ title: "Example: ODE model (Michaelis-Menten)"
 A one-compartment oral model with saturable (Michaelis-Menten) elimination,
 solved with the Dormand-Prince RK45 ODE integrator.
 
+::: {.callout-tip}
+For a full ODE model walkthrough, see [Chapter 8 (ODE models)](https://ferx-nlme.github.io/ferx-book/chapters/08-ode-models.html) in the ferx book.
+:::
+
 ## Why ODE?
 
 Michaelis-Menten elimination cannot be described by a simple exponential:

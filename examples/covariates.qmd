@@ -5,6 +5,10 @@ title: "Example: Covariate model"
 A two-compartment oral model with body weight (WT) and creatinine clearance
 (CRCL) as covariates on clearance.
 
+::: {.callout-tip}
+For background on covariate parameterisation, see [Chapter 3 (Model DSL)](https://ferx-nlme.github.io/ferx-book/chapters/03-model-dsl.html) in the ferx book.
+:::
+
 ## Model file
 
 ```

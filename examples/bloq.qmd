@@ -5,6 +5,10 @@ title: "Example: BLOQ observations (M3 method)"
 This example shows how to fit a model to data containing observations below the
 lower limit of quantification (BLOQ) using Beal's **M3 method**.
 
+::: {.callout-tip}
+For background on the M3 likelihood, see [Chapter 9 (BLOQ & M3)](https://ferx-nlme.github.io/ferx-book/chapters/09-bloq-m3.html) in the ferx book.
+:::
+
 Instead of dropping BLOQ rows — which biases terminal-phase parameter estimates
 — each censored observation contributes its censoring probability to the
 likelihood:

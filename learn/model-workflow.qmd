@@ -10,7 +10,7 @@ This article covers two complementary workflows for running a ferx model:
 Both produce the same `ferx_fit` result.
 
 ::: {.callout-tip}
-See also `vignette("model-workflow")` in the R package for a runnable version.
+This article gives a concise overview. For a complete walkthrough with runnable output, see [Chapter 2 (Quickstart)](https://ferx-nlme.github.io/ferx-book/chapters/02-quickstart.html) and [Chapter 4 (Fitting)](https://ferx-nlme.github.io/ferx-book/chapters/04-fitting.html) in the ferx book.
 :::
 
 ---
