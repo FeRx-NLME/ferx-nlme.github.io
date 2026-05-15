@@ -3,6 +3,7 @@ project:
   output-dir: _site
   resources:
     - reference/**
+    - articles/**
 
 brand: _brand.yml
 
