@@ -10,9 +10,22 @@ pre code {
   line-height: 1.65;
 }
 
-/* dark mode navbar logo */
-.navbar-logo.dark-content {
+/* dark mode navbar logo — swap via data-bs-theme attribute set by Quarto */
+[data-bs-theme="dark"] .navbar-brand img {
   content: url('assets/ferx-dsl-brackets-dark.svg');
+}
+
+/* dark mode: ensure fenced code blocks are visible */
+[data-bs-theme="dark"] pre.sourceCode,
+[data-bs-theme="dark"] div.sourceCode,
+[data-bs-theme="dark"] pre:not(.sourceCode) {
+  background-color: #181C24 !important;
+  border-color: rgba(236, 231, 218, 0.10) !important;
+}
+[data-bs-theme="dark"] pre code,
+[data-bs-theme="dark"] div.sourceCode code {
+  color: #ECE7DA !important;
+  background-color: transparent !important;
 }
 
 /* reduced motion */
