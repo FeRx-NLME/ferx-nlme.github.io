@@ -81,6 +81,8 @@ website:
           - text: "Output reference"
             href: ferx-core/output.qmd
     right:
+      - text: "Book"
+        href: https://ferx-nlme.github.io/ferx-book/
       - text: "FAQ"
         href: faq.qmd
       - text: "Changelog"
