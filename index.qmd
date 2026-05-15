@@ -83,3 +83,31 @@ ferx fits models defined in a small, readable DSL — bracket-sectioned `.ferx` 
 :::
 :::
 :::
+
+::: {.container style="padding: 3rem 1rem 2rem;"}
+## Learn ferx
+
+::: {.resource-grid style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 1rem;"}
+
+::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
+**[Book](https://ferx-nlme.github.io/ferx-book/)**\
+Comprehensive narrative guide — installation through ODE models, BLOQ, and IOV. All code runs on CI.
+:::
+
+::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
+**[Get started](get-started.qmd)**\
+Install ferx and run the warfarin quickstart in under five minutes.
+:::
+
+::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
+**[Reference](reference/index.html)**\
+Function-level documentation for every exported function in ferx-r.
+:::
+
+::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
+**[Model DSL](model-dsl/overview.qmd)**\
+Complete syntax reference for `.ferx` model files.
+:::
+
+:::
+:::
