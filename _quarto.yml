@@ -54,16 +54,20 @@ website:
         menu:
           - text: "Overview"
             href: ferx-core/overview.qmd
+          - text: "Architecture"
+            href: ferx-core/architecture.qmd
+          - text: "Data format"
+            href: ferx-core/data-format.qmd
           - text: "Estimation (FOCE/FOCEI)"
             href: ferx-core/estimation.qmd
           - text: "Autodiff (Enzyme)"
             href: ferx-core/autodiff.qmd
-          - text: "ODE solver"
-            href: ferx-core/ode-solver.qmd
           - text: "Analytical PK models"
             href: ferx-core/pk-models.qmd
-          - text: "Architecture"
-            href: ferx-core/architecture.qmd
+          - text: "ODE solver"
+            href: ferx-core/ode-solver.qmd
+          - text: "Output reference"
+            href: ferx-core/output.qmd
     right:
       - text: "Changelog"
         href: changelog.qmd
