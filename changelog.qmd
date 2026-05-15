@@ -5,7 +5,11 @@ title: "Changelog"
 ```{r}
 #| echo: false
 #| results: asis
-# Read NEWS.md from ferx-r at build time
-news <- readLines("../ferx-r/NEWS.md")
-cat(news, sep = "\n")
+# Try local path first (dev), fall back to CI clone path
+path <- if (file.exists("../ferx-r/NEWS.md")) {
+  "../ferx-r/NEWS.md"
+} else {
+  "/tmp/ferx-r/NEWS.md"
+}
+cat(readLines(path), sep = "\n")
 ```
