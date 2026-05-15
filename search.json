@@ -84,25 +84,242 @@
     "text": "Note\n\n\n\nThis page is in progress."
   },
   {
-    "objectID": "ferx-core/autodiff.html",
-    "href": "ferx-core/autodiff.html",
-    "title": "Autodiff",
+    "objectID": "ferx-core/output.html",
+    "href": "ferx-core/output.html",
+    "title": "Output Reference",
     "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
+    "text": "A ferx-core run produces diagnostic data and parameter estimates that are exposed to R through the FitResult struct. The R layer formats these as data frames, named lists, and S3 objects. The CLI writes them as CSV and YAML files."
+  },
+  {
+    "objectID": "ferx-core/output.html#sdtab-per-observation-diagnostics",
+    "href": "ferx-core/output.html#sdtab-per-observation-diagnostics",
+    "title": "Output Reference",
+    "section": "sdtab — per-observation diagnostics",
+    "text": "sdtab — per-observation diagnostics\nFitResult::sdtab is a Vec&lt;SdtabRow&gt; exposed to R as a data frame via sdtab_to_dataframe(). The CLI writes it as {model}-sdtab.csv.\n\nColumns\n\n\n\nColumn\nDescription\n\n\n\n\nID\nSubject identifier\n\n\nTIME\nObservation time\n\n\nDV\nObserved value\n\n\nPRED\nPopulation prediction (ETA = 0)\n\n\nIPRED\nIndividual prediction (ETA = EBE)\n\n\nCWRES\nConditional weighted residual\n\n\nIWRES\nIndividual weighted residual\n\n\nETA1, ETA2, …\nEmpirical Bayes estimates of each random effect\n\n\nEBE_OFV\nSubject’s contribution to the total OFV\n\n\nN_OBS\nNumber of observations for the subject\n\n\n\n\n\nResidual definitions\nIWRES (Individual Weighted Residual):\n\\[\\text{IWRES}_j = \\frac{y_j - \\text{IPRED}_j}{\\sqrt{V_j}}\\]\nwhere \\(V_j\\) is the residual variance evaluated at the individual prediction (\\(\\hat{\\eta}\\)). Measures how well the individual model fits each observation.\nCWRES (Conditional Weighted Residual):\n\\[\\text{CWRES}_j = \\frac{y_j - f_{0,j}}{\\sqrt{\\tilde{R}_{jj}}}\\]\nwhere \\(f_0 = f(\\hat{\\eta}) - H\\hat{\\eta}\\) is the linearised population prediction and \\(\\tilde{R} = H\\Omega H^T + R\\) is the conditional variance matrix. CWRES accounts for the linearisation; it is the residual most appropriate for assessing population model fit."
+  },
+  {
+    "objectID": "ferx-core/output.html#shrinkage",
+    "href": "ferx-core/output.html#shrinkage",
+    "title": "Output Reference",
+    "section": "Shrinkage",
+    "text": "Shrinkage\nReported in FitResult after every fit. High shrinkage (near 1) indicates that the data are not informative about a random effect — individual ETAs collapse toward zero.\nETA shrinkage (per random effect, shrinkage_eta: Vec&lt;f64&gt;):\n\\[\\text{shrinkage}_k = 1 - \\frac{\\text{SD}(\\hat{\\eta}_k)}{\\sqrt{\\omega_{kk}}}\\]\nEPS shrinkage (scalar, shrinkage_eps: f64):\n\\[\\text{shrinkage}_\\varepsilon = 1 - \\text{SD}(\\text{IWRES})\\]\nValues of NaN indicate a zero-variance omega component (ETA) or fewer than two valid residuals (EPS)."
+  },
+  {
+    "objectID": "ferx-core/output.html#fit-yaml-model-fit.yaml",
+    "href": "ferx-core/output.html#fit-yaml-model-fit.yaml",
+    "title": "Output Reference",
+    "section": "Fit YAML ({model}-fit.yaml)",
+    "text": "Fit YAML ({model}-fit.yaml)\nThe CLI writes a YAML summary alongside the sdtab. Structure:\nmodel:\n  converged: true\n  method: focei\nobjective_function:\n  ofv: -280.1838\n  aic: -266.1838\n  bic: -247.2804\ndata:\n  n_subjects: 10\n  n_observations: 110\n  n_parameters: 7\ntheta:\n  TVCL:\n    estimate: 0.132735\n    se: 0.014549\n    rse_pct: 11.0\n  TVV:\n    estimate: 7.694842\n    se: 0.293028\n    rse_pct: 3.8\nomega:\n  omega_11:\n    variance: 0.028584\n    cv_pct: 16.9\n    se: 0.006394\n  omega_22:\n    variance: 0.009613\n    cv_pct: 9.8\n    se: 0.002165\nsigma:\n  sigma_1:\n    estimate: 0.010638\n    se: 0.000788\nKey fields:\n\nofv — −2 log-likelihood\naic / bic — OFV + 2p / OFV + p·ln(N); p = estimated parameters, N = observations\nrse_pct — relative SE as percentage: |SE / estimate| × 100\ncv_pct (omega) — coefficient of variation: \\(100\\sqrt{\\omega_{kk}}\\)\nse — standard error from the finite-difference covariance step"
+  },
+  {
+    "objectID": "ferx-core/output.html#covariance-status",
+    "href": "ferx-core/output.html#covariance-status",
+    "title": "Output Reference",
+    "section": "Covariance status",
+    "text": "Covariance status\nFitResult::covariance_status is one of:\n\n\n\n\n\n\n\nValue\nMeaning\n\n\n\n\nComputed\nCovariance step succeeded; SE values are valid\n\n\nFailed\nHessian was singular or inversion failed; SE fields are None\n\n\nNotRequested\ncovariance = false; SE fields are None"
+  },
+  {
+    "objectID": "ferx-core/output.html#run-record-fields",
+    "href": "ferx-core/output.html#run-record-fields",
+    "title": "Output Reference",
+    "section": "Run record fields",
+    "text": "Run record fields\n\n\n\n\n\n\n\nField\nDescription\n\n\n\n\nmodel_name\nName from the .ferx file (or \"Unnamed\")\n\n\nferx_version\nVersion of ferx-nlme that produced the result\n\n\nwall_time_secs\nWall-clock time for the complete fit (seconds)\n\n\ngradient_used\nGradient method resolved at runtime: \"enzyme\", \"dual\", or \"finite_differences\"\n\n\nuses_ode_solver\ntrue for ODE models, false for analytical PK\n\n\nn_threads_used\nNumber of rayon threads during estimation"
+  },
+  {
+    "objectID": "ferx-core/output.html#ebe-convergence-diagnostics",
+    "href": "ferx-core/output.html#ebe-convergence-diagnostics",
+    "title": "Output Reference",
+    "section": "EBE convergence diagnostics",
+    "text": "EBE convergence diagnostics\nCounters from the inner-loop (EBE) optimizer; always 0 for SAEM.\n\n\n\n\n\n\n\nField\nDescription\n\n\n\n\nebe_convergence_warnings\nOuter iterations in which at least one subject had an unconverged EBE\n\n\nmax_unconverged_subjects\nWorst-case unconverged count in a single outer iteration\n\n\ntotal_ebe_fallbacks\nTimes the Nelder-Mead fallback was invoked across all subjects and iterations\n\n\n\nIf ebe_convergence_warnings is large relative to maxiter, the inner-loop tolerance (inner_tol) may be too tight, or a subject’s data are poorly compatible with the model."
+  },
+  {
+    "objectID": "ferx-core/output.html#optimizer-trace-csv",
+    "href": "ferx-core/output.html#optimizer-trace-csv",
+    "title": "Output Reference",
+    "section": "Optimizer trace CSV",
+    "text": "Optimizer trace CSV\nWhen optimizer_trace = true in [fit_options], ferx-core writes a per-iteration CSV to /tmp/ferx_trace_&lt;pid&gt;_&lt;ts&gt;.csv; the path is stored in FitResult::trace_path.\nEach row is one outer iteration. Unused columns contain NA.\n\n\n\n\n\n\n\n\nColumn\nPopulated by\nDescription\n\n\n\n\niter\nall\nIteration number\n\n\nmethod\nall\nfoce, focei, gn, gn_hybrid, saem\n\n\nphase\ngn_hybrid, saem\nexplore / converge / focei (GN polish)\n\n\nofv\nall\nObjective function value\n\n\nwall_ms\nall\nWall time for this iteration (ms)\n\n\ngrad_norm\nBFGS, NLopt gradient-mode\nGradient norm\n\n\nstep_norm\nBFGS\nStep size\n\n\noptimizer\nFOCE/FOCEI\nActive NLopt algorithm\n\n\nlm_lambda\nGN\nLevenberg-Marquardt damping factor\n\n\nofv_delta\nGN\nChange in OFV from previous iteration\n\n\nstep_accepted\nGN\nWhether the GN step was accepted\n\n\ncond_nll\nSAEM\nConditional observation NLL\n\n\ngamma\nSAEM\nSAEM step-size (1 in exploration, 1/k in convergence)\n\n\nmh_accept_rate\nSAEM\nMean MH acceptance rate across subjects\n\n\nn_ebe_unconverged\nFOCE/FOCEI\nSubjects whose inner optimizer did not converge\n\n\nn_ebe_fallback\nFOCE/FOCEI\nSubjects that fell back to Nelder-Mead\n\n\n\nThe trace is buffered and flushed at fit end; the tail may be lost if the process is killed mid-run.\nIn R:\nfit &lt;- ferx_fit(\"model.ferx\", \"data.csv\", optimizer_trace = TRUE)\ntrace &lt;- read.csv(fit$trace_path)\nplot(trace$iter, trace$ofv, type = \"l\", xlab = \"Iteration\", ylab = \"OFV\")"
+  },
+  {
+    "objectID": "ferx-core/output.html#relevant-source-files",
+    "href": "ferx-core/output.html#relevant-source-files",
+    "title": "Output Reference",
+    "section": "Relevant source files",
+    "text": "Relevant source files\n\n\n\n\n\n\n\nFile\nRole\n\n\n\n\nio/output.rs\nsdtab CSV writer, fit YAML writer, timing file\n\n\ntypes.rs\nFitResult, SdtabRow, CovarianceStatus, shrinkage fields\n\n\nstats/likelihood.rs\nCWRES / PRED computation (linearisation)\n\n\nstats/residual_error.rs\nIWRES and residual variance per error model\n\n\nestimation/trace.rs\nOptimizer trace CSV buffered writer"
+  },
+  {
+    "objectID": "ferx-core/overview.html",
+    "href": "ferx-core/overview.html",
+    "title": "Overview",
+    "section": "",
+    "text": "ferx-core is the Rust computation engine that powers the ferx R package. It implements the full nonlinear mixed effects (NLME) modeling pipeline: model parsing, data ingestion, population parameter estimation (FOCE/FOCEI, SAEM, Gauss-Newton), simulation, and prediction. The R package (ferx-r) is a thin wrapper that exposes this engine via an extendr FFI boundary.\nThe crate is named ferx-nlme and lives at github.com/FeRx-NLME/ferx-core. ferx-r references it as a path dependency in src/rust/Cargo.toml."
+  },
+  {
+    "objectID": "ferx-core/overview.html#stack-position",
+    "href": "ferx-core/overview.html#stack-position",
+    "title": "Overview",
+    "section": "Stack position",
+    "text": "Stack position\nR API  (ferx-r:  R/*.R)\n  └─► extendr FFI  (ferx-r:  src/rust/src/lib.rs)\n        └─► ferx-core  (estimation, PK, ODE, autodiff)\nThe FFI layer exposes three #[extendr] functions — ferx_rust_fit, ferx_rust_simulate, ferx_rust_predict — and converts ferx-core result types into R lists and data frames via fit_result_to_list() and sdtab_to_dataframe(). All heavy computation stays inside ferx-core."
+  },
+  {
+    "objectID": "ferx-core/overview.html#crate-modules",
+    "href": "ferx-core/overview.html#crate-modules",
+    "title": "Overview",
+    "section": "Crate modules",
+    "text": "Crate modules\n\n\n\n\n\n\n\n\nModule\nFile(s)\nResponsibility\n\n\n\n\napi\napi.rs\nPublic entry points: run_model_with_data, simulate, predict\n\n\ntypes\ntypes.rs\nShared types: Subject, DoseEvent, PkParams, ModelParameters, Population, FitResult\n\n\nparser\nparser/model_parser.rs\nParses .ferx model files into a CompiledModel\n\n\nio\nio/datareader.rs, io/output.rs\nNONMEM CSV reader, sdtab writer\n\n\nestimation\nestimation/outer_optimizer.rs, inner_optimizer.rs, saem.rs, trust_region.rs, gauss_newton.rs, parameterization.rs, sir.rs, trace.rs\nFOCE/FOCEI, SAEM, Gauss-Newton, SIR, iteration trace\n\n\npk\npk/one_compartment.rs, two_compartment.rs, three_compartment.rs, event_driven.rs\nAnalytical 1/2/3-cpt PK models and event dispatch\n\n\node\node/solver.rs, ode/predictions.rs\nRK45 (Dormand-Prince) adaptive ODE solver\n\n\nstats\nstats/likelihood.rs, residual_error.rs, special.rs\nFOCE/FOCEI NLL, CWRES/IWRES, special functions\n\n\nad\nad/dual.rs, ad/ad_gradients.rs, ad/event_driven_ad.rs\nForward-mode Dual type and Enzyme reverse-mode AD wrappers"
+  },
+  {
+    "objectID": "ferx-core/overview.html#key-return-type-fitresult",
+    "href": "ferx-core/overview.html#key-return-type-fitresult",
+    "title": "Overview",
+    "section": "Key return type: FitResult",
+    "text": "Key return type: FitResult\nFitResult is the struct returned through the FFI to R. Its principal fields:\n\n\n\n\n\n\n\n\nField\nType\nDescription\n\n\n\n\nconverged\nbool\nWhether the outer optimizer converged\n\n\nmethod\nString\nEstimation method used (e.g. \"focei\")\n\n\ngradient_used\nString\nAD mode resolved at runtime (\"enzyme\", \"dual\", \"finite_differences\")\n\n\nofv\nf64\nObjective function value (−2 log-likelihood)\n\n\naic\nf64\nAkaike information criterion\n\n\nbic\nf64\nBayesian information criterion\n\n\ntheta\nVec&lt;f64&gt;\nFinal population fixed-effect estimates\n\n\ntheta_names\nVec&lt;String&gt;\nNames matching theta\n\n\nse_theta\nVec&lt;f64&gt;\nStandard errors for theta (requires covariance = true)\n\n\nomega\nDMatrix&lt;f64&gt;\nFinal between-subject variability matrix\n\n\nse_omega\nVec&lt;f64&gt;\nStandard errors for omega elements\n\n\nsigma\nVec&lt;f64&gt;\nResidual error estimates\n\n\nsdtab\nVec&lt;SdtabRow&gt;\nPer-observation diagnostics: PRED, IPRED, CWRES, IWRES, ETAs\n\n\nwarnings\nVec&lt;String&gt;\nNon-fatal warnings emitted during the run"
+  },
+  {
+    "objectID": "ferx-core/overview.html#further-reading",
+    "href": "ferx-core/overview.html#further-reading",
+    "title": "Overview",
+    "section": "Further reading",
+    "text": "Further reading\n\nArchitecture — data flow, FFI boundary, key types, parallelism, source tree\nEstimation — FOCE/FOCEI, SAEM, Gauss-Newton, IOV, SIR\nAnalytical PK models — 1/2/3-compartment closed-form solutions\nODE solver — RK45 adaptive integrator and event handling\nAutodiff — Dual type and Enzyme reverse-mode integration"
   },
   {
     "objectID": "ferx-core/estimation.html",
     "href": "ferx-core/estimation.html",
-    "title": "Estimation",
+    "title": "Estimation (FOCE/FOCEI)",
     "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
+    "text": "ferx-core supports five estimation methods: FOCE, FOCEI, SAEM, Gauss-Newton, and a GN+FOCEI hybrid. FOCEI is the default. All methods share the same two-loop structure: an outer loop over population parameters and an inner loop over per-subject empirical Bayes estimates (EBEs)."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#foce-vs-focei",
+    "href": "ferx-core/estimation.html#foce-vs-focei",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "FOCE vs FOCEI",
+    "text": "FOCE vs FOCEI\nFOCE (First-Order Conditional Estimation) linearises the model around the EBE η̂ and evaluates the residual variance R at the population mean (η = 0):\n\\[\\text{OFV}_i = (y - f_0)^T \\tilde{R}^{-1} (y - f_0) + \\log|\\tilde{R}|\\]\nwhere \\(f_0 = f(\\hat{\\eta}) - H\\hat{\\eta}\\) and \\(\\tilde{R} = H\\Omega H^T + R(f_0)\\).\nFOCEI adds the interaction term — the residual variance \\(V(\\hat{\\eta})\\) is evaluated at η̂ rather than η = 0, capturing the dependence of residual error on individual predictions:\n\\[\\text{OFV}_i = (y - \\hat{f})^T V^{-1} (y - \\hat{f}) + \\hat{\\eta}^T \\Omega^{-1} \\hat{\\eta} + \\log|\\tilde{R}|\\]\nFOCEI is more accurate when the error model is proportional or combined. Use FOCE only for additive-error models where the interaction term is zero."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#the-two-loop-structure",
+    "href": "ferx-core/estimation.html#the-two-loop-structure",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "The two-loop structure",
+    "text": "The two-loop structure\n\nOuter loop — population parameters\nMinimises the population OFV = Σᵢ OFVᵢ over θ, Ω, σ. Parameters are internally log-transformed (theta, sigma) and Cholesky-factored (omega) so the optimizer works on an unconstrained packed vector:\nx = [log(θ_free), chol(Ω_BSV), log(σ), chol(Ω_IOV)]\nAvailable optimizers (set via optimizer in [fit_options]):\n\n\n\n\n\n\n\n\nKey\nAlgorithm\nNotes\n\n\n\n\nslsqp\nNLopt SLSQP\nDefault. Gradient-based, handles bounds well\n\n\nbobyqa\nNLopt BOBYQA\nDerivative-free; robust when FD gradients are noisy\n\n\nnlopt_lbfgs\nNLopt L-BFGS\nGood for large parameter spaces\n\n\nmma\nNLopt MMA\nMethod of Moving Asymptotes\n\n\nbfgs\nBuilt-in BFGS\nQuasi-Newton with backtracking line search\n\n\nlbfgs\nBuilt-in L-BFGS\nMemory-efficient BFGS\n\n\ntrust_region\nNewton trust-region (argmin)\nUses FD Hessian; Steihaug CG subproblem\n\n\n\nGlobal search: setting global_search = true runs NLopt CRS2-LM (Controlled Random Search) as a gradient-free pre-search before the local optimizer. Helps escape local minima on poorly-identified models. Budget is controlled by global_maxeval (default: 200 * (n_params + 1)).\n\n\nInner loop — empirical Bayes estimates\nMinimises the individual NLL per subject independently (parallelised via rayon):\n\\[\\text{NLL}(\\eta) = \\frac{1}{2}\\left[\\eta^T\\Omega^{-1}\\eta + \\log|\\Omega| + \\sum_j\\left(\\frac{(y_j - f_j(\\hat{\\eta}))^2}{V_j(\\hat{\\eta})} + \\log V_j(\\hat{\\eta})\\right)\\right]\\]\nUses L-BFGS with automatic differentiation gradients (preferred) or finite differences. Falls back to Nelder-Mead simplex if L-BFGS fails to converge.\nWarm starting: EBEs from the previous outer iteration seed the inner optimizer, drastically reducing inner iterations in later stages when parameters change slowly.\nEBE convergence guard: if more than max_unconverged_frac (default 0.1) of subjects have unconverged EBEs, the outer optimizer receives OFV = ∞ for that step, preventing convergence to a solution with unreliable EBEs."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#convergence-criteria",
+    "href": "ferx-core/estimation.html#convergence-criteria",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "Convergence criteria",
+    "text": "Convergence criteria\n\n\n\nLoop\nCriterion\nDefault\n\n\n\n\nOuter\ngradient norm &lt; outer_gtol\n1e-6\n\n\nOuter\nmax iterations\nmaxiter = 500\n\n\nInner\ngradient norm &lt; inner_tol\n1e-4\n\n\nInner\nmax iterations\ninner_maxiter = 200\n\n\n\ninner_tol = 1e-4 matches the precision of NONMEM’s default inner-loop convergence (SIGDIGITS ≈ 3). Tighter values over-converge EBEs relative to the Sheiner-Beal linearisation error and can slow FOCEI fits 10–15× without changing the final OFV."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#ofv-aic-bic",
+    "href": "ferx-core/estimation.html#ofv-aic-bic",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "OFV / AIC / BIC",
+    "text": "OFV / AIC / BIC\n\\[\\text{OFV} = -2\\log L \\qquad \\text{AIC} = \\text{OFV} + 2p \\qquad \\text{BIC} = \\text{OFV} + p\\log N\\]\nwhere \\(p\\) is the number of estimated parameters and \\(N\\) is the number of observations."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#covariance-step",
+    "href": "ferx-core/estimation.html#covariance-step",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "Covariance step",
+    "text": "Covariance step\nWhen covariance = true, ferx computes the observed Fisher information matrix via finite-difference Hessian of the population OFV at convergence:\n\nStandard errors = \\(\\sqrt{\\text{diag}(\\hat{\\Sigma})}\\)\n%RSE = \\(|\\text{SE} / \\hat{\\theta}| \\times 100\\)\nOmega SEs derived via delta method from the Cholesky parameterisation"
+  },
+  {
+    "objectID": "ferx-core/estimation.html#saem",
+    "href": "ferx-core/estimation.html#saem",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "SAEM",
+    "text": "SAEM\nStochastic Approximation EM replaces the deterministic inner loop with Metropolis-Hastings sampling, following the Monolix two-phase schedule:\n\nPhase 1 (exploration, γ = 1): rapid basin finding; default 150 iterations\nPhase 2 (convergence, γ = 1/k): decreasing-weight average; default 250 iterations\n\nEach SAEM iteration:\n\nE-step: sample η per subject via MH random walk (\\(\\eta_\\text{prop} = \\eta + \\delta_i \\cdot L \\cdot z\\), \\(z \\sim N(0,I)\\))\nSA update: \\(S_2 \\leftarrow (1-\\gamma_k)S_2 + \\gamma_k \\cdot \\frac{1}{N}\\sum_i \\eta_i\\eta_i^T\\)\nM-step for Ω: \\(\\Omega_k = S_2\\) (closed form, with structural zeros projected out)\nM-step for θ and σ: NLopt minimises the conditional observation NLL with ETAs fixed. When mu_referencing = true (default), log-normal thetas use the closed-form EM update instead: \\(\\log\\theta_j \\leftarrow \\log\\theta_j + \\gamma_k\\overline{\\eta_j}\\)\nAdaptation: per-subject MH step sizes \\(\\delta_i\\) adjusted every adapt_interval iterations to target ~40% acceptance rate\n\nPost-SAEM: standard FOCE inner loop refines EBEs from the SAEM ETAs, then FOCE OFV, AIC, BIC, and (optionally) the covariance matrix are computed so results are directly comparable with FOCE fits.\n[fit_options]\n  method        = saem\n  n_exploration = 150\n  n_convergence = 250\n  n_mh_steps    = 3\n  seed          = 12345\n  covariance    = true\nSAEM + FOCEI polish (recommended for complex models):\n[fit_options]\n  method     = [saem, focei]\n  covariance = true\nLimitation: SAEM is not supported with IOV models."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#gauss-newton",
+    "href": "ferx-core/estimation.html#gauss-newton",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "Gauss-Newton",
+    "text": "Gauss-Newton\nThe Gauss-Newton optimizer exploits the nonlinear-least-squares structure of the FOCE objective using the BHHH Hessian approximation:\n\\[H_\\text{BHHH} = 4 \\sum_i g_i g_i^T\\]\nwhere \\(g_i = \\nabla_x \\text{NLL}_i\\) is the per-subject gradient. Levenberg-Marquardt damping \\(H_\\text{LM} = H_\\text{BHHH} + \\lambda\\,\\text{diag}(H_\\text{BHHH})\\) stabilises steps away from the minimum; \\(\\lambda\\) adapts: ×0.3 on success, ×10 on rejection.\n\n\n\n\n\n\n\n\nMethod\nKey\nDescription\n\n\n\n\nPure GN\ngn\nTypically converges in 10–30 iterations\n\n\nGN + FOCEI hybrid\ngn_hybrid\nGN finds the basin; FOCEI polishes (up to 100 iter via SLSQP)\n\n\n\nUse gn for fast feedback during model development; gn_hybrid when you want robustness as well as speed."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#inter-occasion-variability-iov",
+    "href": "ferx-core/estimation.html#inter-occasion-variability-iov",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "Inter-Occasion Variability (IOV)",
+    "text": "Inter-Occasion Variability (IOV)\nIOV models occasion-to-occasion shifts in PK parameters within a subject. Kappa (κ) is the IOV random effect, re-drawn independently per occasion:\n\\[\\kappa_{ik} \\sim \\mathcal{N}(0, \\Omega_\\text{IOV})\\]\nOption A — diagonal IOV (independent kappas):\n[parameters]\n  kappa KAPPA_CL ~ 0.05\n  kappa KAPPA_V  ~ 0.03\n\n[individual_parameters]\n  CL = TVCL * exp(ETA_CL + KAPPA_CL)\n\n[fit_options]\n  iov_column = OCC\nOption B — block IOV (correlated kappas):\nblock_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]\nMixed Option A + B declarations are supported; a name may not appear in both.\nThe inner loop uses find_ebe_iov instead of find_ebe when kappas are present, jointly optimising BSV etas and all per-occasion kappas. The outer loop packs IOV omega after sigma in the packed vector. AD is not used for IOV gradients — finite differences are used instead."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#sampling-importance-resampling-sir",
+    "href": "ferx-core/estimation.html#sampling-importance-resampling-sir",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "Sampling Importance Resampling (SIR)",
+    "text": "Sampling Importance Resampling (SIR)\nSIR is an optional post-estimation step that provides non-parametric parameter uncertainty estimates, more robust than the asymptotic covariance matrix for small datasets or boundary estimates.\n\nDraw M parameter vectors from \\(\\mathcal{N}(\\hat{\\theta}, \\hat{\\Sigma})\\)\nCompute importance weights from OFV differences\nResample m vectors proportional to weights\n\nThe effective sample size (ESS) diagnostic indicates fit quality: ESS &gt; m is excellent; ESS &lt; 100 suggests the proposal is a poor match.\n[fit_options]\n  method        = focei\n  covariance    = true\n  sir           = true\n  sir_samples   = 1000\n  sir_resamples = 250\n  sir_seed      = 42\nReference: Dosne et al. (2017), J Pharmacokinet Pharmacodyn 44(6):539-562."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#mu-referencing",
+    "href": "ferx-core/estimation.html#mu-referencing",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "Mu-referencing",
+    "text": "Mu-referencing\nWhen mu_referencing = true (default), ferx detects log-normal parameters from [individual_parameters] and re-centres ETA estimates on the current population mean each inner iteration. This improves conditioning for the SAEM M-step (closed-form EM update) and speeds inner-loop convergence for gradient-based methods. Disable with mu_referencing = false to reproduce pre-automatic-mu behaviour."
+  },
+  {
+    "objectID": "ferx-core/estimation.html#key-fit_options-reference",
+    "href": "ferx-core/estimation.html#key-fit_options-reference",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "Key fit_options reference",
+    "text": "Key fit_options reference\n\n\n\n\n\n\n\n\nKey\nDefault\nDescription\n\n\n\n\nmethod\nfocei\nfoce, focei, saem, gn, gn_hybrid, or a list e.g. [saem, focei]\n\n\nmaxiter\n500\nMax outer iterations\n\n\ncovariance\ntrue\nCompute covariance matrix and SEs\n\n\noptimizer\nslsqp\nSee optimizer table above\n\n\ninner_maxiter\n200\nMax inner (EBE) iterations per subject\n\n\ninner_tol\n1e-4\nInner convergence gradient-norm tolerance\n\n\nscale_params\ntrue\nScale packed parameters to O(1) before optimizer\n\n\nglobal_search\nfalse\nRun CRS2-LM pre-search before local optimizer\n\n\nbloq_method\ndrop\ndrop or m3 (Beal M3 likelihood for BLOQ rows)\n\n\niov_column\n—\nName of occasion column (required for IOV models)\n\n\noptimizer_trace\nfalse\nWrite per-iteration CSV to /tmp/ferx_trace_&lt;pid&gt;.csv"
+  },
+  {
+    "objectID": "ferx-core/estimation.html#relevant-source-files",
+    "href": "ferx-core/estimation.html#relevant-source-files",
+    "title": "Estimation (FOCE/FOCEI)",
+    "section": "Relevant source files",
+    "text": "Relevant source files\n\n\n\n\n\n\n\nFile\nRole\n\n\n\n\nestimation/outer_optimizer.rs\noptimize_population(), NLopt/BFGS/trust-region dispatch\n\n\nestimation/inner_optimizer.rs\nfind_ebe(), gradient resolution (AD vs FD), EBE warm-start\n\n\nestimation/saem.rs\nSAEM algorithm, MH sampling, two-phase schedule\n\n\nestimation/gauss_newton.rs\nGauss-Newton / BHHH with LM damping and line search\n\n\nestimation/trust_region.rs\nNewton trust-region with Steihaug CG subproblem\n\n\nestimation/parameterization.rs\nPack/unpack, mu-referencing, log/Cholesky transforms\n\n\nestimation/sir.rs\nSIR importance resampling\n\n\nstats/likelihood.rs\nfoce_subject_nll(), foce_population_nll(), CWRES\n\n\nstats/residual_error.rs\nResidual variance by error model, IWRES"
   },
   {
     "objectID": "ferx-core/ode-solver.html",
     "href": "ferx-core/ode-solver.html",
-    "title": "Ode Solver",
+    "title": "ODE Solver",
     "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
+    "text": "ferx-core includes an adaptive Runge-Kutta solver for models whose structural equations cannot be expressed analytically. It is invoked whenever a .ferx model file contains an [odes] block; analytical PK models bypass it entirely."
+  },
+  {
+    "objectID": "ferx-core/ode-solver.html#algorithm-dormand-prince-rk45",
+    "href": "ferx-core/ode-solver.html#algorithm-dormand-prince-rk45",
+    "title": "ODE Solver",
+    "section": "Algorithm: Dormand-Prince RK45",
+    "text": "Algorithm: Dormand-Prince RK45\nThe solver implements the Dormand-Prince method (also called RK45 or DOPRI5) — the same family as Julia’s Tsit5(). It is an explicit, embedded Runge-Kutta pair:\n\n5th-order solution used for advancing the state\n4th-order embedded solution used only for error estimation\n7 function evaluations per step (the last stage is reused as the first of the next step — FSAL property)\n\nThe Butcher tableau coefficients are hardcoded in ode/solver.rs from the original Dormand & Prince (1980) paper.\nDefault tolerances:\n\n\n\nParameter\nDefault\n\n\n\n\nabstol\n1e-6\n\n\nreltol\n1e-4\n\n\nmax_steps\n10 000\n\n\ninitial_dt\n0.1\n\n\nmin_dt\n1e-12\n\n\n\nThese are appropriate for typical PK ODE systems (2–5 states, smooth dynamics, concentration units in μg/mL or mg/L). Tighter tolerances can be set via [fit_options] if needed."
+  },
+  {
+    "objectID": "ferx-core/ode-solver.html#adaptive-step-control",
+    "href": "ferx-core/ode-solver.html#adaptive-step-control",
+    "title": "ODE Solver",
+    "section": "Adaptive step control",
+    "text": "Adaptive step control\nAt each candidate step the solver computes the scaled error norm:\nerr = ‖(y₅ − y₄) / (abstol + reltol · |y₅|)‖₂ / √n\n\nIf err ≤ 1: step accepted; next step size scaled up by min(5, 0.9 · err^(-0.2))\nIf err &gt; 1: step rejected and retried at max(0.2, 0.9 · err^(-0.25)) · h\n\nThe solver errors if h falls below min_dt (signals a stiff or ill-posed system) or if the step count exceeds max_steps."
+  },
+  {
+    "objectID": "ferx-core/ode-solver.html#event-handling",
+    "href": "ferx-core/ode-solver.html#event-handling",
+    "title": "ODE Solver",
+    "section": "Event handling",
+    "text": "Event handling\nPK dose events create discontinuities in the ODE state that the solver cannot step across. ode/predictions.rs handles this by:\n\nCollecting all dose times and infusion-end times as break points\nIntegrating segment by segment between consecutive break points\nAt each bolus dose (EVID = 1), applying the state update: u[cmt] += amt\nFor infusions, adding +rate to the compartment derivative for the duration of the infusion via a closure wrapper around the user RHS\n\n// Conceptual: infusion added to the RHS during [t_start, t_end]\nlet rhs_with_infusions = |u, params, t, du| {\n    user_rhs(u, params, t, du);\n    for (cmt_idx, rate) in &active_infusions {\n        du[*cmt_idx] += rate;\n    }\n};\nBreak times are constructed so that each integration segment is either fully inside or fully outside every infusion window — no float-equality check is needed at the segment interior."
+  },
+  {
+    "objectID": "ferx-core/ode-solver.html#defining-an-ode-model",
+    "href": "ferx-core/ode-solver.html#defining-an-ode-model",
+    "title": "ODE Solver",
+    "section": "Defining an ODE model",
+    "text": "Defining an ODE model\nThe [odes] section of a .ferx file specifies the right-hand side using a simple expression DSL. Derivatives are written as d/dt(STATE):\n[odes]\n  d/dt(depot)   = -KA * depot\n  d/dt(central) = KA * depot - (CL / V) * central\nIndividual parameters from [individual_parameters] (CL, V, KA, …) are available as symbols. The observable compartment is matched to the CMT column in the data."
+  },
+  {
+    "objectID": "ferx-core/ode-solver.html#when-to-use-ode-vs-analytical",
+    "href": "ferx-core/ode-solver.html#when-to-use-ode-vs-analytical",
+    "title": "ODE Solver",
+    "section": "When to use ODE vs analytical",
+    "text": "When to use ODE vs analytical\n\n\n\n\n\n\n\nSituation\nRecommendation\n\n\n\n\n1-cpt or 2-cpt oral/IV, standard dosing\nUse analytical (pk one_cpt_oral(...))\n\n\nPD link model, transit compartments, enterohepatic circulation\nUse [odes]\n\n\nSaturable elimination (Michaelis-Menten), parallel pathways\nUse [odes]\n\n\n\nAnalytical models are typically 10–50× faster per likelihood evaluation and support the Enzyme AD gradient path. ODE models currently fall back to finite-difference gradients."
+  },
+  {
+    "objectID": "ferx-core/ode-solver.html#relevant-source-files",
+    "href": "ferx-core/ode-solver.html#relevant-source-files",
+    "title": "ODE Solver",
+    "section": "Relevant source files",
+    "text": "Relevant source files\n\n\n\n\n\n\n\nFile\nRole\n\n\n\n\node/solver.rs\nsolve_ode(), Dormand-Prince coefficients, adaptive step loop\n\n\node/predictions.rs\node_predictions(), event handling, break-time construction\n\n\node/mod.rs\nModule re-exports"
   },
   {
     "objectID": "learn/model-workflow.html",
@@ -184,23 +401,240 @@
   {
     "objectID": "ferx-core/pk-models.html",
     "href": "ferx-core/pk-models.html",
-    "title": "Pk Models",
+    "title": "Analytical PK Models",
     "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
+    "text": "ferx-core provides closed-form analytical solutions for one-, two-, and three-compartment PK models. These are the preferred structural model type: they are faster than ODE integration and support the Enzyme automatic differentiation path for gradient computation."
   },
   {
-    "objectID": "ferx-core/overview.html",
-    "href": "ferx-core/overview.html",
-    "title": "Overview",
+    "objectID": "ferx-core/pk-models.html#invoking-a-model-in-the-dsl",
+    "href": "ferx-core/pk-models.html#invoking-a-model-in-the-dsl",
+    "title": "Analytical PK Models",
+    "section": "Invoking a model in the DSL",
+    "text": "Invoking a model in the DSL\nThe [structural_model] section of a .ferx file selects an analytical model with the pk keyword:\n[structural_model]\n  pk one_cpt_oral(cl=CL, v=V, ka=KA)\nNamed arguments map individual-parameter symbols to the model’s PK slots. The available models and their required arguments are listed below."
+  },
+  {
+    "objectID": "ferx-core/pk-models.html#one-compartment-models",
+    "href": "ferx-core/pk-models.html#one-compartment-models",
+    "title": "Analytical PK Models",
+    "section": "One-compartment models",
+    "text": "One-compartment models\nAll one-compartment solutions are in pk/one_compartment.rs.\n\nIV bolus\npk one_cpt_iv_bolus(cl=CL, v=V)\n\\[C(t) = \\frac{\\text{Dose}}{V} \\cdot e^{-k \\cdot t}, \\quad k = \\frac{CL}{V}\\]\n\n\nIV infusion\npk one_cpt_iv_infusion(cl=CL, v=V)\nDuring infusion (\\(t \\le T_{\\text{inf}}\\)): \\[C(t) = \\frac{\\text{Rate}}{CL} \\cdot (1 - e^{-k t})\\]\nAfter infusion (\\(t &gt; T_{\\text{inf}}\\)): \\[C(t) = \\frac{\\text{Rate}}{CL} \\cdot (1 - e^{-k T_{\\text{inf}}}) \\cdot e^{-k(t - T_{\\text{inf}})}\\]\n\n\nOral absorption\npk one_cpt_oral(cl=CL, v=V, ka=KA)\npk one_cpt_oral_f(cl=CL, v=V, ka=KA, f=F)   # with bioavailability\n\\[C(t) = \\frac{F \\cdot \\text{Dose} \\cdot K_A}{V (K_A - k)} \\left(e^{-k t} - e^{-K_A t}\\right)\\]\nWhen \\(K_A \\approx k\\) (flip-flop, within 1e-6), the L’Hôpital limit is used to avoid catastrophic cancellation:\n\\[C(t) = \\frac{F \\cdot \\text{Dose} \\cdot K_A}{V} \\cdot t \\cdot e^{-k t}\\]"
+  },
+  {
+    "objectID": "ferx-core/pk-models.html#two-compartment-models",
+    "href": "ferx-core/pk-models.html#two-compartment-models",
+    "title": "Analytical PK Models",
+    "section": "Two-compartment models",
+    "text": "Two-compartment models\nAll two-compartment solutions are in pk/two_compartment.rs.\nMacro rate constants are derived from micro-constants using Vieta’s formula to avoid subtracting two nearly-equal large numbers when \\(s \\gg \\sqrt{s^2 - 4d}\\):\nlet alpha = (s + disc) / 2.0;\nlet beta  = d / alpha;           // Vieta: α·β = d\nwhere \\(s = k_{10} + k_{12} + k_{21}\\) and \\(d = k_{10} \\cdot k_{21}\\).\n\nIV bolus\npk two_cpt_iv_bolus(cl=CL, v1=V1, q=Q, v2=V2)\n\\[C(t) = A e^{-\\alpha t} + B e^{-\\beta t}\\]\n\\[A = \\frac{\\text{Dose}}{V_1} \\cdot \\frac{\\alpha - k_{21}}{\\alpha - \\beta}, \\quad B = \\frac{\\text{Dose}}{V_1} \\cdot \\frac{k_{21} - \\beta}{\\alpha - \\beta}\\]\n\n\nIV infusion\npk two_cpt_iv_infusion(cl=CL, v1=V1, q=Q, v2=V2)\nSuperposition of the bolus solution across the infusion duration; switches to bolus formula when duration ≤ 0.\n\n\nOral absorption\npk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)\npk two_cpt_oral_f(cl=CL, v1=V1, q=Q, v2=V2, ka=KA, f=F)\n\\[C(t) = Ae^{-\\alpha t} + Be^{-\\beta t} + Ce^{-K_A t}\\]\nCoefficients derived analytically; degenerate cases (\\(K_A \\approx \\alpha\\) or \\(K_A \\approx \\beta\\)) handled via L’Hôpital limits."
+  },
+  {
+    "objectID": "ferx-core/pk-models.html#three-compartment-models",
+    "href": "ferx-core/pk-models.html#three-compartment-models",
+    "title": "Analytical PK Models",
+    "section": "Three-compartment models",
+    "text": "Three-compartment models\nThree-compartment solutions are in pk/three_compartment.rs. Macro rate constants (\\(\\alpha\\), \\(\\beta\\), \\(\\gamma\\)) are solved from the characteristic polynomial using Cardano’s formula.\npk three_cpt_iv_bolus(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)\npk three_cpt_iv_infusion(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)\npk three_cpt_oral(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3, ka=KA)"
+  },
+  {
+    "objectID": "ferx-core/pk-models.html#multi-dose-superposition",
+    "href": "ferx-core/pk-models.html#multi-dose-superposition",
+    "title": "Analytical PK Models",
+    "section": "Multi-dose superposition",
+    "text": "Multi-dose superposition\nAll analytical models support multiple dose events. The pk/mod.rs dispatcher calls the single-dose solution for each historical dose and sums the contributions at each observation time:\n// Conceptual superposition\nfor dose in &subject.doses {\n    let t_since_dose = t_obs - dose.time;\n    if t_since_dose &gt;= 0.0 {\n        pred += single_dose_solution(dose, t_since_dose, &pk_params);\n    }\n}"
+  },
+  {
+    "objectID": "ferx-core/pk-models.html#pkparams-layout",
+    "href": "ferx-core/pk-models.html#pkparams-layout",
+    "title": "Analytical PK Models",
+    "section": "PkParams layout",
+    "text": "PkParams layout\nPK parameters are passed through a fixed-layout [f64; 8] array rather than a HashMap so that Enzyme’s reverse-mode AD can differentiate through them:\n\n\n\n\n\n\n\n\nIndex\nSymbol\nDescription\n\n\n\n\n0\nCL\nClearance\n\n\n1\nV / V1\nVolume (central)\n\n\n2\nQ\nIntercompartmental clearance (central ↔︎ peripheral 1)\n\n\n3\nV2\nPeripheral volume 1\n\n\n4\nKA\nOral absorption rate constant\n\n\n5\nF\nBioavailability (default 1.0)\n\n\n6\nQ3\nIntercompartmental clearance (central ↔︎ peripheral 2; 3-cmt)\n\n\n7\nV3\nPeripheral volume 2 (3-cmt)\n\n\n\nUnused slots default to 0.0 (except F, which defaults to 1.0)."
+  },
+  {
+    "objectID": "ferx-core/pk-models.html#relevant-source-files",
+    "href": "ferx-core/pk-models.html#relevant-source-files",
+    "title": "Analytical PK Models",
+    "section": "Relevant source files",
+    "text": "Relevant source files\n\n\n\n\n\n\n\nFile\nRole\n\n\n\n\npk/one_compartment.rs\n1-cpt IV bolus, infusion, oral, oral-with-F\n\n\npk/two_compartment.rs\n2-cpt IV bolus, infusion, oral, oral-with-F; macro rate constants\n\n\npk/three_compartment.rs\n3-cpt IV bolus and infusion; Cardano characteristic roots\n\n\npk/mod.rs\ncompute_predictions(), multi-dose superposition, TV-covariate dispatch\n\n\ntypes.rs\nPkParams layout constants (PK_IDX_CL, PK_IDX_V, …)"
+  },
+  {
+    "objectID": "ferx-core/data-format.html",
+    "href": "ferx-core/data-format.html",
+    "title": "Data Format",
     "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
+    "text": "ferx-core reads data in NONMEM-compatible CSV format. This is the standard format shared by NONMEM, Monolix, and most population PK tools."
+  },
+  {
+    "objectID": "ferx-core/data-format.html#required-columns",
+    "href": "ferx-core/data-format.html#required-columns",
+    "title": "Data Format",
+    "section": "Required columns",
+    "text": "Required columns\n\n\n\nColumn\nType\nDescription\n\n\n\n\nID\nstring/numeric\nSubject identifier\n\n\nTIME\nnumeric\nTime relative to first dose\n\n\nDV\nnumeric\nDependent variable (observed concentration)"
+  },
+  {
+    "objectID": "ferx-core/data-format.html#optional-standard-columns",
+    "href": "ferx-core/data-format.html#optional-standard-columns",
+    "title": "Data Format",
+    "section": "Optional standard columns",
+    "text": "Optional standard columns\n\n\n\n\n\n\n\n\n\nColumn\nType\nDefault\nDescription\n\n\n\n\nEVID\ninteger\n0\nEvent ID — see table below\n\n\nAMT\nnumeric\n0\nDose amount (dose rows only)\n\n\nCMT\ninteger\n1\nCompartment number (1-indexed)\n\n\nRATE\nnumeric\n0\nInfusion rate; 0 = bolus\n\n\nMDV\ninteger\n0\nMissing DV flag; 1 = skip this observation\n\n\nII\nnumeric\n0\nInterdose interval for steady-state records\n\n\nSS\ninteger\n0\nSteady-state flag; 1 = assume steady state before TIME=0\n\n\nCENS\ninteger\n0\nBLOQ flag; 1 = DV is below LLOQ (DV carries the LLOQ value)\n\n\n\nMissing values may be represented as . or as an empty cell.\nColumn names are case-insensitive: ID, Id, and id are all recognised."
+  },
+  {
+    "objectID": "ferx-core/data-format.html#event-types-evid",
+    "href": "ferx-core/data-format.html#event-types-evid",
+    "title": "Data Format",
+    "section": "Event types (EVID)",
+    "text": "Event types (EVID)\n\n\n\n\n\n\n\nEVID\nMeaning\n\n\n\n\n0\nObservation record. DV is used for estimation.\n\n\n1\nDose record. AMT is administered to compartment CMT.\n\n\n2\nCovariate-change marker. Compartment amounts are unchanged but the PK parameter expressions are re-evaluated using this row’s covariate values. No-op when all covariates are time-constant.\n\n\n4\nReset + dose. All compartment amounts are zeroed before dosing."
+  },
+  {
+    "objectID": "ferx-core/data-format.html#covariate-columns",
+    "href": "ferx-core/data-format.html#covariate-columns",
+    "title": "Data Format",
+    "section": "Covariate columns",
+    "text": "Covariate columns\nAny column not in the standard set above is treated as a covariate.\n\nTime-constant covariates: the first non-missing value per subject is used.\nTime-varying covariates: Last Observation Carried Forward (LOCF) per row — individual-parameter expressions are re-evaluated at each dose and observation row using that row’s covariate snapshot.\n\nCovariate names are matched case-insensitively against names in [individual_parameters] expressions. Numeric covariate columns that are not the IOV occasion column are candidates for ferx_eta_cov() in the R layer.\n\nTime-varying covariate support\nTime-varying covariates are supported for all analytical models (1/2/3-cpt) and all ODE-defined models. The Enzyme gradient fast path is also event-driven for TV-covariate subjects on analytical models — the AD path does not fall back to finite differences when covariates vary."
+  },
+  {
+    "objectID": "ferx-core/data-format.html#occasion-column-iov",
+    "href": "ferx-core/data-format.html#occasion-column-iov",
+    "title": "Data Format",
+    "section": "Occasion column (IOV)",
+    "text": "Occasion column (IOV)\nWhen using Inter-Occasion Variability, add an integer occasion-index column and name it with iov_column in [fit_options]:\n[fit_options]\n  iov_column = OCC\nThe OCC column:\n\nContains positive integer occasion indices (e.g. 1, 2, 3…) — one per row\nApplies to both dose and observation rows\nIs excluded from covariate auto-detection\nDoes not need to start at 1 or be consecutive; different numbers mean different occasions with independent kappa EBEs"
+  },
+  {
+    "objectID": "ferx-core/data-format.html#bloq-observations",
+    "href": "ferx-core/data-format.html#bloq-observations",
+    "title": "Data Format",
+    "section": "BLOQ observations",
+    "text": "BLOQ observations\nSet CENS = 1 on any row where the measured concentration is below the lower limit of quantification. The DV column must contain the LLOQ value (not a zero or missing). Pair with bloq_method = m3 in [fit_options] to enable Beal M3 likelihood-based BLOQ handling; the default drop simply discards these rows."
+  },
+  {
+    "objectID": "ferx-core/data-format.html#infusion-doses",
+    "href": "ferx-core/data-format.html#infusion-doses",
+    "title": "Data Format",
+    "section": "Infusion doses",
+    "text": "Infusion doses\nSet RATE &gt; 0 on a dose row to specify an infusion. Duration is derived as AMT / RATE:\nID,TIME,DV,EVID,AMT,CMT,RATE,MDV\n1,0,.,1,500,1,50,1\nThis administers 500 units over 10 hours at a rate of 50 units/hour.\nDose and infusion routing on analytical models:\n\n\n\n\n\n\n\n\nCMT\nIV models\nOral models\n\n\n\n\n1\nCentral compartment\nDepot — bolus is absorbed via first-order KA\n\n\n2\nPeripheral 1 infusion (2-cpt and 3-cpt)\nCentral compartment infusion\n\n\n3\nPeripheral 2 infusion (3-cpt only)\n— (panics with a clear message)"
+  },
+  {
+    "objectID": "ferx-core/data-format.html#steady-state-dosing",
+    "href": "ferx-core/data-format.html#steady-state-dosing",
+    "title": "Data Format",
+    "section": "Steady-state dosing",
+    "text": "Steady-state dosing\nSet SS = 1 and II to the dosing interval on a dose row to instruct ferx-core to compute the compartment amounts that would result from an infinite history of doses spaced II apart before TIME = 0:\nID,TIME,DV,EVID,AMT,CMT,SS,II,MDV\n1,0,.,1,100,1,1,12,1\n1,0.5,25.3,0,.,.,.,.,0"
+  },
+  {
+    "objectID": "ferx-core/data-format.html#multiple-doses",
+    "href": "ferx-core/data-format.html#multiple-doses",
+    "title": "Data Format",
+    "section": "Multiple doses",
+    "text": "Multiple doses\nEach dose is a separate row with EVID = 1. Analytical models sum contributions via multi-dose superposition:\nID,TIME,DV,EVID,AMT,CMT,MDV\n1,0,.,1,100,1,1\n1,0.5,9.49,0,.,.,0\n1,12,.,1,100,1,1\n1,12.5,15.2,0,.,.,0\n1,24,.,1,100,1,1\n1,24.5,18.1,0,.,.,0"
+  },
+  {
+    "objectID": "ferx-core/data-format.html#full-example-with-covariates",
+    "href": "ferx-core/data-format.html#full-example-with-covariates",
+    "title": "Data Format",
+    "section": "Full example with covariates",
+    "text": "Full example with covariates\nID,TIME,DV,EVID,AMT,CMT,RATE,MDV,WT,CRCL\n1,0,.,1,100,1,0,1,70,95\n1,0.5,9.49,0,.,.,.,0,70,95\n1,1,14.42,0,.,.,.,0,70,95\n1,2,17.56,0,.,.,.,0,70,95\n1,4,15.23,0,.,.,.,0,70,95\n1,8,10.15,0,.,.,.,0,70,95\n2,0,.,1,150,1,0,1,85,110\n2,0.5,14.2,0,.,.,.,0,85,110\n2,1,21.3,0,.,.,.,0,85,110\n\nDose records (EVID=1): MDV=1, DV=.\nObservation records (EVID=0): MDV=0, valid DV\nCovariates (WT, CRCL) are extra columns; matched to [individual_parameters] by name"
+  },
+  {
+    "objectID": "ferx-core/data-format.html#relevant-source-files",
+    "href": "ferx-core/data-format.html#relevant-source-files",
+    "title": "Data Format",
+    "section": "Relevant source files",
+    "text": "Relevant source files\n\n\n\n\n\n\n\nFile\nRole\n\n\n\n\nio/datareader.rs\nread_nonmem_csv() — full CSV parser, LOCF, covariate detection\n\n\ntypes.rs\nSubject, DoseEvent, Population — parsed representation"
+  },
+  {
+    "objectID": "ferx-core/autodiff.html",
+    "href": "ferx-core/autodiff.html",
+    "title": "Autodiff (Enzyme)",
+    "section": "",
+    "text": "ferx-core uses automatic differentiation (AD) to compute exact gradients of the FOCEI individual NLL with respect to the ETA vector. Exact gradients make the inner L-BFGS loop faster and more reliable than finite differences, especially as the number of random effects grows."
+  },
+  {
+    "objectID": "ferx-core/autodiff.html#why-exact-gradients-matter",
+    "href": "ferx-core/autodiff.html#why-exact-gradients-matter",
+    "title": "Autodiff (Enzyme)",
+    "section": "Why exact gradients matter",
+    "text": "Why exact gradients matter\nThe FOCEI inner loop calls \\(\\nabla_\\eta \\text{NLL}(\\eta)\\) at every L-BFGS step. For a model with \\(n_\\eta\\) random effects, central finite differences require \\(2n_\\eta\\) model evaluations per gradient call. Reverse-mode AD computes the full gradient in ~1–3 forward passes regardless of \\(n_\\eta\\).\nEmpirically (measured with FERX_TIME_GRADIENTS=1 on 1-cpt oral and 2-cpt infusion models): reverse-mode AD is 1.5–5× faster per L-BFGS gradient call than central FD across the tested range of models, even accounting for the tape/backward overhead."
+  },
+  {
+    "objectID": "ferx-core/autodiff.html#enzyme",
+    "href": "ferx-core/autodiff.html#enzyme",
+    "title": "Autodiff (Enzyme)",
+    "section": "Enzyme",
+    "text": "Enzyme\nferx uses Enzyme — a compiler plugin that differentiates LLVM IR directly. It is not a symbolic or trace-based AD library; it transforms the compiled bitcode of the forward pass into its reverse (adjoint) at compile time.\nBuild requirements:\n\nchannel = \"enzyme\" in rust-toolchain.toml (a custom Rust fork)\n-Z autodiff=Enable in .cargo/config.toml (ferx-r’s build script writes this automatically)\nOnly required at compile time — the resulting binary has the AD tape baked in and runs on any system\n\nCI / no-Enzyme builds: set FERX_NO_AUTODIFF=1 before building. ferx falls back to central finite differences. All fits still work; wall time increases ~2–5× on large \\(n_\\eta\\) models."
+  },
+  {
+    "objectID": "ferx-core/autodiff.html#three-gradient-paths",
+    "href": "ferx-core/autodiff.html#three-gradient-paths",
+    "title": "Autodiff (Enzyme)",
+    "section": "Three gradient paths",
+    "text": "Three gradient paths\nThe path is resolved per subject at runtime in estimation/inner_optimizer.rs::resolve_gradient_method():\n\n\n\n\n\n\n\n\nPath\nEnum variant\nWhen used\n\n\n\n\nAdSingleSnapshot\nEnzyme reverse-mode, one per-subject TV snapshot\nSubject has no time-varying covariates; analytical PK model\n\n\nAdEventDriven\nEnzyme reverse-mode, per-event TV arrays\nSubject has time-varying covariates; model is 1-cpt or 2-cpt IV (bolus/infusion)\n\n\nFd\nCentral finite differences\nFERX_NO_AUTODIFF=1, ODE model, model has no tv_fn, or TV-cov on unsupported model\n\n\n\nAdSingleSnapshot is the common fast path. AdEventDriven ensures that covariate values at each dose/observation time are correctly propagated through the gradient when a subject’s weight or other covariate changes over time. ODE models currently have no AD path and always use FD.\n// Simplified resolve_gradient_method logic\nfn resolve_gradient_method(model: &CompiledModel, subject: &Subject) -&gt; InnerGradientMethod {\n    #[cfg(not(feature = \"autodiff\"))]\n    return InnerGradientMethod::Fd;\n\n    if model.tv_fn.is_none() { return InnerGradientMethod::Fd; }\n    if subject.has_tv_covariates() {\n        if supports_event_driven_ad(model.pk_model) {\n            InnerGradientMethod::AdEventDriven\n        } else {\n            InnerGradientMethod::Fd\n        }\n    } else {\n        InnerGradientMethod::AdSingleSnapshot\n    }\n}\nThe resolved path is stored in FitResult::gradient_used and exposed to R as fit$gradient_used."
+  },
+  {
+    "objectID": "ferx-core/autodiff.html#dual-forward-mode-type",
+    "href": "ferx-core/autodiff.html#dual-forward-mode-type",
+    "title": "Autodiff (Enzyme)",
+    "section": "Dual — forward-mode type",
+    "text": "Dual — forward-mode type\nad/dual.rs defines a Dual struct for forward-mode AD through the expression evaluator and PK model equations. It is not the hot Enzyme path — it is used for the model DSL expression interpreter and for contexts where Enzyme is unavailable.\n#[derive(Debug, Clone, Copy)]\npub struct Dual {\n    pub val: f64,\n    pub deriv: f64,\n}\n\nimpl Dual {\n    pub fn variable(val: f64) -&gt; Self { Self { val, deriv: 1.0 } }\n    pub fn constant(val: f64) -&gt; Self { Self { val, deriv: 0.0 } }\n}\nOperations implement the chain rule automatically:\nlet x = Dual::variable(2.0);   // x = 2, dx/dx = 1\nlet y = x.exp();               // y = e², dy/dx = e²\nlet z = y * Dual::constant(3.0); // z = 3e², dz/dx = 3e²\nSupported operations: exp, ln, sqrt, sin, cos, abs, arithmetic operators, and comparison (treats derivatives as zero for control-flow branching — appropriate for the smooth functions in PK models)."
+  },
+  {
+    "objectID": "ferx-core/autodiff.html#building-without-enzyme",
+    "href": "ferx-core/autodiff.html#building-without-enzyme",
+    "title": "Autodiff (Enzyme)",
+    "section": "Building without Enzyme",
+    "text": "Building without Enzyme\n# Install without Enzyme (for development, CI, Windows)\nFERX_NO_AUTODIFF=1 R CMD INSTALL --no-lock .\n\n# Or for the Rust crate directly\ncargo build --no-default-features --features ci\nWith FERX_NO_AUTODIFF=1, the autodiff feature flag is disabled, the Enzyme-gated #[cfg(feature = \"autodiff\")] blocks compile out, and resolve_gradient_method always returns Fd. The gradient_used field in FitResult reports \"finite_differences\"."
+  },
+  {
+    "objectID": "ferx-core/autodiff.html#relevant-source-files",
+    "href": "ferx-core/autodiff.html#relevant-source-files",
+    "title": "Autodiff (Enzyme)",
+    "section": "Relevant source files",
+    "text": "Relevant source files\n\n\n\n\n\n\n\nFile\nRole\n\n\n\n\nad/dual.rs\nDual&lt;f64&gt; forward-mode number type and arithmetic impls\n\n\nad/ad_gradients.rs\nEnzyme reverse-mode gradient entry points (#[autodiff])\n\n\nad/event_driven_ad.rs\nAD-compatible event-driven propagator for TV-covariate subjects\n\n\nad/event_driven_ad_jac.rs\nJacobian accumulation for Enzyme reverse mode\n\n\nestimation/inner_optimizer.rs\nresolve_gradient_method(), gradient dispatch, timing counters"
   },
   {
     "objectID": "ferx-core/architecture.html",
     "href": "ferx-core/architecture.html",
     "title": "Architecture",
     "section": "",
-    "text": "Note\n\n\n\nThis page is in progress."
+    "text": ".ferx model file  ──► parser/model_parser.rs  ──► CompiledModel\nNONMEM CSV        ──► io/datareader.rs         ──► Population\n                                                        │\n                                               api::fit()\n                                                        │\n                              ┌─────────────────────────┤\n                              │                         │\n                    outer_optimizer            inner_optimizer\n                    (population θ, Ω, σ)     (per-subject EBE η)\n                              │                         │\n                         pk/  or  ode/           stats/likelihood\n                    (predictions)              (NLL evaluation)\n                              │\n                         FitResult  ──► R via extendr FFI\nThe outer optimizer iterates over population parameters (theta, omega, sigma). For each candidate parameter set it calls the inner optimizer once per subject to find the empirical Bayes estimate (EBE) of that subject’s random effects. Predictions are routed to the analytical PK models in pk/ or the RK45 ODE solver in ode/, depending on whether the model file has an [odes] block."
+  },
+  {
+    "objectID": "ferx-core/architecture.html#data-flow",
+    "href": "ferx-core/architecture.html#data-flow",
+    "title": "Architecture",
+    "section": "",
+    "text": ".ferx model file  ──► parser/model_parser.rs  ──► CompiledModel\nNONMEM CSV        ──► io/datareader.rs         ──► Population\n                                                        │\n                                               api::fit()\n                                                        │\n                              ┌─────────────────────────┤\n                              │                         │\n                    outer_optimizer            inner_optimizer\n                    (population θ, Ω, σ)     (per-subject EBE η)\n                              │                         │\n                         pk/  or  ode/           stats/likelihood\n                    (predictions)              (NLL evaluation)\n                              │\n                         FitResult  ──► R via extendr FFI\nThe outer optimizer iterates over population parameters (theta, omega, sigma). For each candidate parameter set it calls the inner optimizer once per subject to find the empirical Bayes estimate (EBE) of that subject’s random effects. Predictions are routed to the analytical PK models in pk/ or the RK45 ODE solver in ode/, depending on whether the model file has an [odes] block."
+  },
+  {
+    "objectID": "ferx-core/architecture.html#ffi-boundary",
+    "href": "ferx-core/architecture.html#ffi-boundary",
+    "title": "Architecture",
+    "section": "FFI boundary",
+    "text": "FFI boundary\nferx-r wraps ferx-core via extendr. The glue layer in src/rust/src/lib.rs (ferx-r repo) exposes three #[extendr] functions:\n\nferx_rust_fit — calls api::run_model_with_data, returns a named R list\nferx_rust_simulate — calls api::simulate, returns an R data frame\nferx_rust_predict — calls api::predict, returns an R data frame\n\nConversion helpers:\n\nfit_result_to_list() — unpacks FitResult into an R list (theta, omega, sigma, SEs, OFV/AIC/BIC, diagnostics, model structure, warnings)\nsdtab_to_dataframe() — converts Vec&lt;SdtabRow&gt; into a data frame with columns PRED, IPRED, CWRES, IWRES, and one column per ETA"
+  },
+  {
+    "objectID": "ferx-core/architecture.html#key-types",
+    "href": "ferx-core/architecture.html#key-types",
+    "title": "Architecture",
+    "section": "Key types",
+    "text": "Key types\n\nSubject\nHolds all per-subject data after the NONMEM CSV is parsed.\npub struct Subject {\n    pub id: String,\n    pub doses: Vec&lt;DoseEvent&gt;,\n    pub obs_times: Vec&lt;f64&gt;,\n    pub observations: Vec&lt;f64&gt;,\n    pub obs_cmts: Vec&lt;usize&gt;,\n    pub covariates: HashMap&lt;String, f64&gt;,           // static (first non-missing)\n    pub dose_covariates: Vec&lt;HashMap&lt;String, f64&gt;&gt;, // LOCF snapshot per dose event\n    pub obs_covariates: Vec&lt;HashMap&lt;String, f64&gt;&gt;,  // LOCF snapshot per observation\n    pub cens: Vec&lt;u8&gt;,       // 0 = observed, 1 = BLOQ (LLOQ stored in observations)\n    pub occasions: Vec&lt;u32&gt;, // IOV occasion index per observation; empty if no IOV\n    // ...\n}\nWhen a subject has no time-varying covariates, dose_covariates and obs_covariates are empty and callers fall through to the static covariates map. Methods obs_cov(j) / dose_cov(k) encapsulate this fallback.\n\n\nDoseEvent\npub struct DoseEvent {\n    pub time: f64,\n    pub amt: f64,\n    pub cmt: usize,\n    pub rate: f64,\n    pub duration: f64,  // derived: amt / rate when rate &gt; 0, else 0\n    pub ss: bool,\n    pub ii: f64,\n}\n\n\nPkParams\nFixed-size array instead of HashMap&lt;String, f64&gt; — required for Enzyme AD.\npub struct PkParams {\n    pub values: [f64; 8],  // MAX_PK_PARAMS = 8\n}\n// Index:  0=CL  1=V  2=Q  3=V2  4=KA  5=F  6=Q3  7=V3\nF defaults to 1.0. Unused slots default to 0.0.\n\n\nModelParameters\nThe full set of population parameters under estimation.\npub struct ModelParameters {\n    pub theta: Vec&lt;f64&gt;,\n    pub theta_names: Vec&lt;String&gt;,\n    pub theta_lower: Vec&lt;f64&gt;,\n    pub theta_upper: Vec&lt;f64&gt;,\n    pub theta_fixed: Vec&lt;bool&gt;,\n    pub omega: OmegaMatrix,  // caches Cholesky factor + free_mask\n    pub sigma: SigmaVector,\n    // ...\n}\nOmegaMatrix caches the Cholesky factor alongside the full matrix and carries a free_mask (DMatrix&lt;bool&gt;) that records which off-diagonal entries are free parameters versus structural zeros from block_omega declarations."
+  },
+  {
+    "objectID": "ferx-core/architecture.html#internal-parameterisation",
+    "href": "ferx-core/architecture.html#internal-parameterisation",
+    "title": "Architecture",
+    "section": "Internal parameterisation",
+    "text": "Internal parameterisation\nThe outer optimizer works on an unconstrained packed vector x:\nx = [log(theta_free), chol(Omega_BSV), log(sigma), chol(Omega_IOV)]\n\nTheta: log-transformed to enforce positivity; unpacked with exp()\nOmega: lower Cholesky factor; diagonal elements log-transformed; unpacked with L * L'\nSigma: log-transformed, same as theta\n\nThis ensures the optimizer never visits invalid parameter regions (negative variances, non-positive-definite omega). Parameter scaling (scale_params = true) additionally normalizes the packed vector to O(1) before each optimizer call to improve conditioning when parameters span several orders of magnitude."
+  },
+  {
+    "objectID": "ferx-core/architecture.html#parallelism",
+    "href": "ferx-core/architecture.html#parallelism",
+    "title": "Architecture",
+    "section": "Parallelism",
+    "text": "Parallelism\nThe outer optimizer evaluates subjects in parallel via rayon:\nlet subject_nlls: Vec&lt;f64&gt; = population\n    .subjects\n    .par_iter()\n    .map(|subject| foce_subject_nll(subject, &params, &model))\n    .collect();\nThe inner optimizer (EBE search) is per-subject and single-threaded; no nested parallelism is used. Thread count is controlled by FitOptions::n_threads, forwarded to rayon’s global thread pool at the start of each fit call."
+  },
+  {
+    "objectID": "ferx-core/architecture.html#source-tree",
+    "href": "ferx-core/architecture.html#source-tree",
+    "title": "Architecture",
+    "section": "Source tree",
+    "text": "Source tree\nsrc/\n├── api.rs                     public entry points\n├── types.rs                   Subject, DoseEvent, PkParams, ModelParameters, FitResult\n├── lib.rs                     crate root\n├── build_info.rs              compile-time build metadata\n├── cancel.rs                  cooperative cancellation token\n├── parser/\n│   └── model_parser.rs        .ferx DSL → CompiledModel\n├── io/\n│   ├── datareader.rs          read_nonmem_csv → Population\n│   └── output.rs              sdtab / YAML writer\n├── estimation/\n│   ├── outer_optimizer.rs     population-level loop, NLopt/BFGS dispatch\n│   ├── inner_optimizer.rs     per-subject EBE, gradient resolution (AD/FD)\n│   ├── saem.rs                SAEM with MH sampling, two-phase schedule\n│   ├── gauss_newton.rs        Gauss-Newton / BHHH with LM damping\n│   ├── trust_region.rs        Newton trust-region (Steihaug CG subproblem)\n│   ├── parameterization.rs    mu-referencing, log/logit transforms, pack/unpack\n│   ├── sir.rs                 SIR importance resampling\n│   └── trace.rs               iteration trace CSV writer\n├── pk/\n│   ├── one_compartment.rs     1-cpt IV bolus/infusion/oral analytical solutions\n│   ├── two_compartment.rs     2-cpt analytical solutions, Vieta macro-rate constants\n│   ├── three_compartment.rs   3-cpt IV bolus/infusion, Cardano characteristic roots\n│   └── event_driven.rs        multi-dose superposition, TV-covariate dispatch\n├── ode/\n│   ├── solver.rs              RK45 Dormand-Prince adaptive integrator\n│   └── predictions.rs         event handling, break-time construction\n├── stats/\n│   ├── likelihood.rs          FOCE/FOCEI NLL, CWRES, population objective\n│   ├── residual_error.rs      IWRES, residual variance by error model type\n│   └── special.rs             log-gamma, logit, log-normal CDF\n├── ad/\n│   ├── dual.rs                Dual&lt;f64&gt; forward-mode number type\n│   ├── ad_gradients.rs        Enzyme reverse-mode gradient entry points\n│   ├── event_driven_ad.rs     AD-compatible event-driven propagator\n│   └── event_driven_ad_jac.rs Jacobian accumulation for Enzyme reverse mode\n└── bin/\n    ├── run_model.rs           CLI entry point\n    └── generate_data.rs       synthetic data generator"
   },
   {
     "objectID": "model-dsl/parameters.html",

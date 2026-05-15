@@ -339,6 +339,14 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Overview</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../ferx-core/architecture.html">
+ <span class="dropdown-text">Architecture</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../ferx-core/data-format.html">
+ <span class="dropdown-text">Data format</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../ferx-core/estimation.html">
  <span class="dropdown-text">Estimation (FOCE/FOCEI)</span></a>
   </li>  
@@ -347,16 +355,16 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Autodiff (Enzyme)</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/ode-solver.html">
- <span class="dropdown-text">ODE solver</span></a>
-  </li>  
-        <li>
     <a class="dropdown-item" href="../ferx-core/pk-models.html">
  <span class="dropdown-text">Analytical PK models</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/architecture.html">
- <span class="dropdown-text">Architecture</span></a>
+    <a class="dropdown-item" href="../ferx-core/ode-solver.html">
+ <span class="dropdown-text">ODE solver</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../ferx-core/output.html">
+ <span class="dropdown-text">Output reference</span></a>
   </li>  
     </ul>
   </li>
@@ -383,8 +391,17 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#stack-position" id="toc-stack-position" class="nav-link active" data-scroll-target="#stack-position">Stack position</a></li>
+  <li><a href="#crate-modules" id="toc-crate-modules" class="nav-link" data-scroll-target="#crate-modules">Crate modules</a></li>
+  <li><a href="#key-return-type-fitresult" id="toc-key-return-type-fitresult" class="nav-link" data-scroll-target="#key-return-type-fitresult">Key return type: <code>FitResult</code></a></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further reading</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -409,21 +426,181 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This page is in progress.</p>
-</div>
-</div>
+<p>ferx-core is the Rust computation engine that powers the ferx R package. It implements the full nonlinear mixed effects (NLME) modeling pipeline: model parsing, data ingestion, population parameter estimation (FOCE/FOCEI, SAEM, Gauss-Newton), simulation, and prediction. The R package (ferx-r) is a thin wrapper that exposes this engine via an extendr FFI boundary.</p>
+<p>The crate is named <code>ferx-nlme</code> and lives at <a href="https://github.com/FeRx-NLME/ferx-core">github.com/FeRx-NLME/ferx-core</a>. ferx-r references it as a path dependency in <code>src/rust/Cargo.toml</code>.</p>
+<section id="stack-position" class="level2">
+<h2 class="anchored" data-anchor-id="stack-position">Stack position</h2>
+<pre><code>R API  (ferx-r:  R/*.R)
+  └─► extendr FFI  (ferx-r:  src/rust/src/lib.rs)
+        └─► ferx-core  (estimation, PK, ODE, autodiff)</code></pre>
+<p>The FFI layer exposes three <code>#[extendr]</code> functions — <code>ferx_rust_fit</code>, <code>ferx_rust_simulate</code>, <code>ferx_rust_predict</code> — and converts ferx-core result types into R lists and data frames via <code>fit_result_to_list()</code> and <code>sdtab_to_dataframe()</code>. All heavy computation stays inside ferx-core.</p>
+</section>
+<section id="crate-modules" class="level2">
+<h2 class="anchored" data-anchor-id="crate-modules">Crate modules</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Module</th>
+<th>File(s)</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>api</code></td>
+<td><code>api.rs</code></td>
+<td>Public entry points: <code>run_model_with_data</code>, <code>simulate</code>, <code>predict</code></td>
+</tr>
+<tr class="even">
+<td><code>types</code></td>
+<td><code>types.rs</code></td>
+<td>Shared types: <code>Subject</code>, <code>DoseEvent</code>, <code>PkParams</code>, <code>ModelParameters</code>, <code>Population</code>, <code>FitResult</code></td>
+</tr>
+<tr class="odd">
+<td><code>parser</code></td>
+<td><code>parser/model_parser.rs</code></td>
+<td>Parses <code>.ferx</code> model files into a <code>CompiledModel</code></td>
+</tr>
+<tr class="even">
+<td><code>io</code></td>
+<td><code>io/datareader.rs</code>, <code>io/output.rs</code></td>
+<td>NONMEM CSV reader, sdtab writer</td>
+</tr>
+<tr class="odd">
+<td><code>estimation</code></td>
+<td><code>estimation/outer_optimizer.rs</code>, <code>inner_optimizer.rs</code>, <code>saem.rs</code>, <code>trust_region.rs</code>, <code>gauss_newton.rs</code>, <code>parameterization.rs</code>, <code>sir.rs</code>, <code>trace.rs</code></td>
+<td>FOCE/FOCEI, SAEM, Gauss-Newton, SIR, iteration trace</td>
+</tr>
+<tr class="even">
+<td><code>pk</code></td>
+<td><code>pk/one_compartment.rs</code>, <code>two_compartment.rs</code>, <code>three_compartment.rs</code>, <code>event_driven.rs</code></td>
+<td>Analytical 1/2/3-cpt PK models and event dispatch</td>
+</tr>
+<tr class="odd">
+<td><code>ode</code></td>
+<td><code>ode/solver.rs</code>, <code>ode/predictions.rs</code></td>
+<td>RK45 (Dormand-Prince) adaptive ODE solver</td>
+</tr>
+<tr class="even">
+<td><code>stats</code></td>
+<td><code>stats/likelihood.rs</code>, <code>residual_error.rs</code>, <code>special.rs</code></td>
+<td>FOCE/FOCEI NLL, CWRES/IWRES, special functions</td>
+</tr>
+<tr class="odd">
+<td><code>ad</code></td>
+<td><code>ad/dual.rs</code>, <code>ad/ad_gradients.rs</code>, <code>ad/event_driven_ad.rs</code></td>
+<td>Forward-mode <code>Dual</code> type and Enzyme reverse-mode AD wrappers</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="key-return-type-fitresult" class="level2">
+<h2 class="anchored" data-anchor-id="key-return-type-fitresult">Key return type: <code>FitResult</code></h2>
+<p><code>FitResult</code> is the struct returned through the FFI to R. Its principal fields:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>converged</code></td>
+<td><code>bool</code></td>
+<td>Whether the outer optimizer converged</td>
+</tr>
+<tr class="even">
+<td><code>method</code></td>
+<td><code>String</code></td>
+<td>Estimation method used (e.g.&nbsp;<code>"focei"</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>gradient_used</code></td>
+<td><code>String</code></td>
+<td>AD mode resolved at runtime (<code>"enzyme"</code>, <code>"dual"</code>, <code>"finite_differences"</code>)</td>
+</tr>
+<tr class="even">
+<td><code>ofv</code></td>
+<td><code>f64</code></td>
+<td>Objective function value (−2 log-likelihood)</td>
+</tr>
+<tr class="odd">
+<td><code>aic</code></td>
+<td><code>f64</code></td>
+<td>Akaike information criterion</td>
+</tr>
+<tr class="even">
+<td><code>bic</code></td>
+<td><code>f64</code></td>
+<td>Bayesian information criterion</td>
+</tr>
+<tr class="odd">
+<td><code>theta</code></td>
+<td><code>Vec&lt;f64&gt;</code></td>
+<td>Final population fixed-effect estimates</td>
+</tr>
+<tr class="even">
+<td><code>theta_names</code></td>
+<td><code>Vec&lt;String&gt;</code></td>
+<td>Names matching <code>theta</code></td>
+</tr>
+<tr class="odd">
+<td><code>se_theta</code></td>
+<td><code>Vec&lt;f64&gt;</code></td>
+<td>Standard errors for theta (requires <code>covariance = true</code>)</td>
+</tr>
+<tr class="even">
+<td><code>omega</code></td>
+<td><code>DMatrix&lt;f64&gt;</code></td>
+<td>Final between-subject variability matrix</td>
+</tr>
+<tr class="odd">
+<td><code>se_omega</code></td>
+<td><code>Vec&lt;f64&gt;</code></td>
+<td>Standard errors for omega elements</td>
+</tr>
+<tr class="even">
+<td><code>sigma</code></td>
+<td><code>Vec&lt;f64&gt;</code></td>
+<td>Residual error estimates</td>
+</tr>
+<tr class="odd">
+<td><code>sdtab</code></td>
+<td><code>Vec&lt;SdtabRow&gt;</code></td>
+<td>Per-observation diagnostics: PRED, IPRED, CWRES, IWRES, ETAs</td>
+</tr>
+<tr class="even">
+<td><code>warnings</code></td>
+<td><code>Vec&lt;String&gt;</code></td>
+<td>Non-fatal warnings emitted during the run</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="further-reading" class="level2">
+<h2 class="anchored" data-anchor-id="further-reading">Further reading</h2>
+<ul>
+<li><a href="../ferx-core/architecture.html">Architecture</a> — data flow, FFI boundary, key types, parallelism, source tree</li>
+<li><a href="../ferx-core/estimation.html">Estimation</a> — FOCE/FOCEI, SAEM, Gauss-Newton, IOV, SIR</li>
+<li><a href="../ferx-core/pk-models.html">Analytical PK models</a> — 1/2/3-compartment closed-form solutions</li>
+<li><a href="../ferx-core/ode-solver.html">ODE solver</a> — RK45 adaptive integrator and event handling</li>
+<li><a href="../ferx-core/autodiff.html">Autodiff</a> — <code>Dual</code> type and Enzyme reverse-mode integration</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -847,7 +1024,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Ode Solver – ferx</title>
+<title>ODE Solver – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -339,6 +374,14 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Overview</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../ferx-core/architecture.html">
+ <span class="dropdown-text">Architecture</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../ferx-core/data-format.html">
+ <span class="dropdown-text">Data format</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../ferx-core/estimation.html">
  <span class="dropdown-text">Estimation (FOCE/FOCEI)</span></a>
   </li>  
@@ -347,16 +390,16 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Autodiff (Enzyme)</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/ode-solver.html">
- <span class="dropdown-text">ODE solver</span></a>
-  </li>  
-        <li>
     <a class="dropdown-item" href="../ferx-core/pk-models.html">
  <span class="dropdown-text">Analytical PK models</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/architecture.html">
- <span class="dropdown-text">Architecture</span></a>
+    <a class="dropdown-item" href="../ferx-core/ode-solver.html">
+ <span class="dropdown-text">ODE solver</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../ferx-core/output.html">
+ <span class="dropdown-text">Output reference</span></a>
   </li>  
     </ul>
   </li>
@@ -383,8 +426,19 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#algorithm-dormand-prince-rk45" id="toc-algorithm-dormand-prince-rk45" class="nav-link active" data-scroll-target="#algorithm-dormand-prince-rk45">Algorithm: Dormand-Prince RK45</a></li>
+  <li><a href="#adaptive-step-control" id="toc-adaptive-step-control" class="nav-link" data-scroll-target="#adaptive-step-control">Adaptive step control</a></li>
+  <li><a href="#event-handling" id="toc-event-handling" class="nav-link" data-scroll-target="#event-handling">Event handling</a></li>
+  <li><a href="#defining-an-ode-model" id="toc-defining-an-ode-model" class="nav-link" data-scroll-target="#defining-an-ode-model">Defining an ODE model</a></li>
+  <li><a href="#when-to-use-ode-vs-analytical" id="toc-when-to-use-ode-vs-analytical" class="nav-link" data-scroll-target="#when-to-use-ode-vs-analytical">When to use ODE vs analytical</a></li>
+  <li><a href="#relevant-source-files" id="toc-relevant-source-files" class="nav-link" data-scroll-target="#relevant-source-files">Relevant source files</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -392,7 +446,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Ode Solver</h1>
+<h1 class="title">ODE Solver</h1>
 </div>
 
 
@@ -409,21 +463,146 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This page is in progress.</p>
-</div>
-</div>
+<p>ferx-core includes an adaptive Runge-Kutta solver for models whose structural equations cannot be expressed analytically. It is invoked whenever a <code>.ferx</code> model file contains an <code>[odes]</code> block; analytical PK models bypass it entirely.</p>
+<section id="algorithm-dormand-prince-rk45" class="level2">
+<h2 class="anchored" data-anchor-id="algorithm-dormand-prince-rk45">Algorithm: Dormand-Prince RK45</h2>
+<p>The solver implements the <strong>Dormand-Prince</strong> method (also called RK45 or DOPRI5) — the same family as Julia’s <code>Tsit5()</code>. It is an explicit, embedded Runge-Kutta pair:</p>
+<ul>
+<li><strong>5th-order</strong> solution used for advancing the state</li>
+<li><strong>4th-order</strong> embedded solution used only for error estimation</li>
+<li>7 function evaluations per step (the last stage is reused as the first of the next step — FSAL property)</li>
+</ul>
+<p>The Butcher tableau coefficients are hardcoded in <code>ode/solver.rs</code> from the original Dormand &amp; Prince (1980) paper.</p>
+<p><strong>Default tolerances:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>abstol</code></td>
+<td><code>1e-6</code></td>
+</tr>
+<tr class="even">
+<td><code>reltol</code></td>
+<td><code>1e-4</code></td>
+</tr>
+<tr class="odd">
+<td><code>max_steps</code></td>
+<td><code>10 000</code></td>
+</tr>
+<tr class="even">
+<td><code>initial_dt</code></td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="odd">
+<td><code>min_dt</code></td>
+<td><code>1e-12</code></td>
+</tr>
+</tbody>
+</table>
+<p>These are appropriate for typical PK ODE systems (2–5 states, smooth dynamics, concentration units in μg/mL or mg/L). Tighter tolerances can be set via <code>[fit_options]</code> if needed.</p>
+</section>
+<section id="adaptive-step-control" class="level2">
+<h2 class="anchored" data-anchor-id="adaptive-step-control">Adaptive step control</h2>
+<p>At each candidate step the solver computes the scaled error norm:</p>
+<pre><code>err = ‖(y₅ − y₄) / (abstol + reltol · |y₅|)‖₂ / √n</code></pre>
+<ul>
+<li>If <code>err ≤ 1</code>: step accepted; next step size scaled up by <code>min(5, 0.9 · err^(-0.2))</code></li>
+<li>If <code>err &gt; 1</code>: step rejected and retried at <code>max(0.2, 0.9 · err^(-0.25)) · h</code></li>
+</ul>
+<p>The solver errors if <code>h</code> falls below <code>min_dt</code> (signals a stiff or ill-posed system) or if the step count exceeds <code>max_steps</code>.</p>
+</section>
+<section id="event-handling" class="level2">
+<h2 class="anchored" data-anchor-id="event-handling">Event handling</h2>
+<p>PK dose events create discontinuities in the ODE state that the solver cannot step across. <code>ode/predictions.rs</code> handles this by:</p>
+<ol type="1">
+<li>Collecting all dose times and infusion-end times as <strong>break points</strong></li>
+<li>Integrating segment by segment between consecutive break points</li>
+<li>At each bolus dose (EVID = 1), applying the state update: <code>u[cmt] += amt</code></li>
+<li>For infusions, adding <code>+rate</code> to the compartment derivative for the duration of the infusion via a closure wrapper around the user RHS</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Conceptual: infusion added to the RHS during [t_start, t_end]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> rhs_with_infusions <span class="op">=</span> <span class="op">|</span>u<span class="op">,</span> params<span class="op">,</span> t<span class="op">,</span> du<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    user_rhs(u<span class="op">,</span> params<span class="op">,</span> t<span class="op">,</span> du)<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (cmt_idx<span class="op">,</span> rate) <span class="kw">in</span> <span class="op">&amp;</span>active_infusions <span class="op">{</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        du[<span class="op">*</span>cmt_idx] <span class="op">+=</span> rate<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Break times are constructed so that each integration segment is either fully inside or fully outside every infusion window — no float-equality check is needed at the segment interior.</p>
+</section>
+<section id="defining-an-ode-model" class="level2">
+<h2 class="anchored" data-anchor-id="defining-an-ode-model">Defining an ODE model</h2>
+<p>The <code>[odes]</code> section of a <code>.ferx</code> file specifies the right-hand side using a simple expression DSL. Derivatives are written as <code>d/dt(STATE)</code>:</p>
+<pre><code>[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) = KA * depot - (CL / V) * central</code></pre>
+<p>Individual parameters from <code>[individual_parameters]</code> (CL, V, KA, …) are available as symbols. The observable compartment is matched to the <code>CMT</code> column in the data.</p>
+</section>
+<section id="when-to-use-ode-vs-analytical" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-ode-vs-analytical">When to use ODE vs analytical</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1-cpt or 2-cpt oral/IV, standard dosing</td>
+<td>Use analytical (<code>pk one_cpt_oral(...)</code>)</td>
+</tr>
+<tr class="even">
+<td>PD link model, transit compartments, enterohepatic circulation</td>
+<td>Use <code>[odes]</code></td>
+</tr>
+<tr class="odd">
+<td>Saturable elimination (Michaelis-Menten), parallel pathways</td>
+<td>Use <code>[odes]</code></td>
+</tr>
+</tbody>
+</table>
+<p>Analytical models are typically 10–50× faster per likelihood evaluation and support the Enzyme AD gradient path. ODE models currently fall back to finite-difference gradients.</p>
+</section>
+<section id="relevant-source-files" class="level2">
+<h2 class="anchored" data-anchor-id="relevant-source-files">Relevant source files</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ode/solver.rs</code></td>
+<td><code>solve_ode()</code>, Dormand-Prince coefficients, adaptive step loop</td>
+</tr>
+<tr class="even">
+<td><code>ode/predictions.rs</code></td>
+<td><code>ode_predictions()</code>, event handling, break-time construction</td>
+</tr>
+<tr class="odd">
+<td><code>ode/mod.rs</code></td>
+<td>Module re-exports</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -847,7 +1026,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

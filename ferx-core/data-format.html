@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Model Editing – ferx</title>
+<title>Data Format – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -391,8 +391,27 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#required-columns" id="toc-required-columns" class="nav-link active" data-scroll-target="#required-columns">Required columns</a></li>
+  <li><a href="#optional-standard-columns" id="toc-optional-standard-columns" class="nav-link" data-scroll-target="#optional-standard-columns">Optional standard columns</a></li>
+  <li><a href="#event-types-evid" id="toc-event-types-evid" class="nav-link" data-scroll-target="#event-types-evid">Event types (EVID)</a></li>
+  <li><a href="#covariate-columns" id="toc-covariate-columns" class="nav-link" data-scroll-target="#covariate-columns">Covariate columns</a>
+  <ul class="collapse">
+  <li><a href="#time-varying-covariate-support" id="toc-time-varying-covariate-support" class="nav-link" data-scroll-target="#time-varying-covariate-support">Time-varying covariate support</a></li>
+  </ul></li>
+  <li><a href="#occasion-column-iov" id="toc-occasion-column-iov" class="nav-link" data-scroll-target="#occasion-column-iov">Occasion column (IOV)</a></li>
+  <li><a href="#bloq-observations" id="toc-bloq-observations" class="nav-link" data-scroll-target="#bloq-observations">BLOQ observations</a></li>
+  <li><a href="#infusion-doses" id="toc-infusion-doses" class="nav-link" data-scroll-target="#infusion-doses">Infusion doses</a></li>
+  <li><a href="#steady-state-dosing" id="toc-steady-state-dosing" class="nav-link" data-scroll-target="#steady-state-dosing">Steady-state dosing</a></li>
+  <li><a href="#multiple-doses" id="toc-multiple-doses" class="nav-link" data-scroll-target="#multiple-doses">Multiple doses</a></li>
+  <li><a href="#full-example-with-covariates" id="toc-full-example-with-covariates" class="nav-link" data-scroll-target="#full-example-with-covariates">Full example with covariates</a></li>
+  <li><a href="#relevant-source-files" id="toc-relevant-source-files" class="nav-link" data-scroll-target="#relevant-source-files">Relevant source files</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -400,7 +419,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Model Editing</h1>
+<h1 class="title">Data Format</h1>
 </div>
 
 
@@ -417,21 +436,272 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This article is in progress.</p>
-</div>
-</div>
+<p>ferx-core reads data in NONMEM-compatible CSV format. This is the standard format shared by NONMEM, Monolix, and most population PK tools.</p>
+<section id="required-columns" class="level2">
+<h2 class="anchored" data-anchor-id="required-columns">Required columns</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ID</code></td>
+<td>string/numeric</td>
+<td>Subject identifier</td>
+</tr>
+<tr class="even">
+<td><code>TIME</code></td>
+<td>numeric</td>
+<td>Time relative to first dose</td>
+</tr>
+<tr class="odd">
+<td><code>DV</code></td>
+<td>numeric</td>
+<td>Dependent variable (observed concentration)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="optional-standard-columns" class="level2">
+<h2 class="anchored" data-anchor-id="optional-standard-columns">Optional standard columns</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>EVID</code></td>
+<td>integer</td>
+<td>0</td>
+<td>Event ID — see table below</td>
+</tr>
+<tr class="even">
+<td><code>AMT</code></td>
+<td>numeric</td>
+<td>0</td>
+<td>Dose amount (dose rows only)</td>
+</tr>
+<tr class="odd">
+<td><code>CMT</code></td>
+<td>integer</td>
+<td>1</td>
+<td>Compartment number (1-indexed)</td>
+</tr>
+<tr class="even">
+<td><code>RATE</code></td>
+<td>numeric</td>
+<td>0</td>
+<td>Infusion rate; 0 = bolus</td>
+</tr>
+<tr class="odd">
+<td><code>MDV</code></td>
+<td>integer</td>
+<td>0</td>
+<td>Missing DV flag; 1 = skip this observation</td>
+</tr>
+<tr class="even">
+<td><code>II</code></td>
+<td>numeric</td>
+<td>0</td>
+<td>Interdose interval for steady-state records</td>
+</tr>
+<tr class="odd">
+<td><code>SS</code></td>
+<td>integer</td>
+<td>0</td>
+<td>Steady-state flag; 1 = assume steady state before TIME=0</td>
+</tr>
+<tr class="even">
+<td><code>CENS</code></td>
+<td>integer</td>
+<td>0</td>
+<td>BLOQ flag; 1 = DV is below LLOQ (DV carries the LLOQ value)</td>
+</tr>
+</tbody>
+</table>
+<p>Missing values may be represented as <code>.</code> or as an empty cell.</p>
+<p>Column names are case-insensitive: <code>ID</code>, <code>Id</code>, and <code>id</code> are all recognised.</p>
+</section>
+<section id="event-types-evid" class="level2">
+<h2 class="anchored" data-anchor-id="event-types-evid">Event types (EVID)</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>EVID</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>Observation record. <code>DV</code> is used for estimation.</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Dose record. <code>AMT</code> is administered to compartment <code>CMT</code>.</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Covariate-change marker. Compartment amounts are unchanged but the PK parameter expressions are re-evaluated using this row’s covariate values. No-op when all covariates are time-constant.</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Reset + dose. All compartment amounts are zeroed before dosing.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="covariate-columns" class="level2">
+<h2 class="anchored" data-anchor-id="covariate-columns">Covariate columns</h2>
+<p>Any column not in the standard set above is treated as a covariate.</p>
+<ul>
+<li><strong>Time-constant covariates</strong>: the first non-missing value per subject is used.</li>
+<li><strong>Time-varying covariates</strong>: Last Observation Carried Forward (LOCF) per row — individual-parameter expressions are re-evaluated at each dose and observation row using that row’s covariate snapshot.</li>
+</ul>
+<p>Covariate names are matched case-insensitively against names in <code>[individual_parameters]</code> expressions. Numeric covariate columns that are not the IOV occasion column are candidates for <code>ferx_eta_cov()</code> in the R layer.</p>
+<section id="time-varying-covariate-support" class="level3">
+<h3 class="anchored" data-anchor-id="time-varying-covariate-support">Time-varying covariate support</h3>
+<p>Time-varying covariates are supported for all analytical models (1/2/3-cpt) and all ODE-defined models. The Enzyme gradient fast path is also event-driven for TV-covariate subjects on analytical models — the AD path does not fall back to finite differences when covariates vary.</p>
+</section>
+</section>
+<section id="occasion-column-iov" class="level2">
+<h2 class="anchored" data-anchor-id="occasion-column-iov">Occasion column (IOV)</h2>
+<p>When using Inter-Occasion Variability, add an integer occasion-index column and name it with <code>iov_column</code> in <code>[fit_options]</code>:</p>
+<pre><code>[fit_options]
+  iov_column = OCC</code></pre>
+<p>The <code>OCC</code> column:</p>
+<ul>
+<li>Contains <strong>positive integer occasion indices</strong> (e.g.&nbsp;1, 2, 3…) — one per row</li>
+<li>Applies to both dose and observation rows</li>
+<li>Is excluded from covariate auto-detection</li>
+<li>Does not need to start at 1 or be consecutive; different numbers mean different occasions with independent kappa EBEs</li>
+</ul>
+</section>
+<section id="bloq-observations" class="level2">
+<h2 class="anchored" data-anchor-id="bloq-observations">BLOQ observations</h2>
+<p>Set <code>CENS = 1</code> on any row where the measured concentration is below the lower limit of quantification. The <code>DV</code> column must contain the <strong>LLOQ value</strong> (not a zero or missing). Pair with <code>bloq_method = m3</code> in <code>[fit_options]</code> to enable Beal M3 likelihood-based BLOQ handling; the default <code>drop</code> simply discards these rows.</p>
+</section>
+<section id="infusion-doses" class="level2">
+<h2 class="anchored" data-anchor-id="infusion-doses">Infusion doses</h2>
+<p>Set <code>RATE &gt; 0</code> on a dose row to specify an infusion. Duration is derived as <code>AMT / RATE</code>:</p>
+<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
+1,0,.,1,500,1,50,1</code></pre>
+<p>This administers 500 units over 10 hours at a rate of 50 units/hour.</p>
+<p><strong>Dose and infusion routing</strong> on analytical models:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>CMT</th>
+<th>IV models</th>
+<th>Oral models</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Central compartment</td>
+<td>Depot — bolus is absorbed via first-order KA</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Peripheral 1 infusion (2-cpt and 3-cpt)</td>
+<td>Central compartment infusion</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Peripheral 2 infusion (3-cpt only)</td>
+<td>— (panics with a clear message)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="steady-state-dosing" class="level2">
+<h2 class="anchored" data-anchor-id="steady-state-dosing">Steady-state dosing</h2>
+<p>Set <code>SS = 1</code> and <code>II</code> to the dosing interval on a dose row to instruct ferx-core to compute the compartment amounts that would result from an infinite history of doses spaced <code>II</code> apart before <code>TIME = 0</code>:</p>
+<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,SS,II,MDV
+1,0,.,1,100,1,1,12,1
+1,0.5,25.3,0,.,.,.,.,0</code></pre>
+</section>
+<section id="multiple-doses" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-doses">Multiple doses</h2>
+<p>Each dose is a separate row with <code>EVID = 1</code>. Analytical models sum contributions via multi-dose superposition:</p>
+<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,MDV
+1,0,.,1,100,1,1
+1,0.5,9.49,0,.,.,0
+1,12,.,1,100,1,1
+1,12.5,15.2,0,.,.,0
+1,24,.,1,100,1,1
+1,24.5,18.1,0,.,.,0</code></pre>
+</section>
+<section id="full-example-with-covariates" class="level2">
+<h2 class="anchored" data-anchor-id="full-example-with-covariates">Full example with covariates</h2>
+<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV,WT,CRCL
+1,0,.,1,100,1,0,1,70,95
+1,0.5,9.49,0,.,.,.,0,70,95
+1,1,14.42,0,.,.,.,0,70,95
+1,2,17.56,0,.,.,.,0,70,95
+1,4,15.23,0,.,.,.,0,70,95
+1,8,10.15,0,.,.,.,0,70,95
+2,0,.,1,150,1,0,1,85,110
+2,0.5,14.2,0,.,.,.,0,85,110
+2,1,21.3,0,.,.,.,0,85,110</code></pre>
+<ul>
+<li>Dose records (<code>EVID=1</code>): <code>MDV=1</code>, <code>DV=.</code></li>
+<li>Observation records (<code>EVID=0</code>): <code>MDV=0</code>, valid <code>DV</code></li>
+<li>Covariates (<code>WT</code>, <code>CRCL</code>) are extra columns; matched to <code>[individual_parameters]</code> by name</li>
+</ul>
+</section>
+<section id="relevant-source-files" class="level2">
+<h2 class="anchored" data-anchor-id="relevant-source-files">Relevant source files</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>io/datareader.rs</code></td>
+<td><code>read_nonmem_csv()</code> — full CSV parser, LOCF, covariate detection</td>
+</tr>
+<tr class="even">
+<td><code>types.rs</code></td>
+<td><code>Subject</code>, <code>DoseEvent</code>, <code>Population</code> — parsed representation</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -855,7 +1125,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

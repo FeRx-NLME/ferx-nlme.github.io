@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Estimation – ferx</title>
+<title>Estimation (FOCE/FOCEI) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -76,6 +76,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -339,6 +368,14 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Overview</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../ferx-core/architecture.html">
+ <span class="dropdown-text">Architecture</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../ferx-core/data-format.html">
+ <span class="dropdown-text">Data format</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../ferx-core/estimation.html">
  <span class="dropdown-text">Estimation (FOCE/FOCEI)</span></a>
   </li>  
@@ -347,16 +384,16 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Autodiff (Enzyme)</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/ode-solver.html">
- <span class="dropdown-text">ODE solver</span></a>
-  </li>  
-        <li>
     <a class="dropdown-item" href="../ferx-core/pk-models.html">
  <span class="dropdown-text">Analytical PK models</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../ferx-core/architecture.html">
- <span class="dropdown-text">Architecture</span></a>
+    <a class="dropdown-item" href="../ferx-core/ode-solver.html">
+ <span class="dropdown-text">ODE solver</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../ferx-core/output.html">
+ <span class="dropdown-text">Output reference</span></a>
   </li>  
     </ul>
   </li>
@@ -383,8 +420,29 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#foce-vs-focei" id="toc-foce-vs-focei" class="nav-link active" data-scroll-target="#foce-vs-focei">FOCE vs FOCEI</a></li>
+  <li><a href="#the-two-loop-structure" id="toc-the-two-loop-structure" class="nav-link" data-scroll-target="#the-two-loop-structure">The two-loop structure</a>
+  <ul class="collapse">
+  <li><a href="#outer-loop-population-parameters" id="toc-outer-loop-population-parameters" class="nav-link" data-scroll-target="#outer-loop-population-parameters">Outer loop — population parameters</a></li>
+  <li><a href="#inner-loop-empirical-bayes-estimates" id="toc-inner-loop-empirical-bayes-estimates" class="nav-link" data-scroll-target="#inner-loop-empirical-bayes-estimates">Inner loop — empirical Bayes estimates</a></li>
+  </ul></li>
+  <li><a href="#convergence-criteria" id="toc-convergence-criteria" class="nav-link" data-scroll-target="#convergence-criteria">Convergence criteria</a></li>
+  <li><a href="#ofv-aic-bic" id="toc-ofv-aic-bic" class="nav-link" data-scroll-target="#ofv-aic-bic">OFV / AIC / BIC</a></li>
+  <li><a href="#covariance-step" id="toc-covariance-step" class="nav-link" data-scroll-target="#covariance-step">Covariance step</a></li>
+  <li><a href="#saem" id="toc-saem" class="nav-link" data-scroll-target="#saem">SAEM</a></li>
+  <li><a href="#gauss-newton" id="toc-gauss-newton" class="nav-link" data-scroll-target="#gauss-newton">Gauss-Newton</a></li>
+  <li><a href="#inter-occasion-variability-iov" id="toc-inter-occasion-variability-iov" class="nav-link" data-scroll-target="#inter-occasion-variability-iov">Inter-Occasion Variability (IOV)</a></li>
+  <li><a href="#sampling-importance-resampling-sir" id="toc-sampling-importance-resampling-sir" class="nav-link" data-scroll-target="#sampling-importance-resampling-sir">Sampling Importance Resampling (SIR)</a></li>
+  <li><a href="#mu-referencing" id="toc-mu-referencing" class="nav-link" data-scroll-target="#mu-referencing">Mu-referencing</a></li>
+  <li><a href="#key-fit_options-reference" id="toc-key-fit_options-reference" class="nav-link" data-scroll-target="#key-fit_options-reference">Key fit_options reference</a></li>
+  <li><a href="#relevant-source-files" id="toc-relevant-source-files" class="nav-link" data-scroll-target="#relevant-source-files">Relevant source files</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -392,7 +450,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Estimation</h1>
+<h1 class="title">Estimation (FOCE/FOCEI)</h1>
 </div>
 
 
@@ -409,21 +467,366 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This page is in progress.</p>
-</div>
-</div>
+<p>ferx-core supports five estimation methods: FOCE, FOCEI, SAEM, Gauss-Newton, and a GN+FOCEI hybrid. FOCEI is the default. All methods share the same two-loop structure: an outer loop over population parameters and an inner loop over per-subject empirical Bayes estimates (EBEs).</p>
+<section id="foce-vs-focei" class="level2">
+<h2 class="anchored" data-anchor-id="foce-vs-focei">FOCE vs FOCEI</h2>
+<p><strong>FOCE</strong> (First-Order Conditional Estimation) linearises the model around the EBE η̂ and evaluates the residual variance R at the population mean (η = 0):</p>
+<p><span class="math display">\[\text{OFV}_i = (y - f_0)^T \tilde{R}^{-1} (y - f_0) + \log|\tilde{R}|\]</span></p>
+<p>where <span class="math inline">\(f_0 = f(\hat{\eta}) - H\hat{\eta}\)</span> and <span class="math inline">\(\tilde{R} = H\Omega H^T + R(f_0)\)</span>.</p>
+<p><strong>FOCEI</strong> adds the <em>interaction</em> term — the residual variance <span class="math inline">\(V(\hat{\eta})\)</span> is evaluated at η̂ rather than η = 0, capturing the dependence of residual error on individual predictions:</p>
+<p><span class="math display">\[\text{OFV}_i = (y - \hat{f})^T V^{-1} (y - \hat{f}) + \hat{\eta}^T \Omega^{-1} \hat{\eta} + \log|\tilde{R}|\]</span></p>
+<p>FOCEI is more accurate when the error model is proportional or combined. Use FOCE only for additive-error models where the interaction term is zero.</p>
+</section>
+<section id="the-two-loop-structure" class="level2">
+<h2 class="anchored" data-anchor-id="the-two-loop-structure">The two-loop structure</h2>
+<section id="outer-loop-population-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="outer-loop-population-parameters">Outer loop — population parameters</h3>
+<p>Minimises the population OFV = Σᵢ OFVᵢ over θ, Ω, σ. Parameters are internally log-transformed (theta, sigma) and Cholesky-factored (omega) so the optimizer works on an unconstrained packed vector:</p>
+<pre><code>x = [log(θ_free), chol(Ω_BSV), log(σ), chol(Ω_IOV)]</code></pre>
+<p>Available optimizers (set via <code>optimizer</code> in <code>[fit_options]</code>):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Algorithm</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>slsqp</code></td>
+<td>NLopt SLSQP</td>
+<td><strong>Default.</strong> Gradient-based, handles bounds well</td>
+</tr>
+<tr class="even">
+<td><code>bobyqa</code></td>
+<td>NLopt BOBYQA</td>
+<td>Derivative-free; robust when FD gradients are noisy</td>
+</tr>
+<tr class="odd">
+<td><code>nlopt_lbfgs</code></td>
+<td>NLopt L-BFGS</td>
+<td>Good for large parameter spaces</td>
+</tr>
+<tr class="even">
+<td><code>mma</code></td>
+<td>NLopt MMA</td>
+<td>Method of Moving Asymptotes</td>
+</tr>
+<tr class="odd">
+<td><code>bfgs</code></td>
+<td>Built-in BFGS</td>
+<td>Quasi-Newton with backtracking line search</td>
+</tr>
+<tr class="even">
+<td><code>lbfgs</code></td>
+<td>Built-in L-BFGS</td>
+<td>Memory-efficient BFGS</td>
+</tr>
+<tr class="odd">
+<td><code>trust_region</code></td>
+<td>Newton trust-region (argmin)</td>
+<td>Uses FD Hessian; Steihaug CG subproblem</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Global search:</strong> setting <code>global_search = true</code> runs NLopt CRS2-LM (Controlled Random Search) as a gradient-free pre-search before the local optimizer. Helps escape local minima on poorly-identified models. Budget is controlled by <code>global_maxeval</code> (default: <code>200 * (n_params + 1)</code>).</p>
+</section>
+<section id="inner-loop-empirical-bayes-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="inner-loop-empirical-bayes-estimates">Inner loop — empirical Bayes estimates</h3>
+<p>Minimises the individual NLL per subject independently (parallelised via rayon):</p>
+<p><span class="math display">\[\text{NLL}(\eta) = \frac{1}{2}\left[\eta^T\Omega^{-1}\eta + \log|\Omega| + \sum_j\left(\frac{(y_j - f_j(\hat{\eta}))^2}{V_j(\hat{\eta})} + \log V_j(\hat{\eta})\right)\right]\]</span></p>
+<p>Uses L-BFGS with automatic differentiation gradients (preferred) or finite differences. Falls back to Nelder-Mead simplex if L-BFGS fails to converge.</p>
+<p><strong>Warm starting:</strong> EBEs from the previous outer iteration seed the inner optimizer, drastically reducing inner iterations in later stages when parameters change slowly.</p>
+<p><strong>EBE convergence guard:</strong> if more than <code>max_unconverged_frac</code> (default 0.1) of subjects have unconverged EBEs, the outer optimizer receives OFV = ∞ for that step, preventing convergence to a solution with unreliable EBEs.</p>
+</section>
+</section>
+<section id="convergence-criteria" class="level2">
+<h2 class="anchored" data-anchor-id="convergence-criteria">Convergence criteria</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Loop</th>
+<th>Criterion</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Outer</td>
+<td>gradient norm &lt; <code>outer_gtol</code></td>
+<td><code>1e-6</code></td>
+</tr>
+<tr class="even">
+<td>Outer</td>
+<td>max iterations</td>
+<td><code>maxiter = 500</code></td>
+</tr>
+<tr class="odd">
+<td>Inner</td>
+<td>gradient norm &lt; <code>inner_tol</code></td>
+<td><code>1e-4</code></td>
+</tr>
+<tr class="even">
+<td>Inner</td>
+<td>max iterations</td>
+<td><code>inner_maxiter = 200</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>inner_tol = 1e-4</code> matches the precision of NONMEM’s default inner-loop convergence (SIGDIGITS ≈ 3). Tighter values over-converge EBEs relative to the Sheiner-Beal linearisation error and can slow FOCEI fits 10–15× without changing the final OFV.</p>
+</section>
+<section id="ofv-aic-bic" class="level2">
+<h2 class="anchored" data-anchor-id="ofv-aic-bic">OFV / AIC / BIC</h2>
+<p><span class="math display">\[\text{OFV} = -2\log L \qquad \text{AIC} = \text{OFV} + 2p \qquad \text{BIC} = \text{OFV} + p\log N\]</span></p>
+<p>where <span class="math inline">\(p\)</span> is the number of estimated parameters and <span class="math inline">\(N\)</span> is the number of observations.</p>
+</section>
+<section id="covariance-step" class="level2">
+<h2 class="anchored" data-anchor-id="covariance-step">Covariance step</h2>
+<p>When <code>covariance = true</code>, ferx computes the observed Fisher information matrix via finite-difference Hessian of the population OFV at convergence:</p>
+<ul>
+<li><strong>Standard errors</strong> = <span class="math inline">\(\sqrt{\text{diag}(\hat{\Sigma})}\)</span></li>
+<li><strong>%RSE</strong> = <span class="math inline">\(|\text{SE} / \hat{\theta}| \times 100\)</span></li>
+<li><strong>Omega SEs</strong> derived via delta method from the Cholesky parameterisation</li>
+</ul>
+</section>
+<section id="saem" class="level2">
+<h2 class="anchored" data-anchor-id="saem">SAEM</h2>
+<p>Stochastic Approximation EM replaces the deterministic inner loop with Metropolis-Hastings sampling, following the Monolix two-phase schedule:</p>
+<ul>
+<li><strong>Phase 1 (exploration, γ = 1):</strong> rapid basin finding; default 150 iterations</li>
+<li><strong>Phase 2 (convergence, γ = 1/k):</strong> decreasing-weight average; default 250 iterations</li>
+</ul>
+<p>Each SAEM iteration:</p>
+<ol type="1">
+<li><strong>E-step:</strong> sample η per subject via MH random walk (<span class="math inline">\(\eta_\text{prop} = \eta + \delta_i \cdot L \cdot z\)</span>, <span class="math inline">\(z \sim N(0,I)\)</span>)</li>
+<li><strong>SA update:</strong> <span class="math inline">\(S_2 \leftarrow (1-\gamma_k)S_2 + \gamma_k \cdot \frac{1}{N}\sum_i \eta_i\eta_i^T\)</span></li>
+<li><strong>M-step for Ω:</strong> <span class="math inline">\(\Omega_k = S_2\)</span> (closed form, with structural zeros projected out)</li>
+<li><strong>M-step for θ and σ:</strong> NLopt minimises the conditional observation NLL with ETAs fixed. When <code>mu_referencing = true</code> (default), log-normal thetas use the closed-form EM update instead: <span class="math inline">\(\log\theta_j \leftarrow \log\theta_j + \gamma_k\overline{\eta_j}\)</span></li>
+<li><strong>Adaptation:</strong> per-subject MH step sizes <span class="math inline">\(\delta_i\)</span> adjusted every <code>adapt_interval</code> iterations to target ~40% acceptance rate</li>
+</ol>
+<p>Post-SAEM: standard FOCE inner loop refines EBEs from the SAEM ETAs, then FOCE OFV, AIC, BIC, and (optionally) the covariance matrix are computed so results are directly comparable with FOCE fits.</p>
+<pre><code>[fit_options]
+  method        = saem
+  n_exploration = 150
+  n_convergence = 250
+  n_mh_steps    = 3
+  seed          = 12345
+  covariance    = true</code></pre>
+<p>SAEM + FOCEI polish (recommended for complex models):</p>
+<pre><code>[fit_options]
+  method     = [saem, focei]
+  covariance = true</code></pre>
+<p><strong>Limitation:</strong> SAEM is not supported with IOV models.</p>
+</section>
+<section id="gauss-newton" class="level2">
+<h2 class="anchored" data-anchor-id="gauss-newton">Gauss-Newton</h2>
+<p>The Gauss-Newton optimizer exploits the nonlinear-least-squares structure of the FOCE objective using the BHHH Hessian approximation:</p>
+<p><span class="math display">\[H_\text{BHHH} = 4 \sum_i g_i g_i^T\]</span></p>
+<p>where <span class="math inline">\(g_i = \nabla_x \text{NLL}_i\)</span> is the per-subject gradient. Levenberg-Marquardt damping <span class="math inline">\(H_\text{LM} = H_\text{BHHH} + \lambda\,\text{diag}(H_\text{BHHH})\)</span> stabilises steps away from the minimum; <span class="math inline">\(\lambda\)</span> adapts: ×0.3 on success, ×10 on rejection.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pure GN</td>
+<td><code>gn</code></td>
+<td>Typically converges in 10–30 iterations</td>
+</tr>
+<tr class="even">
+<td>GN + FOCEI hybrid</td>
+<td><code>gn_hybrid</code></td>
+<td>GN finds the basin; FOCEI polishes (up to 100 iter via SLSQP)</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>gn</code> for fast feedback during model development; <code>gn_hybrid</code> when you want robustness as well as speed.</p>
+</section>
+<section id="inter-occasion-variability-iov" class="level2">
+<h2 class="anchored" data-anchor-id="inter-occasion-variability-iov">Inter-Occasion Variability (IOV)</h2>
+<p>IOV models occasion-to-occasion shifts in PK parameters within a subject. Kappa (κ) is the IOV random effect, re-drawn independently per occasion:</p>
+<p><span class="math display">\[\kappa_{ik} \sim \mathcal{N}(0, \Omega_\text{IOV})\]</span></p>
+<p><strong>Option A — diagonal IOV</strong> (independent kappas):</p>
+<pre><code>[parameters]
+  kappa KAPPA_CL ~ 0.05
+  kappa KAPPA_V  ~ 0.03
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL + KAPPA_CL)
+
+[fit_options]
+  iov_column = OCC</code></pre>
+<p><strong>Option B — block IOV</strong> (correlated kappas):</p>
+<pre><code>block_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]</code></pre>
+<p>Mixed Option A + B declarations are supported; a name may not appear in both.</p>
+<p>The inner loop uses <code>find_ebe_iov</code> instead of <code>find_ebe</code> when kappas are present, jointly optimising BSV etas and all per-occasion kappas. The outer loop packs IOV omega after sigma in the packed vector. <strong>AD is not used for IOV gradients</strong> — finite differences are used instead.</p>
+</section>
+<section id="sampling-importance-resampling-sir" class="level2">
+<h2 class="anchored" data-anchor-id="sampling-importance-resampling-sir">Sampling Importance Resampling (SIR)</h2>
+<p>SIR is an optional post-estimation step that provides non-parametric parameter uncertainty estimates, more robust than the asymptotic covariance matrix for small datasets or boundary estimates.</p>
+<ol type="1">
+<li>Draw M parameter vectors from <span class="math inline">\(\mathcal{N}(\hat{\theta}, \hat{\Sigma})\)</span></li>
+<li>Compute importance weights from OFV differences</li>
+<li>Resample m vectors proportional to weights</li>
+</ol>
+<p>The effective sample size (ESS) diagnostic indicates fit quality: ESS &gt; m is excellent; ESS &lt; 100 suggests the proposal is a poor match.</p>
+<pre><code>[fit_options]
+  method        = focei
+  covariance    = true
+  sir           = true
+  sir_samples   = 1000
+  sir_resamples = 250
+  sir_seed      = 42</code></pre>
+<p>Reference: Dosne et al.&nbsp;(2017), <em>J Pharmacokinet Pharmacodyn</em> 44(6):539-562.</p>
+</section>
+<section id="mu-referencing" class="level2">
+<h2 class="anchored" data-anchor-id="mu-referencing">Mu-referencing</h2>
+<p>When <code>mu_referencing = true</code> (default), ferx detects log-normal parameters from <code>[individual_parameters]</code> and re-centres ETA estimates on the current population mean each inner iteration. This improves conditioning for the SAEM M-step (closed-form EM update) and speeds inner-loop convergence for gradient-based methods. Disable with <code>mu_referencing = false</code> to reproduce pre-automatic-mu behaviour.</p>
+</section>
+<section id="key-fit_options-reference" class="level2">
+<h2 class="anchored" data-anchor-id="key-fit_options-reference">Key fit_options reference</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>method</code></td>
+<td><code>focei</code></td>
+<td><code>foce</code>, <code>focei</code>, <code>saem</code>, <code>gn</code>, <code>gn_hybrid</code>, or a list e.g.&nbsp;<code>[saem, focei]</code></td>
+</tr>
+<tr class="even">
+<td><code>maxiter</code></td>
+<td><code>500</code></td>
+<td>Max outer iterations</td>
+</tr>
+<tr class="odd">
+<td><code>covariance</code></td>
+<td><code>true</code></td>
+<td>Compute covariance matrix and SEs</td>
+</tr>
+<tr class="even">
+<td><code>optimizer</code></td>
+<td><code>slsqp</code></td>
+<td>See optimizer table above</td>
+</tr>
+<tr class="odd">
+<td><code>inner_maxiter</code></td>
+<td><code>200</code></td>
+<td>Max inner (EBE) iterations per subject</td>
+</tr>
+<tr class="even">
+<td><code>inner_tol</code></td>
+<td><code>1e-4</code></td>
+<td>Inner convergence gradient-norm tolerance</td>
+</tr>
+<tr class="odd">
+<td><code>scale_params</code></td>
+<td><code>true</code></td>
+<td>Scale packed parameters to O(1) before optimizer</td>
+</tr>
+<tr class="even">
+<td><code>global_search</code></td>
+<td><code>false</code></td>
+<td>Run CRS2-LM pre-search before local optimizer</td>
+</tr>
+<tr class="odd">
+<td><code>bloq_method</code></td>
+<td><code>drop</code></td>
+<td><code>drop</code> or <code>m3</code> (Beal M3 likelihood for BLOQ rows)</td>
+</tr>
+<tr class="even">
+<td><code>iov_column</code></td>
+<td>—</td>
+<td>Name of occasion column (required for IOV models)</td>
+</tr>
+<tr class="odd">
+<td><code>optimizer_trace</code></td>
+<td><code>false</code></td>
+<td>Write per-iteration CSV to <code>/tmp/ferx_trace_&lt;pid&gt;.csv</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="relevant-source-files" class="level2">
+<h2 class="anchored" data-anchor-id="relevant-source-files">Relevant source files</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>estimation/outer_optimizer.rs</code></td>
+<td><code>optimize_population()</code>, NLopt/BFGS/trust-region dispatch</td>
+</tr>
+<tr class="even">
+<td><code>estimation/inner_optimizer.rs</code></td>
+<td><code>find_ebe()</code>, gradient resolution (AD vs FD), EBE warm-start</td>
+</tr>
+<tr class="odd">
+<td><code>estimation/saem.rs</code></td>
+<td>SAEM algorithm, MH sampling, two-phase schedule</td>
+</tr>
+<tr class="even">
+<td><code>estimation/gauss_newton.rs</code></td>
+<td>Gauss-Newton / BHHH with LM damping and line search</td>
+</tr>
+<tr class="odd">
+<td><code>estimation/trust_region.rs</code></td>
+<td>Newton trust-region with Steihaug CG subproblem</td>
+</tr>
+<tr class="even">
+<td><code>estimation/parameterization.rs</code></td>
+<td>Pack/unpack, mu-referencing, log/Cholesky transforms</td>
+</tr>
+<tr class="odd">
+<td><code>estimation/sir.rs</code></td>
+<td>SIR importance resampling</td>
+</tr>
+<tr class="even">
+<td><code>stats/likelihood.rs</code></td>
+<td><code>foce_subject_nll()</code>, <code>foce_population_nll()</code>, CWRES</td>
+</tr>
+<tr class="odd">
+<td><code>stats/residual_error.rs</code></td>
+<td>Residual variance by error model, IWRES</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -847,7 +1250,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

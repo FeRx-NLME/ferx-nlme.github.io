@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Model Editing – ferx</title>
+<title>Output Reference – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -76,6 +111,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -391,8 +455,25 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sdtab-per-observation-diagnostics" id="toc-sdtab-per-observation-diagnostics" class="nav-link active" data-scroll-target="#sdtab-per-observation-diagnostics">sdtab — per-observation diagnostics</a>
+  <ul class="collapse">
+  <li><a href="#columns" id="toc-columns" class="nav-link" data-scroll-target="#columns">Columns</a></li>
+  <li><a href="#residual-definitions" id="toc-residual-definitions" class="nav-link" data-scroll-target="#residual-definitions">Residual definitions</a></li>
+  </ul></li>
+  <li><a href="#shrinkage" id="toc-shrinkage" class="nav-link" data-scroll-target="#shrinkage">Shrinkage</a></li>
+  <li><a href="#fit-yaml-model-fit.yaml" id="toc-fit-yaml-model-fit.yaml" class="nav-link" data-scroll-target="#fit-yaml-model-fit.yaml">Fit YAML (<code>{model}-fit.yaml</code>)</a></li>
+  <li><a href="#covariance-status" id="toc-covariance-status" class="nav-link" data-scroll-target="#covariance-status">Covariance status</a></li>
+  <li><a href="#run-record-fields" id="toc-run-record-fields" class="nav-link" data-scroll-target="#run-record-fields">Run record fields</a></li>
+  <li><a href="#ebe-convergence-diagnostics" id="toc-ebe-convergence-diagnostics" class="nav-link" data-scroll-target="#ebe-convergence-diagnostics">EBE convergence diagnostics</a></li>
+  <li><a href="#optimizer-trace-csv" id="toc-optimizer-trace-csv" class="nav-link" data-scroll-target="#optimizer-trace-csv">Optimizer trace CSV</a></li>
+  <li><a href="#relevant-source-files" id="toc-relevant-source-files" class="nav-link" data-scroll-target="#relevant-source-files">Relevant source files</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -400,7 +481,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Model Editing</h1>
+<h1 class="title">Output Reference</h1>
 </div>
 
 
@@ -417,21 +498,374 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This article is in progress.</p>
-</div>
-</div>
+<p>A ferx-core run produces diagnostic data and parameter estimates that are exposed to R through the <code>FitResult</code> struct. The R layer formats these as data frames, named lists, and S3 objects. The CLI writes them as CSV and YAML files.</p>
+<section id="sdtab-per-observation-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="sdtab-per-observation-diagnostics">sdtab — per-observation diagnostics</h2>
+<p><code>FitResult::sdtab</code> is a <code>Vec&lt;SdtabRow&gt;</code> exposed to R as a data frame via <code>sdtab_to_dataframe()</code>. The CLI writes it as <code>{model}-sdtab.csv</code>.</p>
+<section id="columns" class="level3">
+<h3 class="anchored" data-anchor-id="columns">Columns</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ID</code></td>
+<td>Subject identifier</td>
+</tr>
+<tr class="even">
+<td><code>TIME</code></td>
+<td>Observation time</td>
+</tr>
+<tr class="odd">
+<td><code>DV</code></td>
+<td>Observed value</td>
+</tr>
+<tr class="even">
+<td><code>PRED</code></td>
+<td>Population prediction (ETA = 0)</td>
+</tr>
+<tr class="odd">
+<td><code>IPRED</code></td>
+<td>Individual prediction (ETA = EBE)</td>
+</tr>
+<tr class="even">
+<td><code>CWRES</code></td>
+<td>Conditional weighted residual</td>
+</tr>
+<tr class="odd">
+<td><code>IWRES</code></td>
+<td>Individual weighted residual</td>
+</tr>
+<tr class="even">
+<td><code>ETA1</code>, <code>ETA2</code>, …</td>
+<td>Empirical Bayes estimates of each random effect</td>
+</tr>
+<tr class="odd">
+<td><code>EBE_OFV</code></td>
+<td>Subject’s contribution to the total OFV</td>
+</tr>
+<tr class="even">
+<td><code>N_OBS</code></td>
+<td>Number of observations for the subject</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="residual-definitions" class="level3">
+<h3 class="anchored" data-anchor-id="residual-definitions">Residual definitions</h3>
+<p><strong>IWRES</strong> (Individual Weighted Residual):</p>
+<p><span class="math display">\[\text{IWRES}_j = \frac{y_j - \text{IPRED}_j}{\sqrt{V_j}}\]</span></p>
+<p>where <span class="math inline">\(V_j\)</span> is the residual variance evaluated at the individual prediction (<span class="math inline">\(\hat{\eta}\)</span>). Measures how well the individual model fits each observation.</p>
+<p><strong>CWRES</strong> (Conditional Weighted Residual):</p>
+<p><span class="math display">\[\text{CWRES}_j = \frac{y_j - f_{0,j}}{\sqrt{\tilde{R}_{jj}}}\]</span></p>
+<p>where <span class="math inline">\(f_0 = f(\hat{\eta}) - H\hat{\eta}\)</span> is the linearised population prediction and <span class="math inline">\(\tilde{R} = H\Omega H^T + R\)</span> is the conditional variance matrix. CWRES accounts for the linearisation; it is the residual most appropriate for assessing population model fit.</p>
+</section>
+</section>
+<section id="shrinkage" class="level2">
+<h2 class="anchored" data-anchor-id="shrinkage">Shrinkage</h2>
+<p>Reported in <code>FitResult</code> after every fit. High shrinkage (near 1) indicates that the data are not informative about a random effect — individual ETAs collapse toward zero.</p>
+<p><strong>ETA shrinkage</strong> (per random effect, <code>shrinkage_eta: Vec&lt;f64&gt;</code>):</p>
+<p><span class="math display">\[\text{shrinkage}_k = 1 - \frac{\text{SD}(\hat{\eta}_k)}{\sqrt{\omega_{kk}}}\]</span></p>
+<p><strong>EPS shrinkage</strong> (scalar, <code>shrinkage_eps: f64</code>):</p>
+<p><span class="math display">\[\text{shrinkage}_\varepsilon = 1 - \text{SD}(\text{IWRES})\]</span></p>
+<p>Values of <code>NaN</code> indicate a zero-variance omega component (ETA) or fewer than two valid residuals (EPS).</p>
+</section>
+<section id="fit-yaml-model-fit.yaml" class="level2">
+<h2 class="anchored" data-anchor-id="fit-yaml-model-fit.yaml">Fit YAML (<code>{model}-fit.yaml</code>)</h2>
+<p>The CLI writes a YAML summary alongside the sdtab. Structure:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">converged</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">method</span><span class="kw">:</span><span class="at"> focei</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">objective_function</span><span class="kw">:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ofv</span><span class="kw">:</span><span class="at"> </span><span class="fl">-280.1838</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">aic</span><span class="kw">:</span><span class="at"> </span><span class="fl">-266.1838</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bic</span><span class="kw">:</span><span class="at"> </span><span class="fl">-247.2804</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span><span class="kw">:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">n_subjects</span><span class="kw">:</span><span class="at"> </span><span class="dv">10</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">n_observations</span><span class="kw">:</span><span class="at"> </span><span class="dv">110</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">n_parameters</span><span class="kw">:</span><span class="at"> </span><span class="dv">7</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">theta</span><span class="kw">:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">TVCL</span><span class="kw">:</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">estimate</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.132735</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">se</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.014549</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">rse_pct</span><span class="kw">:</span><span class="at"> </span><span class="fl">11.0</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">TVV</span><span class="kw">:</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">estimate</span><span class="kw">:</span><span class="at"> </span><span class="fl">7.694842</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">se</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.293028</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">rse_pct</span><span class="kw">:</span><span class="at"> </span><span class="fl">3.8</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">omega</span><span class="kw">:</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">omega_11</span><span class="kw">:</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">variance</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.028584</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">cv_pct</span><span class="kw">:</span><span class="at"> </span><span class="fl">16.9</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">se</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.006394</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">omega_22</span><span class="kw">:</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">variance</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.009613</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">cv_pct</span><span class="kw">:</span><span class="at"> </span><span class="fl">9.8</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">se</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.002165</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">sigma</span><span class="kw">:</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">sigma_1</span><span class="kw">:</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">estimate</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.010638</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">se</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.000788</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Key fields:</p>
+<ul>
+<li><strong>ofv</strong> — −2 log-likelihood</li>
+<li><strong>aic</strong> / <strong>bic</strong> — OFV + 2p / OFV + p·ln(N); p = estimated parameters, N = observations</li>
+<li><strong>rse_pct</strong> — relative SE as percentage: |SE / estimate| × 100</li>
+<li><strong>cv_pct</strong> (omega) — coefficient of variation: <span class="math inline">\(100\sqrt{\omega_{kk}}\)</span></li>
+<li><strong>se</strong> — standard error from the finite-difference covariance step</li>
+</ul>
+</section>
+<section id="covariance-status" class="level2">
+<h2 class="anchored" data-anchor-id="covariance-status">Covariance status</h2>
+<p><code>FitResult::covariance_status</code> is one of:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Computed</code></td>
+<td>Covariance step succeeded; SE values are valid</td>
+</tr>
+<tr class="even">
+<td><code>Failed</code></td>
+<td>Hessian was singular or inversion failed; SE fields are <code>None</code></td>
+</tr>
+<tr class="odd">
+<td><code>NotRequested</code></td>
+<td><code>covariance = false</code>; SE fields are <code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="run-record-fields" class="level2">
+<h2 class="anchored" data-anchor-id="run-record-fields">Run record fields</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>model_name</code></td>
+<td>Name from the <code>.ferx</code> file (or <code>"Unnamed"</code>)</td>
+</tr>
+<tr class="even">
+<td><code>ferx_version</code></td>
+<td>Version of ferx-nlme that produced the result</td>
+</tr>
+<tr class="odd">
+<td><code>wall_time_secs</code></td>
+<td>Wall-clock time for the complete fit (seconds)</td>
+</tr>
+<tr class="even">
+<td><code>gradient_used</code></td>
+<td>Gradient method resolved at runtime: <code>"enzyme"</code>, <code>"dual"</code>, or <code>"finite_differences"</code></td>
+</tr>
+<tr class="odd">
+<td><code>uses_ode_solver</code></td>
+<td><code>true</code> for ODE models, <code>false</code> for analytical PK</td>
+</tr>
+<tr class="even">
+<td><code>n_threads_used</code></td>
+<td>Number of rayon threads during estimation</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ebe-convergence-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="ebe-convergence-diagnostics">EBE convergence diagnostics</h2>
+<p>Counters from the inner-loop (EBE) optimizer; always 0 for SAEM.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ebe_convergence_warnings</code></td>
+<td>Outer iterations in which at least one subject had an unconverged EBE</td>
+</tr>
+<tr class="even">
+<td><code>max_unconverged_subjects</code></td>
+<td>Worst-case unconverged count in a single outer iteration</td>
+</tr>
+<tr class="odd">
+<td><code>total_ebe_fallbacks</code></td>
+<td>Times the Nelder-Mead fallback was invoked across all subjects and iterations</td>
+</tr>
+</tbody>
+</table>
+<p>If <code>ebe_convergence_warnings</code> is large relative to <code>maxiter</code>, the inner-loop tolerance (<code>inner_tol</code>) may be too tight, or a subject’s data are poorly compatible with the model.</p>
+</section>
+<section id="optimizer-trace-csv" class="level2">
+<h2 class="anchored" data-anchor-id="optimizer-trace-csv">Optimizer trace CSV</h2>
+<p>When <code>optimizer_trace = true</code> in <code>[fit_options]</code>, ferx-core writes a per-iteration CSV to <code>/tmp/ferx_trace_&lt;pid&gt;_&lt;ts&gt;.csv</code>; the path is stored in <code>FitResult::trace_path</code>.</p>
+<p>Each row is one outer iteration. Unused columns contain <code>NA</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Populated by</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>iter</code></td>
+<td>all</td>
+<td>Iteration number</td>
+</tr>
+<tr class="even">
+<td><code>method</code></td>
+<td>all</td>
+<td><code>foce</code>, <code>focei</code>, <code>gn</code>, <code>gn_hybrid</code>, <code>saem</code></td>
+</tr>
+<tr class="odd">
+<td><code>phase</code></td>
+<td>gn_hybrid, saem</td>
+<td><code>explore</code> / <code>converge</code> / <code>focei</code> (GN polish)</td>
+</tr>
+<tr class="even">
+<td><code>ofv</code></td>
+<td>all</td>
+<td>Objective function value</td>
+</tr>
+<tr class="odd">
+<td><code>wall_ms</code></td>
+<td>all</td>
+<td>Wall time for this iteration (ms)</td>
+</tr>
+<tr class="even">
+<td><code>grad_norm</code></td>
+<td>BFGS, NLopt gradient-mode</td>
+<td>Gradient norm</td>
+</tr>
+<tr class="odd">
+<td><code>step_norm</code></td>
+<td>BFGS</td>
+<td>Step size</td>
+</tr>
+<tr class="even">
+<td><code>optimizer</code></td>
+<td>FOCE/FOCEI</td>
+<td>Active NLopt algorithm</td>
+</tr>
+<tr class="odd">
+<td><code>lm_lambda</code></td>
+<td>GN</td>
+<td>Levenberg-Marquardt damping factor</td>
+</tr>
+<tr class="even">
+<td><code>ofv_delta</code></td>
+<td>GN</td>
+<td>Change in OFV from previous iteration</td>
+</tr>
+<tr class="odd">
+<td><code>step_accepted</code></td>
+<td>GN</td>
+<td>Whether the GN step was accepted</td>
+</tr>
+<tr class="even">
+<td><code>cond_nll</code></td>
+<td>SAEM</td>
+<td>Conditional observation NLL</td>
+</tr>
+<tr class="odd">
+<td><code>gamma</code></td>
+<td>SAEM</td>
+<td>SAEM step-size (1 in exploration, 1/k in convergence)</td>
+</tr>
+<tr class="even">
+<td><code>mh_accept_rate</code></td>
+<td>SAEM</td>
+<td>Mean MH acceptance rate across subjects</td>
+</tr>
+<tr class="odd">
+<td><code>n_ebe_unconverged</code></td>
+<td>FOCE/FOCEI</td>
+<td>Subjects whose inner optimizer did not converge</td>
+</tr>
+<tr class="even">
+<td><code>n_ebe_fallback</code></td>
+<td>FOCE/FOCEI</td>
+<td>Subjects that fell back to Nelder-Mead</td>
+</tr>
+</tbody>
+</table>
+<p>The trace is buffered and flushed at fit end; the tail may be lost if the process is killed mid-run.</p>
+<p>In R:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(<span class="st">"model.ferx"</span>, <span class="st">"data.csv"</span>, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>trace <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(fit<span class="sc">$</span>trace_path)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(trace<span class="sc">$</span>iter, trace<span class="sc">$</span>ofv, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlab =</span> <span class="st">"Iteration"</span>, <span class="at">ylab =</span> <span class="st">"OFV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="relevant-source-files" class="level2">
+<h2 class="anchored" data-anchor-id="relevant-source-files">Relevant source files</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>io/output.rs</code></td>
+<td>sdtab CSV writer, fit YAML writer, timing file</td>
+</tr>
+<tr class="even">
+<td><code>types.rs</code></td>
+<td><code>FitResult</code>, <code>SdtabRow</code>, <code>CovarianceStatus</code>, shrinkage fields</td>
+</tr>
+<tr class="odd">
+<td><code>stats/likelihood.rs</code></td>
+<td>CWRES / PRED computation (linearisation)</td>
+</tr>
+<tr class="even">
+<td><code>stats/residual_error.rs</code></td>
+<td>IWRES and residual variance per error model</td>
+</tr>
+<tr class="odd">
+<td><code>estimation/trace.rs</code></td>
+<td>Optimizer trace CSV buffered writer</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -855,7 +1289,7 @@ Note
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>
