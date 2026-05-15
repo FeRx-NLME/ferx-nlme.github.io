@@ -1,0 +1,203 @@
+---
+title: "Individual Parameters"
+---
+
+The `[individual_parameters]` block defines how population parameters (theta),
+random effects (eta), and covariates combine to produce individual PK parameters.
+
+## Syntax
+
+```
+PARAM = expression
+```
+
+Each line assigns a PK parameter using an arithmetic expression that can
+reference:
+
+- **Theta parameters** — names defined in `[parameters]` (e.g. `TVCL`, `TVV`)
+- **Eta random effects** — names defined as omega parameters (e.g. `ETA_CL`, `ETA_V`)
+- **Covariates** — column names from the data file (e.g. `WT`, `CRCL`)
+- **Constants** — numeric literals (e.g. `70`, `0.75`)
+
+## Supported operators and functions
+
+| Operator / Function | Example |
+|---|---|
+| `+`, `-`, `*`, `/` | `TVCL * WT / 70` |
+| `^` (power) | `(WT/70)^0.75` |
+| `exp()` | `exp(ETA_CL)` |
+| `log()`, `ln()` | `log(TVCL)` |
+| `sqrt()` | `sqrt(WT)` |
+| `abs()` | `abs(ETA_CL)` |
+| `inv_logit()`, `logit()` | `inv_logit(logit(THETA_F) + ETA_F)` |
+| Parentheses | `TVCL * (WT/70)^0.75` |
+| Comparisons (in `if` conditions) | `WT > 70`, `SEX == 1` |
+| Logical (in `if` conditions) | `&&`, `\|\|`, `!` |
+| Inline conditional | `if (SEX == 1) TVCL * 1.5 else TVCL` |
+
+## Conditional logic (`if` / `else`)
+
+Two forms are supported and may be combined freely.
+
+### Block form
+
+```
+[individual_parameters]
+  if (WT > 70) {
+    CL = TVCL * (WT / 70)^0.75 * exp(ETA_CL)
+  } else if (SEX == 1) {
+    CL = TVCL * 1.2 * exp(ETA_CL)
+  } else {
+    CL = TVCL * exp(ETA_CL)
+  }
+  V = TVV * exp(ETA_V)
+```
+
+Conditions support `<`, `<=`, `>`, `>=`, `==`, `!=` and logical operators
+(`&&`, `||`, `!`). Note: use `==` only for integer-coded covariates — exact
+float comparison is unreliable for continuous values.
+
+### Inline (ternary) form
+
+```
+[individual_parameters]
+  CL = if (SEX == 1) TVCL * 1.5 else TVCL
+  V  = TVV  * exp(ETA_V)
+```
+
+Both `then` and `else` branches are required in the inline form.
+
+### Interaction with mu-referencing
+
+When a parameter is assigned inside an `if` block, mu-reference detection is
+skipped for that parameter (the ETA→THETA link is no longer unconditional).
+Unconditional assignments continue to be detected normally.
+
+To keep mu-referencing on a covariate-adjusted parameter, bury the conditional
+inside the covariate term:
+
+```
+CL = TVCL * (if (WT > 70) (WT/70)^0.75 else 1.0) * exp(ETA_CL)
+```
+
+## Common parameterisations
+
+### Exponential (log-normal) random effects
+
+The standard approach for PK parameters that must be positive:
+
+```
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+```
+
+### Allometric scaling with covariates
+
+```
+[individual_parameters]
+  CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)
+  V  = TVV  * (WT/70)^1.0  * exp(ETA_V)
+```
+
+### Estimated covariate effects
+
+Use additional theta parameters for covariate exponents:
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta THETA_WT(0.75, 0.01, 2.0)
+  theta THETA_CRCL(0.5, 0.01, 2.0)
+
+[individual_parameters]
+  CL = TVCL * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL * exp(ETA_CL)
+```
+
+### Logit-normal bioavailability
+
+Use `inv_logit(logit(THETA_F) + ETA_F)` to constrain bioavailability to (0, 1).
+The starting value for `THETA_F` is on the **(0, 1) scale** — whatever fraction
+you specify is what the optimiser uses as the typical F:
+
+```
+[parameters]
+  theta THETA_F(0.70, 0.001, 0.999)  # typical bioavailability = 70%
+  omega ETA_F ~ 0.10                 # BSV on the logit scale
+
+[individual_parameters]
+  F = inv_logit(logit(THETA_F) + ETA_F)
+```
+
+- When `ETA_F = 0`, `F_i = THETA_F` exactly (logit and inv_logit cancel).
+- The estimated `THETA_F` in output is directly interpretable as typical F.
+- `omega ETA_F` is variance on the **logit scale** — not the variance of F itself.
+
+The alternative `inv_logit(THETA_F + ETA_F)` is also supported, where
+`THETA_F` is on the logit scale (e.g. `logit(0.70) ≈ 0.847`).
+
+### Additive random effects
+
+For parameters where the subject-level deviation is additive (e.g. lag time
+in hours):
+
+```
+TLAG = TVTLAG + ETA_TLAG
+```
+
+`ETA_TLAG` follows N(0, ω_TLAG), so individual lag times are normally
+distributed around `TVTLAG`.
+
+## Automatic mu-referencing
+
+When a line matches one of the detected patterns:
+
+```
+PARAM = THETA * exp(ETA)                      # multiplicative / log-normal
+PARAM = THETA * <anything> * exp(ETA)         # with covariate terms
+PARAM = exp(log(THETA) + ETA)                 # canonical MU form
+PARAM = THETA + ETA                           # additive
+```
+
+ferx records the ETA→THETA mapping and re-centres the inner-loop ETA search at
+each outer iteration — reproducing NONMEM / nlmixr2 mu-referencing without
+requiring an explicit `MU_i` line.
+
+Patterns **not** detected (falls back to `eta = 0` start):
+
+- Two or more free thetas in the product (`TVCL * TVSCALE * exp(ETA_CL)`) — ambiguous anchor
+- Compound eta expressions inside `exp` (`exp(ETA_CL + ETA_OCC)`)
+
+Set `mu_referencing = false` in `[fit_options]` to disable detection entirely.
+See [Fit Options](fit-options.qmd) and the [FAQ](../faq.qmd#mu-referencing).
+
+## Covariate detection
+
+Any uppercase identifier in the expression that does not match a theta name or
+eta name is automatically treated as a covariate. The covariate value is read
+from the corresponding column in the data file (case-insensitive match).
+
+For example, in `CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)`:
+
+- `TVCL` — theta parameter
+- `ETA_CL` — omega parameter
+- `WT` — covariate column (must exist in the CSV)
+
+## PK parameter names
+
+The left-hand side of each assignment must map to a recognised PK slot:
+
+| Name | PK parameter |
+|---|---|
+| `CL` | Clearance |
+| `V` or `V1` | Volume of distribution (central) |
+| `Q` | Intercompartmental clearance |
+| `V2` | Peripheral volume 1 |
+| `Q3` | Intercompartmental clearance 2 (3-cpt) |
+| `V3` | Peripheral volume 2 (3-cpt) |
+| `KA` | Absorption rate constant |
+| `F` | Bioavailability (default 1.0 if omitted) |
+
+For ODE models, parameter names are user-defined and passed as a flat vector to
+the ODE right-hand side.

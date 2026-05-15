@@ -2,6 +2,116 @@
 title: "Error Model"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+The `[error_model]` block defines the residual error structure, specifying how
+observed data (`DV`) relates to model predictions.
+
+## Syntax
+
+```
+DV ~ ERROR_TYPE(SIGMA_PARAMS)
+```
+
+## Available error models
+
+### Additive
+
+```
+DV ~ additive(SIGMA_NAME)
+```
+
+The residual variance is constant across all predictions:
+
+$$\text{Var}(DV) = \sigma^2$$
+
+Use when measurement error is independent of concentration (e.g. an assay with
+fixed precision).
+
+### Proportional
+
+```
+DV ~ proportional(SIGMA_NAME)
+```
+
+The residual variance scales with the predicted value:
+
+$$\text{Var}(DV) = (\sigma \cdot f)^2$$
+
+where $f$ is the model prediction. Use when measurement error increases with
+concentration — the most common error model in PK.
+
+### Combined
+
+```
+DV ~ combined(SIGMA_PROP, SIGMA_ADD)
+```
+
+Combines proportional and additive components:
+
+$$\text{Var}(DV) = (\sigma_1 \cdot f)^2 + \sigma_2^2$$
+
+Use when both proportional and additive error sources are present. Requires two
+sigma parameters in `[parameters]`.
+
+## Sigma scale
+
+**All sigma parameters are estimated and reported on the standard-deviation
+scale, not the variance scale.** This applies to both proportional and additive
+components.
+
+| Error model | `sigma = X` means … |
+|---|---|
+| `proportional` | Residual SD scales as $X \cdot f$, i.e. **CV% = $X \times 100$** |
+| `additive` | Residual SD is $X$ in the units of DV |
+| `combined` | First sigma is proportional (CV-style), second is additive (units of DV) |
+
+So `sigma PROP_ERR ~ 0.1` for a proportional model is a **10% CV** initial
+value, not 1%. Likewise, the SE on a proportional sigma is on the SD scale —
+multiply by 100 for an SE in CV-percentage points.
+
+The fit YAML emits both the SD (`estimate`) and the variance (`variance:
+estimate²`); for proportional components it also emits `cv_pct = estimate * 100`.
+
+## Examples
+
+Proportional error (most common):
+
+```
+[parameters]
+  sigma PROP_ERR ~ 0.01
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+```
+
+Additive error:
+
+```
+[parameters]
+  sigma ADD_ERR ~ 1.0
+
+[error_model]
+  DV ~ additive(ADD_ERR)
+```
+
+Combined error:
+
+```
+[parameters]
+  sigma PROP_ERR ~ 0.1
+  sigma ADD_ERR  ~ 0.5
+
+[error_model]
+  DV ~ combined(PROP_ERR, ADD_ERR)
+```
+
+## Impact on estimation
+
+The error model affects:
+
+- **IWRES** — $(DV - IPRED) / \sqrt{\text{Var}}$ — individual weighted residual
+- **CWRES** — accounts for uncertainty in random-effect estimates via the conditional variance $\tilde{R}$
+- **OFV** — the likelihood includes $\log(\text{Var})$ terms, so error model structure directly influences parameter estimates
+
+FOCEI is recommended when the error model is proportional or combined, because
+the interaction between residual error and individual predictions is captured
+exactly (rather than evaluated at η = 0 as in FOCE).

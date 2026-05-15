@@ -1,7 +1,149 @@
 ---
-title: "Simulation"
+title: "Simulation and prediction"
 ---
 
-::: {.callout-note}
-This article is in progress.
-:::
+ferx provides two post-fit prediction functions and a built-in simulation mode
+for model validation.
+
+---
+
+## `ferx_simulate()` — stochastic simulation
+
+`ferx_simulate()` draws random effects from the estimated omega and generates
+simulated observations, including residual error:
+
+```r
+ex  <- ferx_example("warfarin")
+fit <- ferx_fit(ex$model, ex$data)   # fit first
+
+# 100 simulated replicates
+sim <- ferx_simulate(ex$model, ex$data,
+                     n_sim = 100,
+                     seed  = 42,
+                     fit   = fit)
+head(sim)
+#   SIM  ID  TIME  IPRED  DV_SIM
+#     1   1   0.5  9.81   10.2
+#     1   1   1.0  14.3   13.6
+#   ...
+```
+
+Key arguments:
+
+| Argument | Description |
+|---|---|
+| `model` | Path to a `.ferx` model file, or a `ferx_model` object |
+| `data` | Path to a NONMEM CSV, or a `ferx_model` that carries a data path |
+| `n_sim` | Number of simulation replicates (default: 1) |
+| `seed` | RNG seed for reproducibility |
+| `fit` | A `ferx_fit` object to use fitted parameters; if `NULL`, uses the initial values from the model file |
+
+**Output columns:** `SIM`, `ID`, `TIME`, `IPRED` (individual prediction
+without residual error), `DV_SIM` (simulated observation including residual
+error).
+
+### Visual predictive check (VPC)
+
+A VPC overlays observed data with simulation percentiles to assess model fit:
+
+```r
+library(ggplot2)
+obs  <- read.csv(ex$data)
+obs  <- obs[obs$EVID == 0, ]   # observations only
+
+# Compute 5th / 50th / 95th percentiles of simulated DV at each time
+vpc <- aggregate(DV_SIM ~ TIME, sim, quantile, probs = c(0.05, 0.5, 0.95))
+
+ggplot() +
+  geom_ribbon(data = vpc,
+              aes(x = TIME, ymin = DV_SIM[, "5%"], ymax = DV_SIM[, "95%"]),
+              fill = "steelblue", alpha = 0.2) +
+  geom_line(data = vpc, aes(x = TIME, y = DV_SIM[, "50%"]),
+            colour = "steelblue") +
+  geom_point(data = obs, aes(x = TIME, y = DV), alpha = 0.6) +
+  labs(title = "Visual Predictive Check",
+       x = "Time (h)", y = "Concentration")
+```
+
+---
+
+## `ferx_predict()` — population predictions
+
+`ferx_predict()` computes population predictions using fitted theta values with
+all ETAs set to zero (i.e. the typical individual):
+
+```r
+pred <- ferx_predict(ex$model, ex$data, fit = fit)
+head(pred)
+#   ID  TIME  PRED
+#    1   0.5  10.12
+#    1   1.0  14.87
+#   ...
+```
+
+This is equivalent to `fit$sdtab$PRED` but can be used without a full fit object
+(e.g. to evaluate predictions from externally specified parameters).
+
+---
+
+## `[simulation]` block — built-in virtual trial
+
+For standalone simulations without real data, add a `[simulation]` block to
+the `.ferx` file:
+
+```
+[simulation]
+  subjects = 100
+  dose     = 100
+  cmt      = 1
+  seed     = 12345
+  times    = [0.5, 1, 2, 4, 8, 12, 24]
+```
+
+| Key | Description |
+|---|---|
+| `subjects` | Number of virtual subjects |
+| `dose` | Dose amount administered to each subject |
+| `cmt` | Dosing compartment (1-indexed) |
+| `seed` | Random seed for reproducibility |
+| `times` | Observation time points |
+
+Run from the CLI:
+
+```bash
+ferx model.ferx --simulate
+```
+
+This will:
+
+1. Parse the model and `[simulation]` block
+2. Sample random effects: $\eta_i \sim N(0, \Omega)$
+3. Compute individual parameters via `[individual_parameters]`
+4. Generate predictions with the structural model
+5. Add residual error: $DV = IPRED + \varepsilon$, $\varepsilon \sim N(0, V)$
+6. Report parameter estimates and diagnostics
+
+---
+
+## Simulation process (R and CLI)
+
+For each simulated subject:
+
+1. Sample $\eta_i \sim N(0, \hat{\Omega})$ (from fitted or specified omega)
+2. Compute individual PK parameters via the `[individual_parameters]` expressions
+3. Generate IPRED with the structural model at the dose and observation times
+4. Sample residual error: $\varepsilon_{ij} \sim N(0, V_{ij})$ where $V_{ij}$ is evaluated at IPRED
+5. $DV_{ij} = IPRED_{ij} + \varepsilon_{ij}$
+
+---
+
+## Pipe-based simulation
+
+```r
+ex <- ferx_example("warfarin")
+
+sim <- ex$data |>
+  ferx_model(ex$model) |>
+  ferx_fit(method = "focei") |>
+  (\(fit) ferx_simulate(ex$model, ex$data, n_sim = 200, seed = 1, fit = fit))()
+```

@@ -1,0 +1,112 @@
+---
+title: "Example: BLOQ observations (M3 method)"
+---
+
+This example shows how to fit a model to data containing observations below the
+lower limit of quantification (BLOQ) using Beal's **M3 method**.
+
+Instead of dropping BLOQ rows — which biases terminal-phase parameter estimates
+— each censored observation contributes its censoring probability to the
+likelihood:
+
+$$P(y < \text{LLOQ} \mid \theta, \eta) = \Phi\!\left(\frac{\text{LLOQ} - f}{\sqrt{V}}\right)$$
+
+## Dataset
+
+Add a `CENS` column to the standard NONMEM CSV. Set `CENS = 1` on censored rows
+and put the **LLOQ value** (not zero or missing) in `DV`:
+
+```csv
+ID,TIME,DV,EVID,AMT,CMT,RATE,MDV,CENS
+1,0,.,1,100,1,0,1,0
+1,0.5,5.37,0,.,1,0,0,0
+1,1,9.49,0,.,1,0,0,0
+...
+1,96,2.50,0,.,1,0,0,0
+1,120,2,0,.,1,0,0,1
+```
+
+On the last row: `CENS=1` marks the observation as censored; `DV=2` is the LLOQ.
+
+## Model file
+
+The only change from a standard fit is `bloq_method = m3` in `[fit_options]`:
+
+```
+[parameters]
+  theta TVCL(0.2, 0.001, 10.0)
+  theta TVV(10.0, 0.1, 500.0)
+  theta TVKA(1.5, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.09
+  omega ETA_V  ~ 0.04
+  omega ETA_KA ~ 0.30
+
+  sigma PROP_ERR ~ 0.02
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method      = focei
+  maxiter     = 300
+  covariance  = true
+  bloq_method = m3
+```
+
+## Running
+
+```r
+fit <- ferx_fit("warfarin_bloq.ferx", "warfarin_bloq.csv")
+```
+
+Both pieces are required: the `CENS` column in the CSV **and** `bloq_method = m3`
+in `[fit_options]`. Without the option, `CENS=1` rows are treated as ordinary
+observations at the LLOQ value, which biases the fit.
+
+## Expected output
+
+```
+--- Objective Function ---
+OFV:  -213.9104
+
+--- THETA Estimates ---
+TVCL    0.126263
+TVV     7.629401
+TVKA    1.083302
+
+--- OMEGA Estimates ---
+  OMEGA(1,1) = 0.031381  (CV% = 17.7)
+  OMEGA(2,2) = 0.009723  (CV% = 9.9)
+  OMEGA(3,3) = 0.419327  (CV% = 64.8)
+```
+
+The sdtab gains a `CENS` column, and `IWRES`/`CWRES` cells for censored rows
+are empty (a weighted Gaussian residual is undefined when the value is censored).
+
+## Method notes
+
+- **Activation requires both pieces**: `CENS` column in the data *and*
+  `bloq_method = m3` in `[fit_options]`.
+- **FOCE is auto-promoted to FOCEI** on subjects with any `CENS=1` row. Mixing
+  linearised Gaussian residuals with non-linearised `log Φ` terms produces
+  inconsistent OFVs near the LLOQ boundary. A notice is written to
+  `FitResult.warnings`; set `method = focei` explicitly to silence it.
+- **Gauss-Newton caveat** — with `method = gn` or `gn_hybrid`, the BHHH
+  information-matrix approximation degrades as the BLOQ fraction grows. A
+  warning is emitted; for >20% censoring prefer `focei`.
+- **SAEM** handles M3 directly in the M-step — no special handling required
+  beyond setting `bloq_method = m3`.
+
+## See also
+
+- [Fit Options — bloq_method](../model-dsl/fit-options.qmd)
+- [Data Format — BLOQ observations](../ferx-core/data-format.qmd#bloq-observations)

@@ -2,6 +2,256 @@
 title: "Parameters"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+The `[parameters]` block defines all model parameters: fixed effects (theta),
+between-subject variability (omega), residual error (sigma), and
+inter-occasion variability (kappa).
+
+## Theta (fixed effects)
+
+```
+theta NAME(initial_value, lower_bound, upper_bound)
+```
+
+- **NAME** — parameter name, referenced in `[individual_parameters]`
+- **initial_value** — starting value for estimation
+- **lower_bound** — lower bound constraint (must be > 0; parameters are log-transformed internally)
+- **upper_bound** — upper bound constraint
+
+```
+theta TVCL(0.134, 0.001, 10.0)
+theta TVV(8.1, 0.1, 500.0)
+theta TVKA(1.0, 0.01, 50.0)
+```
+
+## Omega (between-subject variability)
+
+### Diagonal omega
+
+```
+omega NAME ~ variance
+```
+
+- **NAME** — random effect name, referenced as `ETA_NAME` in `[individual_parameters]`
+- **variance** — initial variance estimate (diagonal element of the omega matrix)
+
+```
+omega ETA_CL ~ 0.07
+omega ETA_V  ~ 0.02
+omega ETA_KA ~ 0.40
+```
+
+The coefficient of variation (CV%) is approximately `sqrt(variance) * 100` for
+log-normally distributed parameters. For example, `omega ETA_CL ~ 0.09`
+corresponds to ~30% CV.
+
+### Block omega (correlated random effects)
+
+To estimate correlations between random effects, use `block_omega`:
+
+```
+block_omega (NAME1, NAME2, ...) = [lower_triangle_values]
+```
+
+The values are the lower triangle of the covariance matrix, specified row-wise.
+For a 2×2 block:
+
+```
+block_omega (ETA_CL, ETA_V) = [var_CL, cov_CL_V, var_V]
+```
+
+For a 3×3 block:
+
+```
+block_omega (ETA_CL, ETA_V, ETA_KA) = [var_CL, cov_CL_V, var_V, cov_CL_KA, cov_V_KA, var_KA]
+```
+
+#### Visualising the lower triangle
+
+For an N×N block you supply N·(N+1)/2 values, walked row by row through the
+lower triangle (row 1 has 1 value, row 2 has 2, …, row N has N values):
+
+```
+          ETA_1   ETA_2   ETA_3   ETA_4
+        ┌                                ┐
+ETA_1   │  v[0]                          │
+ETA_2   │  v[1]   v[2]                   │
+ETA_3   │  v[3]   v[4]    v[5]           │
+ETA_4   │  v[6]   v[7]    v[8]    v[9]   │
+        └                                ┘
+```
+
+Diagonal entries are variances; off-diagonals are covariances. Set
+off-diagonals to `0.0` as initial values — the fit will recover correlations
+from the data.
+
+#### Converting diagonal omegas to a block
+
+A common pattern: replace all-diagonal omegas with a single correlated block.
+Each `omega` variance becomes a diagonal entry; off-diagonals start at `0.0`:
+
+```
+# Before: four diagonal omegas
+omega ETA_CL ~ 0.1
+omega ETA_V1 ~ 0.1
+omega ETA_Q  ~ 0.1
+omega ETA_V2 ~ 0.1
+
+# After: 4×4 block (10 values: 1+2+3+4)
+block_omega (ETA_CL, ETA_V1, ETA_Q, ETA_V2) = [
+  0.1,
+  0.0, 0.1,
+  0.0, 0.0, 0.1,
+  0.0, 0.0, 0.0, 0.1
+]
+```
+
+Multi-line and single-line layouts are equivalent — line breaks inside `[...]`
+are ignored. Row 2 is `cov(CL,V1) var(V1)`, row 3 is `cov(CL,Q) cov(V1,Q) var(Q)`, etc.
+
+#### Mixing diagonal and block
+
+You can mix `omega` (uncorrelated) and `block_omega` (correlated) declarations:
+
+```
+block_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]
+omega ETA_KA ~ 0.40
+```
+
+This estimates a 3×3 omega where ETA_CL and ETA_V are correlated (2×2 block),
+but ETA_KA is independent.
+
+### Declaration order
+
+The order of `omega` and `block_omega` lines determines ETA indexing throughout
+the model: in the omega matrix and all output. For example:
+
+```
+block_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]
+omega ETA_KA ~ 0.40
+```
+
+produces ETA order `[ETA_CL, ETA_V, ETA_KA]` (indices 1, 2, 3).
+
+## Kappa (inter-occasion variability)
+
+IOV is declared with `kappa` (independent per-parameter) or `block_kappa`
+(correlated across parameters). Kappa parameters must be paired with
+`iov_column` in `[fit_options]` and an occasion column in the dataset.
+
+See also: [estimation — IOV](../ferx-core/estimation.qmd#inter-occasion-variability-iov).
+
+### Diagonal kappa — Option A
+
+```
+kappa NAME ~ variance
+kappa NAME ~ variance FIX
+```
+
+Each `kappa` line adds one diagonal element to the IOV omega matrix. Occasions
+are independent.
+
+```
+kappa KAPPA_CL ~ 0.05
+kappa KAPPA_V  ~ 0.03
+```
+
+### Block kappa — Option B (correlated IOV)
+
+```
+block_kappa (NAME1, NAME2, ...) = [lower_triangle_values]
+block_kappa (NAME1, NAME2, ...) = [lower_triangle_values] FIX
+```
+
+Mirrors the `block_omega` syntax. For a 2×2 block:
+
+```
+block_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]
+```
+
+where `0.05` = Var(KAPPA_CL), `0.01` = Cov(KAPPA_CL, KAPPA_V), `0.03` = Var(KAPPA_V).
+
+### Using kappas in individual parameters
+
+Reference kappa names exactly like BSV etas:
+
+```
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL + KAPPA_CL)
+  V  = TVV  * exp(ETA_V  + KAPPA_V)
+  KA = TVKA * exp(ETA_KA)           # no IOV on absorption
+```
+
+Kappas can be combined freely — a parameter can carry BSV only, IOV only, or both.
+
+### Mixed diagonal and block kappa
+
+```
+block_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]
+kappa KAPPA_KA ~ 0.10
+```
+
+A name may not appear in both `kappa` and `block_kappa` — this is a parse error.
+
+## Sigma (residual error)
+
+```
+sigma NAME ~ value
+```
+
+- **NAME** — residual error parameter name, referenced in `[error_model]`
+- **value** — initial value
+
+```
+sigma PROP_ERR ~ 0.01
+sigma ADD_ERR  ~ 1.0
+```
+
+**Sigma is always on the standard-deviation scale**, not the variance scale.
+`sigma PROP_ERR ~ 0.1` for a proportional model is a **10% CV** initial value.
+
+See [Error Model](error-model.qmd) for how each sigma is interpreted.
+
+## Parameter-level correlation in output
+
+When a `block_omega` (or `block_kappa`) is estimated, ferx reports a
+parameter-level correlation for each off-diagonal pair:
+
+| ETA pair | Formula |
+|---|---|
+| Both lognormal (`THETA * exp(ETA)`) | $(e^{\omega_{ij}} - 1) / \sqrt{(e^{\omega_{ii}} - 1)(e^{\omega_{jj}} - 1)}$ |
+| Both additive (`THETA + ETA`) | $\omega_{ij} / \sqrt{\omega_{ii} \cdot \omega_{jj}}$ |
+| Mixed / complex | Falls back to eta-level; warning added to `FitResult.warnings` |
+
+The lognormal formula reflects the correlation between the actual PK parameters
+(CL, V) rather than their underlying normal variates.
+
+## Complete examples
+
+Diagonal omega (no correlations):
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01
+```
+
+Block omega (correlated CL and V):
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  block_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01
+```

@@ -2,6 +2,271 @@
 title: "Fit Options"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+The optional `[fit_options]` block configures the estimation method and
+optimizer settings. All keys have defaults, so this block can be omitted
+entirely for a simple FOCE fit.
+
+## Syntax
+
+```
+[fit_options]
+  key = value
+```
+
+## General options
+
+| Key | Values | Default | Description |
+|---|---|---|---|
+| `method` | `foce`, `focei`, `saem`, `gn`, `gn_hybrid`, or list e.g. `[saem, focei]` | `focei` | Estimation method |
+| `maxiter` | integer | `500` | Maximum outer loop iterations |
+| `covariance` | `true`, `false` | `true` | Compute covariance matrix and standard errors |
+| `optimizer` | see table below | `slsqp` | Outer-loop optimization algorithm |
+| `inner_maxiter` | integer | `200` | Max inner (EBE) optimizer iterations per subject |
+| `inner_tol` | float | `1e-4` | Gradient-norm convergence tolerance for inner EBE optimizer |
+| `mu_referencing` | `true`, `false` | `true` | Auto-detect and apply mu-referencing from `[individual_parameters]` |
+| `bloq_method` | `drop`, `m3` | `drop` | BLOQ handling: `drop` ignores censored rows; `m3` uses Beal's M3 likelihood |
+| `iov_column` | string | — | Name of the occasion column in the dataset (required for IOV models) |
+| `optimizer_trace` | `true`, `false` | `false` | Write per-iteration CSV to `/tmp/ferx_trace_<pid>_<ts>.csv` |
+
+## Estimation methods
+
+### FOCE
+
+```
+method = foce
+```
+
+First-Order Conditional Estimation. Linearises the model around the EBE η̂
+and evaluates residual variance at η = 0. Fast and reliable for additive-error
+models.
+
+### FOCEI (default)
+
+```
+method = focei
+```
+
+FOCE with Interaction. Evaluates residual variance at η̂ rather than η = 0,
+capturing the dependence of residual error on individual predictions. More
+accurate than FOCE when the error model is proportional or combined.
+
+### SAEM
+
+```
+method = saem
+```
+
+Stochastic Approximation EM. Uses Metropolis-Hastings sampling instead of MAP
+optimisation for random effects. More robust to local minima; recommended for
+complex models with many random effects. **Not supported with IOV.**
+
+### Gauss-Newton
+
+```
+method = gn
+method = gn_hybrid
+```
+
+Gauss-Newton with BHHH Hessian approximation and Levenberg-Marquardt damping.
+`gn` typically converges in 10–30 iterations; `gn_hybrid` uses GN to find
+the basin and then polishes with FOCEI. Use `gn` for fast feedback during
+model development.
+
+### Chained methods
+
+Pass a list to run stages sequentially, each starting from the previous
+converged parameters:
+
+```
+method = [saem, focei]
+```
+
+A SAEM→FOCEI chain is recommended for complex models: SAEM finds the basin
+robustly, FOCEI polishes to the MLE and produces a valid covariance matrix.
+
+## Optimizer choices
+
+| Optimizer | Algorithm | Recommended for |
+|---|---|---|
+| `slsqp` | NLopt SLSQP (default) | General use |
+| `bfgs` | Built-in BFGS quasi-Newton | When NLopt is unavailable |
+| `lbfgs` | Built-in L-BFGS | Large parameter spaces |
+| `nlopt_lbfgs` | NLopt L-BFGS | Alternative L-BFGS |
+| `mma` | NLopt Method of Moving Asymptotes | Constrained problems |
+| `bobyqa` | NLopt BOBYQA — derivative-free | Noisy/non-smooth objectives where FD gradients are unreliable |
+| `trust_region` | Newton trust-region with Steihaug CG | Well-conditioned problems with small parameter count |
+
+**`bobyqa`** does not use gradients — robust to small discontinuities in the
+FOCE surface caused by EBE re-estimation, but converges more slowly on smooth
+problems.
+
+**`trust_region`** uses a finite-difference Hessian (O(n²) OFV evaluations per
+step). Tune the CG subproblem budget with `steihaug_max_iters` (default 50)
+when the parameter count exceeds 50.
+
+## SAEM-specific options
+
+| Key | Default | Description |
+|---|---|---|
+| `n_exploration` | `150` | Phase 1 iterations (step size γ = 1) |
+| `n_convergence` | `250` | Phase 2 iterations (step size γ = 1/k) |
+| `n_mh_steps` | `3` | Metropolis-Hastings steps per subject per iteration |
+| `adapt_interval` | `50` | Iterations between MH step-size adaptation |
+| `seed` | `12345` | RNG seed for reproducibility |
+
+## Global search
+
+```
+global_search = true
+```
+
+Runs NLopt CRS2-LM (Controlled Random Search with Local Mutation) as a
+gradient-free pre-search before the local optimizer. Samples within parameter
+bounds; the local optimizer starts from the best point found. Useful for
+poorly-identified models or when the local optimizer lands in degenerate basins.
+
+| Key | Default | Description |
+|---|---|---|
+| `global_search` | `false` | Enable CRS2-LM pre-search |
+| `global_maxeval` | `200 * (n_params + 1)` | Max OFV evaluations during global search |
+
+Requires a full NLopt build — a warning is emitted if CRS2-LM is unavailable.
+
+## SIR (Sampling Importance Resampling)
+
+SIR provides non-parametric parameter uncertainty estimates as an optional
+post-estimation step. Requires `covariance = true`.
+
+| Key | Default | Description |
+|---|---|---|
+| `sir` | `false` | Enable SIR |
+| `sir_samples` | `1000` | Number of proposal samples (M) |
+| `sir_resamples` | `250` | Number of resampled vectors (m) |
+| `sir_seed` | `12345` | RNG seed |
+
+See [Estimation — SIR](../ferx-core/estimation.qmd#sampling-importance-resampling-sir) for details.
+
+## Parameter scaling and EBE convergence guard
+
+| Key | Default | Description |
+|---|---|---|
+| `scale_params` | `true` | Scale packed parameters to O(1) before optimizer. Improves conditioning when log-transformed parameters span orders of magnitude. |
+| `max_unconverged_frac` | `0.1` | Fraction of subjects (with ≥ `min_obs_for_convergence_check` observations) allowed to have unconverged EBEs before the step is rejected (OFV = ∞). Set to `1.0` to disable. |
+| `min_obs_for_convergence_check` | `2` | Subjects with fewer observations are excluded from the convergence-guard check. |
+| `steihaug_max_iters` | `50` | Max CG iterations for the trust-region subproblem (`optimizer = trust_region` only). |
+
+## Options that don't apply to the selected method
+
+If you set an option the chosen method doesn't consume (e.g. `n_convergence`
+with `method = focei`), ferx emits a warning listing the option and the keys
+that *are* available. The option is ignored — the fit still proceeds.
+
+For a chained fit (`method = [saem, focei]`), an option is kept if it applies
+to *any* stage in the chain, so SAEM and FOCEI keys can be mixed without warnings.
+
+## Examples
+
+Standard FOCE with defaults:
+
+```
+[fit_options]
+  method     = foce
+  maxiter    = 300
+  covariance = true
+```
+
+FOCEI with global search:
+
+```
+[fit_options]
+  method        = focei
+  maxiter       = 500
+  covariance    = true
+  global_search = true
+```
+
+SAEM with custom settings:
+
+```
+[fit_options]
+  method        = saem
+  n_exploration = 200
+  n_convergence = 300
+  n_mh_steps    = 5
+  seed          = 42
+  covariance    = true
+```
+
+SAEM → FOCEI chain:
+
+```
+[fit_options]
+  method     = [saem, focei]
+  covariance = true
+```
+
+FOCEI with SIR uncertainty:
+
+```
+[fit_options]
+  method        = focei
+  covariance    = true
+  sir           = true
+  sir_samples   = 1000
+  sir_resamples = 250
+  sir_seed      = 42
+```
+
+Derivative-free BOBYQA fit:
+
+```
+[fit_options]
+  method        = foce
+  optimizer     = bobyqa
+  maxiter       = 300
+  inner_maxiter = 100
+  inner_tol     = 1e-6
+```
+
+IOV model:
+
+```
+[fit_options]
+  method     = focei
+  iov_column = OCC
+  covariance = true
+```
+
+Enable optimizer trace with EBE guard:
+
+```
+[fit_options]
+  method                        = focei
+  optimizer_trace               = true
+  max_unconverged_frac          = 0.5
+  min_obs_for_convergence_check = 3
+```
+
+M3 BLOQ handling:
+
+```
+[fit_options]
+  method      = focei
+  bloq_method = m3
+  covariance  = true
+```
+
+## Optimizer trace
+
+When `optimizer_trace = true`, a CSV is written to `/tmp/ferx_trace_<pid>_<ts>.csv`
+and the path is stored in `FitResult::trace_path`. Each row is one outer iteration.
+See [Output Reference — Optimizer trace CSV](../ferx-core/output.qmd#optimizer-trace-csv)
+for the full column reference.
+
+In R:
+
+```r
+fit <- ferx_fit(model, data, optimizer_trace = TRUE)
+tr  <- ferx_trace(fit)       # read the CSV
+ferx_plot_trace(fit)         # two-panel OFV + convergence plot
+```

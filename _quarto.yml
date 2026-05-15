@@ -42,6 +42,8 @@ website:
             href: model-dsl/overview.qmd
           - text: "Parameters"
             href: model-dsl/parameters.qmd
+          - text: "Individual parameters"
+            href: model-dsl/individual-parameters.qmd
           - text: "Structural model"
             href: model-dsl/structural-model.qmd
           - text: "ODE models"
@@ -50,6 +52,16 @@ website:
             href: model-dsl/error-model.qmd
           - text: "Fit options"
             href: model-dsl/fit-options.qmd
+      - text: "Examples"
+        menu:
+          - text: "Covariate model"
+            href: examples/covariates.qmd
+          - text: "Inter-occasion variability"
+            href: examples/iov.qmd
+          - text: "BLOQ (M3 method)"
+            href: examples/bloq.qmd
+          - text: "ODE model (Michaelis-Menten)"
+            href: examples/ode-model.qmd
       - text: "ferx-core"
         menu:
           - text: "Overview"
@@ -69,6 +81,8 @@ website:
           - text: "Output reference"
             href: ferx-core/output.qmd
     right:
+      - text: "FAQ"
+        href: faq.qmd
       - text: "Changelog"
         href: changelog.qmd
       - icon: github

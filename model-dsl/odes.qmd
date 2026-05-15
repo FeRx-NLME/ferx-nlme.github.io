@@ -1,7 +1,132 @@
 ---
-title: "Odes"
+title: "ODE Models"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+For pharmacokinetic models without closed-form analytical solutions — saturable
+elimination, target-mediated drug disposition, transit compartments — ferx
+provides an adaptive ODE solver (Dormand-Prince RK45).
+
+## Structural model declaration
+
+```
+[structural_model]
+  ode(obs_cmt=OBSERVABLE_COMPARTMENT, states=[state1, state2, ...])
+```
+
+- **obs_cmt** — the compartment whose amount is compared to DV; must match a name in `states`
+- **states** — ordered list of state variable names; compartment index in data (`CMT`) maps to position in this list (1-indexed)
+
+## ODE equations
+
+The `[odes]` block defines the right-hand side of the ODE system:
+
+```
+[odes]
+  d/dt(state_name) = expression
+```
+
+Expressions can reference:
+
+- State variables by name
+- Individual parameters from `[individual_parameters]`
+- Arithmetic operators and functions (`exp`, `log`, `sqrt`, `abs`, etc.)
+- Conditional logic — the same `if`/`else` syntax as `[individual_parameters]`
+
+### Conditional ODE terms
+
+```
+[odes]
+  d/dt(depot)   = -KA * depot
+  if (central > KM_THRESHOLD) {
+    d/dt(central) = KA * depot - VMAX * central / (KM + central)
+  } else {
+    d/dt(central) = KA * depot - CL_LIN * central
+  }
+```
+
+States not assigned in the firing branch receive a derivative of 0.
+
+## Example: Michaelis-Menten elimination
+
+A one-compartment oral model with saturable elimination:
+
+```
+[parameters]
+  theta TVVMAX(10.0, 0.1, 1000.0)
+  theta TVKM(2.0, 0.01, 100.0)
+  theta TVV(10.0, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_VMAX ~ 0.09
+  omega ETA_V    ~ 0.04
+
+  sigma PROP_ERR ~ 0.1
+
+[individual_parameters]
+  VMAX = TVVMAX * exp(ETA_VMAX)
+  KM   = TVKM
+  V    = TVV * exp(ETA_V)
+  KA   = TVKA
+
+[structural_model]
+  ode(obs_cmt=central, states=[depot, central])
+
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) = KA * depot / V - VMAX * central / (KM + central)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = focei
+  maxiter    = 500
+  covariance = true
+```
+
+Note: the `central` compartment holds the drug **amount**, not concentration.
+Dividing by `V` inside the ODE (as done with `KA * depot / V`) converts to
+concentration for the elimination term.
+
+## Solver settings
+
+| Setting | Value |
+|---|---|
+| Method | Dormand-Prince RK45 (explicit adaptive) |
+| Absolute tolerance | 1e-6 |
+| Relative tolerance | 1e-4 |
+| Max steps | 10,000 |
+| Initial step size | 0.1 |
+| Minimum step size | 1e-12 |
+
+The solver adapts step size based on local error estimates. See also
+[ODE Solver](../ferx-core/ode-solver.qmd) for the full reference.
+
+## Dose handling in ODE models
+
+- **Bolus doses** — applied as instantaneous state changes at dose times:
+  `state[cmt] += amt`. `CMT=1` maps to `states[0]`, `CMT=2` to `states[1]`, etc.
+- **Infusion doses** (`RATE > 0`) — treated as a continuous zero-order input.
+  The integrator timeline is broken at infusion end (`time + amt/rate`) and
+  `+rate` is added to the target compartment's derivative for each segment
+  within the infusion. Overlapping infusions on the same compartment sum rates.
+- **Multiple doses** — the ODE is integrated in segments between dose events,
+  with state discontinuities at each bolus.
+
+## Limitations
+
+- Steady-state (`SS=1`) is **not supported** for ODE models
+- ODE models do not have an Enzyme autodiff gradient path — the inner-loop
+  gradient always uses finite differences (`Fd`)
+- ODE models are slower than analytical models; use analytical solutions
+  (1/2/3-cpt) when the kinetics are standard first-order
+
+## When to use ODE vs analytical
+
+| Use ODE | Use analytical |
+|---|---|
+| Saturable (Michaelis-Menten) elimination | Linear first-order kinetics |
+| Target-mediated drug disposition (TMDD) | Standard 1/2/3-compartment models |
+| Transit compartment absorption | Simple oral absorption |
+| Custom multi-compartment structures | IV bolus / infusion |
+| Non-standard dosing pathways | Models in 1/2/3-cpt family |

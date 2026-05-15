@@ -1,7 +1,186 @@
 ---
-title: "Model Editing"
+title: "Editing ferx model files programmatically"
 ---
 
-::: {.callout-note}
-This article is in progress.
+ferx model files (`.ferx`) are plain text, so you can create and modify them
+entirely from R without opening an editor. This article covers the functions
+that support that workflow.
+
+::: {.callout-tip}
+See also `vignette("model-editing")` in the R package for a runnable version.
 :::
+
+---
+
+## Starting from scratch
+
+`ferx_model_new()` writes a skeleton `.ferx` file for one of five built-in
+templates: `"1cpt_oral"` (default), `"1cpt_iv"`, `"2cpt_oral"`, `"2cpt_iv"`,
+and `"ode"`.
+
+Pass `print = TRUE` to preview a template in the console without writing any
+file:
+
+```r
+ferx_model_new(print = TRUE)
+ferx_model_new(template = "2cpt_iv", print = TRUE)
+```
+
+To write a file, supply a path. Pass `edit = FALSE` to skip opening your editor:
+
+```r
+ferx_model_new("my_model.ferx", edit = FALSE)
+```
+
+---
+
+## Inspecting a section
+
+`ferx_model_section()` extracts and prints the body of a named section:
+
+```r
+ex <- ferx_example("warfarin")
+ferx_model_section(ex$model, "parameters")
+```
+
+The return value is the character vector of lines (invisibly):
+
+```r
+params <- ferx_model_section(ex$model, "parameters")
+params
+```
+
+---
+
+## Scripted read-modify-write
+
+The extract → modify → write-back pattern changes a model programmatically
+without an editor:
+
+```r
+# Work in a fresh temp file
+model_path <- tempfile(fileext = ".ferx")
+file.copy(ex$model, model_path)
+
+# Read the section
+lines <- ferx_model_section(model_path, "parameters")
+
+# Modify: raise the TVCL initial value from 0.134 to 0.5
+lines <- sub("TVCL\\([^,]+,", "TVCL(0.5,", lines)
+
+# Write back
+ferx_model_set_section(model_path, "parameters", lines)
+
+# Verify
+ferx_model_section(model_path, "parameters")
+```
+
+`ferx_model_set_section()` replaces only the targeted section; all other
+sections are left untouched.
+
+---
+
+## Console-only workflow: create, tweak, fit
+
+From nothing to an estimated model without opening a text editor:
+
+```r
+model_path <- file.path(tempdir(), "run1.ferx")
+
+# 1. Write a skeleton
+ferx_model_new(model_path, template = "1cpt_oral", edit = FALSE)
+
+# 2. Switch method to FOCEI
+ferx_model_set_section(model_path, "fit_options", c(
+  "  method     = focei",
+  "  maxiter    = 300",
+  "  covariance = true"
+))
+
+# 3. Fit
+ex  <- ferx_example("warfarin")
+fit <- ferx_fit(model_path, ex$data)
+print(fit)
+```
+
+---
+
+## Opening a model in an editor
+
+`ferx_model_edit()` copies a bundled example to a destination directory and
+opens it in your editor:
+
+```r
+# Copy the bundled warfarin model to tempdir() and open it
+my_model <- ferx_model_edit(ex$model, dest = tempdir())
+
+# After editing, save the result under a new name
+ferx_model_edit("run1.ferx", save_as = "run2.ferx")
+```
+
+The `dest` argument controls where the copy lands. If the source file is
+already outside the installed package directory, `ferx_model_edit()` edits it
+in place unless `dest` is set explicitly.
+
+---
+
+## Validating a model file
+
+`ferx_model_validate()` checks that all required sections are present and
+reports the result. Use it after creating or editing a model to catch missing
+sections before running the optimizer:
+
+```r
+ferx_model_validate(ex$model)
+#> [ok] All required sections present: parameters, individual_parameters,
+#>      structural_model, error_model
+```
+
+A model missing required sections produces a clear list:
+
+```r
+bad <- tempfile(fileext = ".ferx")
+writeLines(c(
+  "[parameters]",
+  "  theta TVCL(1.0, 0.001, 100.0)",
+  "[structural_model]",
+  "  pk one_cpt_oral(cl=CL, v=V, ka=KA)"
+), bad)
+ferx_model_validate(bad)
+#> [missing] individual_parameters
+#> [missing] error_model
+```
+
+---
+
+## Overwrite guards
+
+By default `ferx_model_new()` refuses to overwrite an existing file:
+
+```r
+model_path <- tempfile(fileext = ".ferx")
+ferx_model_new(model_path, edit = FALSE)            # creates the file
+
+tryCatch(
+  ferx_model_new(model_path, edit = FALSE),          # would overwrite — error
+  error = function(e) message(conditionMessage(e))
+)
+#> Error: file already exists. Use overwrite = TRUE to replace it.
+
+# Opt in explicitly:
+ferx_model_new(model_path, template = "1cpt_iv", overwrite = TRUE, edit = FALSE)
+```
+
+---
+
+## Function reference
+
+| Function | Purpose |
+|---|---|
+| `ferx_model_new()` | Write a skeleton `.ferx` file from a template |
+| `ferx_model_section()` | Extract the body of a named section |
+| `ferx_model_set_section()` | Replace the body of a named section |
+| `ferx_get_section()` | Print a section mid-pipe (returns object unchanged) |
+| `ferx_set_section()` | Rewrite a section mid-pipe (returns object unchanged) |
+| `ferx_model_edit()` | Copy + open a model in your editor |
+| `ferx_model_validate()` | Check that all required sections are present |

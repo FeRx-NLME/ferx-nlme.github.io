@@ -1,0 +1,111 @@
+---
+title: "Example: ODE model (Michaelis-Menten)"
+---
+
+A one-compartment oral model with saturable (Michaelis-Menten) elimination,
+solved with the Dormand-Prince RK45 ODE integrator.
+
+## Why ODE?
+
+Michaelis-Menten elimination cannot be described by a simple exponential:
+
+$$\frac{dA_\text{central}}{dt} = \frac{K_A \cdot A_\text{depot}}{V} - \frac{V_\text{max} \cdot A_\text{central}}{K_M + A_\text{central}}$$
+
+At high concentrations, elimination approaches V_max (zero-order); at low
+concentrations it is approximately first-order. Numerical integration is
+required.
+
+## Model file
+
+```
+# One-compartment oral model with Michaelis-Menten elimination
+
+[parameters]
+  theta TVVMAX(10.0, 0.1, 1000.0)
+  theta TVKM(2.0, 0.01, 100.0)
+  theta TVV(10.0, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_VMAX ~ 0.09
+  omega ETA_V    ~ 0.04
+
+  sigma PROP_ERR ~ 0.1
+
+[individual_parameters]
+  VMAX = TVVMAX * exp(ETA_VMAX)
+  KM   = TVKM
+  V    = TVV * exp(ETA_V)
+  KA   = TVKA
+
+[structural_model]
+  ode(obs_cmt=central, states=[depot, central])
+
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) = KA * depot / V - VMAX * central / (KM + central)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = focei
+  maxiter    = 500
+  covariance = true
+```
+
+## ODE system
+
+- **depot** — absorption compartment. First-order absorption at rate KA.
+- **central** — central compartment. Receives drug from depot; eliminated by
+  Michaelis-Menten kinetics.
+
+The `central` compartment holds drug **amount** (not concentration). Dividing
+by V inside the ODE converts to concentration for the elimination term.
+
+## Parameters
+
+| Parameter | Description | Random effect |
+|---|---|---|
+| VMAX | Maximum elimination rate (amount/time) | Yes (ETA_VMAX) |
+| KM | Michaelis-Menten constant (amount at half-maximal rate) | No |
+| V | Volume of distribution | Yes (ETA_V) |
+| KA | First-order absorption rate constant | No |
+
+KM and KA are fixed population parameters here — add omega terms if you have
+evidence of between-subject variability.
+
+## Structural model declaration
+
+```
+[structural_model]
+  ode(obs_cmt=central, states=[depot, central])
+```
+
+- `obs_cmt=central` — the `central` compartment is observed (compared to DV)
+- `states=[depot, central]` — two state variables; `CMT=1` in data maps to
+  `depot`, `CMT=2` to `central`
+
+## In R
+
+```r
+fit <- ferx_fit("mm_oral.ferx", "mm_oral.csv")
+fit$gradient_used
+# "finite_differences" — ODE models always use FD (no Enzyme AD path)
+```
+
+## Notes
+
+- ODE models are slower than analytical models because each prediction requires
+  numerical integration. For standard first-order kinetics, always prefer
+  `one_cpt_oral` (or other analytical models).
+- The ODE solver uses adaptive step-size control — the default tolerances
+  (rtol = 1e-4, atol = 1e-6) work for most PK models; loosen if the fit is very
+  slow or tighten if you observe discontinuities in predictions.
+- Steady-state (`SS=1`) is not supported for ODE models.
+- There is no Enzyme autodiff path for ODE models — `gradient_used` will always
+  be `"finite_differences"`.
+
+## See also
+
+- [ODE Models DSL](../model-dsl/odes.qmd)
+- [ODE Solver](../ferx-core/ode-solver.qmd)

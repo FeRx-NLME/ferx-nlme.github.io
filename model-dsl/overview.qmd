@@ -1,7 +1,84 @@
 ---
-title: "Overview"
+title: "Model DSL Overview"
 ---
 
-::: {.callout-note}
-This page is in progress.
-:::
+A ferx model is a plain-text `.ferx` file divided into labelled sections. The
+sections are parsed top-to-bottom; their order within the file does not matter.
+
+## Section reference
+
+| Section | Required | Purpose |
+|---|---|---|
+| `[parameters]` | Yes | Fixed effects (theta), BSV (omega), residual error (sigma), IOV (kappa) |
+| `[individual_parameters]` | Yes | Expressions mapping thetas + ETAs + covariates → PK parameters |
+| `[structural_model]` | Yes | Selects an analytical PK model or declares an ODE system |
+| `[error_model]` | Yes | Residual error structure (`additive`, `proportional`, `combined`) |
+| `[odes]` | ODE models only | Right-hand side of the ODE system |
+| `[fit_options]` | No | Estimation method, optimizer, convergence settings |
+| `[simulation]` | No | Virtual trial design for `--simulate` runs |
+
+## Minimal example
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+```
+
+## Model naming
+
+An optional name can be placed before the first section:
+
+```
+model warfarin_1cpt
+
+[parameters]
+  ...
+```
+
+The name is stored in `FitResult::model_name` and appears in output files.
+
+## Comments
+
+Lines starting with `#` are comments and are ignored by the parser:
+
+```
+# This is a comment
+theta TVCL(0.134, 0.001, 10.0)   # inline comment
+```
+
+## Data and covariates
+
+Data is supplied as a separate NONMEM-format CSV — not embedded in the model
+file. Any column in the CSV not in the standard NONMEM set (ID, TIME, DV, EVID,
+AMT, CMT, RATE, MDV, CENS, II, SS) is automatically treated as a covariate and
+can be referenced by name in `[individual_parameters]`.
+
+See [Data Format](../ferx-core/data-format.qmd) for the full column reference.
+
+## Further reading
+
+- [Parameters](parameters.qmd) — theta, omega, sigma, kappa, block\_omega
+- [Individual Parameters](individual-parameters.qmd) — expressions, covariates, conditionals, mu-referencing
+- [Structural Model](structural-model.qmd) — analytical PK model functions
+- [ODE Models](odes.qmd) — ODE syntax, solver settings, dose handling
+- [Error Model](error-model.qmd) — additive, proportional, combined; sigma scale
+- [Fit Options](fit-options.qmd) — complete settings reference
