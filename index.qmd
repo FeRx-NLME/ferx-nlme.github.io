@@ -75,7 +75,7 @@ ferx fits models defined in a small, readable DSL — bracket-sectioned `.ferx` 
 :::
 
 ::: {.sticker-stage-inline}
-![ferx hex sticker](assets/ferx-hex-palette-c.svg){.sticker-sm}
+![](assets/ferx-hex-palette-c.svg){.sticker-sm}
 :::
 
 :::
