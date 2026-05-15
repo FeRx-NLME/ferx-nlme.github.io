@@ -10,6 +10,11 @@ pre code {
   line-height: 1.65;
 }
 
+/* dark mode navbar logo */
+.navbar-logo.dark-content {
+  content: url('assets/ferx-dsl-brackets-dark.svg');
+}
+
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

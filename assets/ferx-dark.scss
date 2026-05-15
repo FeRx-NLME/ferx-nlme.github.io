@@ -308,6 +308,19 @@ h2 { letter-spacing: -0.02em; }
       text-transform: uppercase;
     }
   }
+
+  // force inner code block to match panel background
+  pre {
+    background: $dark-panel !important;
+    border: none !important;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none !important;
+  }
+  pre code {
+    background: transparent !important;
+    color: $slate-ink-dark !important;
+  }
 }
 
 // ── Footer ─────────────────────────────────────────
