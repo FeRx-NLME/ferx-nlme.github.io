@@ -1,0 +1,311 @@
+/*-- scss:defaults --*/
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+// ── Palette: Slate ─────────────────────────────────
+$slate-canvas:      #F7F6F3;
+$slate-canvas-deep: #EAE8E2;
+$slate-ink:         #1A2332;
+$slate-soft:        #455066;
+$slate-teal:        #1F6B7A;
+$slate-amber:       #C8893E;
+
+// ── Palette: Oxide ─────────────────────────────────
+$oxide-cream:       #F2EBDD;
+$oxide-charcoal:    #232020;
+$oxide-patina:      #4A6B5D;
+$oxide-rust:        #C9582A;
+$oxide-copper:      #D89968;
+
+// ── Dark surface palette ───────────────────────────
+$dark-bg:           #1A1C1F;
+$dark-surface:      #222529;
+$dark-surface-2:    #2A2E33;
+$dark-border:       rgba(#F7F6F3, 0.10);
+$dark-fg:           #E8E6E0;
+$dark-fg-soft:      #9AA3AF;
+$dark-teal:         #3A9BAD;
+$dark-rust:         #D4714A;
+
+// ── Bootstrap / Quarto overrides ───────────────────
+$body-bg:           $dark-bg;
+$body-color:        $dark-fg;
+$font-family-sans-serif: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+$font-family-monospace:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+$headings-font-family:   "Fraunces", Georgia, serif;
+$headings-font-weight:   500;
+
+$link-color:        $dark-teal;
+$link-hover-color:  lighten($dark-teal, 8%);
+
+$primary:   $dark-teal;
+$secondary: $dark-fg-soft;
+$success:   $oxide-patina;
+$danger:    $dark-rust;
+$warning:   $slate-amber;
+$info:      $dark-teal;
+
+$border-color:      $dark-border;
+$border-radius:     8px;
+$border-radius-lg:  12px;
+
+$code-color:        $dark-rust;
+$code-bg:           $dark-surface;
+
+$navbar-bg:         $dark-bg;
+$navbar-fg:         $dark-fg;
+$footer-bg:         $dark-bg;
+$footer-fg:         $dark-fg-soft;
+
+/*-- scss:rules --*/
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11";
+}
+
+h1, h2, h3, h4 {
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: $dark-fg;
+}
+h1 { letter-spacing: -0.025em; }
+h2 { letter-spacing: -0.02em; }
+
+// ── Navbar ─────────────────────────────────────────
+.navbar {
+  border-bottom: 1px solid $dark-border;
+  backdrop-filter: blur(10px);
+  font-family: $font-family-monospace;
+  font-size: 13px;
+  background-color: rgba($dark-bg, 0.92) !important;
+}
+.navbar-brand img {
+  height: 28px;
+  // switch to dark logo variant
+  content: url('../assets/ferx-dsl-brackets-dark.svg');
+}
+
+// ── Section labels ─────────────────────────────────
+.section-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: $font-family-monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: $dark-fg-soft;
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+  .br { color: $dark-teal; font-weight: 700; }
+  .num { color: $dark-fg-soft; opacity: 0.6; }
+}
+
+// ── Feature grid ───────────────────────────────────
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: $dark-border;
+  border: 1px solid $dark-border;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 2rem 0;
+}
+.feature {
+  background: $dark-surface;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 200px;
+  transition: background-color 160ms;
+  &:hover { background: $dark-surface-2; }
+  .num {
+    font-family: $font-family-monospace;
+    font-size: 11px;
+    color: $dark-fg-soft;
+    letter-spacing: 0.08em;
+    b { color: $dark-teal; font-weight: 600; }
+  }
+  h3 {
+    font-size: 21px;
+    line-height: 1.2;
+    color: $dark-fg;
+    em { font-style: italic; color: $dark-teal; font-weight: 500; }
+  }
+  p {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: $dark-fg-soft;
+    margin: 0;
+  }
+}
+@media (max-width: 960px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .feature-grid { grid-template-columns: 1fr; } }
+
+// ── Install block ──────────────────────────────────
+.install {
+  border: 1px solid $dark-border;
+  border-radius: 12px;
+  overflow: hidden;
+  background: $dark-surface;
+  max-width: 560px;
+  margin: 1.5rem 0;
+}
+.install-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 16px;
+  font-family: $font-family-monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  border-bottom: 1px solid rgba(#F7F6F3, 0.06);
+  &:last-child { border-bottom: 0; }
+  .lang {
+    color: $dark-teal;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    min-width: 24px;
+  }
+}
+
+// ── Stat row ───────────────────────────────────────
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: $dark-border;
+  border: 1px solid $dark-border;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 2rem 0;
+}
+.stat {
+  background: $dark-surface;
+  padding: 24px;
+  .lbl { font-family: $font-family-monospace; font-size: 11px; letter-spacing: 0.08em; color: $dark-fg-soft; }
+  .num { font-family: $font-family-monospace; font-size: 36px; font-weight: 600; letter-spacing: -0.03em; color: $dark-fg; line-height: 1.2;
+    .accent { color: $dark-rust; font-weight: 500; }
+  }
+}
+@media (max-width: 768px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+
+// ── Hero ───────────────────────────────────────────
+.hero-banner {
+  padding: 80px 0 64px;
+
+  .wordmark {
+    font-family: $font-family-monospace;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    font-size: clamp(64px, 8vw, 120px);
+    line-height: 0.92;
+    color: $dark-fg;
+    margin: 0 0 4px;
+    .dot { color: $dark-rust; font-weight: 500; }
+    .rx  { color: $dark-rust; }
+    .rx i { font-style: italic; }
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: $font-family-monospace;
+    font-size: 12px;
+    color: $dark-fg-soft;
+    margin-bottom: 24px;
+    padding: 6px 12px 6px 8px;
+    border: 1px solid $dark-border;
+    border-radius: 999px;
+    background: rgba($dark-surface, 0.7);
+    .dot-live { width: 6px; height: 6px; border-radius: 50%; background: $dark-rust; box-shadow: 0 0 0 4px rgba($dark-rust, 0.2); }
+    .ver { color: $dark-teal; font-weight: 600; }
+  }
+
+  h1 { font-size: clamp(28px, 3.2vw, 42px); font-weight: 400; line-height: 1.18; max-width: 22ch; margin: 24px 0 16px; color: $dark-fg;
+    em { font-style: italic; color: $dark-teal; font-weight: 500; }
+  }
+  .lede { font-size: 19px; line-height: 1.55; color: $dark-fg-soft; max-width: 56ch; margin-bottom: 28px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 18px 28px; font-family: $font-family-monospace; font-size: 12px; color: $dark-fg-soft; margin-bottom: 28px;
+    b { color: $dark-fg; font-weight: 600; }
+  }
+}
+
+// ── Code panel ────────────────────────────────────
+.code-panel {
+  border: 1px solid $dark-border;
+  border-radius: 14px;
+  background: $dark-surface;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+  overflow: hidden;
+  margin: 1.5rem 0;
+
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid $dark-border;
+    font-family: $font-family-monospace;
+    font-size: 12px;
+    color: $dark-fg-soft;
+    .dots { display: inline-flex; gap: 5px; margin-right: 8px; }
+    .dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(#F7F6F3, 0.18); display: inline-block; }
+    .file { color: $dark-fg; font-weight: 600; }
+    .br { color: $dark-teal; }
+    .pill { margin-left: auto; font-size: 10px; letter-spacing: 0.08em; color: $dark-teal; border: 1px solid $dark-border; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; }
+  }
+}
+
+// ── Footer ─────────────────────────────────────────
+.nav-footer { font-family: $font-family-monospace; font-size: 12px; }
+
+// ── Section alternating bg ─────────────────────────
+.section-alt { background: $dark-surface; border-top: 1px solid $dark-border; border-bottom: 1px solid $dark-border; }
+.pad { padding: 112px 0; }
+.container { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+.section-head {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 56px; align-items: end; margin-bottom: 48px;
+  h2 em { font-style: italic; color: $dark-teal; font-weight: 500; }
+  .lede { margin: 0; }
+}
+@media (max-width: 960px) { .section-head { grid-template-columns: 1fr; gap: 24px; } .pad { padding: 72px 0; } }
+
+// ── About ─────────────────────────────────────────
+.about-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 72px; align-items: center; }
+.about-text {
+  h2 em { font-style: italic; color: $dark-teal; font-weight: 500; }
+  p, .lede { color: $dark-fg-soft; max-width: 50ch; }
+  .signoff { font-family: $font-family-monospace; font-size: 12px; color: $dark-fg-soft; letter-spacing: 0.04em; margin-top: 22px;
+    b { color: $dark-fg; font-weight: 600; }
+  }
+}
+.sticker-stage { display: flex; justify-content: center; align-items: center; padding: 12px; }
+.sticker { width: 100%; max-width: 320px; filter: drop-shadow(0 18px 32px rgba(0,0,0,0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3)); transform: rotate(-3deg); transition: transform 220ms ease;
+  &:hover { transform: rotate(0deg) scale(1.02); }
+}
+.sticker-stage-inline { display: flex; justify-content: center; align-items: center; padding: 24px 12px 8px; }
+.sticker-sm { width: 100%; max-width: 200px; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.35)) drop-shadow(0 2px 4px rgba(0,0,0,0.25)); transform: rotate(-3deg); transition: transform 220ms ease;
+  &:hover { transform: rotate(0deg) scale(1.04); }
+}
+@media (max-width: 960px) { .about-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+// ── Citation block ────────────────────────────────
+.cite-block { background: $dark-surface; border: 1px solid $dark-border; border-radius: 12px; padding: 26px 28px;
+  h4 { font-family: $font-family-monospace; font-size: 12px; color: $dark-fg-soft; letter-spacing: 0.05em; font-weight: 500; margin: 0 0 16px; }
+}
+
+// ── Panel footer ──────────────────────────────────
+.panel-foot { padding: 14px 18px; border-top: 1px solid $dark-border; font-family: $font-family-monospace; font-size: 11.5px; color: $dark-fg-soft;
+  b { color: $dark-fg; font-weight: 600; }
+}
+
+// ── Callout accents ────────────────────────────────
+.callout-note { border-left-color: $dark-teal; }
+.callout-warning { border-left-color: $slate-amber; }
+.callout-important { border-left-color: $dark-rust; }

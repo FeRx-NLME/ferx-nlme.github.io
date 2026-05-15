@@ -15,8 +15,8 @@ website:
   navbar:
     logo: assets/ferx-dsl-brackets.svg
     logo-alt: "ferx"
-    background: "#F7F6F3"
-    foreground: "#1A2332"
+    background: light
+    foreground: light
     left:
       - text: "Get started"
         href: get-started.qmd
@@ -70,7 +70,7 @@ website:
         aria-label: GitHub
 
   page-footer:
-    background: "#F7F6F3"
+    background: light
     border: true
     left: "© 2026 FeRx-NLME · MIT licensed"
     right: "Fe · 26 · Rx · 2026"
@@ -79,6 +79,7 @@ format:
   html:
     theme:
       light: [cosmo, assets/ferx.scss]
+      dark: [darkly, assets/ferx-dark.scss]
     css: styles.css
     toc: true
     toc-depth: 3
