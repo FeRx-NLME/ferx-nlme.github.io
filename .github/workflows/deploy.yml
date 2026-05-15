@@ -22,6 +22,7 @@ jobs:
         with:
           packages: |
             any::pkgdown
+            any::pkgload
             any::remotes
 
       # Install ferx-r to build pkgdown reference
