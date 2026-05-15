@@ -87,11 +87,28 @@ file convention). For block omega, only the diagonal variances are included.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">ex</span>  <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, covariance <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ex</span>  <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, method <span class="op">=</span> <span class="st">"gn"</span>, covariance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model file [fit_options] sets `method = foce` but ferx_fit() argument overrides it with `gn`. The call-time value will be used.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model file [fit_options] sets `covariance = true` but ferx_fit() argument overrides it with `false`. The call-time value will be used.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</span>
 <span class="r-in"><span><span class="fu">ferx_estimates</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           param    transform    estimate se rse_pct lower_95 upper_95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          TVCL     identity 0.132736353 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           TVV     identity 7.690589925 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          TVKA     identity 0.757203691 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 OMEGA(ETA_CL)     variance 0.028490672 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  OMEGA(ETA_V)     variance 0.009617854 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 OMEGA(ETA_KA)     variance 0.342903186 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      PROP_ERR proportional 0.010624906 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   estimate_natural lower_95_natural upper_95_natural</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               NA               NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2               NA               NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               NA               NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4               NA               NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5               NA               NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6               NA               NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7               NA               NA               NA</span>
 </code></pre></div>
     </div>
   </div>
