@@ -18,8 +18,6 @@ website:
   navbar:
     logo: assets/ferx-dsl-brackets.svg
     logo-alt: "ferx"
-    background: light
-    foreground: light
     left:
       - text: "Book"
         href: https://ferx-nlme.github.io/ferx-book/
