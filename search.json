@@ -487,14 +487,14 @@
     "href": "ferx-core/output.html#covariance-status",
     "title": "Output Reference",
     "section": "Covariance status",
-    "text": "Covariance status\nFitResult::covariance_status is one of:\n\n\n\n\n\n\n\nValue\nMeaning\n\n\n\n\nComputed\nCovariance step succeeded; SE values are valid\n\n\nFailed\nHessian was singular or inversion failed; SE fields are None\n\n\nNotRequested\ncovariance = false; SE fields are None"
+    "text": "Covariance status\nFitResult::covariance_status is one of:\n\n\n\n\n\n\n\nValue\nMeaning\n\n\n\n\nComputed\nCovariance step succeeded; SE values are valid\n\n\nFailed\nHessian was not positive definite or inversion failed; SE fields are None\n\n\nNotRequested\ncovariance = false; SE fields are None"
   },
   {
     "objectID": "ferx-core/output.html#run-record-fields",
     "href": "ferx-core/output.html#run-record-fields",
     "title": "Output Reference",
     "section": "Run record fields",
-    "text": "Run record fields\n\n\n\n\n\n\n\nField\nDescription\n\n\n\n\nmodel_name\nName from the .ferx file (or \"Unnamed\")\n\n\nferx_version\nVersion of ferx-nlme that produced the result\n\n\nwall_time_secs\nWall-clock time for the complete fit (seconds)\n\n\ngradient_used\nGradient method resolved at runtime: \"enzyme\", \"dual\", or \"finite_differences\"\n\n\nuses_ode_solver\ntrue for ODE models, false for analytical PK\n\n\nn_threads_used\nNumber of rayon threads during estimation"
+    "text": "Run record fields\n\n\n\n\n\n\n\nField\nDescription\n\n\n\n\nmodel_name\nName from the model declaration in the .ferx file, or the file stem if omitted\n\n\nferx_version\nVersion of ferx-nlme that produced the result\n\n\nwall_time_secs\nWall-clock time for the complete fit (seconds)\n\n\ngradient_used\nGradient method resolved at runtime: \"enzyme\", \"dual\", or \"finite_differences\"\n\n\nuses_ode_solver\ntrue for ODE models, false for analytical PK\n\n\nn_threads_used\nNumber of rayon threads during estimation"
   },
   {
     "objectID": "ferx-core/output.html#ebe-convergence-diagnostics",
@@ -592,7 +592,7 @@
     "href": "ferx-core/estimation.html#covariance-step",
     "title": "Estimation (FOCE/FOCEI)",
     "section": "Covariance step",
-    "text": "Covariance step\nWhen covariance = true, ferx computes the observed Fisher information matrix via finite-difference Hessian of the population OFV at convergence:\n\nStandard errors = \\(\\sqrt{\\text{diag}(\\hat{\\Sigma})}\\)\n%RSE = \\(|\\text{SE} / \\hat{\\theta}| \\times 100\\)\nOmega SEs derived via delta method from the Cholesky parameterisation"
+    "text": "Covariance step\nWhen covariance = true, ferx computes the observed Fisher information matrix via finite-difference Hessian of the population OFV at convergence:\n\nStandard errors = \\(\\sqrt{\\text{diag}(\\hat{\\Sigma})}\\)\n%RSE = \\(|\\text{SE} / \\hat{\\theta}| \\times 100\\)\nOmega SEs derived via delta method from the Cholesky parameterisation\n\nIf the Hessian is not positive definite or cannot be inverted, ferx emits a warning (\"Covariance step failed\") and sets covariance_status = Failed; SE fields are None. A future release will include eigenvalue diagnostics in the warning to help distinguish near-zero eigenvalues from identifiability problems (ferx-core#17)."
   },
   {
     "objectID": "ferx-core/estimation.html#saem",

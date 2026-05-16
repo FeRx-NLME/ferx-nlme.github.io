@@ -649,6 +649,7 @@ window.Quarto = {
 <li><strong>%RSE</strong> = <span class="math inline">\(|\text{SE} / \hat{\theta}| \times 100\)</span></li>
 <li><strong>Omega SEs</strong> derived via delta method from the Cholesky parameterisation</li>
 </ul>
+<p>If the Hessian is not positive definite or cannot be inverted, ferx emits a warning (<code>"Covariance step failed"</code>) and sets <code>covariance_status = Failed</code>; SE fields are <code>None</code>. A future release will include eigenvalue diagnostics in the warning to help distinguish near-zero eigenvalues from identifiability problems (<a href="https://github.com/FeRx-NLME/ferx-core/issues/17">ferx-core#17</a>).</p>
 </section>
 <section id="saem" class="level2">
 <h2 class="anchored" data-anchor-id="saem">SAEM</h2>

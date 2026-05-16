@@ -695,7 +695,7 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td><code>Failed</code></td>
-<td>Hessian was singular or inversion failed; SE fields are <code>None</code></td>
+<td>Hessian was not positive definite or inversion failed; SE fields are <code>None</code></td>
 </tr>
 <tr class="odd">
 <td><code>NotRequested</code></td>
@@ -720,7 +720,7 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td><code>model_name</code></td>
-<td>Name from the <code>.ferx</code> file (or <code>"Unnamed"</code>)</td>
+<td>Name from the <code>model</code> declaration in the <code>.ferx</code> file, or the file stem if omitted</td>
 </tr>
 <tr class="even">
 <td><code>ferx_version</code></td>
