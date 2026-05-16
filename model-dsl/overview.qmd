@@ -54,7 +54,7 @@ model warfarin_1cpt
   ...
 ```
 
-The name is stored in `FitResult::model_name` and appears in output files. If omitted, the name defaults to the file stem (e.g. a model loaded from `warfarin_1cpt.ferx` gets the name `warfarin_1cpt`).
+The name is stored in `FitResult::model_name` and appears in the `.fitrx` manifest. If omitted, the name defaults to the file stem (e.g. a model loaded from `warfarin_1cpt.ferx` gets the name `warfarin_1cpt`).
 
 ## Comments
 
