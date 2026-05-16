@@ -14,6 +14,7 @@ website:
   site-url: https://ferx-nlme.github.io
   repo-url: https://github.com/FeRx-NLME/ferx-r
   repo-actions: [issue]
+  navbar-tools: false
 
   navbar:
     logo: assets/ferx-dsl-brackets.svg
@@ -36,8 +37,6 @@ website:
             href: learn/diagnostics.qmd
           - text: "Simulation"
             href: learn/simulation.qmd
-      - text: "Reference"
-        href: reference/index.html
       - text: "Model DSL"
         menu:
           - text: "Overview"
@@ -85,6 +84,8 @@ website:
     right:
       - text: "FAQ"
         href: faq.qmd
+      - text: "Reference"
+        href: reference/index.html
       - text: "Changelog"
         href: changelog.qmd
       - icon: github
