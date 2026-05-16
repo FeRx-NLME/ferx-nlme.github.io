@@ -14,7 +14,6 @@ website:
   site-url: https://ferx-nlme.github.io
   repo-url: https://github.com/FeRx-NLME/ferx-r
   repo-actions: [issue]
-  navbar-tools: false
 
   navbar:
     logo: assets/ferx-dsl-brackets.svg
