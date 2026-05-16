@@ -3,6 +3,13 @@
 /* hide navbar title text — logo SVG serves as the brand mark */
 .navbar-brand-text { display: none; }
 
+/* [ferx] logo box — warm canvas background with rounded corners, matching book */
+.navbar-brand img {
+  background: #EAE8E2;
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+
 /* smooth transitions on theme changes */
 body {
   transition: background-color 200ms ease, color 200ms ease;
