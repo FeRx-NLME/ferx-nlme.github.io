@@ -1,0 +1,112 @@
+---
+title: "Example: Correlated random effects (block omega)"
+---
+
+This example shows how to fit a model where two random effects are allowed to
+covary across subjects using `block_omega`.
+
+## When to use block omega
+
+Use a block omega when you expect two (or more) ETAs to be correlated across
+subjects. A common situation: CL and V are both driven by body size, so a
+heavy subject tends to have both higher CL *and* higher V than the population
+average. A diagonal omega (the default) forces those ETAs to be independent,
+which can bias both the individual ETAs and the covariate-search step.
+
+The equivalent NONMEM syntax is `$OMEGA BLOCK(2)`.
+
+## DSL syntax
+
+```
+block_omega (ETA_A, ETA_B) = [var_A, cov_AB, var_B]
+```
+
+The three values are the **lower triangle of Ω**, row-major:
+
+| Position | Meaning |
+|---|---|
+| `var_A` | Variance of ETA_A |
+| `cov_AB` | Covariance between ETA_A and ETA_B |
+| `var_B` | Variance of ETA_B |
+
+The implied correlation is $\rho = \text{cov}_{AB} / \sqrt{\text{var}_A \cdot \text{var}_B}$.
+
+For a block of size 3, provide 6 values (lower triangle):
+`[var_A, cov_AB, var_B, cov_AC, cov_BC, var_C]`.
+
+## Model file
+
+This example uses the warfarin one-compartment oral model with a 2×2 block on
+CL and V:
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  block_omega (ETA_CL, ETA_V) = [0.07, 0.02, 0.02]
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = foce
+  maxiter    = 300
+  covariance = true
+```
+
+Starting values: Var(ETA_CL) = 0.07, Cov(ETA_CL, ETA_V) = 0.02,
+Var(ETA_V) = 0.02 → starting correlation ρ₀ = 0.02 / √(0.07 × 0.02) ≈ 0.53.
+
+`ETA_KA` is kept diagonal (`omega ETA_KA`) because absorption rate is not
+expected to correlate with CL or V.
+
+## Running
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_block_omega")
+fit <- ferx_fit(ex$model, ex$data)
+fit
+
+# Off-diagonal correlations
+ferx_cor_matrix(fit)
+```
+
+`ferx_cor_matrix()` converts the estimated Ω to a correlation matrix:
+
+```
+        ETA_CL  ETA_V  ETA_KA
+ETA_CL   1.000  0.612   0.000
+ETA_V    0.612  1.000   0.000
+ETA_KA   0.000  0.000   1.000
+```
+
+## Tips
+
+- **Start with a diagonal model.** If the estimated off-diagonal elements are
+  large relative to their SEs, switch to a block structure.
+- **Model comparison**: a 2×2 block adds 1 parameter relative to 2 diagonal
+  omegas. Because the covariance is tested at the boundary of the parameter
+  space (H₀: cov = 0 is on the boundary, not the interior), the asymptotic
+  null is a 50:50 mixture of χ²₀ and χ²₁; the 5% critical value is 2.71,
+  not 3.84.
+- **Correlated IOV**: the analogous `block_kappa` syntax works the same way
+  for inter-occasion kappas. See the [IOV example](iov.qmd).
+
+## See also
+
+- [Parameters — block_omega](../model-dsl/parameters.qmd)
+- [Example: IOV (block_kappa)](iov.qmd)

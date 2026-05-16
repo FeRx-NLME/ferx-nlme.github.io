@@ -62,6 +62,16 @@ website:
             href: examples/bloq.qmd
           - text: "ODE model (Michaelis-Menten)"
             href: examples/ode-model.qmd
+          - text: "Two-compartment IV"
+            href: examples/two-cpt-iv.qmd
+          - text: "Three-compartment IV"
+            href: examples/three-cpt-iv.qmd
+          - text: "Absorption lag time"
+            href: examples/lag-time.qmd
+          - text: "Block omega (correlated ETAs)"
+            href: examples/block-omega.qmd
+          - text: "Conditional covariate (if/else)"
+            href: examples/conditional-covariate.qmd
       - text: "ferx-core"
         menu:
           - text: "Overview"

@@ -1,0 +1,112 @@
+---
+title: "Example: Absorption lag time (TLAG)"
+---
+
+This example demonstrates how to model a delayed absorption onset using a lag
+time parameter with additive between-subject variability.
+
+A lag time represents the delay between drug administration and the start of
+absorption — common with enteric-coated formulations, solid oral dosage forms
+with slow disintegration, or any formulation designed to delay gastric release.
+
+::: {.callout-tip}
+The additive ETA parameterisation used here is covered in full in
+[Parameter transforms — additive ETA](../learn/parameter-transforms.qmd).
+:::
+
+## When to use a lag time
+
+- The early concentration-time profile shows a flat or near-zero phase before
+  absorption begins.
+- A one-compartment oral model without a lag produces systematic over-prediction
+  at early time points and under-prediction near Tmax.
+- Literature or mechanism suggests a delay (enteric coating, gastric emptying
+  rate).
+
+## Additive vs multiplicative ETA on TLAG
+
+For most PK parameters, log-normal BSV (`TLAG * exp(ETA)`) is appropriate
+because it constrains the parameter to be positive and BSV acts
+proportionally. For lag time, an **additive** parameterisation is often
+preferred:
+
+$$\text{TLAG}_i = \text{TVTLAG} + \eta_{\text{TLAG},i}, \quad \eta \sim \mathcal{N}(0, \omega^2_{\text{TLAG}})$$
+
+The variance $\omega^2_{\text{TLAG}}$ is then in units of hours², which has a
+more natural interpretation. Individual lag times remain positive as long as
+$\text{TVTLAG} \gg \omega_{\text{TLAG}}$. This is a soft constraint — the
+solver does not enforce it. If TVTLAG converges near zero or ETA_TLAG shrinkage
+is high, widen the lower bound on TVTLAG (e.g. `TVTLAG(0.5, 0.1, 5.0)`) to
+prevent negative individual lag times from reaching the ODE solver.
+
+## Dataset
+
+Standard warfarin NONMEM CSV — no special columns required beyond `ID`, `TIME`,
+`DV`, `EVID`, `AMT`, `CMT`, `RATE`, `MDV`:
+
+```csv
+ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
+1,0,.,1,100,1,0,1
+1,0.5,0.3,0,.,1,0,0
+1,1,2.1,0,.,1,0,0
+1,2,9.5,0,.,1,0,0
+1,3,14.4,0,.,1,0,0
+1,6,17.5,0,.,1,0,0
+1,24,5.2,0,.,1,0,0
+```
+
+## Model file
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+  theta TVTLAG(0.5, 0.0, 5.0)        # typical lag time (h)
+
+  omega ETA_CL   ~ 0.07              # BSV on CL (log-normal)
+  omega ETA_V    ~ 0.02              # BSV on V  (log-normal)
+  omega ETA_TLAG ~ 0.04              # BSV on TLAG (additive, variance in h²)
+
+  sigma PROP_ERR ~ 0.01
+
+[individual_parameters]
+  CL   = TVCL  * exp(ETA_CL)
+  V    = TVV   * exp(ETA_V)
+  KA   = TVKA
+  TLAG = TVTLAG + ETA_TLAG
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA, lagtime=TLAG)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = focei
+  maxiter    = 300
+  covariance = true
+```
+
+Key points:
+
+- `TLAG = TVTLAG + ETA_TLAG` is additive — unlike the usual `* exp(ETA)` form.
+- `lagtime=TLAG` routes the individual lag time into the PK solver. The alias
+  `alag=TLAG` is also accepted (NONMEM convention).
+- `omega ETA_TLAG ~ 0.04` specifies the BSV variance directly in hours²
+  (SD ≈ 0.2 h); this is not a log-scale variance.
+
+## Running
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_additive_eta")
+fit <- ferx_fit(ex$model, ex$data)
+fit
+```
+
+## See also
+
+- [Parameter transforms — additive ETA](../learn/parameter-transforms.qmd)
+- [Structural model — lagtime slot](../model-dsl/structural-model.qmd)
+- [Analytical PK models — one_cpt_oral](../ferx-core/pk-models.qmd)
