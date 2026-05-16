@@ -1404,7 +1404,7 @@
     "href": "model-dsl/overview.html#model-naming",
     "title": "Model DSL Overview",
     "section": "Model naming",
-    "text": "Model naming\nAn optional name can be placed before the first section:\nmodel warfarin_1cpt\n\n[parameters]\n  ...\nThe name is stored in FitResult::model_name and appears in output files. If omitted, the name defaults to the file stem (e.g. a model loaded from warfarin_1cpt.ferx gets the name warfarin_1cpt)."
+    "text": "Model naming\nAn optional name can be placed before the first section:\nmodel warfarin_1cpt\n\n[parameters]\n  ...\nThe name is stored in FitResult::model_name and appears in the .fitrx manifest. If omitted, the name defaults to the file stem (e.g. a model loaded from warfarin_1cpt.ferx gets the name warfarin_1cpt)."
   },
   {
     "objectID": "model-dsl/overview.html#comments",
