@@ -341,6 +341,26 @@ ul.task-list li input[type="checkbox"] {
     <a class="dropdown-item" href="./examples/ode-model.html">
  <span class="dropdown-text">ODE model (Michaelis-Menten)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/two-cpt-iv.html">
+ <span class="dropdown-text">Two-compartment IV</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/three-cpt-iv.html">
+ <span class="dropdown-text">Three-compartment IV</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/lag-time.html">
+ <span class="dropdown-text">Absorption lag time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/block-omega.html">
+ <span class="dropdown-text">Block omega (correlated ETAs)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/conditional-covariate.html">
+ <span class="dropdown-text">Conditional covariate (if/else)</span></a>
+  </li>  
     </ul>
 </li>
   <li class="nav-item dropdown ">
@@ -417,9 +437,10 @@ ul.task-list li input[type="checkbox"] {
 <li>
 <a href="#ferx-development" id="toc-ferx-development" class="nav-link active" data-scroll-target="#ferx-development">ferx (development)</a>
   <ul class="collapse">
-<li><a href="#new-features" id="toc-new-features" class="nav-link" data-scroll-target="#new-features">New features</a></li>
+<li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug fixes</a></li>
+  <li><a href="#new-features" id="toc-new-features" class="nav-link" data-scroll-target="#new-features">New features</a></li>
   <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking changes</a></li>
-  <li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug fixes</a></li>
+  <li><a href="#bug-fixes-1" id="toc-bug-fixes-1" class="nav-link" data-scroll-target="#bug-fixes-1">Bug fixes</a></li>
   <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
   </ul>
 </li>
@@ -429,7 +450,7 @@ ul.task-list li input[type="checkbox"] {
 <li><a href="#new-features-1" id="toc-new-features-1" class="nav-link" data-scroll-target="#new-features-1">New features</a></li>
   <li><a href="#documentation-1" id="toc-documentation-1" class="nav-link" data-scroll-target="#documentation-1">Documentation</a></li>
   <li><a href="#changes-to-existing-functions" id="toc-changes-to-existing-functions" class="nav-link" data-scroll-target="#changes-to-existing-functions">Changes to existing functions</a></li>
-  <li><a href="#bug-fixes-1" id="toc-bug-fixes-1" class="nav-link" data-scroll-target="#bug-fixes-1">Bug fixes</a></li>
+  <li><a href="#bug-fixes-2" id="toc-bug-fixes-2" class="nav-link" data-scroll-target="#bug-fixes-2">Bug fixes</a></li>
   </ul>
 </li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -451,7 +472,10 @@ ul.task-list li input[type="checkbox"] {
 
 
 </header><section id="ferx-development" class="level1"><h1>ferx (development)</h1>
-<section id="new-features" class="level2"><h2 class="anchored" data-anchor-id="new-features">New features</h2>
+<section id="bug-fixes" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes">Bug fixes</h2>
+<ul>
+<li>All output functions now display the declared variable name (<code>ETA_CL</code>, <code>EPS_PROP</code>) rather than wrapping it in <code>OMEGA()</code>/<code>SIGMA()</code>. Affected surfaces: <code>print(fit)</code> OMEGA section and shrinkage, <code>ferx_estimates()</code>, <code>ferx_cor_matrix()</code> (via <code>fit$cov_matrix</code> dimnames), <code>fit$omega</code> row/column names, <code>fit$sir_ci_omega</code>, <code>fit$sir_ci_sigma</code>, and <code>summary(fit)</code> shrinkage. When names are absent the fallback remains the conventional numbered form: <code>OMEGA(1,1)</code>, <code>SIGMA(1)</code>. (#19)</li>
+</ul></section><section id="new-features" class="level2"><h2 class="anchored" data-anchor-id="new-features">New features</h2>
 <ul>
 <li><p>Lag time parameter (<code>lagtime=</code> on the structural_model line, NONMEM- style <code>alag=</code> accepted as an alias) is now supported in <code>.ferx</code> models. Delays the effective start of every dose record by the parameter’s value; defaults to <code>0.0</code> when omitted so existing models are unaffected. Random effects on lag time work the same as on any other PK parameter (<code>LAGTIME = TVLAGTIME * exp(ETA_LAGTIME)</code> for log-normal, or the additive form covered in the <code>parameter-transforms</code> vignette). Pairs with ferx-core#12.</p></li>
 <li><p><code>ferx_sir(fit)</code> — run SIR (Sampling Importance Resampling) as a standalone post-fit step, without having to set <code>sir = TRUE</code> at fit time. Useful for expensive fits where you want to add SIR-based uncertainty after the fact, or when working with a fit loaded via <code>ferx_load_fit()</code>. <code>ferx_fit()</code> now records <code>model_path</code> / <code>data_path</code> and SHA-256 <code>model_hash</code> / <code>data_hash</code> on the fit; the hashes round-trip through <code>.fitrx</code> save/load and <code>ferx_sir()</code> refuses to run when either file has changed since the fit.</p></li>
@@ -464,7 +488,7 @@ ul.task-list li input[type="checkbox"] {
 <p><code>ferx_model()</code> argument order is now <code>ferx_model(data, model)</code> (data first). This enables the natural data-first pipe entry point <code>ex$data |&gt; ferx_model(ex$model) |&gt; ferx_fit()</code> (#81).</p>
 <p>Old-style positional calls (<code>ferx_model("pk.ferx")</code> or <code>ferx_model("pk.ferx", "data.csv")</code>) are detected by the <code>.ferx</code> extension on what is now the <code>data</code> argument and auto-corrected with a deprecation warning. The compatibility shim will be removed in a future release. Calls that pass <code>data</code> by name (<code>ferx_model("pk.ferx", data = "data.csv")</code>) keep working unchanged because R matches <code>data =</code> by name first and the remaining positional argument falls into the <code>model</code> slot.</p>
 </li>
-</ul></section><section id="bug-fixes" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes">Bug fixes</h2>
+</ul></section><section id="bug-fixes-1" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-1">Bug fixes</h2>
 <ul>
 <li><p>Bundled example <code>warfarin_additive_eta.ferx</code> used <code>tlag=TLAG</code> on its structural_model line. <code>tlag</code> was never a recognized PK parameter key in the engine, so the parser silently interpreted the value as the <code>cl=</code> parameter, overwriting the clearance value and producing incorrect fits. Updated to <code>lagtime=TLAG</code>. If you derived a local model from this example, change <code>tlag=</code> to <code>lagtime=</code> (or <code>alag=</code>). Pairs with ferx-core#12.</p></li>
 <li><p><code>ferx_model_validate()</code> no longer flags <code>[initial_values]</code> as a missing required section. The block was removed from the engine in <a href="https://github.com/FeRx-NLME/ferx-core/commit/e5e934d">ferx-core e5e934d</a> — theta / omega / sigma initial values are read from <code>[parameters]</code> and the parser silently ignores any leftover <code>[initial_values]</code> block. The R-side validator and <code>ferx_model_new()</code> templates hadn’t been updated. Now: validator’s <code>required_sections</code> drops <code>initial_values</code>, all five <code>ferx_model_new()</code> templates and every bundled <code>.ferx</code> example file emit the trimmed shape, and a regression test guards against the block creeping back into templates (#16).</p></li>
@@ -491,7 +515,7 @@ ul.task-list li input[type="checkbox"] {
 <li><p><code>result$model_structure</code> is now sourced from the Rust engine (built from the parsed <code>CompiledModel</code>) instead of an R-side regex re-parse of the <code>.ferx</code> file (closes ferx-core#49). The shape is unchanged — <code>theta_names</code>, <code>model_type</code>, <code>iiv</code>, <code>iov</code>, <code>residual</code> — so <code>ferx_model_inspect()</code> callers see the same fields. <code>model_type</code> now distinguishes IV bolus from infusion (e.g.&nbsp;<code>"1-cpt IV infusion"</code>) and adds 3-cpt variants; the pre-fit <code>ferx_model_inspect(path)</code> parser was updated to the same label set so both the file-based and fit-based inspection paths report identical strings.</p></li>
 <li><p><code>ferx_model_edit()</code> gains <code>overwrite = FALSE</code>. Previously the function silently skipped the file copy when the destination already existed; it now errors with a clear message. Callers that relied on the silent-skip must add <code>overwrite = TRUE</code>.</p></li>
 <li><p><code>ferx_model_new()</code> gains <code>print = FALSE</code>. When <code>print = TRUE</code> the skeleton is printed to the console without writing any file or opening an editor; <code>path</code> becomes optional in that mode. Five templates are available: <code>"1cpt_oral"</code> (default), <code>"1cpt_iv"</code>, <code>"2cpt_oral"</code>, <code>"2cpt_iv"</code>, <code>"ode"</code>.</p></li>
-</ul></section><section id="bug-fixes-1" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-1">Bug fixes</h2>
+</ul></section><section id="bug-fixes-2" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-2">Bug fixes</h2>
 <ul>
 <li><p><code>print.ferx_fit()</code> now uses the exact coefficient of variation formula for <code>EXP(OMEGA)</code> log-normal parameters: <code>sqrt(exp(omega) - 1) * 100</code> instead of the approximation <code>sqrt(omega) * 100</code> (doi:10.1002/psp4.12507). Applied only when <code>eta_param_types == "log_normal"</code> (defaults to log-normal when the field is absent). Display for logit, additive, and custom ETA types is deferred to #53.</p></li>
 <li><p><code>ferx_model_section()</code>: fixed a descending-index bug where an empty section body (header immediately followed by another header) returned lines in reverse instead of <code>character(0)</code>.</p></li>

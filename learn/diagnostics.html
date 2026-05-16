@@ -418,6 +418,26 @@ window.Quarto = {
     <a class="dropdown-item" href="../examples/ode-model.html">
  <span class="dropdown-text">ODE model (Michaelis-Menten)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/two-cpt-iv.html">
+ <span class="dropdown-text">Two-compartment IV</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/three-cpt-iv.html">
+ <span class="dropdown-text">Three-compartment IV</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/lag-time.html">
+ <span class="dropdown-text">Absorption lag time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/block-omega.html">
+ <span class="dropdown-text">Block omega (correlated ETAs)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/conditional-covariate.html">
+ <span class="dropdown-text">Conditional covariate (if/else)</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -621,13 +641,16 @@ Tip
 </section>
 <section id="eta-covariate-correlations-ferx_eta_cov" class="level2">
 <h2 class="anchored" data-anchor-id="eta-covariate-correlations-ferx_eta_cov">ETA-covariate correlations — <code>ferx_eta_cov()</code></h2>
-<p><code>ferx_eta_cov()</code> computes Pearson correlations between individual ETA estimates (EBEs) and numeric covariate columns. Identifies covariates worth including in a formal covariate search:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit, data)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   eta      covariate    r   p_val  flag</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL   AGE       0.41  0.003   [!]</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V    WT        0.31  0.021   [!]</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA   AGE       0.12  0.281</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ferx_eta_cov()</code> computes Pearson correlations between individual ETA estimates (EBEs) and numeric covariate columns. Identifies covariates worth including in a formal covariate search.</p>
+<p>The warfarin dataset has no covariate columns. The following example uses <code>two_cpt_oral_cov</code>, which includes body weight (WT) and creatinine clearance (CRCL):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ex_cov   <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_cov"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fit_cov  <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_cov<span class="sc">$</span>model, ex_cov<span class="sc">$</span>data)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>data_cov <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex_cov<span class="sc">$</span>data)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit_cov, data_cov)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   eta      covariate    r   p_val  flag</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL   WT        0.38  0.008   [!]</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL   CRCL      0.41  0.003   [!]</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V1   WT        0.29  0.047</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>[!]</code> flags correlations with |r| ≥ 0.3 as candidates for formal covariate testing. Pass the data frame (not the path); any numeric column that is constant within a subject and not a standard NONMEM column (TIME, DV, AMT, EVID, MDV, CMT, RATE) is treated as a covariate.</p>
 <hr>
 </section>

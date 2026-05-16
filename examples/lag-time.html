@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Simulation and prediction – ferx</title>
+<title>Example: Absorption lag time (TLAG) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -515,14 +515,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#ferx_simulate-stochastic-simulation" id="toc-ferx_simulate-stochastic-simulation" class="nav-link active" data-scroll-target="#ferx_simulate-stochastic-simulation"><code>ferx_simulate()</code> — stochastic simulation</a>
-  <ul class="collapse">
-  <li><a href="#visual-predictive-check-vpc" id="toc-visual-predictive-check-vpc" class="nav-link" data-scroll-target="#visual-predictive-check-vpc">Visual predictive check (VPC)</a></li>
-  </ul></li>
-  <li><a href="#ferx_predict-population-predictions" id="toc-ferx_predict-population-predictions" class="nav-link" data-scroll-target="#ferx_predict-population-predictions"><code>ferx_predict()</code> — population predictions</a></li>
-  <li><a href="#simulation-block-built-in-virtual-trial" id="toc-simulation-block-built-in-virtual-trial" class="nav-link" data-scroll-target="#simulation-block-built-in-virtual-trial"><code>[simulation]</code> block — built-in virtual trial</a></li>
-  <li><a href="#simulation-process-r-and-cli" id="toc-simulation-process-r-and-cli" class="nav-link" data-scroll-target="#simulation-process-r-and-cli">Simulation process (R and CLI)</a></li>
-  <li><a href="#pipe-based-simulation" id="toc-pipe-based-simulation" class="nav-link" data-scroll-target="#pipe-based-simulation">Pipe-based simulation</a></li>
+  <li><a href="#when-to-use-a-lag-time" id="toc-when-to-use-a-lag-time" class="nav-link active" data-scroll-target="#when-to-use-a-lag-time">When to use a lag time</a></li>
+  <li><a href="#additive-vs-multiplicative-eta-on-tlag" id="toc-additive-vs-multiplicative-eta-on-tlag" class="nav-link" data-scroll-target="#additive-vs-multiplicative-eta-on-tlag">Additive vs multiplicative ETA on TLAG</a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
+  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
+  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -532,7 +530,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Simulation and prediction</h1>
+<h1 class="title">Example: Absorption lag time (TLAG)</h1>
 </div>
 
 
@@ -549,7 +547,8 @@ window.Quarto = {
 </header>
 
 
-<p>ferx provides two post-fit prediction functions and a built-in simulation mode for model validation.</p>
+<p>This example demonstrates how to model a delayed absorption onset using a lag time parameter with additive between-subject variability.</p>
+<p>A lag time represents the delay between drug administration and the start of absorption — common with enteric-coated formulations, solid oral dosage forms with slow disintegration, or any formulation designed to delay gastric release.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -560,168 +559,86 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For a full VPC walkthrough, see <a href="https://ferx-nlme.github.io/ferx-book/chapters/06-simulation-vpc.html">Chapter 6 (Simulation &amp; VPC)</a> in the ferx book.</p>
+<p>The additive ETA parameterisation used here is covered in full in <a href="../learn/parameter-transforms.html">Parameter transforms — additive ETA</a>.</p>
 </div>
 </div>
-<hr>
-<section id="ferx_simulate-stochastic-simulation" class="level2">
-<h2 class="anchored" data-anchor-id="ferx_simulate-stochastic-simulation"><code>ferx_simulate()</code> — stochastic simulation</h2>
-<p><code>ferx_simulate()</code> draws random effects from the estimated omega and generates simulated observations, including residual error:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)   <span class="co"># fit first</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 100 simulated replicates</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">n_sim =</span> <span class="dv">100</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">seed  =</span> <span class="dv">42</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">fit   =</span> fit)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   SIM  ID  TIME  IPRED  DV_SIM</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     1   1   0.5  9.81   10.2</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     1   1   1.0  14.3   13.6</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Key arguments:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Argument</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>model</code></td>
-<td>Path to a <code>.ferx</code> model file, or a <code>ferx_model</code> object</td>
-</tr>
-<tr class="even">
-<td><code>data</code></td>
-<td>Path to a NONMEM CSV, or a <code>ferx_model</code> that carries a data path</td>
-</tr>
-<tr class="odd">
-<td><code>n_sim</code></td>
-<td>Number of simulation replicates (default: 1)</td>
-</tr>
-<tr class="even">
-<td><code>seed</code></td>
-<td>RNG seed for reproducibility</td>
-</tr>
-<tr class="odd">
-<td><code>fit</code></td>
-<td>A <code>ferx_fit</code> object to use fitted parameters; if <code>NULL</code>, uses the initial values from the model file</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Output columns:</strong> <code>SIM</code>, <code>ID</code>, <code>TIME</code>, <code>IPRED</code> (individual prediction without residual error), <code>DV_SIM</code> (simulated observation including residual error).</p>
-<section id="visual-predictive-check-vpc" class="level3">
-<h3 class="anchored" data-anchor-id="visual-predictive-check-vpc">Visual predictive check (VPC)</h3>
-<p>A VPC overlays observed data with simulation percentiles to assess model fit:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>obs  <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>obs  <span class="ot">&lt;-</span> obs[obs<span class="sc">$</span>EVID <span class="sc">==</span> <span class="dv">0</span>, ]   <span class="co"># observations only</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute 5th / 50th / 95th percentiles of simulated DV at each time</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>vpc <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(DV_SIM <span class="sc">~</span> TIME, sim, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>))</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> vpc,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x =</span> TIME, <span class="at">ymin =</span> DV_SIM[, <span class="st">"5%"</span>], <span class="at">ymax =</span> DV_SIM[, <span class="st">"95%"</span>]),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> vpc, <span class="fu">aes</span>(<span class="at">x =</span> TIME, <span class="at">y =</span> DV_SIM[, <span class="st">"50%"</span>]),</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> obs, <span class="fu">aes</span>(<span class="at">x =</span> TIME, <span class="at">y =</span> DV), <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Visual Predictive Check"</span>,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Time (h)"</span>, <span class="at">y =</span> <span class="st">"Concentration"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
+<section id="when-to-use-a-lag-time" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-a-lag-time">When to use a lag time</h2>
+<ul>
+<li>The early concentration-time profile shows a flat or near-zero phase before absorption begins.</li>
+<li>A one-compartment oral model without a lag produces systematic over-prediction at early time points and under-prediction near Tmax.</li>
+<li>Literature or mechanism suggests a delay (enteric coating, gastric emptying rate).</li>
+</ul>
 </section>
+<section id="additive-vs-multiplicative-eta-on-tlag" class="level2">
+<h2 class="anchored" data-anchor-id="additive-vs-multiplicative-eta-on-tlag">Additive vs multiplicative ETA on TLAG</h2>
+<p>For most PK parameters, log-normal BSV (<code>TLAG * exp(ETA)</code>) is appropriate because it constrains the parameter to be positive and BSV acts proportionally. For lag time, an <strong>additive</strong> parameterisation is often preferred:</p>
+<p><span class="math display">\[\text{TLAG}_i = \text{TVTLAG} + \eta_{\text{TLAG},i}, \quad \eta \sim \mathcal{N}(0, \omega^2_{\text{TLAG}})\]</span></p>
+<p>The variance <span class="math inline">\(\omega^2_{\text{TLAG}}\)</span> is then in units of hours², which has a more natural interpretation. Individual lag times remain positive as long as <span class="math inline">\(\text{TVTLAG} \gg \omega_{\text{TLAG}}\)</span>. This is a soft constraint — the solver does not enforce it. If TVTLAG converges near zero or ETA_TLAG shrinkage is high, widen the lower bound on TVTLAG (e.g.&nbsp;<code>TVTLAG(0.5, 0.1, 5.0)</code>) to prevent negative individual lag times from reaching the ODE solver.</p>
 </section>
-<section id="ferx_predict-population-predictions" class="level2">
-<h2 class="anchored" data-anchor-id="ferx_predict-population-predictions"><code>ferx_predict()</code> — population predictions</h2>
-<p><code>ferx_predict()</code> computes population predictions using fitted theta values with all ETAs set to zero (i.e.&nbsp;the typical individual):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">ferx_predict</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">fit =</span> fit)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ID  TIME  PRED</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    1   0.5  10.12</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#    1   1.0  14.87</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This is equivalent to <code>fit$sdtab$PRED</code> but can be used without a full fit object (e.g.&nbsp;to evaluate predictions from externally specified parameters).</p>
-<hr>
+<section id="dataset" class="level2">
+<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
+<p>Standard warfarin NONMEM CSV — no special columns required beyond <code>ID</code>, <code>TIME</code>, <code>DV</code>, <code>EVID</code>, <code>AMT</code>, <code>CMT</code>, <code>RATE</code>, <code>MDV</code>:</p>
+<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
+1,0,.,1,100,1,0,1
+1,0.5,0.3,0,.,1,0,0
+1,1,2.1,0,.,1,0,0
+1,2,9.5,0,.,1,0,0
+1,3,14.4,0,.,1,0,0
+1,6,17.5,0,.,1,0,0
+1,24,5.2,0,.,1,0,0</code></pre>
 </section>
-<section id="simulation-block-built-in-virtual-trial" class="level2">
-<h2 class="anchored" data-anchor-id="simulation-block-built-in-virtual-trial"><code>[simulation]</code> block — built-in virtual trial</h2>
-<p>For standalone simulations without real data, add a <code>[simulation]</code> block to the <code>.ferx</code> file:</p>
-<pre><code>[simulation]
-  subjects = 100
-  dose     = 100
-  cmt      = 1
-  seed     = 12345
-  times    = [0.5, 1, 2, 4, 8, 12, 24]</code></pre>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Key</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>subjects</code></td>
-<td>Number of virtual subjects</td>
-</tr>
-<tr class="even">
-<td><code>dose</code></td>
-<td>Dose amount administered to each subject</td>
-</tr>
-<tr class="odd">
-<td><code>cmt</code></td>
-<td>Dosing compartment (1-indexed)</td>
-</tr>
-<tr class="even">
-<td><code>seed</code></td>
-<td>Random seed for reproducibility</td>
-</tr>
-<tr class="odd">
-<td><code>times</code></td>
-<td>Observation time points</td>
-</tr>
-</tbody>
-</table>
-<p>Run from the CLI:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ferx</span> model.ferx <span class="at">--simulate</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This will:</p>
-<ol type="1">
-<li>Parse the model and <code>[simulation]</code> block</li>
-<li>Sample random effects: <span class="math inline">\(\eta_i \sim N(0, \Omega)\)</span></li>
-<li>Compute individual parameters via <code>[individual_parameters]</code></li>
-<li>Generate predictions with the structural model</li>
-<li>Add residual error: <span class="math inline">\(DV = IPRED + \varepsilon\)</span>, <span class="math inline">\(\varepsilon \sim N(0, V)\)</span></li>
-<li>Report parameter estimates and diagnostics</li>
-</ol>
-<hr>
+<section id="model-file" class="level2">
+<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
+<pre><code>[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+  theta TVTLAG(0.5, 0.0, 5.0)        # typical lag time (h)
+
+  omega ETA_CL   ~ 0.07              # BSV on CL (log-normal)
+  omega ETA_V    ~ 0.02              # BSV on V  (log-normal)
+  omega ETA_TLAG ~ 0.04              # BSV on TLAG (additive, variance in h²)
+
+  sigma PROP_ERR ~ 0.01
+
+[individual_parameters]
+  CL   = TVCL  * exp(ETA_CL)
+  V    = TVV   * exp(ETA_V)
+  KA   = TVKA
+  TLAG = TVTLAG + ETA_TLAG
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA, lagtime=TLAG)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = focei
+  maxiter    = 300
+  covariance = true</code></pre>
+<p>Key points:</p>
+<ul>
+<li><code>TLAG = TVTLAG + ETA_TLAG</code> is additive — unlike the usual <code>* exp(ETA)</code> form.</li>
+<li><code>lagtime=TLAG</code> routes the individual lag time into the PK solver. The alias <code>alag=TLAG</code> is also accepted (NONMEM convention).</li>
+<li><code>omega ETA_TLAG ~ 0.04</code> specifies the BSV variance directly in hours² (SD ≈ 0.2 h); this is not a log-scale variance.</li>
+</ul>
 </section>
-<section id="simulation-process-r-and-cli" class="level2">
-<h2 class="anchored" data-anchor-id="simulation-process-r-and-cli">Simulation process (R and CLI)</h2>
-<p>For each simulated subject:</p>
-<ol type="1">
-<li>Sample <span class="math inline">\(\eta_i \sim N(0, \hat{\Omega})\)</span> (from fitted or specified omega)</li>
-<li>Compute individual PK parameters via the <code>[individual_parameters]</code> expressions</li>
-<li>Generate IPRED with the structural model at the dose and observation times</li>
-<li>Sample residual error: <span class="math inline">\(\varepsilon_{ij} \sim N(0, V_{ij})\)</span> where <span class="math inline">\(V_{ij}\)</span> is evaluated at IPRED</li>
-<li><span class="math inline">\(DV_{ij} = IPRED_{ij} + \varepsilon_{ij}\)</span></li>
-</ol>
-<hr>
+<section id="running" class="level2">
+<h2 class="anchored" data-anchor-id="running">Running</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_additive_eta"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="pipe-based-simulation" class="level2">
-<h2 class="anchored" data-anchor-id="pipe-based-simulation">Pipe-based simulation</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> ex<span class="sc">$</span>data <span class="sc">|&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model</span>(ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>(<span class="at">method =</span> <span class="st">"focei"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  (\(fit) <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">200</span>, <span class="at">seed =</span> <span class="dv">1</span>, <span class="at">fit =</span> fit))()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See also</h2>
+<ul>
+<li><a href="../learn/parameter-transforms.html">Parameter transforms — additive ETA</a></li>
+<li><a href="../model-dsl/structural-model.html">Structural model — lagtime slot</a></li>
+<li><a href="../ferx-core/pk-models.html">Analytical PK models — one_cpt_oral</a></li>
+</ul>
 
 
 </section>

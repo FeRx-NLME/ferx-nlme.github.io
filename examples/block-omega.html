@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Simulation and prediction – ferx</title>
+<title>Example: Correlated random effects (block omega) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -515,14 +515,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#ferx_simulate-stochastic-simulation" id="toc-ferx_simulate-stochastic-simulation" class="nav-link active" data-scroll-target="#ferx_simulate-stochastic-simulation"><code>ferx_simulate()</code> — stochastic simulation</a>
-  <ul class="collapse">
-  <li><a href="#visual-predictive-check-vpc" id="toc-visual-predictive-check-vpc" class="nav-link" data-scroll-target="#visual-predictive-check-vpc">Visual predictive check (VPC)</a></li>
-  </ul></li>
-  <li><a href="#ferx_predict-population-predictions" id="toc-ferx_predict-population-predictions" class="nav-link" data-scroll-target="#ferx_predict-population-predictions"><code>ferx_predict()</code> — population predictions</a></li>
-  <li><a href="#simulation-block-built-in-virtual-trial" id="toc-simulation-block-built-in-virtual-trial" class="nav-link" data-scroll-target="#simulation-block-built-in-virtual-trial"><code>[simulation]</code> block — built-in virtual trial</a></li>
-  <li><a href="#simulation-process-r-and-cli" id="toc-simulation-process-r-and-cli" class="nav-link" data-scroll-target="#simulation-process-r-and-cli">Simulation process (R and CLI)</a></li>
-  <li><a href="#pipe-based-simulation" id="toc-pipe-based-simulation" class="nav-link" data-scroll-target="#pipe-based-simulation">Pipe-based simulation</a></li>
+  <li><a href="#when-to-use-block-omega" id="toc-when-to-use-block-omega" class="nav-link active" data-scroll-target="#when-to-use-block-omega">When to use block omega</a></li>
+  <li><a href="#dsl-syntax" id="toc-dsl-syntax" class="nav-link" data-scroll-target="#dsl-syntax">DSL syntax</a></li>
+  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
+  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
+  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -532,7 +530,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Simulation and prediction</h1>
+<h1 class="title">Example: Correlated random effects (block omega)</h1>
 </div>
 
 
@@ -549,179 +547,101 @@ window.Quarto = {
 </header>
 
 
-<p>ferx provides two post-fit prediction functions and a built-in simulation mode for model validation.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For a full VPC walkthrough, see <a href="https://ferx-nlme.github.io/ferx-book/chapters/06-simulation-vpc.html">Chapter 6 (Simulation &amp; VPC)</a> in the ferx book.</p>
-</div>
-</div>
-<hr>
-<section id="ferx_simulate-stochastic-simulation" class="level2">
-<h2 class="anchored" data-anchor-id="ferx_simulate-stochastic-simulation"><code>ferx_simulate()</code> — stochastic simulation</h2>
-<p><code>ferx_simulate()</code> draws random effects from the estimated omega and generates simulated observations, including residual error:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)   <span class="co"># fit first</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 100 simulated replicates</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">n_sim =</span> <span class="dv">100</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">seed  =</span> <span class="dv">42</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">fit   =</span> fit)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   SIM  ID  TIME  IPRED  DV_SIM</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     1   1   0.5  9.81   10.2</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     1   1   1.0  14.3   13.6</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Key arguments:</p>
+<p>This example shows how to fit a model where two random effects are allowed to covary across subjects using <code>block_omega</code>.</p>
+<section id="when-to-use-block-omega" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-block-omega">When to use block omega</h2>
+<p>Use a block omega when you expect two (or more) ETAs to be correlated across subjects. A common situation: CL and V are both driven by body size, so a heavy subject tends to have both higher CL <em>and</em> higher V than the population average. A diagonal omega (the default) forces those ETAs to be independent, which can bias both the individual ETAs and the covariate-search step.</p>
+<p>The equivalent NONMEM syntax is <code>$OMEGA BLOCK(2)</code>.</p>
+</section>
+<section id="dsl-syntax" class="level2">
+<h2 class="anchored" data-anchor-id="dsl-syntax">DSL syntax</h2>
+<pre><code>block_omega (ETA_A, ETA_B) = [var_A, cov_AB, var_B]</code></pre>
+<p>The three values are the <strong>lower triangle of Ω</strong>, row-major:</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>Argument</th>
-<th>Description</th>
+<th>Position</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>model</code></td>
-<td>Path to a <code>.ferx</code> model file, or a <code>ferx_model</code> object</td>
+<td><code>var_A</code></td>
+<td>Variance of ETA_A</td>
 </tr>
 <tr class="even">
-<td><code>data</code></td>
-<td>Path to a NONMEM CSV, or a <code>ferx_model</code> that carries a data path</td>
+<td><code>cov_AB</code></td>
+<td>Covariance between ETA_A and ETA_B</td>
 </tr>
 <tr class="odd">
-<td><code>n_sim</code></td>
-<td>Number of simulation replicates (default: 1)</td>
-</tr>
-<tr class="even">
-<td><code>seed</code></td>
-<td>RNG seed for reproducibility</td>
-</tr>
-<tr class="odd">
-<td><code>fit</code></td>
-<td>A <code>ferx_fit</code> object to use fitted parameters; if <code>NULL</code>, uses the initial values from the model file</td>
+<td><code>var_B</code></td>
+<td>Variance of ETA_B</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Output columns:</strong> <code>SIM</code>, <code>ID</code>, <code>TIME</code>, <code>IPRED</code> (individual prediction without residual error), <code>DV_SIM</code> (simulated observation including residual error).</p>
-<section id="visual-predictive-check-vpc" class="level3">
-<h3 class="anchored" data-anchor-id="visual-predictive-check-vpc">Visual predictive check (VPC)</h3>
-<p>A VPC overlays observed data with simulation percentiles to assess model fit:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>obs  <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>obs  <span class="ot">&lt;-</span> obs[obs<span class="sc">$</span>EVID <span class="sc">==</span> <span class="dv">0</span>, ]   <span class="co"># observations only</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute 5th / 50th / 95th percentiles of simulated DV at each time</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>vpc <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(DV_SIM <span class="sc">~</span> TIME, sim, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>))</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> vpc,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x =</span> TIME, <span class="at">ymin =</span> DV_SIM[, <span class="st">"5%"</span>], <span class="at">ymax =</span> DV_SIM[, <span class="st">"95%"</span>]),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> vpc, <span class="fu">aes</span>(<span class="at">x =</span> TIME, <span class="at">y =</span> DV_SIM[, <span class="st">"50%"</span>]),</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> obs, <span class="fu">aes</span>(<span class="at">x =</span> TIME, <span class="at">y =</span> DV), <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Visual Predictive Check"</span>,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Time (h)"</span>, <span class="at">y =</span> <span class="st">"Concentration"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
+<p>The implied correlation is <span class="math inline">\(\rho = \text{cov}_{AB} / \sqrt{\text{var}_A \cdot \text{var}_B}\)</span>.</p>
+<p>For a block of size 3, provide 6 values (lower triangle): <code>[var_A, cov_AB, var_B, cov_AC, cov_BC, var_C]</code>.</p>
 </section>
+<section id="model-file" class="level2">
+<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
+<p>This example uses the warfarin one-compartment oral model with a 2×2 block on CL and V:</p>
+<pre><code>[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  block_omega (ETA_CL, ETA_V) = [0.07, 0.02, 0.02]
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = foce
+  maxiter    = 300
+  covariance = true</code></pre>
+<p>Starting values: Var(ETA_CL) = 0.07, Cov(ETA_CL, ETA_V) = 0.02, Var(ETA_V) = 0.02 → starting correlation ρ₀ = 0.02 / √(0.07 × 0.02) ≈ 0.53.</p>
+<p><code>ETA_KA</code> is kept diagonal (<code>omega ETA_KA</code>) because absorption rate is not expected to correlate with CL or V.</p>
 </section>
-<section id="ferx_predict-population-predictions" class="level2">
-<h2 class="anchored" data-anchor-id="ferx_predict-population-predictions"><code>ferx_predict()</code> — population predictions</h2>
-<p><code>ferx_predict()</code> computes population predictions using fitted theta values with all ETAs set to zero (i.e.&nbsp;the typical individual):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">ferx_predict</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">fit =</span> fit)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ID  TIME  PRED</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    1   0.5  10.12</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#    1   1.0  14.87</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This is equivalent to <code>fit$sdtab$PRED</code> but can be used without a full fit object (e.g.&nbsp;to evaluate predictions from externally specified parameters).</p>
-<hr>
+<section id="running" class="level2">
+<h2 class="anchored" data-anchor-id="running">Running</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_block_omega"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Off-diagonal correlations</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_cor_matrix</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ferx_cor_matrix()</code> converts the estimated Ω to a correlation matrix:</p>
+<pre><code>        ETA_CL  ETA_V  ETA_KA
+ETA_CL   1.000  0.612   0.000
+ETA_V    0.612  1.000   0.000
+ETA_KA   0.000  0.000   1.000</code></pre>
 </section>
-<section id="simulation-block-built-in-virtual-trial" class="level2">
-<h2 class="anchored" data-anchor-id="simulation-block-built-in-virtual-trial"><code>[simulation]</code> block — built-in virtual trial</h2>
-<p>For standalone simulations without real data, add a <code>[simulation]</code> block to the <code>.ferx</code> file:</p>
-<pre><code>[simulation]
-  subjects = 100
-  dose     = 100
-  cmt      = 1
-  seed     = 12345
-  times    = [0.5, 1, 2, 4, 8, 12, 24]</code></pre>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Key</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>subjects</code></td>
-<td>Number of virtual subjects</td>
-</tr>
-<tr class="even">
-<td><code>dose</code></td>
-<td>Dose amount administered to each subject</td>
-</tr>
-<tr class="odd">
-<td><code>cmt</code></td>
-<td>Dosing compartment (1-indexed)</td>
-</tr>
-<tr class="even">
-<td><code>seed</code></td>
-<td>Random seed for reproducibility</td>
-</tr>
-<tr class="odd">
-<td><code>times</code></td>
-<td>Observation time points</td>
-</tr>
-</tbody>
-</table>
-<p>Run from the CLI:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ferx</span> model.ferx <span class="at">--simulate</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This will:</p>
-<ol type="1">
-<li>Parse the model and <code>[simulation]</code> block</li>
-<li>Sample random effects: <span class="math inline">\(\eta_i \sim N(0, \Omega)\)</span></li>
-<li>Compute individual parameters via <code>[individual_parameters]</code></li>
-<li>Generate predictions with the structural model</li>
-<li>Add residual error: <span class="math inline">\(DV = IPRED + \varepsilon\)</span>, <span class="math inline">\(\varepsilon \sim N(0, V)\)</span></li>
-<li>Report parameter estimates and diagnostics</li>
-</ol>
-<hr>
+<section id="tips" class="level2">
+<h2 class="anchored" data-anchor-id="tips">Tips</h2>
+<ul>
+<li><strong>Start with a diagonal model.</strong> If the estimated off-diagonal elements are large relative to their SEs, switch to a block structure.</li>
+<li><strong>Model comparison</strong>: a 2×2 block adds 1 parameter relative to 2 diagonal omegas. Because the covariance is tested at the boundary of the parameter space (H₀: cov = 0 is on the boundary, not the interior), the asymptotic null is a 50:50 mixture of χ²₀ and χ²₁; the 5% critical value is 2.71, not 3.84.</li>
+<li><strong>Correlated IOV</strong>: the analogous <code>block_kappa</code> syntax works the same way for inter-occasion kappas. See the <a href="../examples/iov.html">IOV example</a>.</li>
+</ul>
 </section>
-<section id="simulation-process-r-and-cli" class="level2">
-<h2 class="anchored" data-anchor-id="simulation-process-r-and-cli">Simulation process (R and CLI)</h2>
-<p>For each simulated subject:</p>
-<ol type="1">
-<li>Sample <span class="math inline">\(\eta_i \sim N(0, \hat{\Omega})\)</span> (from fitted or specified omega)</li>
-<li>Compute individual PK parameters via the <code>[individual_parameters]</code> expressions</li>
-<li>Generate IPRED with the structural model at the dose and observation times</li>
-<li>Sample residual error: <span class="math inline">\(\varepsilon_{ij} \sim N(0, V_{ij})\)</span> where <span class="math inline">\(V_{ij}\)</span> is evaluated at IPRED</li>
-<li><span class="math inline">\(DV_{ij} = IPRED_{ij} + \varepsilon_{ij}\)</span></li>
-</ol>
-<hr>
-</section>
-<section id="pipe-based-simulation" class="level2">
-<h2 class="anchored" data-anchor-id="pipe-based-simulation">Pipe-based simulation</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> ex<span class="sc">$</span>data <span class="sc">|&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model</span>(ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>(<span class="at">method =</span> <span class="st">"focei"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  (\(fit) <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">200</span>, <span class="at">seed =</span> <span class="dv">1</span>, <span class="at">fit =</span> fit))()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See also</h2>
+<ul>
+<li><a href="../model-dsl/parameters.html">Parameters — block_omega</a></li>
+<li><a href="../examples/iov.html">Example: IOV (block_kappa)</a></li>
+</ul>
 
 
 </section>
