@@ -20,8 +20,9 @@ Use `if / else` when:
 ## Dataset
 
 The dataset must contain the covariate column(s) referenced in the `if`
-condition. This example uses `WT` and `CRCL` (both present in the
-`two_cpt_oral_cov` data format):
+condition. This example uses `WT` (the only covariate in the model). The
+bundled dataset also carries `CRCL`, but that column is not used by this
+particular model:
 
 ```csv
 ID,TIME,DV,EVID,AMT,CMT,RATE,MDV,WT,CRCL
@@ -74,7 +75,8 @@ covariates). Time-varying covariates are not supported with analytical PK solver
 [fit_options]
   method     = focei
   maxiter    = 300
-  covariance = false
+  covariance = false   # disabled here because the example dataset is small;
+                       # set covariance = true for real analyses
 ```
 
 Subjects with WT > 70 kg receive an allometric clearance boost

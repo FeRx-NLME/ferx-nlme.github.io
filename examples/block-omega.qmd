@@ -89,9 +89,9 @@ ferx_cor_matrix(fit)
 
 ```
         ETA_CL  ETA_V  ETA_KA
-ETA_CL   1.000  0.612      —
-ETA_V    0.612  1.000      —
-ETA_KA      —      —   1.000
+ETA_CL   1.000  0.612   0.000
+ETA_V    0.612  1.000   0.000
+ETA_KA   0.000  0.000   1.000
 ```
 
 ## Tips
@@ -99,7 +99,10 @@ ETA_KA      —      —   1.000
 - **Start with a diagonal model.** If the estimated off-diagonal elements are
   large relative to their SEs, switch to a block structure.
 - **Model comparison**: a 2×2 block adds 1 parameter relative to 2 diagonal
-  omegas. The OFV improvement should exceed 3.84 (χ²₁, p < 0.05).
+  omegas. Because the covariance is tested at the boundary of the parameter
+  space (H₀: cov = 0 is on the boundary, not the interior), the asymptotic
+  null is a 50:50 mixture of χ²₀ and χ²₁; the 5% critical value is 2.71,
+  not 3.84.
 - **Correlated IOV**: the analogous `block_kappa` syntax works the same way
   for inter-occasion kappas. See the [IOV example](iov.qmd).
 

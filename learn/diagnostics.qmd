@@ -73,15 +73,15 @@ where absorption and elimination are not separately identifiable.
 
 `ferx_eta_cov()` computes Pearson correlations between individual ETA estimates
 (EBEs) and numeric covariate columns. Identifies covariates worth including in
-a formal covariate search:
+a formal covariate search.
 
 The warfarin dataset has no covariate columns. The following example uses
 `two_cpt_oral_cov`, which includes body weight (WT) and creatinine clearance
 (CRCL):
 
 ```r
-ex_cov  <- ferx_example("two_cpt_oral_cov")
-fit_cov <- ferx_fit(ex_cov$model, ex_cov$data)
+ex_cov   <- ferx_example("two_cpt_oral_cov")
+fit_cov  <- ferx_fit(ex_cov$model, ex_cov$data)
 data_cov <- read.csv(ex_cov$data)
 ferx_eta_cov(fit_cov, data_cov)
 #   eta      covariate    r   p_val  flag

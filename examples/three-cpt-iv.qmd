@@ -68,8 +68,7 @@ ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
 ```
 
 The `three_cpt_iv_bolus` built-in solves the three-compartment system
-analytically using eigendecomposition of the transfer matrix. Six macro
-parameters are estimated.
+analytically, without ODE integration. Six macro parameters are estimated.
 
 ## Running
 

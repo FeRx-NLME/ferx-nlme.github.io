@@ -222,8 +222,8 @@ covariate search. The warfarin dataset has no covariate columns; use
 `two_cpt_oral_cov` (which has WT and CRCL) to exercise `ferx_eta_cov()`:
 
 ```r
-ex_cov  <- ferx_example("two_cpt_oral_cov")
-fit_cov <- ferx_fit(ex_cov$model, ex_cov$data)
+ex_cov   <- ferx_example("two_cpt_oral_cov")
+fit_cov  <- ferx_fit(ex_cov$model, ex_cov$data)
 data_cov <- read.csv(ex_cov$data)
 ferx_eta_cov(fit_cov, data_cov)
 #   eta      covariate    r   p_val  flag

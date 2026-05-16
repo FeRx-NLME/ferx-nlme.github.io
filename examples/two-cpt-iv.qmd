@@ -74,25 +74,6 @@ fit <- ferx_fit(ex$model, ex$data)
 fit
 ```
 
-Expected output structure:
-
-```
---- Objective Function ---
-OFV:  ...
-
---- THETA Estimates ---
-TVCL    ...
-TVV1    ...
-TVQ     ...
-TVV2    ...
-
---- OMEGA Estimates ---
-  OMEGA(1,1) = ...  (CV% = ...)   # ETA_CL
-  OMEGA(2,2) = ...  (CV% = ...)   # ETA_V1
-  OMEGA(3,3) = ...  (CV% = ...)   # ETA_Q
-  OMEGA(4,4) = ...  (CV% = ...)   # ETA_V2
-```
-
 ## Tips
 
 - **Model selection**: compare OFV of the two-compartment model with a

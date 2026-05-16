@@ -34,7 +34,10 @@ $$\text{TLAG}_i = \text{TVTLAG} + \eta_{\text{TLAG},i}, \quad \eta \sim \mathcal
 
 The variance $\omega^2_{\text{TLAG}}$ is then in units of hours², which has a
 more natural interpretation. Individual lag times remain positive as long as
-$\text{TVTLAG} \gg \omega_{\text{TLAG}}$.
+$\text{TVTLAG} \gg \omega_{\text{TLAG}}$. This is a soft constraint — the
+solver does not enforce it. If TVTLAG converges near zero or ETA_TLAG shrinkage
+is high, widen the lower bound on TVTLAG (e.g. `TVTLAG(0.5, 0.1, 5.0)`) to
+prevent negative individual lag times from reaching the ODE solver.
 
 ## Dataset
 
