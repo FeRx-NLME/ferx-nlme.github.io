@@ -269,7 +269,9 @@ reference in the ferx-core docs for the on-disk schema.</p></dd>
 <dd><p>Named numeric vector of fixed effect estimates</p></dd>
 
 <dt>omega</dt>
-<dd><p>Between-subject variability covariance matrix</p></dd>
+<dd><p>Between-subject variability covariance matrix. Row and column
+names are the declared ETA names (e.g. <code>"ETA_CL"</code>); fallback is
+<code>"OMEGA(1,1)"</code> when names are absent.</p></dd>
 
 <dt>sigma</dt>
 <dd><p>Residual error parameter estimates on the
@@ -400,8 +402,11 @@ optimizer's gradient ("Enzyme AD", "finite differences", or "N/A").</p></dd>
 
 <dt>cov_matrix</dt>
 <dd><p>Full parameter covariance matrix as a named numeric
-matrix (params × params). <code>NULL</code> when covariance step was not run
-or failed. Use <code><a href="ferx_cor_matrix.html">ferx_cor_matrix</a></code> to inspect correlations.</p></dd>
+matrix (params × params). Row/column names use declared variable names
+(<code>"TVCL"</code>, <code>"ETA_CL"</code>, <code>"EPS_PROP"</code>); fallback is
+<code>"OMEGA(1,1)"</code> / <code>"SIGMA(1)"</code>. <code>NULL</code> when covariance
+step was not run or failed. Use <code><a href="ferx_cor_matrix.html">ferx_cor_matrix</a></code> to
+inspect correlations.</p></dd>
 
 <dt>eigenvalues</dt>
 <dd><p>Numeric vector of eigenvalues of the correlation matrix

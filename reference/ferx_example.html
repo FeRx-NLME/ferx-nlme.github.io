@@ -75,13 +75,55 @@ Otherwise, a list with components:</p>
 <dd><p>Path to the NONMEM-format CSV data file</p></dd>
 
 </dl></div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>Available bundled examples:</p><dl><dt>warfarin</dt>
+<dd><p>One-compartment oral PK (standard warfarin dataset)</p></dd>
+
+<dt>warfarin_bloq</dt>
+<dd><p>One-compartment oral with BLOQ observations (M3 method)</p></dd>
+
+<dt>warfarin_iov</dt>
+<dd><p>One-compartment oral with inter-occasion variability (kappa)</p></dd>
+
+<dt>warfarin_block_omega</dt>
+<dd><p>One-compartment oral with correlated random effects</p></dd>
+
+<dt>warfarin_saem</dt>
+<dd><p>One-compartment oral estimated with SAEM</p></dd>
+
+<dt>warfarin_additive_eta</dt>
+<dd><p>One-compartment oral with additive ETA on lag time</p></dd>
+
+<dt>warfarin_logit_f</dt>
+<dd><p>One-compartment oral with logit-normal bioavailability</p></dd>
+
+<dt>warfarin_if</dt>
+<dd><p>Two-compartment oral with conditional if/else covariate (WT)</p></dd>
+
+<dt>two_cpt_iv</dt>
+<dd><p>Two-compartment IV bolus</p></dd>
+
+<dt>two_cpt_oral_cov</dt>
+<dd><p>Two-compartment oral with continuous covariates (WT, CRCL)</p></dd>
+
+<dt>three_cpt_iv</dt>
+<dd><p>Three-compartment IV bolus</p></dd>
+
+<dt>mm_oral</dt>
+<dd><p>One-compartment oral with Michaelis-Menten elimination (ODE)</p></dd>
+
+
+</dl><p>Call <code>ferx_example()</code> with no arguments to list all available names.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ferx_example</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mm_oral"               "two_cpt_iv"            "two_cpt_oral_cov"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "warfarin"              "warfarin_additive_eta" "warfarin_bloq"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [7] "warfarin_logit_f"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "mm_oral"               "three_cpt_iv"          "two_cpt_iv"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "two_cpt_oral_cov"      "warfarin"              "warfarin_additive_eta"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "warfarin_block_omega"  "warfarin_bloq"         "warfarin_if"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "warfarin_iov"          "warfarin_logit_f"      "warfarin_saem"        </span>
 <span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu">ferx_example</span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ex</span><span class="op">$</span><span class="va">model</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/ferx-r/inst/examples/models/warfarin.ferx"</span>
