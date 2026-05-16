@@ -124,7 +124,7 @@ Key fields:
 
 | Field | Description |
 |---|---|
-| `model_name` | Name from the `.ferx` file (or `"Unnamed"`) |
+| `model_name` | Name from the `model` declaration in the `.ferx` file, or the file stem if omitted |
 | `ferx_version` | Version of ferx-nlme that produced the result |
 | `wall_time_secs` | Wall-clock time for the complete fit (seconds) |
 | `gradient_used` | Gradient method resolved at runtime: `"enzyme"`, `"dual"`, or `"finite_differences"` |
