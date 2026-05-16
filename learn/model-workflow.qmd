@@ -218,14 +218,18 @@ ggplot(sdtab, aes(PRED, CWRES)) +
 ```
 
 ETA-covariate correlations — identifies covariates worth testing in a formal
-covariate search:
+covariate search. The warfarin dataset has no covariate columns; use
+`two_cpt_oral_cov` (which has WT and CRCL) to exercise `ferx_eta_cov()`:
 
 ```r
-data <- read.csv(ex$data)
-ferx_eta_cov(fit, data)
+ex_cov  <- ferx_example("two_cpt_oral_cov")
+fit_cov <- ferx_fit(ex_cov$model, ex_cov$data)
+data_cov <- read.csv(ex_cov$data)
+ferx_eta_cov(fit_cov, data_cov)
 #   eta      covariate    r   p_val  flag
-#   ETA_CL   AGE       0.41  0.003   [!]
-#   ETA_V    WT        0.31  0.021   [!]
+#   ETA_CL   WT        0.38  0.008   [!]
+#   ETA_CL   CRCL      0.41  0.003   [!]
+#   ETA_V1   WT        0.29  0.047
 # [!] flags |r| >= 0.3
 ```
 

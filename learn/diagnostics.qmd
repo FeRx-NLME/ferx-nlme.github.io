@@ -75,13 +75,19 @@ where absorption and elimination are not separately identifiable.
 (EBEs) and numeric covariate columns. Identifies covariates worth including in
 a formal covariate search:
 
+The warfarin dataset has no covariate columns. The following example uses
+`two_cpt_oral_cov`, which includes body weight (WT) and creatinine clearance
+(CRCL):
+
 ```r
-data <- read.csv(ex$data)
-ferx_eta_cov(fit, data)
+ex_cov  <- ferx_example("two_cpt_oral_cov")
+fit_cov <- ferx_fit(ex_cov$model, ex_cov$data)
+data_cov <- read.csv(ex_cov$data)
+ferx_eta_cov(fit_cov, data_cov)
 #   eta      covariate    r   p_val  flag
-#   ETA_CL   AGE       0.41  0.003   [!]
-#   ETA_V    WT        0.31  0.021   [!]
-#   ETA_KA   AGE       0.12  0.281
+#   ETA_CL   WT        0.38  0.008   [!]
+#   ETA_CL   CRCL      0.41  0.003   [!]
+#   ETA_V1   WT        0.29  0.047
 ```
 
 `[!]` flags correlations with |r| ≥ 0.3 as candidates for formal covariate
