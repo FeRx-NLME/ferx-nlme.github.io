@@ -14,10 +14,6 @@ pre code {
   line-height: 1.65;
 }
 
-/* dark mode navbar logo — base64 embedded to avoid path issues on subpages */
-[data-bs-theme="dark"] .navbar-brand img {
-  content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNDAgMTAwIiB3aWR0aD0iMzQwIiBoZWlnaHQ9IjEwMCI+CiAgCiAgPHRleHQgeD0iMTcwIiB5PSI1OCIgZm9udC1mYW1pbHk9IiYjMzk7SmV0QnJhaW5zIE1vbm8mIzM5OywgbW9ub3NwYWNlIiBmb250LXNpemU9IjY0IiBmb250LXdlaWdodD0iNzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCIgbGV0dGVyLXNwYWNpbmc9Ii0yIj4KICAgIDx0c3BhbiBmaWxsPSIjRDg5OTY4Ij5bPC90c3Bhbj48dHNwYW4gZmlsbD0iI0YyRUJERCI+ZmVyPC90c3Bhbj48dHNwYW4gZmlsbD0iI0Q4OTk2OCIgZm9udC1zdHlsZT0iaXRhbGljIj54PC90c3Bhbj48dHNwYW4gZmlsbD0iI0Q4OTk2OCI+XTwvdHNwYW4+CiAgPC90ZXh0Pgo8L3N2Zz4=');
-}
 
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {

@@ -17,6 +17,7 @@ website:
 
   navbar:
     logo: assets/ferx-dsl-brackets.svg
+    logo-dark: assets/ferx-dsl-brackets-dark.svg
     logo-alt: "ferx"
     left:
       - text: "Book"
