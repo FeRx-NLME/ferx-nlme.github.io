@@ -30,8 +30,8 @@
 
 ### Example execution (run locally on your CPU before marking ready for review)
 - [ ] Installed ferx-r from local build: `cd ../ferx-r && FERX_NO_AUTODIFF=1 R CMD INSTALL .`
-- [ ] All new or changed example `.qmd` pages render cleanly: `cd /Users/teun/ferx-site && quarto render examples/<page>.qmd`
-- [ ] Full site renders without error: `cd /Users/teun/ferx-site && quarto render`
+- [ ] All new or changed example `.qmd` pages render cleanly: `quarto render examples/<page>.qmd`
+- [ ] Full site renders without error: `quarto render`
 - [ ] No execution needed (style / structural / non-example change)
 
 ## Checklist
