@@ -446,3 +446,48 @@ h2 { letter-spacing: -0.02em; }
 .callout-important {
   border-left-color: $oxide-rust-dark;
 }
+
+// ── Inline code ────────────────────────────────────
+code:not(.sourceCode) {
+  color: $oxide-rust-dark !important;
+  background-color: $dark-code-bg !important;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+// ── Code panels (all pages, CSS-only — no JS needed) ─
+// Excludes div.sourceCode already inside a .code-panel (homepage)
+:not(.code-panel) > div.sourceCode {
+  background: $dark-panel;
+  border: 1px solid rgba($slate-ink-dark, 0.10);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+  margin: 1.5rem 0;
+
+  &::before {
+    content: "○  ○  ○    [warfarin_pk.ferx]";
+    display: block;
+    padding: 11px 16px;
+    border-bottom: 1px solid rgba($slate-ink-dark, 0.10);
+    background: $dark-panel;
+    font-family: $font-family-monospace;
+    font-size: 12px;
+    color: $slate-soft-dark;
+    letter-spacing: 0.02em;
+  }
+
+  > pre {
+    background: $dark-code-bg !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    padding: 16px !important;
+  }
+
+  code {
+    background: transparent !important;
+    color: $slate-ink-dark !important;
+  }
+}

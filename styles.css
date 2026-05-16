@@ -15,14 +15,6 @@ pre code {
   content: url('assets/ferx-dsl-brackets-dark.svg');
 }
 
-/* dark mode inline code */
-[data-bs-theme="dark"] code:not(.sourceCode) {
-  color: #E07B4A !important;
-  background-color: #181C24 !important;
-  border-radius: 4px;
-  padding: 1px 5px;
-}
-
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
