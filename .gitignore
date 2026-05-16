@@ -4,3 +4,4 @@ reference/
 
 /.quarto/
 **/*.quarto_ipynb
+.claude/
