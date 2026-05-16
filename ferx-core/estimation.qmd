@@ -101,6 +101,12 @@ via finite-difference Hessian of the population OFV at convergence:
 - **%RSE** = $|\text{SE} / \hat{\theta}| \times 100$
 - **Omega SEs** derived via delta method from the Cholesky parameterisation
 
+If the Hessian is not positive definite or cannot be inverted, ferx emits a
+warning (`"Covariance step failed"`) and sets `covariance_status = Failed`; SE
+fields are `None`. A future release will include eigenvalue diagnostics in the
+warning to help distinguish near-zero eigenvalues from identifiability problems
+([ferx-core#17](https://github.com/FeRx-NLME/ferx-core/issues/17)).
+
 ## SAEM
 
 Stochastic Approximation EM replaces the deterministic inner loop with

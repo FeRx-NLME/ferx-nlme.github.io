@@ -117,7 +117,7 @@ Key fields:
 | Value | Meaning |
 |---|---|
 | `Computed` | Covariance step succeeded; SE values are valid |
-| `Failed` | Hessian was singular or inversion failed; SE fields are `None` |
+| `Failed` | Hessian was not positive definite or inversion failed; SE fields are `None` |
 | `NotRequested` | `covariance = false`; SE fields are `None` |
 
 ## Run record fields
