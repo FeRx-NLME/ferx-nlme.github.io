@@ -1017,7 +1017,7 @@ Tip
 </div>
   </div>
 </footer>
-<script src="assets/dark-code-panels.js"></script>
+<script>(function(){function injectHeaders(){var dark=document.documentElement.getAttribute('data-bs-theme')==='dark';document.querySelectorAll('div.sourceCode').forEach(function(block){if(block.closest('.code-panel'))return;var existing=block.querySelector(':scope > .ferx-panel-head');if(dark&&!existing){var head=document.createElement('div');head.className='ferx-panel-head';head.innerHTML='<span class="ph-dots"><i></i><i></i><i></i></span><span class="ph-br">[</span><span class="ph-file">warfarin_pk.ferx</span><span class="ph-br">]</span>';block.insertBefore(head,block.firstChild);}else if(!dark&&existing){existing.remove();}});}document.addEventListener('DOMContentLoaded',injectHeaders);new MutationObserver(function(ms){ms.forEach(function(m){if(m.attributeName==='data-bs-theme')injectHeaders();});}).observe(document.documentElement,{attributes:true});}());</script>
 
 
 
