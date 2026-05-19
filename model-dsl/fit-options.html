@@ -701,7 +701,7 @@ method = gn_hybrid</code></pre>
 </tbody>
 </table>
 <p><strong><code>bobyqa</code></strong> does not use gradients — robust to small discontinuities in the FOCE surface caused by EBE re-estimation, but converges more slowly on smooth problems.</p>
-<p><strong><code>trust_region</code></strong> uses a finite-difference Hessian (O(n²) OFV evaluations per step). Tune the CG subproblem budget with <code>steihaug_max_iters</code> (default 50) when the parameter count exceeds 50.</p>
+<p><strong><code>trust_region</code></strong> uses an AD-based gradient and a BHHH approximate Hessian (<code>H ≈ 4 Σ gᵢgᵢᵀ</code>), which is always positive semi-definite and costs no extra OFV evaluations beyond the gradient. The Steihaug CG budget defaults to <code>ceil(sqrt(n_params))</code> (typically 5 for standard NLME models); override with <code>steihaug_max_iters</code> if needed.</p>
 </section>
 <section id="saem-specific-options" class="level2">
 <h2 class="anchored" data-anchor-id="saem-specific-options">SAEM-specific options</h2>
@@ -848,8 +848,8 @@ method = gn_hybrid</code></pre>
 </tr>
 <tr class="even">
 <td><code>steihaug_max_iters</code></td>
-<td><code>50</code></td>
-<td>Max CG iterations for the trust-region subproblem (<code>optimizer = trust_region</code> only).</td>
+<td>adaptive</td>
+<td>Max CG iterations for the trust-region Steihaug subproblem (<code>optimizer = trust_region</code> only). Default uses <code>ceil(sqrt(n_params))</code> clamped to at least 5 — typically 5 for standard NLME models. Set explicitly to pin the budget (e.g.&nbsp;<code>steihaug_max_iters = 20</code>).</td>
 </tr>
 </tbody>
 </table>

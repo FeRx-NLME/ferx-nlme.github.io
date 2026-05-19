@@ -532,7 +532,7 @@ CL = if (SEX == 1) TVCL * 1.5 else TVCL</code></pre>
 <p>Reach for a different optimizer when SLSQP misbehaves:</p>
 <ul>
 <li><strong><code>bobyqa</code></strong> — derivative-free, robust when FOCE’s FD gradients are noisy and SLSQP stalls or oscillates. Slower per iteration on smooth problems.</li>
-<li><strong><code>trust_region</code></strong> — second-order Newton trust-region. Can be faster near convergence; tune the CG budget with <code>steihaug_max_iters</code> (default 50) for models with more than ~50 packed parameters.</li>
+<li><strong><code>trust_region</code></strong> — second-order Newton trust-region with BHHH Hessian and AD gradient. Can be faster near convergence. The Steihaug CG budget is adaptive by default (<code>ceil(sqrt(n_params))</code>); override with <code>steihaug_max_iters</code> if needed.</li>
 <li><strong><code>lbfgs</code> / <code>bfgs</code></strong> — fall back to these only when NLopt is unavailable.</li>
 </ul>
 <p>See <a href="./model-dsl/fit-options.html#optimizer-choices">Fit Options — Optimizer choices</a>.</p>
