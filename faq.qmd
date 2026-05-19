@@ -82,9 +82,10 @@ Reach for a different optimizer when SLSQP misbehaves:
 
 - **`bobyqa`** — derivative-free, robust when FOCE's FD gradients are noisy
   and SLSQP stalls or oscillates. Slower per iteration on smooth problems.
-- **`trust_region`** — second-order Newton trust-region. Can be faster near
-  convergence; tune the CG budget with `steihaug_max_iters` (default 50) for
-  models with more than ~50 packed parameters.
+- **`trust_region`** — second-order Newton trust-region with BHHH Hessian and
+  AD gradient. Can be faster near convergence. The Steihaug CG budget is
+  adaptive by default (`ceil(sqrt(n_params))`); override with
+  `steihaug_max_iters` if needed.
 - **`lbfgs` / `bfgs`** — fall back to these only when NLopt is unavailable.
 
 See [Fit Options — Optimizer choices](model-dsl/fit-options.qmd#optimizer-choices).

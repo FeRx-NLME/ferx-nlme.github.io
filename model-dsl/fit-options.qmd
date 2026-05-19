@@ -100,9 +100,11 @@ robustly, FOCEI polishes to the MLE and produces a valid covariance matrix.
 FOCE surface caused by EBE re-estimation, but converges more slowly on smooth
 problems.
 
-**`trust_region`** uses a finite-difference Hessian (O(n²) OFV evaluations per
-step). Tune the CG subproblem budget with `steihaug_max_iters` (default 50)
-when the parameter count exceeds 50.
+**`trust_region`** uses an AD-based gradient and a BHHH approximate Hessian
+(`H ≈ 4 Σ gᵢgᵢᵀ`), which is always positive semi-definite and costs no extra
+OFV evaluations beyond the gradient. The Steihaug CG budget defaults to
+`ceil(sqrt(n_params))` (typically 5 for standard NLME models); override with
+`steihaug_max_iters` if needed.
 
 ## SAEM-specific options
 
@@ -153,7 +155,7 @@ See [Estimation — SIR](../ferx-core/estimation.qmd#sampling-importance-resampl
 | `scale_params` | `true` | Scale packed parameters to O(1) before optimizer. Improves conditioning when log-transformed parameters span orders of magnitude. |
 | `max_unconverged_frac` | `0.1` | Fraction of subjects (with ≥ `min_obs_for_convergence_check` observations) allowed to have unconverged EBEs before the step is rejected (OFV = ∞). Set to `1.0` to disable. |
 | `min_obs_for_convergence_check` | `2` | Subjects with fewer observations are excluded from the convergence-guard check. |
-| `steihaug_max_iters` | `50` | Max CG iterations for the trust-region subproblem (`optimizer = trust_region` only). |
+| `steihaug_max_iters` | adaptive | Max CG iterations for the trust-region Steihaug subproblem (`optimizer = trust_region` only). Default uses `ceil(sqrt(n_params))` clamped to at least 5 — typically 5 for standard NLME models. Set explicitly to pin the budget (e.g. `steihaug_max_iters = 20`). |
 
 ## Options that don't apply to the selected method
 
