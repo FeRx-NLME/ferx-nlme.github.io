@@ -97,6 +97,41 @@ EVID, MDV, CMT, RATE) is treated as a covariate.
 
 ---
 
+## IWRES autocorrelation — `check_diagnostics()`
+
+`check_diagnostics()` returns a structured list with an `$autocorrelation`
+data frame (Durbin-Watson + lag-1 Pearson r) and a tidy `$shrinkage` data
+frame covering all ETA and EPS components:
+
+```r
+diag <- check_diagnostics(fit)
+
+diag$autocorrelation
+#   dw_statistic  lag1_r               flag
+#           1.84  0.0821  no autocorrelation
+
+diag$shrinkage
+#    param type shrinkage shrinkage_pct
+#   ETA_CL  eta     0.142          14.2
+#    ETA_V  eta     0.283          28.3
+#   ETA_KA  eta     0.452          45.2
+#      EPS  eps     0.094           9.4
+```
+
+`print(fit)` shows the same values in a `--- Diagnostics ---` block.
+A `message()` with ordered remedies is emitted automatically when DW < 1.5
+(positive autocorrelation) or DW > 2.5 (negative autocorrelation).
+
+| DW range | Interpretation | Suggested action |
+|---|---|---|
+| < 1.5 | Positive autocorrelation | Check time ordering; add transit compartment; consider IOV on ka/F; SDE |
+| 1.5 – 2.5 | No concern | — |
+| > 2.5 | Negative autocorrelation | Over-parameterisation or misspecified error model |
+
+For a full walkthrough with plots see [Chapter 5 (Diagnostics)](https://ferx-nlme.github.io/ferx-book/chapters/05-diagnostics.html#iwres-autocorrelation-check_diagnostics) in the ferx book.
+
+---
+
 ## Goodness-of-fit plots from `fit$sdtab`
 
 `fit$sdtab` is a data frame with one row per observation containing PRED,
@@ -156,7 +191,9 @@ fit$individual_estimates # individual PK parameters (CL, V, KA, ...) per subject
 fit$eta_normality        # Shapiro-Wilk normality test p-value per ETA
 
 fit$shrinkage_eta        # ETA shrinkage per random effect
-fit$shrinkage_eps        # EPS shrinkage (scalar)
+fit$shrinkage_eps        # EPS shrinkage (scalar or vector for multi-sigma models)
+fit$dw_statistic         # pooled Durbin-Watson statistic for IWRES
+fit$iwres_lag1_r         # pooled lag-1 Pearson r for IWRES
 ```
 
 **Shrinkage** — values near 1 indicate that the data are not informative about
