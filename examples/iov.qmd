@@ -100,7 +100,7 @@ The three values are the lower triangle of Ω_IOV:
 ```r
 fit <- ferx_fit("warfarin_iov.ferx", "warfarin_occ.csv")
 fit
-# Shows KAPPA (IOV) Estimates block alongside the standard OMEGA output
+# Shows OMEGA_IOV Estimates block alongside the standard OMEGA output
 
 fit$omega_iov        # IOV omega matrix
 fit$ebe_kappas       # per-subject, per-occasion kappa EBEs (list of lists)
@@ -108,11 +108,11 @@ fit$ebe_kappas       # per-subject, per-occasion kappa EBEs (list of lists)
 
 ## Interpreting output
 
-The console summary gains a `KAPPA (IOV) Estimates` block:
+The console summary gains a `OMEGA_IOV Estimates` block:
 
 ```
---- KAPPA (IOV) Estimates ---
-  KAPPA_CL = 0.041200  (CV% = 20.3)  SE = 0.008000
+--- OMEGA_IOV Estimates (Inter-Occasion Variability) ---
+  KAPPA_CL = 0.041200  (CV% = 20.3)  SE = 0.008000  Shrinkage = N/A
 ```
 
 For Option B with off-diagonal correlations a `Correlations` block follows the

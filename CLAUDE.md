@@ -68,6 +68,26 @@ Run examples on the local CPU build — do not assume outputs from a prior build
 
 The authoritative DSL spec is in `../ferx-core/docs/src/`. When updating `model-dsl/` pages, verify against the current ferx-core source — not this site's existing content, which may be stale.
 
+## R output in documentation — no fabricated output
+
+**Never hand-write or invent R output in `.qmd` files.** All comment blocks showing function output (lines starting with `#` or `#>` inside ` ```r ` or ` ```{r} ` chunks) must exactly match what the current ferx-r code produces.
+
+### Why this matters
+Past incidents introduced `OMEGA(ETA_CL)` as a param label when `ferx_estimates()` actually emits `ETA_CL`; `--- KAPPA (IOV) Estimates ---` when the real header is `--- OMEGA_IOV Estimates (Inter-Occasion Variability) ---`; and `summary(fit)` output showing a theta/omega table that `print.ferx_summary()` does not produce. Users copy these snippets and are confused when they differ from actual output.
+
+### Rules
+
+1. **Derive output from source, not memory.** Before writing any output snippet, read the relevant print/format function in `../ferx-r/R/` (primarily `fit.R` and `diagnostics.R`) and transcribe the exact format strings. Key functions:
+   - `print.ferx_fit()` in `fit.R` — sections: `--- Objective Function ---`, `--- THETA Estimates ---`, `--- OMEGA Estimates ---`, `--- SIGMA Estimates ---`, `--- OMEGA_IOV Estimates (Inter-Occasion Variability) ---`
+   - `ferx_estimates()` in `diagnostics.R` — omega rows use `fit$eta_names[i]` directly (e.g. `ETA_CL`), not wrapped in `OMEGA(...)`
+   - `print.ferx_summary()` in `fit.R` — shows run metadata only, no theta/omega table
+
+2. **Preferred: run the actual code.** Render the page (`quarto render <page>.qmd`) and copy the console output verbatim. See "Example execution" above.
+
+3. **If output must be approximate** (e.g. numbers will vary by platform), add a comment noting this: `# (values are illustrative; run the model to get exact numbers)` — never silently invent values.
+
+4. **Audit before every PR.** For any PR touching `.qmd` files that contain output snippets, verify each snippet against the current `../ferx-r/R/` source or a live render. This is part of the audit procedure above.
+
 ## Pull Requests
 
 When creating a PR in this repo, always read `.github/PULL_REQUEST_TEMPLATE.md` and fill every section before calling `gh pr create`.
