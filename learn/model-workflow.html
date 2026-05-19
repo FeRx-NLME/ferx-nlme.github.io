@@ -681,9 +681,9 @@ Tip
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVCL            identity     0.134  0.0108     8.1     0.113     0.155</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVV             identity     7.94   0.420      5.3     7.12      8.76</span></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVKA            identity     1.07   0.160     14.9     0.756     1.38</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_CL)   variance     0.042  0.012     28.6    0.019     0.066</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_V)    variance     0.020  0.009     44.9    0.002     0.037</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_KA)   variance     0.157  0.048     30.6    0.063     0.251</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL          variance     0.042  0.012     28.6    0.019     0.066</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V           variance     0.020  0.009     44.9    0.002     0.037</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA          variance     0.157  0.048     30.6    0.063     0.251</span></span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   PROP_ERR        proportional 0.011  0.001      9.1    0.009     0.013</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>ferx_cor_matrix()</code> converts the parameter covariance matrix to correlations. A value near ±1 signals a structural identifiability problem:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_cor_matrix</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

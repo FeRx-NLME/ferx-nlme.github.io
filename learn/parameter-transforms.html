@@ -601,19 +601,19 @@ Tip
 <p>After fitting, <code>print()</code> reports omega as <code>[log-normal]</code> with a CV%:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Omega (between-subject variability):</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL  [log-normal]  var = 0.0423   CV% = 21.1</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V   [log-normal]  var = 0.0198   CV% = 14.2</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA  [log-normal]  var = 0.157    CV% = 40.9</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- OMEGA Estimates ---</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL                   [log-normal]  = 0.042300  CV% = 20.8  SE = 0.012100</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V                    [log-normal]  = 0.019800  CV% = 14.2  SE = 0.008900</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA                   [log-normal]  = 0.157000  CV% = 41.5  SE = 0.048000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The CV% is derived from the log-scale variance as:</p>
 <p><span class="math display">\[\text{CV\%} = 100 \times \sqrt{\exp(\omega) - 1}\]</span></p>
 <p>For small variances this is approximately <span class="math inline">\(100\sqrt{\omega}\)</span>, but the exact formula is always used.</p>
 <p><code>ferx_estimates()</code> returns omega rows with <code>transform = "variance"</code> (all omega rows use this label regardless of ETA parameterisation style — the log-normal interpretation is conveyed by <code>print.ferx_fit()</code>, not the tidy table):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param              transform  estimate      se  rse_pct  lower_95  upper_95</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_CL)      variance     0.0423  0.0121     28.6    0.0186    0.0660</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_V)       variance     0.0198  0.0089     44.9    0.0024    0.0372</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_KA)      variance     0.1570  0.0480     30.6    0.0629    0.2511</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param    transform  estimate      se  rse_pct  lower_95  upper_95</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL   variance     0.0423  0.0121     28.6    0.0186    0.0660</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V    variance     0.0198  0.0089     44.9    0.0024    0.0372</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA   variance     0.1570  0.0480     30.6    0.0629    0.2511</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="logit-normal-eta-bioavailability" class="level2">
@@ -632,9 +632,9 @@ Tip
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   param    transform  estimate    se  rse_pct  estimate_natural  lower_95_natural  upper_95_natural</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   THETA_F  logit        0.847  0.143     16.9             0.700             0.638             0.755</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The omega for <code>ETA_F</code> has <code>transform = "variance"</code> (same label as all omega rows):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>est[est<span class="sc">$</span>param <span class="sc">==</span> <span class="st">"OMEGA(ETA_F)"</span>, ]</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param         transform  estimate     se  rse_pct</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_F)  variance     0.0631  0.028     44.4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>est[est<span class="sc">$</span>param <span class="sc">==</span> <span class="st">"ETA_F"</span>, ]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param  transform  estimate     se  rse_pct</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_F  variance     0.0631  0.028     44.4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="additive-eta-lag-time" class="level2">
@@ -647,11 +647,12 @@ Tip
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fit_add <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_add<span class="sc">$</span>model, ex_add<span class="sc">$</span>data)</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>fit_add</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA_TLAG  [additive]  SD = 0.56 h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># --- OMEGA Estimates ---</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_TLAG                 [additive]    = 0.312000  SD = 0.5600  SE = N/A</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>ferx_estimates()</code> returns <code>transform = "variance"</code> for the omega element (all omega rows). The <code>estimate</code> is the variance in the original units (hours²); no back-transform is applied:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit_add)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param              transform  estimate     se  rse_pct</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_TLAG)    variance     0.312   0.098     31.4</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param    transform  estimate     se  rse_pct</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_TLAG variance     0.312   0.098     31.4</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># SD in original units = sqrt(0.312) ≈ 0.56 h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>

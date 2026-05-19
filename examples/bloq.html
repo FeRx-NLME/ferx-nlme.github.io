@@ -615,16 +615,20 @@ Tip
 <h2 class="anchored" data-anchor-id="expected-output">Expected output</h2>
 <pre><code>--- Objective Function ---
 OFV:  -213.9104
+AIC:  ...
+BIC:  ...
 
 --- THETA Estimates ---
-TVCL    0.126263
-TVV     7.629401
-TVKA    1.083302
+Parameter           Estimate           SE       %RSE
+----------------------------------------------------
+TVCL              0.126263          N/A        N/A
+TVV               7.629401          N/A        N/A
+TVKA              1.083302          N/A        N/A
 
 --- OMEGA Estimates ---
-  OMEGA(1,1) = 0.031381  (CV% = 17.7)
-  OMEGA(2,2) = 0.009723  (CV% = 9.9)
-  OMEGA(3,3) = 0.419327  (CV% = 64.8)</code></pre>
+  ETA_CL                   [log-normal]  = 0.031381  CV% = 17.7  SE = N/A
+  ETA_V                    [log-normal]  = 0.009723  CV% = 9.9   SE = N/A
+  ETA_KA                   [log-normal]  = 0.419327  CV% = 64.8  SE = N/A</code></pre>
 <p>The sdtab gains a <code>CENS</code> column, and <code>IWRES</code>/<code>CWRES</code> cells for censored rows are empty (a weighted Gaussian residual is undefined when the value is censored).</p>
 </section>
 <section id="method-notes" class="level2">
