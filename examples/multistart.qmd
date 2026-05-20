@@ -1,0 +1,108 @@
+---
+title: "Example: Multi-start fitting"
+---
+
+For models with ridged or multi-modal OFV surfaces — Michaelis-Menten
+elimination is the classic case — a single fit from one set of starting values
+often lands on a local minimum. Multi-start runs `n_starts` independent fits
+from perturbed initial values in parallel and returns the one with the lowest
+OFV.
+
+## When to use multi-start
+
+- Michaelis-Menten (Vmax/Km) models: Vmax and Km are weakly identifiable from
+  sparse data and the OFV surface has a narrow ridge
+- Full block-omega models with many correlated ETAs
+- Models with many covariate parameters where the optimiser can stall
+
+## How it works
+
+- **Start 0** always uses the exact initial values from the model file
+- **Starts 1..n** apply a log-space perturbation of size `start_sigma` to each
+  theta. The default `start_sigma = 0.3` is a ±30% multiplicative perturbation
+  on the natural scale
+- All starts run in parallel via Rayon; on an 8-core machine `n_starts = 8`
+  costs approximately the same wall-clock time as a single run
+- The fit with the lowest OFV is returned
+
+## Model file
+
+The `mm_multistart` example is a Michaelis-Menten one-compartment oral model
+with starting values intentionally set above the true values to demonstrate
+local-minimum trapping:
+
+```
+[parameters]
+  # Initial values are intentionally high — a single run often stays here.
+  # Multi-start explores the neighbourhood and finds the true optimum.
+  theta TVVMAX(12.0, 0.1, 50.0)    # maximum elimination rate (mg/h); true ≈ 3.5
+  theta TVKM(20.0,  0.1, 100.0)    # Michaelis constant (mg/L);       true ≈ 5.5
+  theta TVV(11.0,   1.0, 200.0)    # volume of distribution (L);       true ≈ 11
+  theta TVKA(1.3,   0.05, 20.0)    # absorption rate constant (1/h);   true ≈ 1.3
+
+  omega ETA_VMAX ~ 0.25
+  omega ETA_V    ~ 0.20
+
+  sigma PROP_ERR ~ 0.04 (sd)
+
+[individual_parameters]
+  VMAX = TVVMAX * exp(ETA_VMAX)
+  KM   = TVKM
+  V    = TVV * exp(ETA_V)
+  KA   = TVKA
+
+[structural_model]
+  ode(obs_cmt=central, states=[depot, central])
+
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) = KA * depot / V - VMAX * central / (KM + central)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method           = focei
+  maxiter          = 500
+  covariance       = true
+  n_starts         = 8
+  start_sigma      = 0.5
+  multi_start_seed = 42
+```
+
+## Running
+
+```r
+library(ferx)
+ex <- ferx_example("mm_multistart")
+
+# Single-start — override the model-file default of n_starts = 8
+fit_single <- ferx_fit(ex$model, ex$data,
+                       settings = list(n_starts = 1L))
+
+# Multi-start — 8 parallel runs with wider perturbation
+fit_multi  <- ferx_fit(ex$model, ex$data)
+
+cat("Single-start OFV:", fit_single$ofv, "\n")
+cat("Multi-start OFV: ", fit_multi$ofv,  "\n")
+
+print(fit_multi)
+```
+
+The single-start run from the inflated starting values often converges to a
+local minimum with TVVMAX and TVKM both higher than the true values. The
+multi-start run returns estimates close to the simulation truth (TVVMAX ≈ 3.5,
+TVKM ≈ 5.5).
+
+## Fit options reference
+
+| Key | Default | Description |
+|---|---|---|
+| `n_starts` | `1` | Number of independent runs. `1` = single run, no overhead |
+| `start_sigma` | `0.3` | Log-space perturbation size for starts 1..n |
+| `multi_start_seed` | — | RNG seed for reproducible perturbations |
+
+## See also
+
+- [Fit Options — multi-start](../model-dsl/fit-options.qmd)
+- [Example: ODE model (Michaelis-Menten)](ode-model.qmd)

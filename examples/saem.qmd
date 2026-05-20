@@ -1,0 +1,95 @@
+---
+title: "Example: SAEM estimation"
+---
+
+SAEM (Stochastic Approximation EM) uses Metropolis-Hastings sampling instead
+of MAP optimisation for random effects. It is more robust to local minima and
+complex posterior shapes than FOCE/FOCEI, at the cost of longer run times.
+
+::: {.callout-note}
+SAEM is **not** supported with IOV models. Use `foce` or `focei` for those.
+:::
+
+## When to use SAEM
+
+- Models with many correlated random effects where FOCEI has convergence issues
+- High-shrinkage scenarios where the EBE approximation degrades
+- Complex absorption or exposure-response models with multi-modal ETA posteriors
+
+## Model file
+
+The `warfarin_saem` bundled example is the standard one-compartment warfarin
+model with SAEM-specific `[fit_options]`:
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01 (sd)
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method        = saem
+  n_exploration = 150
+  n_convergence = 250
+  n_mh_steps    = 3
+  seed          = 12345
+  covariance    = true
+```
+
+## SAEM-specific options
+
+| Key | Default | Description |
+|---|---|---|
+| `n_exploration` | `200` | Burn-in iterations (stochastic phase, large step size) |
+| `n_convergence` | `300` | Convergence iterations (annealed step size, SA averaging) |
+| `n_mh_steps` | `5` | Metropolis-Hastings steps per outer iteration per subject |
+| `seed` | — | RNG seed for reproducible chains |
+
+## Running
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_saem")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
+```
+
+## Chaining SAEM → FOCEI
+
+A common practice is to use SAEM to find a good region of parameter space,
+then polish with FOCEI:
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_saem")
+fit <- ferx_fit(ex$model, ex$data,
+                method     = c("saem", "focei"),
+                covariance = TRUE)
+print(fit)
+```
+
+The chained fit runs SAEM first, then starts FOCEI from the SAEM-converged
+parameters. The final result is a FOCEI fit with SAEM-warm-started initial
+values.
+
+## See also
+
+- [Fit Options — SAEM](../model-dsl/fit-options.qmd#saem)
+- [Fit Options — chained methods](../model-dsl/fit-options.qmd#chained-methods)

@@ -352,6 +352,13 @@ print(fit)
 summary(fit)
 ```
 
+To see all bundled examples:
+
+```r
+ferx_example()   # returns a character vector of all available example names
+?ferx_example    # full list with descriptions in the help page
+```
+
 ---
 
 ## Troubleshooting

@@ -1,0 +1,118 @@
+---
+title: "Example: SDE process noise ([diffusion] block)"
+---
+
+A stochastic differential equation (SDE) extension of the standard
+one-compartment warfarin model. The `[diffusion]` block adds within-subject
+system noise on one or more ODE states, estimated via an Extended Kalman Filter
+(EKF) likelihood. This is useful when IWRES shows autocorrelation that cannot
+be absorbed by residual error alone — a signal of structural misspecification or
+unmodelled absorption variability.
+
+## How it works
+
+Without a `[diffusion]` block, ferx treats the ODE system as deterministic: all
+unexplained variability enters through BSV (omega) and residual error (sigma).
+
+With `[diffusion]`, each listed state becomes a continuous diffusion process:
+
+$$dA = f(A,\theta,t)\,dt + \sqrt{Q}\,dW_t$$
+
+The EKF integrates the covariance ODE alongside the state ODE and inflates the
+observation variance at each time point by the accumulated process noise:
+
+$$V_{\text{total}} = P[\text{central}] + \sigma^2(\hat{y})$$
+
+`DIFF_CENTRAL` is the diffusion variance $Q$ for the central compartment,
+estimated on the variance scale (not SD).
+
+::: {.callout-note}
+SDE models require an ODE structural model — they cannot be used with analytical
+PK solvers (`one_cpt_oral`, `two_cpt_iv_bolus`, etc.). The model file must use
+`[structural_model] ode(...)` with `[odes]`.
+
+SDE is also incompatible with Enzyme autodiff. `gradient_method = fd` is set
+automatically and the model file enforces it. Fits are significantly slower than
+equivalent analytical models.
+:::
+
+## Model file
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01 (sd)
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  ode(obs_cmt=central, states=[depot, central])
+
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) =  KA * depot / V - (CL / V) * central
+
+[diffusion]
+  central ~ 0.01
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method          = foce
+  maxiter         = 300
+  covariance      = true
+  gradient_method = fd
+```
+
+## The `[diffusion]` block
+
+Each line declares the diffusion variance for one ODE state:
+
+```
+[diffusion]
+  <state> ~ <initial_variance>
+```
+
+- `central ~ 0.01` declares `DIFF_CENTRAL` with starting variance 0.01.
+- The fitted parameter appears in `fit$theta` as `DIFF_CENTRAL`.
+- Multiple states can be listed; each gets its own `DIFF_<STATE>` parameter.
+
+## Running
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_sde")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
+
+fit$uses_sde                    # TRUE
+fit$theta["DIFF_CENTRAL"]       # fitted diffusion variance
+
+ferx_estimates(fit)             # DIFF_CENTRAL appears in the theta block
+```
+
+## Interpreting the output
+
+`print(fit)` shows `DIFF_CENTRAL` in the `--- THETA Estimates ---` block
+alongside the structural PK parameters. A small `DIFF_CENTRAL` relative to
+the observation variance indicates little system noise; a large value relative
+to sigma suggests the model is absorbing structural misfit as process noise —
+consider revisiting the structural model.
+
+`fit$uses_sde` is `TRUE` whenever the fit used the EKF path.
+
+## See also
+
+- [ODE Models DSL](../model-dsl/odes.qmd)
+- [Example: ODE model (Michaelis-Menten)](ode-model.qmd)

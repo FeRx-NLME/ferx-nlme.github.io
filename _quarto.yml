@@ -74,6 +74,14 @@ website:
             href: examples/conditional-covariate.qmd
           - text: "Deep Compartment Model (DCM)"
             href: examples/dcm.qmd
+          - text: "SAEM estimation"
+            href: examples/saem.qmd
+          - text: "SDE process noise"
+            href: examples/sde.qmd
+          - text: "Multi-start fitting"
+            href: examples/multistart.qmd
+          - text: "Oral bioavailability (logit-normal F)"
+            href: examples/bioavailability.qmd
       - text: "ferx-core"
         menu:
           - text: "Overview"
