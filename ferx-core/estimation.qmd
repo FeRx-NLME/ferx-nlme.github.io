@@ -210,7 +210,10 @@ SIR is an optional post-estimation step that provides non-parametric parameter
 uncertainty estimates, more robust than the asymptotic covariance matrix for
 small datasets or boundary estimates.
 
-1. Draw M parameter vectors from $\mathcal{N}(\hat{\theta}, \hat{\Sigma})$
+1. Draw M parameter vectors from a multivariate Student-t proposal centred on
+   $\hat{\theta}$ with covariance $\hat{\Sigma}$ and degrees of freedom ν
+   (default ν = 5). The heavy tails relative to Normal help cover the posterior
+   when the proposal covariance underestimates uncertainty.
 2. Compute importance weights from OFV differences
 3. Resample m vectors proportional to weights
 
@@ -219,12 +222,14 @@ excellent; ESS < 100 suggests the proposal is a poor match.
 
 ```
 [fit_options]
-  method        = focei
-  covariance    = true
-  sir           = true
-  sir_samples   = 1000
-  sir_resamples = 250
-  sir_seed      = 42
+  method           = focei
+  covariance       = true
+  sir              = true
+  sir_samples      = 1000
+  sir_resamples    = 250
+  sir_seed         = 42
+  sir_df           = 5       # Student-t degrees of freedom (default 5)
+  sir_keep_samples = false   # set true to access raw proposal draws
 ```
 
 Reference: Dosne et al. (2017), *J Pharmacokinet Pharmacodyn* 44(6):539-562.

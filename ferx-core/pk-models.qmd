@@ -48,7 +48,7 @@ $$C(t) = \frac{\text{Rate}}{CL} \cdot (1 - e^{-k T_{\text{inf}}}) \cdot e^{-k(t 
 
 ```
 pk one_cpt_oral(cl=CL, v=V, ka=KA)
-pk one_cpt_oral_f(cl=CL, v=V, ka=KA, f=F)   # with bioavailability
+pk one_cpt_oral(cl=CL, v=V, ka=KA, f=F)     # with bioavailability
 ```
 
 $$C(t) = \frac{F \cdot \text{Dose} \cdot K_A}{V (K_A - k)} \left(e^{-k t} - e^{-K_A t}\right)$$
@@ -95,7 +95,7 @@ bolus formula when `duration ≤ 0`.
 
 ```
 pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)
-pk two_cpt_oral_f(cl=CL, v1=V1, q=Q, v2=V2, ka=KA, f=F)
+pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA, f=F)     # with bioavailability
 ```
 
 $$C(t) = Ae^{-\alpha t} + Be^{-\beta t} + Ce^{-K_A t}$$

@@ -129,6 +129,7 @@ Key fields:
 | `wall_time_secs` | Wall-clock time for the complete fit (seconds) |
 | `gradient_used` | Gradient method resolved at runtime: `"enzyme"`, `"dual"`, or `"finite_differences"` |
 | `uses_ode_solver` | `true` for ODE models, `false` for analytical PK |
+| `uses_sde` | `true` when a `[diffusion]` block is present (Extended Kalman Filter path) |
 | `n_threads_used` | Number of rayon threads during estimation |
 
 ## EBE convergence diagnostics
