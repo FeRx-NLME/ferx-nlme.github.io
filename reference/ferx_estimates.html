@@ -51,7 +51,7 @@ back-transformed estimates and CIs."><!-- mathjax --><script src="https://cdnjs.
     <div class="ref-description">
     <p>Extracts all estimated parameters (theta, omega diagonal, sigma) into a
 single tidy data frame, adding percent relative standard error (\<!-- %RSE), -->
-95\<!-- % confidence intervals, and—for log/logit-transformed thetas—natural-scale -->
+95\<!-- % confidence intervals, and-for log/logit-transformed thetas-natural-scale -->
 back-transformed estimates and CIs.</p>
     </div>
 
@@ -72,8 +72,12 @@ back-transformed estimates and CIs.</p>
     <p>A data frame with columns <code>param</code>, <code>transform</code>,
 <code>estimate</code>, <code>se</code>, <code>rse_pct</code>, <code>lower_95</code>,
 <code>upper_95</code>, <code>estimate_natural</code>, <code>lower_95_natural</code>,
-<code>upper_95_natural</code>. SE-derived and natural-scale columns are
-<code>NA</code> when not applicable or when the covariance step was not run.</p>
+<code>upper_95_natural</code>, <code>init_as_sd</code>. SE-derived and
+natural-scale columns are <code>NA</code> when not applicable or when the
+covariance step was not run. <code>init_as_sd</code> is <code>TRUE</code> for
+omega, sigma, or kappa rows where the user annotated the initial
+value with <code>(sd)</code> in the model file; always <code>FALSE</code> for
+theta rows.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -96,21 +100,21 @@ file convention). For block omega, only the diagonal variances are included.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Possible over-parameterisation or misspecified residual error model.</span>
 <span class="r-in"><span><span class="fu">ferx_estimates</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      param    transform    estimate se rse_pct lower_95 upper_95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     TVCL     identity 0.132736353 NA      NA       NA       NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      TVV     identity 7.690589924 NA      NA       NA       NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     TVKA     identity 0.757203691 NA      NA       NA       NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   ETA_CL     variance 0.028490672 NA      NA       NA       NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    ETA_V     variance 0.009617854 NA      NA       NA       NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   ETA_KA     variance 0.342903187 NA      NA       NA       NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 PROP_ERR proportional 0.010624906 NA      NA       NA       NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   estimate_natural lower_95_natural upper_95_natural</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1               NA               NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2               NA               NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3               NA               NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4               NA               NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5               NA               NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6               NA               NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7               NA               NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     TVCL     identity 0.132738201 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      TVV     identity 7.690629824 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     TVKA     identity 0.757177068 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   ETA_CL     variance 0.028490721 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    ETA_V     variance 0.009617779 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   ETA_KA     variance 0.342907726 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 PROP_ERR proportional 0.010625062 NA      NA       NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   estimate_natural lower_95_natural upper_95_natural init_as_sd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               NA               NA               NA      FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2               NA               NA               NA      FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               NA               NA               NA      FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4               NA               NA               NA      FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5               NA               NA               NA      FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6               NA               NA               NA      FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7               NA               NA               NA       TRUE</span>
 </code></pre></div>
     </div>
   </div>

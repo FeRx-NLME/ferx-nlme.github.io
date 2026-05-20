@@ -438,6 +438,26 @@ window.Quarto = {
     <a class="dropdown-item" href="../examples/conditional-covariate.html">
  <span class="dropdown-text">Conditional covariate (if/else)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/dcm.html">
+ <span class="dropdown-text">Deep Compartment Model (DCM)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/saem.html">
+ <span class="dropdown-text">SAEM estimation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/sde.html">
+ <span class="dropdown-text">SDE process noise</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/multistart.html">
+ <span class="dropdown-text">Multi-start fitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/bioavailability.html">
+ <span class="dropdown-text">Oral bioavailability (logit-normal F)</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -618,15 +638,10 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_block_omega"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Off-diagonal correlations</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Off-diagonal correlations — converts estimated Ω to a correlation matrix</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_cor_matrix</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>ferx_cor_matrix()</code> converts the estimated Ω to a correlation matrix:</p>
-<pre><code>        ETA_CL  ETA_V  ETA_KA
-ETA_CL   1.000  0.612   0.000
-ETA_V    0.612  1.000   0.000
-ETA_KA   0.000  0.000   1.000</code></pre>
 </section>
 <section id="tips" class="level2">
 <h2 class="anchored" data-anchor-id="tips">Tips</h2>

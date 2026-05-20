@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Analytical PK Models – ferx</title>
+<title>Example: SDE process noise ([diffusion] block) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -535,23 +535,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#invoking-a-model-in-the-dsl" id="toc-invoking-a-model-in-the-dsl" class="nav-link active" data-scroll-target="#invoking-a-model-in-the-dsl">Invoking a model in the DSL</a></li>
-  <li><a href="#one-compartment-models" id="toc-one-compartment-models" class="nav-link" data-scroll-target="#one-compartment-models">One-compartment models</a>
-  <ul class="collapse">
-  <li><a href="#iv-bolus" id="toc-iv-bolus" class="nav-link" data-scroll-target="#iv-bolus">IV bolus</a></li>
-  <li><a href="#iv-infusion" id="toc-iv-infusion" class="nav-link" data-scroll-target="#iv-infusion">IV infusion</a></li>
-  <li><a href="#oral-absorption" id="toc-oral-absorption" class="nav-link" data-scroll-target="#oral-absorption">Oral absorption</a></li>
-  </ul></li>
-  <li><a href="#two-compartment-models" id="toc-two-compartment-models" class="nav-link" data-scroll-target="#two-compartment-models">Two-compartment models</a>
-  <ul class="collapse">
-  <li><a href="#iv-bolus-1" id="toc-iv-bolus-1" class="nav-link" data-scroll-target="#iv-bolus-1">IV bolus</a></li>
-  <li><a href="#iv-infusion-1" id="toc-iv-infusion-1" class="nav-link" data-scroll-target="#iv-infusion-1">IV infusion</a></li>
-  <li><a href="#oral-absorption-1" id="toc-oral-absorption-1" class="nav-link" data-scroll-target="#oral-absorption-1">Oral absorption</a></li>
-  </ul></li>
-  <li><a href="#three-compartment-models" id="toc-three-compartment-models" class="nav-link" data-scroll-target="#three-compartment-models">Three-compartment models</a></li>
-  <li><a href="#multi-dose-superposition" id="toc-multi-dose-superposition" class="nav-link" data-scroll-target="#multi-dose-superposition">Multi-dose superposition</a></li>
-  <li><a href="#pkparams-layout" id="toc-pkparams-layout" class="nav-link" data-scroll-target="#pkparams-layout"><code>PkParams</code> layout</a></li>
-  <li><a href="#relevant-source-files" id="toc-relevant-source-files" class="nav-link" data-scroll-target="#relevant-source-files">Relevant source files</a></li>
+  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link active" data-scroll-target="#how-it-works">How it works</a></li>
+  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
+  <li><a href="#the-diffusion-block" id="toc-the-diffusion-block" class="nav-link" data-scroll-target="#the-diffusion-block">The <code>[diffusion]</code> block</a></li>
+  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
+  <li><a href="#interpreting-the-output" id="toc-interpreting-the-output" class="nav-link" data-scroll-target="#interpreting-the-output">Interpreting the output</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -561,7 +550,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Analytical PK Models</h1>
+<h1 class="title">Example: SDE process noise ([diffusion] block)</h1>
 </div>
 
 
@@ -578,178 +567,101 @@ window.Quarto = {
 </header>
 
 
-<p>ferx-core provides closed-form analytical solutions for one-, two-, and three-compartment PK models. These are the preferred structural model type: they are faster than ODE integration and support the Enzyme automatic differentiation path for gradient computation.</p>
-<section id="invoking-a-model-in-the-dsl" class="level2">
-<h2 class="anchored" data-anchor-id="invoking-a-model-in-the-dsl">Invoking a model in the DSL</h2>
-<p>The <code>[structural_model]</code> section of a <code>.ferx</code> file selects an analytical model with the <code>pk</code> keyword:</p>
-<pre><code>[structural_model]
-  pk one_cpt_oral(cl=CL, v=V, ka=KA)</code></pre>
-<p>Named arguments map individual-parameter symbols to the model’s PK slots. The available models and their required arguments are listed below.</p>
+<p>A stochastic differential equation (SDE) extension of the standard one-compartment warfarin model. The <code>[diffusion]</code> block adds within-subject system noise on one or more ODE states, estimated via an Extended Kalman Filter (EKF) likelihood. This is useful when IWRES shows autocorrelation that cannot be absorbed by residual error alone — a signal of structural misspecification or unmodelled absorption variability.</p>
+<section id="how-it-works" class="level2">
+<h2 class="anchored" data-anchor-id="how-it-works">How it works</h2>
+<p>Without a <code>[diffusion]</code> block, ferx treats the ODE system as deterministic: all unexplained variability enters through BSV (omega) and residual error (sigma).</p>
+<p>With <code>[diffusion]</code>, each listed state becomes a continuous diffusion process:</p>
+<p><span class="math display">\[dA = f(A,\theta,t)\,dt + \sqrt{Q}\,dW_t\]</span></p>
+<p>The EKF integrates the covariance ODE alongside the state ODE and inflates the observation variance at each time point by the accumulated process noise:</p>
+<p><span class="math display">\[V_{\text{total}} = P[\text{central}] + \sigma^2(\hat{y})\]</span></p>
+<p><code>DIFF_CENTRAL</code> is the diffusion variance <span class="math inline">\(Q\)</span> for the central compartment, estimated on the variance scale (not SD).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>SDE models require an ODE structural model — they cannot be used with analytical PK solvers (<code>one_cpt_oral</code>, <code>two_cpt_iv_bolus</code>, etc.). The model file must use <code>[structural_model] ode(...)</code> with <code>[odes]</code>.</p>
+<p>SDE is also incompatible with Enzyme autodiff. <code>gradient_method = fd</code> is set automatically and the model file enforces it. Fits are significantly slower than equivalent analytical models.</p>
+</div>
+</div>
 </section>
-<section id="one-compartment-models" class="level2">
-<h2 class="anchored" data-anchor-id="one-compartment-models">One-compartment models</h2>
-<p>All one-compartment solutions are in <code>pk/one_compartment.rs</code>.</p>
-<section id="iv-bolus" class="level3">
-<h3 class="anchored" data-anchor-id="iv-bolus">IV bolus</h3>
-<pre><code>pk one_cpt_iv_bolus(cl=CL, v=V)</code></pre>
-<p><span class="math display">\[C(t) = \frac{\text{Dose}}{V} \cdot e^{-k \cdot t}, \quad k = \frac{CL}{V}\]</span></p>
+<section id="model-file" class="level2">
+<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
+<pre><code>[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01 (sd)
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  ode(obs_cmt=central, states=[depot, central])
+
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) =  KA * depot / V - (CL / V) * central
+
+[diffusion]
+  central ~ 0.01
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method          = foce
+  maxiter         = 300
+  covariance      = true
+  gradient_method = fd</code></pre>
 </section>
-<section id="iv-infusion" class="level3">
-<h3 class="anchored" data-anchor-id="iv-infusion">IV infusion</h3>
-<pre><code>pk one_cpt_iv_infusion(cl=CL, v=V)</code></pre>
-<p>During infusion (<span class="math inline">\(t \le T_{\text{inf}}\)</span>): <span class="math display">\[C(t) = \frac{\text{Rate}}{CL} \cdot (1 - e^{-k t})\]</span></p>
-<p>After infusion (<span class="math inline">\(t &gt; T_{\text{inf}}\)</span>): <span class="math display">\[C(t) = \frac{\text{Rate}}{CL} \cdot (1 - e^{-k T_{\text{inf}}}) \cdot e^{-k(t - T_{\text{inf}})}\]</span></p>
+<section id="the-diffusion-block" class="level2">
+<h2 class="anchored" data-anchor-id="the-diffusion-block">The <code>[diffusion]</code> block</h2>
+<p>Each line declares the diffusion variance for one ODE state:</p>
+<pre><code>[diffusion]
+  &lt;state&gt; ~ &lt;initial_variance&gt;</code></pre>
+<ul>
+<li><code>central ~ 0.01</code> declares <code>DIFF_CENTRAL</code> with starting variance 0.01.</li>
+<li>The fitted parameter appears in <code>fit$theta</code> as <code>DIFF_CENTRAL</code>.</li>
+<li>Multiple states can be listed; each gets its own <code>DIFF_&lt;STATE&gt;</code> parameter.</li>
+</ul>
 </section>
-<section id="oral-absorption" class="level3">
-<h3 class="anchored" data-anchor-id="oral-absorption">Oral absorption</h3>
-<pre><code>pk one_cpt_oral(cl=CL, v=V, ka=KA)
-pk one_cpt_oral_f(cl=CL, v=V, ka=KA, f=F)   # with bioavailability</code></pre>
-<p><span class="math display">\[C(t) = \frac{F \cdot \text{Dose} \cdot K_A}{V (K_A - k)} \left(e^{-k t} - e^{-K_A t}\right)\]</span></p>
-<p>When <span class="math inline">\(K_A \approx k\)</span> (flip-flop, within <code>1e-6</code>), the L’Hôpital limit is used to avoid catastrophic cancellation:</p>
-<p><span class="math display">\[C(t) = \frac{F \cdot \text{Dose} \cdot K_A}{V} \cdot t \cdot e^{-k t}\]</span></p>
+<section id="running" class="level2">
+<h2 class="anchored" data-anchor-id="running">Running</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_sde"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>uses_sde                    <span class="co"># TRUE</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>theta[<span class="st">"DIFF_CENTRAL"</span>]       <span class="co"># fitted diffusion variance</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)             <span class="co"># DIFF_CENTRAL appears in the theta block</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
+<section id="interpreting-the-output" class="level2">
+<h2 class="anchored" data-anchor-id="interpreting-the-output">Interpreting the output</h2>
+<p><code>print(fit)</code> shows <code>DIFF_CENTRAL</code> in the <code>--- THETA Estimates ---</code> block alongside the structural PK parameters. A small <code>DIFF_CENTRAL</code> relative to the observation variance indicates little system noise; a large value relative to sigma suggests the model is absorbing structural misfit as process noise — consider revisiting the structural model.</p>
+<p><code>fit$uses_sde</code> is <code>TRUE</code> whenever the fit used the EKF path.</p>
 </section>
-<section id="two-compartment-models" class="level2">
-<h2 class="anchored" data-anchor-id="two-compartment-models">Two-compartment models</h2>
-<p>All two-compartment solutions are in <code>pk/two_compartment.rs</code>.</p>
-<p>Macro rate constants are derived from micro-constants using Vieta’s formula to avoid subtracting two nearly-equal large numbers when <span class="math inline">\(s \gg \sqrt{s^2 - 4d}\)</span>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> alpha <span class="op">=</span> (s <span class="op">+</span> disc) <span class="op">/</span> <span class="dv">2.0</span><span class="op">;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> beta  <span class="op">=</span> d <span class="op">/</span> alpha<span class="op">;</span>           <span class="co">// Vieta: α·β = d</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>where <span class="math inline">\(s = k_{10} + k_{12} + k_{21}\)</span> and <span class="math inline">\(d = k_{10} \cdot k_{21}\)</span>.</p>
-<section id="iv-bolus-1" class="level3">
-<h3 class="anchored" data-anchor-id="iv-bolus-1">IV bolus</h3>
-<pre><code>pk two_cpt_iv_bolus(cl=CL, v1=V1, q=Q, v2=V2)</code></pre>
-<p><span class="math display">\[C(t) = A e^{-\alpha t} + B e^{-\beta t}\]</span></p>
-<p><span class="math display">\[A = \frac{\text{Dose}}{V_1} \cdot \frac{\alpha - k_{21}}{\alpha - \beta}, \quad B = \frac{\text{Dose}}{V_1} \cdot \frac{k_{21} - \beta}{\alpha - \beta}\]</span></p>
-</section>
-<section id="iv-infusion-1" class="level3">
-<h3 class="anchored" data-anchor-id="iv-infusion-1">IV infusion</h3>
-<pre><code>pk two_cpt_iv_infusion(cl=CL, v1=V1, q=Q, v2=V2)</code></pre>
-<p>Superposition of the bolus solution across the infusion duration; switches to bolus formula when <code>duration ≤ 0</code>.</p>
-</section>
-<section id="oral-absorption-1" class="level3">
-<h3 class="anchored" data-anchor-id="oral-absorption-1">Oral absorption</h3>
-<pre><code>pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)
-pk two_cpt_oral_f(cl=CL, v1=V1, q=Q, v2=V2, ka=KA, f=F)</code></pre>
-<p><span class="math display">\[C(t) = Ae^{-\alpha t} + Be^{-\beta t} + Ce^{-K_A t}\]</span></p>
-<p>Coefficients derived analytically; degenerate cases (<span class="math inline">\(K_A \approx \alpha\)</span> or <span class="math inline">\(K_A \approx \beta\)</span>) handled via L’Hôpital limits.</p>
-</section>
-</section>
-<section id="three-compartment-models" class="level2">
-<h2 class="anchored" data-anchor-id="three-compartment-models">Three-compartment models</h2>
-<p>Three-compartment solutions are in <code>pk/three_compartment.rs</code>. Macro rate constants (<span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\gamma\)</span>) are solved from the characteristic polynomial using Cardano’s formula.</p>
-<pre><code>pk three_cpt_iv_bolus(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)
-pk three_cpt_iv_infusion(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)
-pk three_cpt_oral(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3, ka=KA)</code></pre>
-</section>
-<section id="multi-dose-superposition" class="level2">
-<h2 class="anchored" data-anchor-id="multi-dose-superposition">Multi-dose superposition</h2>
-<p>All analytical models support multiple dose events. The <code>pk/mod.rs</code> dispatcher calls the single-dose solution for each historical dose and sums the contributions at each observation time:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Conceptual superposition</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> dose <span class="kw">in</span> <span class="op">&amp;</span>subject<span class="op">.</span>doses <span class="op">{</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> t_since_dose <span class="op">=</span> t_obs <span class="op">-</span> dose<span class="op">.</span>time<span class="op">;</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> t_since_dose <span class="op">&gt;=</span> <span class="dv">0.0</span> <span class="op">{</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">+=</span> single_dose_solution(dose<span class="op">,</span> t_since_dose<span class="op">,</span> <span class="op">&amp;</span>pk_params)<span class="op">;</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="pkparams-layout" class="level2">
-<h2 class="anchored" data-anchor-id="pkparams-layout"><code>PkParams</code> layout</h2>
-<p>PK parameters are passed through a fixed-layout <code>[f64; 8]</code> array rather than a <code>HashMap</code> so that Enzyme’s reverse-mode AD can differentiate through them:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Index</th>
-<th>Symbol</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>0</td>
-<td><code>CL</code></td>
-<td>Clearance</td>
-</tr>
-<tr class="even">
-<td>1</td>
-<td><code>V</code> / <code>V1</code></td>
-<td>Volume (central)</td>
-</tr>
-<tr class="odd">
-<td>2</td>
-<td><code>Q</code></td>
-<td>Intercompartmental clearance (central ↔︎ peripheral 1)</td>
-</tr>
-<tr class="even">
-<td>3</td>
-<td><code>V2</code></td>
-<td>Peripheral volume 1</td>
-</tr>
-<tr class="odd">
-<td>4</td>
-<td><code>KA</code></td>
-<td>Oral absorption rate constant</td>
-</tr>
-<tr class="even">
-<td>5</td>
-<td><code>F</code></td>
-<td>Bioavailability (default 1.0)</td>
-</tr>
-<tr class="odd">
-<td>6</td>
-<td><code>Q3</code></td>
-<td>Intercompartmental clearance (central ↔︎ peripheral 2; 3-cmt)</td>
-</tr>
-<tr class="even">
-<td>7</td>
-<td><code>V3</code></td>
-<td>Peripheral volume 2 (3-cmt)</td>
-</tr>
-</tbody>
-</table>
-<p>Unused slots default to 0.0 (except F, which defaults to 1.0).</p>
-</section>
-<section id="relevant-source-files" class="level2">
-<h2 class="anchored" data-anchor-id="relevant-source-files">Relevant source files</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>File</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>pk/one_compartment.rs</code></td>
-<td>1-cpt IV bolus, infusion, oral, oral-with-F</td>
-</tr>
-<tr class="even">
-<td><code>pk/two_compartment.rs</code></td>
-<td>2-cpt IV bolus, infusion, oral, oral-with-F; macro rate constants</td>
-</tr>
-<tr class="odd">
-<td><code>pk/three_compartment.rs</code></td>
-<td>3-cpt IV bolus and infusion; Cardano characteristic roots</td>
-</tr>
-<tr class="even">
-<td><code>pk/mod.rs</code></td>
-<td><code>compute_predictions()</code>, multi-dose superposition, TV-covariate dispatch</td>
-</tr>
-<tr class="odd">
-<td><code>types.rs</code></td>
-<td><code>PkParams</code> layout constants (<code>PK_IDX_CL</code>, <code>PK_IDX_V</code>, …)</td>
-</tr>
-</tbody>
-</table>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See also</h2>
+<ul>
+<li><a href="../model-dsl/odes.html">ODE Models DSL</a></li>
+<li><a href="../examples/ode-model.html">Example: ODE model (Michaelis-Menten)</a></li>
+</ul>
 
 
 </section>

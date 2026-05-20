@@ -403,6 +403,26 @@ window.Quarto = {
     <a class="dropdown-item" href="../examples/conditional-covariate.html">
  <span class="dropdown-text">Conditional covariate (if/else)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/dcm.html">
+ <span class="dropdown-text">Deep Compartment Model (DCM)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/saem.html">
+ <span class="dropdown-text">SAEM estimation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/sde.html">
+ <span class="dropdown-text">SDE process noise</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/multistart.html">
+ <span class="dropdown-text">Multi-start fitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/bioavailability.html">
+ <span class="dropdown-text">Oral bioavailability (logit-normal F)</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -487,7 +507,11 @@ window.Quarto = {
   <li><a href="#proportional" id="toc-proportional" class="nav-link" data-scroll-target="#proportional">Proportional</a></li>
   <li><a href="#combined" id="toc-combined" class="nav-link" data-scroll-target="#combined">Combined</a></li>
   </ul></li>
-  <li><a href="#sigma-scale" id="toc-sigma-scale" class="nav-link" data-scroll-target="#sigma-scale">Sigma scale</a></li>
+  <li><a href="#sigma-scale" id="toc-sigma-scale" class="nav-link" data-scroll-target="#sigma-scale">Sigma scale</a>
+  <ul class="collapse">
+  <li><a href="#initial-value-scale" id="toc-initial-value-scale" class="nav-link" data-scroll-target="#initial-value-scale">Initial value scale</a></li>
+  <li><a href="#estimate-scale" id="toc-estimate-scale" class="nav-link" data-scroll-target="#estimate-scale">Estimate scale</a></li>
+  </ul></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   <li><a href="#impact-on-estimation" id="toc-impact-on-estimation" class="nav-link" data-scroll-target="#impact-on-estimation">Impact on estimation</a></li>
   </ul>
@@ -547,7 +571,16 @@ window.Quarto = {
 </section>
 <section id="sigma-scale" class="level2">
 <h2 class="anchored" data-anchor-id="sigma-scale">Sigma scale</h2>
-<p><strong>All sigma parameters are estimated and reported on the standard-deviation scale, not the variance scale.</strong> This applies to both proportional and additive components.</p>
+<section id="initial-value-scale" class="level3">
+<h3 class="anchored" data-anchor-id="initial-value-scale">Initial value scale</h3>
+<p>The initial value for <code>sigma</code> is on the <strong>variance scale by default</strong>, matching omega. Use the <code>(sd)</code> annotation to specify the initial value as a standard deviation instead — the parser squares it before storing.</p>
+<pre><code>sigma PROP_ERR ~ 0.0004          # variance  →  SD = 0.02  →  2% CV
+sigma PROP_ERR ~ 0.02 (sd)       # SD coding →  same result</code></pre>
+<p>The <code>(sd)</code> form is used throughout the bundled examples because it is easier to reason about: “I expect ~2% CV” → <code>~ 0.02 (sd)</code>.</p>
+</section>
+<section id="estimate-scale" class="level3">
+<h3 class="anchored" data-anchor-id="estimate-scale">Estimate scale</h3>
+<p>Regardless of how the initial value is written, <strong>estimates are always reported on the SD scale</strong> — in <code>print(fit)</code>, <code>ferx_estimates()</code>, and the fit YAML.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -556,17 +589,17 @@ window.Quarto = {
 <thead>
 <tr class="header">
 <th>Error model</th>
-<th><code>sigma = X</code> means …</th>
+<th>Estimated sigma means …</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><code>proportional</code></td>
-<td>Residual SD scales as <span class="math inline">\(X \cdot f\)</span>, i.e.&nbsp;<strong>CV% = <span class="math inline">\(X \times 100\)</span></strong></td>
+<td>Residual SD scales as <span class="math inline">\(\sigma \cdot f\)</span>, i.e.&nbsp;<strong>CV% = <span class="math inline">\(\sigma \times 100\)</span></strong></td>
 </tr>
 <tr class="even">
 <td><code>additive</code></td>
-<td>Residual SD is <span class="math inline">\(X\)</span> in the units of DV</td>
+<td>Residual SD is <span class="math inline">\(\sigma\)</span> in the units of DV</td>
 </tr>
 <tr class="odd">
 <td><code>combined</code></td>
@@ -574,27 +607,29 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>So <code>sigma PROP_ERR ~ 0.1</code> for a proportional model is a <strong>10% CV</strong> initial value, not 1%. Likewise, the SE on a proportional sigma is on the SD scale — multiply by 100 for an SE in CV-percentage points.</p>
-<p>The fit YAML emits both the SD (<code>estimate</code>) and the variance (<code>variance: estimate²</code>); for proportional components it also emits <code>cv_pct = estimate * 100</code>.</p>
+<p>The fit YAML emits both the SD (<code>estimate</code>) and the variance (<code>variance: estimate²</code>); for proportional components it also emits <code>cv_pct = estimate * 100</code>. The SE in <code>ferx_estimates()</code> is on the SD scale — multiply by 100 for an SE in CV-percentage points.</p>
+</section>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<p>Proportional error (most common):</p>
+<p>Proportional error (most common), using <code>(sd)</code> coding:</p>
 <pre><code>[parameters]
-  sigma PROP_ERR ~ 0.01
+  sigma PROP_ERR ~ 0.02 (sd)     # 2% CV initial value
 
 [error_model]
   DV ~ proportional(PROP_ERR)</code></pre>
 <p>Additive error:</p>
 <pre><code>[parameters]
-  sigma ADD_ERR ~ 1.0
+  sigma ADD_ERR ~ 1.0             # variance  →  SD = 1.0 (same here)
+  # or equivalently:
+  # sigma ADD_ERR ~ 1.0 (sd)
 
 [error_model]
   DV ~ additive(ADD_ERR)</code></pre>
 <p>Combined error:</p>
 <pre><code>[parameters]
-  sigma PROP_ERR ~ 0.1
-  sigma ADD_ERR  ~ 0.5
+  sigma PROP_ERR ~ 0.1 (sd)      # 10% CV proportional component
+  sigma ADD_ERR  ~ 0.5 (sd)      # 0.5 units additive component
 
 [error_model]
   DV ~ combined(PROP_ERR, ADD_ERR)</code></pre>

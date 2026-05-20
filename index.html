@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ferx · open-source NLME for population PK/PD – ferx</title>
+<title>ferx · open-source NLME for population PK – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -409,6 +409,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="./examples/conditional-covariate.html">
  <span class="dropdown-text">Conditional covariate (if/else)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/dcm.html">
+ <span class="dropdown-text">Deep Compartment Model (DCM)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/saem.html">
+ <span class="dropdown-text">SAEM estimation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/sde.html">
+ <span class="dropdown-text">SDE process noise</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/multistart.html">
+ <span class="dropdown-text">Multi-start fitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/bioavailability.html">
+ <span class="dropdown-text">Oral bioavailability (logit-normal F)</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -499,8 +519,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="wordmark">
 <p>Fe<span class="dot">·</span><span class="rx">R<span style="font-style:italic"><em>x</em></span></span></p>
 </div>
-<section id="a-nonlinear-mixed-effects-engine-for-population-pkpd-written-in-rust." class="level3 headline">
-<h3 class="headline anchored" data-anchor-id="a-nonlinear-mixed-effects-engine-for-population-pkpd-written-in-rust.">A nonlinear mixed-effects engine for <em>population PK/PD</em>, written in Rust.</h3>
+<section id="a-nonlinear-mixed-effects-engine-for-population-pk-written-in-rust." class="level3 headline">
+<h3 class="headline anchored" data-anchor-id="a-nonlinear-mixed-effects-engine-for-population-pk-written-in-rust.">A nonlinear mixed-effects engine for <em>population PK</em>, written in Rust.</h3>
 <div class="lede">
 <p>ferx fits models defined in a small, readable DSL — bracket-sectioned <code>.ferx</code> files — powered by a Rust backend with <a href="https://enzyme.mit.edu/">Enzyme</a> automatic differentiation for exact gradients. FOCE/FOCEI estimation. MIT-licensed.</p>
 </div>

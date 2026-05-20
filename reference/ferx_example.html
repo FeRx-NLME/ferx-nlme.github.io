@@ -113,24 +113,78 @@ Otherwise, a list with components:</p>
 <dt>mm_oral</dt>
 <dd><p>One-compartment oral with Michaelis-Menten elimination (ODE)</p></dd>
 
+<dt>warfarin_sde</dt>
+<dd><p>One-compartment oral as ODE with SDE process noise
+(<code>[diffusion]</code> block, EKF likelihood; <code>DIFF_CENTRAL</code> in theta)</p></dd>
+
+<dt>mm_multistart</dt>
+<dd><p>One-compartment oral with Michaelis-Menten elimination (ODE);
+starting values intentionally far from truth to demonstrate multi-start
+(<code>n_starts</code>, <code>start_sigma</code>, <code>multi_start_seed</code> in <code>settings</code>)</p></dd>
+
+<dt>bioavailability</dt>
+<dd><p>One-compartment oral with logit-normal bioavailability F
+(analytical; THETA_F specified directly on the (0,1) scale)</p></dd>
+
+<dt>bioavailability_ode</dt>
+<dd><p>ODE equivalent of <code>bioavailability</code> - same model
+and data via explicit depot/central ODEs; useful for comparing analytical vs ODE paths</p></dd>
+
+<dt>warfarin_dcm</dt>
+<dd><p>Two-compartment oral with a Deep Compartment Model
+covariate model: a small neural network (<code>[covariate_nn TYPICAL_PK]</code>)
+reads WT + CRCL and outputs a multiplicative modulator on the baseline
+TVCL/TVV1/TVQ/TVV2/TVKA thetas (i.e. <code>CL = TVCL * TYPICAL_PK.CL *
+    exp(ETA_CL)</code>), with lognormal IIV on top. Requires ferx-r built with the
+<code>nn</code> cargo feature.</p></dd>
+
 
 </dl><p>Call <code>ferx_example()</code> with no arguments to list all available names.</p>
+<p>Each example has a matching end-to-end R script installed with the package.
+List all scripts with:</p><div class="sourceCode"><pre><code>
+list.files(system.file("examples", package = "ferx"), pattern = "\.R$")
+</code></pre></div><p>Open any script directly in RStudio with <code><a href="https://rdrr.io/r/base/file.show.html" class="external-link">file.show()</a></code> or
+<code><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit()</a></code>, for example:</p><div class="sourceCode"><pre><code><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"ex1_warfarin.R"</span>,     package <span class="op">=</span> <span class="st">"ferx"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"ex_warfarin_dcm.R"</span>,  package <span class="op">=</span> <span class="st">"ferx"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ferx_example</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ferx_example</span><span class="op">(</span><span class="op">)</span>                        <span class="co"># list all available example names</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "bioavailability"       "bioavailability_ode"   "mm_multistart"        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "mm_oral"               "three_cpt_iv"          "two_cpt_iv"           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "two_cpt_oral_cov"      "warfarin"              "warfarin_additive_eta"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "warfarin_block_omega"  "warfarin_bloq"         "warfarin_if"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "warfarin_iov"          "warfarin_logit_f"      "warfarin_saem"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "warfarin_sde"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "warfarin_block_omega"  "warfarin_bloq"         "warfarin_dcm"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "warfarin_if"           "warfarin_iov"          "warfarin_logit_f"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "warfarin_saem"         "warfarin_sde"         </span>
 <span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu">ferx_example</span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ex</span><span class="op">$</span><span class="va">model</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/ferx-r/inst/examples/models/warfarin.ferx"</span>
 <span class="r-in"><span><span class="va">ex</span><span class="op">$</span><span class="va">data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/ferx-r/inst/examples/data/warfarin.csv"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># List all bundled example scripts:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, package <span class="op">=</span> <span class="st">"ferx"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"\\.R$"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ex10_bioavailability.R"     "ex11_bioavailability_ode.R"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "ex1_warfarin.R"             "ex1a_warfarin_bloq.R"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "ex2_two_cmt_iv.R"           "ex3_two_cmt_oral_cov.R"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ex4_mm_oral.R"              "ex5_warfarin_iov.R"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "ex6_three_cpt_iv.R"         "ex7_warfarin_block_omega.R"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "ex8_warfarin_sde.R"         "ex9_mm_multistart.R"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ex_warfarin_dcm.R"         </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Open a script in RStudio to read or run it:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"ex1_warfarin.R"</span>, package <span class="op">=</span> <span class="st">"ferx"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Deep Compartment Model (requires nn cargo feature):</span></span></span>
+<span class="r-in"><span><span class="va">dcm</span> <span class="op">&lt;-</span> <span class="fu">ferx_example</span><span class="op">(</span><span class="st">"warfarin_dcm"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">dcm</span><span class="op">$</span><span class="va">model</span>, <span class="va">dcm</span><span class="op">$</span><span class="va">data</span>, method <span class="op">=</span> <span class="st">"focei"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">neural_networks</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">shape</span>   <span class="co"># NN layer dimensions</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"ex_warfarin_dcm.R"</span>, package <span class="op">=</span> <span class="st">"ferx"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

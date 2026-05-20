@@ -55,7 +55,28 @@ powered by automatic differentiation (Enzyme).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferx_fit</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'ferx_model'</span></span>
-<span><span class="fu">ferx_fit</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">model</span><span class="op">$</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">ferx_fit</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">model</span><span class="op">$</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Default S3 method</span></span>
+<span><span class="fu">ferx_fit</span><span class="op">(</span></span>
+<span>  <span class="va">model</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"focei"</span>,</span>
+<span>  covariance <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  bloq_method <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  threads <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mu_referencing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  sir <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  gradient <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"ad"</span>, <span class="st">"fd"</span><span class="op">)</span>,</span>
+<span>  optimizer_trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  scale_params <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  max_unconverged_frac <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  min_obs_for_convergence_check <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  settings <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include_data <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -68,6 +89,11 @@ powered by automatic differentiation (Enzyme).</p>
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>Path to a NONMEM-format CSV file (ID, TIME, DV, EVID, AMT, CMT, ...)</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Arguments passed to <code>ferx_fit.default</code> (e.g.
+<code>method</code>, <code>covariance</code>, <code>verbose</code>, <code>settings</code>).</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
@@ -100,7 +126,7 @@ on <code>CENS=1</code> rows); <code>"drop"</code> disables M3.</p></dd>
 <dd><p>Number of worker threads for the per-subject parallel loops
 in the Rust backend (inner EBE search, SAEM, SIR). <code>NULL</code> (default)
 leaves the backend's thread pool at its default of one worker per logical
-CPU. Pass an integer to cap the pool — useful on shared machines, in CI,
+CPU. Pass an integer to cap the pool - useful on shared machines, in CI,
 or to avoid SMT-induced contention (try
 <code>parallel::detectCores(logical = FALSE)</code>). The setting is per-call,
 so successive fits in the same R session can use different values.</p></dd>
@@ -116,6 +142,14 @@ automatically for standard parameterizations such as
 silently to zero-centred ETA initialisation with no error. No changes
 to the <code>.ferx</code> model file are needed. Check <code>fit$warnings</code>
 to see which ETAs were detected.</p></dd>
+
+
+<dt id="arg-sir">sir<a class="anchor" aria-label="anchor" href="#arg-sir"></a></dt>
+<dd><p>Logical; run Sampling Importance Resampling after the fit to
+produce non-parametric parameter uncertainty intervals. Requires
+<code>covariance = TRUE</code>. Tuning knobs (<code>sir_samples</code>,
+<code>sir_resamples</code>, <code>sir_seed</code>) still flow through
+<code>settings</code>. Default <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-gradient">gradient<a class="anchor" aria-label="anchor" href="#arg-gradient"></a></dt>
@@ -155,18 +189,10 @@ per-gradient-call timings at the end of a fit, which is the easiest
 way to check which method is faster on your specific model/data.</p></dd>
 
 
-<dt id="arg-sir">sir<a class="anchor" aria-label="anchor" href="#arg-sir"></a></dt>
-<dd><p>Logical; run Sampling Importance Resampling after the fit to
-produce non-parametric parameter uncertainty intervals. Requires
-<code>covariance = TRUE</code>. Tuning knobs (<code>sir_samples</code>,
-<code>sir_resamples</code>, <code>sir_seed</code>) still flow through
-<code>settings</code>. Default <code>FALSE</code>.</p></dd>
-
-
 <dt id="arg-optimizer-trace">optimizer_trace<a class="anchor" aria-label="anchor" href="#arg-optimizer-trace"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, write a per-iteration CSV
 trace to a temporary file and store its path in <code>fit$trace_path</code>.
-Pass the result to <code>ferx_read_trace</code> or
+Pass the result to <code><a href="ferx_trace.html">ferx_trace</a></code> or
 <code><a href="ferx_plot_trace.html">ferx_plot_trace</a></code> to inspect optimizer progress. Default
 <code>FALSE</code>.</p></dd>
 
@@ -178,15 +204,15 @@ that every transformed parameter the outer optimizer sees is O(1).</p>
 <p><strong>Why it helps.</strong> Population PK parameters often differ by orders
 of magnitude on the natural scale (e.g. <code>CL = 0.0015</code>, <code>V =
   200</code>, <code>Ka = 0.8</code>). Even after the log transform, the packed
-optimizer vector mixes large negatives (<code>log(0.0015) ≈ -6.5</code>) with
-large positives (<code>log(200) ≈ 5.3</code>), which leaves the Hessian
+optimizer vector mixes large negatives (<code>log(0.0015) ? -6.5</code>) with
+large positives (<code>log(200) ? 5.3</code>), which leaves the Hessian
 poorly conditioned and slows down NLopt / BFGS / Gauss-Newton. With
 <code>scale_params = TRUE</code> each coordinate is divided by
 <code>|x0[i]|</code> (when <code>|x0[i]| &gt; 0.1</code>, otherwise by <code>1.0</code>), so
 the optimizer works in a near-unit-magnitude space. The scale is
 computed once from the initial point and held fixed for the entire run.</p>
 <p><strong>When to set <code>FALSE</code>.</strong> Mathematically the scaling is
-transparent — the OFV, estimates, standard errors, and diagnostics
+transparent - the OFV, estimates, standard errors, and diagnostics
 should match the unscaled fit to numerical tolerance. Set
 <code>scale_params = FALSE</code> to:</p><ul><li><p>reproduce the bit-exact iteration trajectory of a pre-scaling
 fit (e.g. when comparing against a baseline produced by an older
@@ -200,6 +226,21 @@ L-BFGS, MMA), the hand-rolled BFGS, Gauss-Newton / BHHH, and the SAEM
 M-step.</p></dd>
 
 
+<dt id="arg-max-unconverged-frac">max_unconverged_frac<a class="anchor" aria-label="anchor" href="#arg-max-unconverged-frac"></a></dt>
+<dd><p>Numeric scalar in [0, 1] or <code>NULL</code>
+(default). When non-<code>NULL</code>, the fit is flagged as converged even if
+up to this fraction of subjects failed their inner EBE loop, instead of
+raising an error. Useful for large datasets with a handful of difficult
+subjects.</p></dd>
+
+
+<dt id="arg-min-obs-for-convergence-check">min_obs_for_convergence_check<a class="anchor" aria-label="anchor" href="#arg-min-obs-for-convergence-check"></a></dt>
+<dd><p>Integer or <code>NULL</code> (default).
+Minimum number of observations a subject must have before its inner-loop
+convergence is included in the <code>max_unconverged_frac</code> check. Subjects
+with fewer observations are excluded from the check.</p></dd>
+
+
 <dt id="arg-settings">settings<a class="anchor" aria-label="anchor" href="#arg-settings"></a></dt>
 <dd><p>Optional named list of estimation-method-specific options
 forwarded to the Rust <code>FitOptions</code>. Use this to tune knobs that do
@@ -208,16 +249,18 @@ wrapper release for each option. Recognized keys include SAEM
 (<code>n_exploration</code>, <code>n_convergence</code>, <code>n_mh_steps</code>,
 <code>adapt_interval</code>, <code>seed</code>), SIR tuning (<code>sir_samples</code>,
 <code>sir_resamples</code>, <code>sir_seed</code>), Gauss-Newton (<code>gn_lambda</code>),
-optimizer selection (<code>optimizer</code> — one of <code>"bobyqa"</code> (default),
+optimizer selection (<code>optimizer</code> - one of <code>"bobyqa"</code> (default),
 <code>"slsqp"</code>, <code>"lbfgs"</code>, <code>"nlopt_lbfgs"</code>, <code>"mma"</code>,
 <code>"bfgs"</code>, <code>"trust_region"</code>; also <code>global_search</code>,
 <code>global_maxeval</code>), the outer optimizer iteration cap
 (<code>maxiter</code>), the inner (per-subject EBE) loop
-(<code>inner_maxiter</code>, <code>inner_tol</code>), and the Steihaug CG budget
-for <code>optimizer = "trust_region"</code> (<code>steihaug_max_iters</code>).
+(<code>inner_maxiter</code>, <code>inner_tol</code>), the Steihaug CG budget
+for <code>optimizer = "trust_region"</code> (<code>steihaug_max_iters</code>),
+and multi-start optimization (<code>n_starts</code>, <code>start_sigma</code>,
+<code>multi_start_seed</code>).
 Values that duplicate a dedicated argument
 (<code>method</code>, <code>covariance</code>, <code>verbose</code>,
-<code>bloq_method</code>, <code>threads</code>, <code>sir</code>) are rejected — pass
+<code>bloq_method</code>, <code>threads</code>, <code>sir</code>) are rejected - pass
 them via the dedicated argument. Unknown keys and malformed values
 also raise an error.
 <strong>Precedence</strong>: dedicated <code>ferx_fit()</code> arguments win over
@@ -334,7 +377,7 @@ with columns <code>lower</code> and <code>upper</code> (NULL if SIR not run)</p>
 
 <dt>trace_path</dt>
 <dd><p>Path to the optimizer trace CSV, or <code>NULL</code> when
-<code>optimizer_trace = FALSE</code>. Pass to <code>ferx_read_trace</code>
+<code>optimizer_trace = FALSE</code>. Pass to <code><a href="ferx_trace.html">ferx_trace</a></code>
 or <code><a href="ferx_plot_trace.html">ferx_plot_trace</a></code>.</p></dd>
 
 <dt>ebe_convergence_warnings</dt>
@@ -362,6 +405,18 @@ all subjects and iterations.</p></dd>
 <dd><p>EPS shrinkage: <code>1 - SD(IWRES)</code>. <code>NA</code> when
 fewer than 2 valid residuals.</p></dd>
 
+<dt>dw_statistic</dt>
+<dd><p>Pooled Durbin-Watson statistic for IWRES within
+subjects. 2.0 = no autocorrelation; &lt; 1.5 = positive autocorrelation
+(possible missing dynamics); &gt; 2.5 = negative autocorrelation (possible
+over-parameterisation). <code>NA</code> when no subject has \(\ge 2\) valid
+IWRES values.</p></dd>
+
+<dt>iwres_lag1_r</dt>
+<dd><p>Pooled lag-1 Pearson correlation of IWRES within
+subjects. Positive values indicate under-fitting, negative values
+indicate over-fitting. <code>NA</code> when insufficient observations.</p></dd>
+
 <dt>wall_time_secs</dt>
 <dd><p>Total wall-clock time for the fit in seconds.</p></dd>
 
@@ -377,7 +432,7 @@ path with its extension stripped.</p></dd>
 <dt>gradient</dt>
 <dd><p>The inner-loop gradient method as requested by the
 caller (one of <code>"auto"</code>, <code>"ad"</code>, <code>"fd"</code>). The
-<em>resolved</em> method may differ — see <code>gradient_used</code> and the
+<em>resolved</em> method may differ - see <code>gradient_used</code> and the
 <code>gradient</code> argument.</p></dd>
 
 <dt>gradient_used</dt>
@@ -402,7 +457,7 @@ optimizer's gradient ("Enzyme AD", "finite differences", or "N/A").</p></dd>
 
 <dt>cov_matrix</dt>
 <dd><p>Full parameter covariance matrix as a named numeric
-matrix (params × params). Row/column names use declared variable names
+matrix (params ? params). Row/column names use declared variable names
 (<code>"TVCL"</code>, <code>"ETA_CL"</code>, <code>"EPS_PROP"</code>); fallback is
 <code>"OMEGA(1,1)"</code> / <code>"SIGMA(1)"</code>. <code>NULL</code> when covariance
 step was not run or failed. Use <code><a href="ferx_cor_matrix.html">ferx_cor_matrix</a></code> to
@@ -498,7 +553,70 @@ values the model file requested and which were overridden at the R call
 site. A <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning()</a></code> is issued automatically for each key that
 appears in both sources with a different value.</p></dd>
 
+<dt>uses_sde</dt>
+<dd><p>Logical; <code>TRUE</code> when the model file contained a
+<code>[diffusion]</code> block and the fit used the Extended Kalman Filter
+(EKF) likelihood. <code>FALSE</code> for standard ODE/analytical models.
+When <code>TRUE</code>, one or more <code>DIFF_*</code> entries appear in
+<code>theta</code> and <code>theta_names</code> - these are diffusion
+<em>variances</em> (not standard deviations) for the named state
+compartments.</p></dd>
+
+<dt>omega_init_as_sd</dt>
+<dd><p>Logical vector, one entry per BSV eta. <code>TRUE</code>
+when the corresponding <code>omega</code> line in the model file was annotated
+with <code>(sd)</code>, meaning the initial value was specified as a standard
+deviation rather than a variance. <code>print.ferx_fit()</code> appends
+<code>[initial specified as SD]</code> to those rows.</p></dd>
+
+<dt>sigma_init_as_sd</dt>
+<dd><p>Logical vector, one entry per sigma component.
+Same semantics as <code>omega_init_as_sd</code> for residual-error parameters.</p></dd>
+
+<dt>kappa_init_as_sd</dt>
+<dd><p>Logical vector, one entry per IOV kappa parameter.
+Same semantics as <code>omega_init_as_sd</code> for inter-occasion variability.</p></dd>
+
+<dt>neural_networks</dt>
+<dd><p>Named list of sub-lists, one per <code>[covariate_nn]</code>
+block declared in the model file. Empty list when the <code>nn</code> cargo
+feature is off or no NN blocks are present. Each sub-list contains:
+<code>name</code> (block name), <code>shape</code> (integer vector of layer widths),
+<code>hidden_activation</code>, <code>output_activation</code>, <code>n_weights</code>
+(total weight + bias count), <code>weights_offset</code> (0-based start index
+into <code>fit$theta</code>), <code>input_names</code>, <code>output_names</code>, and
+<code>weights</code> (numeric vector of trained values).</p></dd>
+
 </dl></div>
+    <div id="process-noise-sde-diffusion-">
+    <h2>Process noise (SDE / diffusion)</h2>
+
+
+
+<p>ODE-based PK/PD models occasionally produce autocorrelated IWRES when the
+structural model is misspecified (missing compartment, unmodelled feedback).
+Adding continuous within-subject process noise via an SDE framework - solved
+by an Extended Kalman Filter (EKF) - absorbs this drift and yields a
+better-calibrated likelihood.</p>
+<p>Add a <code>[diffusion]</code> block to the <code>.ferx</code> model file to enable SDE
+mode. Each line declares the diffusion variance for one ODE state:</p><div class="sourceCode"><pre><code>
+[diffusion]
+  central ~ 0.5   # initial estimate for DIFF_CENTRAL (variance units)
+</code></pre></div>
+
+<p><strong>Key points:</strong></p><ul><li><p>The declared value and the fitted estimate are <em>variances</em>, not
+standard deviations. A value of 0.5 means \(\sigma^2 = 0.5\), not
+\(\sigma = 0.5\).</p></li>
+<li><p>Each diffusion parameter appears in <code>fit$theta</code> as
+<code>DIFF_&lt;STATE&gt;</code> (e.g. <code>DIFF_CENTRAL</code>). Standard errors and
+<code><a href="ferx_estimates.html">ferx_estimates()</a></code> treat them as regular thetas.</p></li>
+<li><p>Autodifferentiation (Enzyme AD) is incompatible with the EKF
+covariance propagation - the engine automatically falls back to
+finite differences and emits a warning.</p></li>
+<li><p>SAEM is not supported with SDE models; a hard error is raised.</p></li>
+<li><p><code>fit$uses_sde</code> is <code>TRUE</code> whenever a <code>[diffusion]</code>
+block was present.</p></li>
+</ul></div>
     <div id="specifying-model-and-data">
     <h2>Specifying model and data</h2>
 
@@ -523,17 +641,17 @@ explicitly to <code>ferx_fit()</code>.</p>
 
 
 
-<p><strong>Estimation method</strong> — pass a single method or a vector to chain
+<p><strong>Estimation method</strong> - pass a single method or a vector to chain
 methods in sequence (each stage seeds the next with its converged
 parameters):</p><div class="sourceCode"><pre><code><span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, method <span class="op">=</span> <span class="st">"focei"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"saem"</span>, <span class="st">"focei"</span><span class="op">)</span><span class="op">)</span>  <span class="co"># SAEM warm-start, FOCEI polish</span></span></code></pre></div>
 
-<p><strong>Standard errors</strong> — the covariance step is on by default:</p><div class="sourceCode"><pre><code><span></span>
-<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, covariance <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># default — produces SE / </span></span>
+<p><strong>Standard errors</strong> - the covariance step is on by default:</p><div class="sourceCode"><pre><code><span></span>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, covariance <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># default: produces SE / </span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, covariance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># skip for speed during development</span></span></code></pre></div>
 
-<p><strong>Parallelism</strong> — cap the Rust thread pool:</p><div class="sourceCode"><pre><code><span></span>
+<p><strong>Parallelism</strong> - cap the Rust thread pool:</p><div class="sourceCode"><pre><code><span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, threads <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 
 <p><strong>BLOQ handling</strong>:</p><div class="sourceCode"><pre><code><span></span>
@@ -545,7 +663,7 @@ parameters):</p><div class="sourceCode"><pre><code><span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, gradient <span class="op">=</span> <span class="st">"ad"</span><span class="op">)</span>    <span class="co"># force automatic differentiation</span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, gradient <span class="op">=</span> <span class="st">"fd"</span><span class="op">)</span>    <span class="co"># force finite differences</span></span></code></pre></div>
 
-<p><strong>Optimizer trace</strong> — write a per-iteration CSV for convergence
+<p><strong>Optimizer trace</strong> - write a per-iteration CSV for convergence
 diagnostics:</p><div class="sourceCode"><pre><code><span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, optimizer_trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ferx_plot_trace.html">ferx_plot_trace</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
@@ -559,7 +677,7 @@ diagnostics:</p><div class="sourceCode"><pre><code><span></span>
 <p>The <code>settings</code> argument forwards a named list of low-level options to
 the Rust backend without requiring a new wrapper release. Arguments with
 dedicated parameters (e.g. <code>method</code>, <code>covariance</code>) cannot be
-duplicated in <code>settings</code> — pass them via the named argument.</p>
+duplicated in <code>settings</code> - pass them via the named argument.</p>
 <p><strong>Outer optimizer selection:</strong></p><div class="sourceCode"><pre><code><span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>optimizer <span class="op">=</span> <span class="st">"bobyqa"</span><span class="op">)</span><span class="op">)</span>      <span class="co"># default</span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>optimizer <span class="op">=</span> <span class="st">"slsqp"</span><span class="op">)</span><span class="op">)</span>       <span class="co"># gradient-based</span></span>
@@ -602,6 +720,26 @@ duplicated in <code>settings</code> — pass them via the named argument.</p>
 <span>  steihaug_max_iters <span class="op">=</span> <span class="fl">100L</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 
+<p><strong>Multi-start optimization:</strong></p>
+<p>Runs <code>n_starts</code> independent fits from perturbed initial values in
+parallel (via rayon) and returns the converged result with the lowest OFV.
+Default <code>n_starts = 1</code> disables multi-start (single run, no overhead).
+Useful for models prone to local minima: Michaelis-Menten elimination,
+full-block omega, or many covariate parameters. On an 8-core machine
+<code>n_starts = 8</code> costs approximately the same wall-clock time as a single run.</p>
+<p>Start 0 always uses the exact initial values from the model file.
+Starts 1..n apply a log-space perturbation of size <code>start_sigma</code>
+(default 0.3) to each theta.</p>
+<div class="sourceCode"><pre><code><span></span>
+<span><span class="co"># 8 parallel starts (approx. same wall time as one run on 8 cores)</span></span>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n_starts <span class="op">=</span> <span class="fl">8L</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Wider perturbation for ridge-shaped surfaces (e.g. Michaelis-Menten):</span></span>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n_starts <span class="op">=</span> <span class="fl">8L</span>, start_sigma <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Pin the perturbation RNG seed for reproducibility (independent of the SAEM seed):</span></span>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n_starts <span class="op">=</span> <span class="fl">8L</span>, multi_start_seed <span class="op">=</span> <span class="fl">123L</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+
     </div>
     <div id="post-fit-outputs-and-pipe-extensions">
     <h2>Post-fit outputs and pipe extensions</h2>
@@ -618,7 +756,7 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span><span class="va">fit</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/ferx_model_inspect.html">ferx_model_inspect</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># model structure auto-derived by the engine</span></span>
 <span><span class="va">fit</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/ferx_plot_trace.html">ferx_plot_trace</a></span><span class="op">(</span><span class="op">)</span>    <span class="co"># convergence trace (needs optimizer_trace = TRUE)</span></span></code></pre></div>
 
-<p>Diagnostics data frame (PRED, IPRED, CWRES, ETAs, …) lives in
+<p>Diagnostics data frame (PRED, IPRED, CWRES, ETAs, ...) lives in
 <code>fit$sdtab</code> and can be used directly:</p><div class="sourceCode"><pre><code><span></span>
 <span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span></span>
 <span><span class="va">fit</span><span class="op">$</span><span class="va">ebe_etas</span></span>
@@ -637,19 +775,19 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Possible over-parameterisation or misspecified residual error model.</span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">theta</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      TVCL       TVV      TVKA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1327364 7.6905899 0.7572037 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1327382 7.6906298 0.7571771 </span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">ofv</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -280.1829</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># ── Classic style (path strings) ─────────────────────────────────────────</span></span></span>
+<span class="r-in"><span><span class="co"># -- Classic style (path strings) ------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Minimal call — FOCEI with default optimizer, covariance step on</span></span></span>
+<span class="r-in"><span><span class="co"># Minimal call: FOCEI with default optimizer, covariance step on</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Named arguments — fully equivalent</span></span></span>
+<span class="r-in"><span><span class="co"># Named arguments (fully equivalent)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span>model <span class="op">=</span> <span class="va">ex</span><span class="op">$</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, method <span class="op">=</span> <span class="st">"focei"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># All common options at once</span></span></span>
@@ -686,9 +824,9 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-in"><span>  settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sir_samples <span class="op">=</span> <span class="fl">2000L</span>, sir_resamples <span class="op">=</span> <span class="fl">500L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># ── Pipe style (ferx_model object) ───────────────────────────────────────</span></span></span>
+<span class="r-in"><span><span class="co"># -- Pipe style (ferx_model object) -----------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Basic pipe — data flows into ferx_model() which bundles the model path</span></span></span>
+<span class="r-in"><span><span class="co"># Basic pipe: data flows into ferx_model() which bundles the model path</span></span></span>
 <span class="r-in"><span><span class="va">ex</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ferx_model.html">ferx_model</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">ferx_fit</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"focei"</span>, covariance <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
@@ -723,7 +861,7 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_model.html">ferx_model</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">data</span>, <span class="va">ex</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ferx_fit</span><span class="op">(</span><span class="va">m</span>, data <span class="op">=</span> <span class="st">"other_cohort.csv"</span>, method <span class="op">=</span> <span class="st">"focei"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># ── Post-fit outputs ─────────────────────────────────────────────────────</span></span></span>
+<span class="r-in"><span><span class="co"># -- Post-fit outputs -------------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, covariance <span class="op">=</span> <span class="cn">TRUE</span>, optimizer_trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -733,7 +871,7 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-in"><span><span class="fu"><a href="ferx_model_inspect.html">ferx_model_inspect</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>   <span class="co"># model structure auto-derived by the engine</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="ferx_plot_trace.html">ferx_plot_trace</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>      <span class="co"># convergence plot (optimizer_trace = TRUE required)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span>                 <span class="co"># per-observation diagnostics (PRED, IPRED, CWRES, …)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span>                 <span class="co"># per-observation diagnostics (PRED, IPRED, CWRES, etc.)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">ebe_etas</span>              <span class="co"># per-subject empirical Bayes ETAs</span></span></span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">individual_estimates</span>  <span class="co"># per-subject individual PK parameters</span></span></span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">eigenvalues</span>           <span class="co"># sorted eigenvalues of parameter correlation matrix</span></span></span>
@@ -741,6 +879,44 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Covariance diagnostics in a pipe</span></span></span>
 <span class="r-in"><span><span class="fu">ferx_fit</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, covariance <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="ferx_cor_matrix.html">ferx_cor_matrix</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># -- SDE model (Extended Kalman Filter) -------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The [diffusion] block in the .ferx file enables SDE mode.</span></span></span>
+<span class="r-in"><span><span class="co"># DIFF_CENTRAL is a within-subject process-noise variance on the central</span></span></span>
+<span class="r-in"><span><span class="co"># compartment.  Autodiff is forced to finite differences automatically.</span></span></span>
+<span class="r-in"><span><span class="va">sde</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin_sde"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit_sde</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">sde</span><span class="op">$</span><span class="va">model</span>, <span class="va">sde</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit_sde</span><span class="op">$</span><span class="va">uses_sde</span>                  <span class="co"># TRUE</span></span></span>
+<span class="r-in"><span><span class="va">fit_sde</span><span class="op">$</span><span class="va">theta</span><span class="op">[</span><span class="st">"DIFF_CENTRAL"</span><span class="op">]</span>     <span class="co"># fitted diffusion variance</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ferx_estimates.html">ferx_estimates</a></span><span class="op">(</span><span class="va">fit_sde</span><span class="op">)</span>           <span class="co"># DIFF_CENTRAL appears in theta block</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># -- Multi-start (avoid local minima) ----------------------------------------</span></span></span>
+<span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit_ms</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n_starts <span class="op">=</span> <span class="fl">4L</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit_ms</span><span class="op">$</span><span class="va">ofv</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># -- Deep Compartment Model (covariate neural network) -----------------------</span></span></span>
+<span class="r-in"><span><span class="co"># Requires ferx-r built with the `nn` cargo feature.</span></span></span>
+<span class="r-in"><span><span class="co"># The [covariate_nn TYPICAL_PK] block replaces analytical covariate functions</span></span></span>
+<span class="r-in"><span><span class="co"># with a small MLP: WT + CRCL -&gt; multiplicative modulator on TVCL/TVV1/etc.</span></span></span>
+<span class="r-in"><span><span class="co"># ferx_fit() call is identical to any other model.</span></span></span>
+<span class="r-in"><span><span class="va">dcm</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin_dcm"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit_dcm</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">dcm</span><span class="op">$</span><span class="va">model</span>, <span class="va">dcm</span><span class="op">$</span><span class="va">data</span>, method <span class="op">=</span> <span class="st">"focei"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># NN metadata is in fit$neural_networks (one sub-list per [covariate_nn] block)</span></span></span>
+<span class="r-in"><span><span class="va">fit_dcm</span><span class="op">$</span><span class="va">neural_networks</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">name</span>          <span class="co"># "TYPICAL_PK"</span></span></span>
+<span class="r-in"><span><span class="va">fit_dcm</span><span class="op">$</span><span class="va">neural_networks</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">shape</span>         <span class="co"># e.g. c(2, 8, 8, 5)</span></span></span>
+<span class="r-in"><span><span class="va">fit_dcm</span><span class="op">$</span><span class="va">neural_networks</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">n_weights</span>     <span class="co"># total weight + bias count</span></span></span>
+<span class="r-in"><span><span class="va">fit_dcm</span><span class="op">$</span><span class="va">neural_networks</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">input_names</span>   <span class="co"># c("WT", "CRCL")</span></span></span>
+<span class="r-in"><span><span class="va">fit_dcm</span><span class="op">$</span><span class="va">neural_networks</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">output_names</span>  <span class="co"># c("CL", "V1", "Q", "V2", "KA")</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># NN weight thetas are suppressed from the THETA table in print();</span></span></span>
+<span class="r-in"><span><span class="co"># a NEURAL NETWORKS summary block is shown instead.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit_dcm</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># See inst/examples/ex_warfarin_dcm.R for a full worked example including</span></span></span>
+<span class="r-in"><span><span class="co"># interpretability heuristics and comparison against a no-covariate baseline.</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

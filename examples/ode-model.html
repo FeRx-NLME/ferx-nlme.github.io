@@ -438,6 +438,26 @@ window.Quarto = {
     <a class="dropdown-item" href="../examples/conditional-covariate.html">
  <span class="dropdown-text">Conditional covariate (if/else)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/dcm.html">
+ <span class="dropdown-text">Deep Compartment Model (DCM)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/saem.html">
+ <span class="dropdown-text">SAEM estimation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/sde.html">
+ <span class="dropdown-text">SDE process noise</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/multistart.html">
+ <span class="dropdown-text">Multi-start fitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/bioavailability.html">
+ <span class="dropdown-text">Oral bioavailability (logit-normal F)</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -659,9 +679,12 @@ Tip
 </section>
 <section id="in-r" class="level2">
 <h2 class="anchored" data-anchor-id="in-r">In R</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(<span class="st">"mm_oral.ferx"</span>, <span class="st">"mm_oral.csv"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>gradient_used</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># "finite_differences" — ODE models always use FD (no Enzyme AD path)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"mm_oral"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>gradient_used</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># "finite_differences" — ODE models always use FD (no Enzyme AD path)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="notes" class="level2">
 <h2 class="anchored" data-anchor-id="notes">Notes</h2>

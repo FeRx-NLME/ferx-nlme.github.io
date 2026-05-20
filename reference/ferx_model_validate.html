@@ -75,7 +75,7 @@ errors, not validation failures).</p></dd>
 sections present and the Rust parser accepts it), <code>FALSE</code> otherwise,
 invisibly. The function always prints a report to the console. Note that
 a missing file or non-<code>.ferx</code> extension raises an error rather than
-returning <code>FALSE</code> — pass an existing <code>.ferx</code> path.</p>
+returning <code>FALSE</code> - pass an existing <code>.ferx</code> path.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -84,7 +84,7 @@ returning <code>FALSE</code> — pass an existing <code>.ferx</code> path.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Valid model — all required sections present</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Valid model (all required sections present)</span></span></span>
 <span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ferx_model_validate</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Validating: warfarin.ferx </span>
@@ -99,7 +99,7 @@ returning <code>FALSE</code> — pass an existing <code>.ferx</code> path.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Result: VALID</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Invalid model — missing required sections</span></span></span>
+<span class="r-in"><span><span class="co"># Invalid model (missing required sections)</span></span></span>
 <span class="r-in"><span><span class="va">bad</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".ferx"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"[parameters]"</span>,</span></span>
