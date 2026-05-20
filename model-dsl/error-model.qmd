@@ -54,30 +54,43 @@ sigma parameters in `[parameters]`.
 
 ## Sigma scale
 
-**All sigma parameters are estimated and reported on the standard-deviation
-scale, not the variance scale.** This applies to both proportional and additive
-components.
+### Initial value scale
 
-| Error model | `sigma = X` means … |
+The initial value for `sigma` is on the **variance scale by default**, matching
+omega. Use the `(sd)` annotation to specify the initial value as a standard
+deviation instead — the parser squares it before storing.
+
+```
+sigma PROP_ERR ~ 0.0004          # variance  →  SD = 0.02  →  2% CV
+sigma PROP_ERR ~ 0.02 (sd)       # SD coding →  same result
+```
+
+The `(sd)` form is used throughout the bundled examples because it is easier to
+reason about: "I expect ~2% CV" → `~ 0.02 (sd)`.
+
+### Estimate scale
+
+Regardless of how the initial value is written, **estimates are always reported
+on the SD scale** — in `print(fit)`, `ferx_estimates()`, and the fit YAML.
+
+| Error model | Estimated sigma means … |
 |---|---|
-| `proportional` | Residual SD scales as $X \cdot f$, i.e. **CV% = $X \times 100$** |
-| `additive` | Residual SD is $X$ in the units of DV |
+| `proportional` | Residual SD scales as $\sigma \cdot f$, i.e. **CV% = $\sigma \times 100$** |
+| `additive` | Residual SD is $\sigma$ in the units of DV |
 | `combined` | First sigma is proportional (CV-style), second is additive (units of DV) |
-
-So `sigma PROP_ERR ~ 0.1` for a proportional model is a **10% CV** initial
-value, not 1%. Likewise, the SE on a proportional sigma is on the SD scale —
-multiply by 100 for an SE in CV-percentage points.
 
 The fit YAML emits both the SD (`estimate`) and the variance (`variance:
 estimate²`); for proportional components it also emits `cv_pct = estimate * 100`.
+The SE in `ferx_estimates()` is on the SD scale — multiply by 100 for an SE in
+CV-percentage points.
 
 ## Examples
 
-Proportional error (most common):
+Proportional error (most common), using `(sd)` coding:
 
 ```
 [parameters]
-  sigma PROP_ERR ~ 0.01
+  sigma PROP_ERR ~ 0.02 (sd)     # 2% CV initial value
 
 [error_model]
   DV ~ proportional(PROP_ERR)
@@ -87,7 +100,9 @@ Additive error:
 
 ```
 [parameters]
-  sigma ADD_ERR ~ 1.0
+  sigma ADD_ERR ~ 1.0             # variance  →  SD = 1.0 (same here)
+  # or equivalently:
+  # sigma ADD_ERR ~ 1.0 (sd)
 
 [error_model]
   DV ~ additive(ADD_ERR)
@@ -97,8 +112,8 @@ Combined error:
 
 ```
 [parameters]
-  sigma PROP_ERR ~ 0.1
-  sigma ADD_ERR  ~ 0.5
+  sigma PROP_ERR ~ 0.1 (sd)      # 10% CV proportional component
+  sigma ADD_ERR  ~ 0.5 (sd)      # 0.5 units additive component
 
 [error_model]
   DV ~ combined(PROP_ERR, ADD_ERR)

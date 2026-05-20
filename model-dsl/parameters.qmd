@@ -28,21 +28,29 @@ theta TVKA(1.0, 0.01, 50.0)
 ### Diagonal omega
 
 ```
-omega NAME ~ variance
+omega NAME ~ value              # value is a variance (default)
+omega NAME ~ value (sd)         # value is a standard deviation
+omega NAME ~ value (variance)   # explicit — same as default
 ```
 
 - **NAME** — random effect name, referenced as `ETA_NAME` in `[individual_parameters]`
-- **variance** — initial variance estimate (diagonal element of the omega matrix)
+- **value** — initial value; default scale is **variance** (diagonal element of Ω)
+
+The `(sd)` annotation is convenient when setting initial values from expected
+CV%: `omega ETA_CL ~ 0.30 (sd)` is equivalent to `omega ETA_CL ~ 0.09` (0.30²).
 
 ```
-omega ETA_CL ~ 0.07
-omega ETA_V  ~ 0.02
-omega ETA_KA ~ 0.40
+omega ETA_CL ~ 0.09              # variance — ~30% CV for log-normal parameter
+omega ETA_CL ~ 0.30 (sd)        # same thing, SD coding
 ```
 
 The coefficient of variation (CV%) is approximately `sqrt(variance) * 100` for
 log-normally distributed parameters. For example, `omega ETA_CL ~ 0.09`
 corresponds to ~30% CV.
+
+`block_omega` is variance-only — `(sd)` is not accepted because the
+lower-triangle list mixes variances and covariances and a single tag would be
+ambiguous.
 
 ### Block omega (correlated random effects)
 
@@ -143,12 +151,14 @@ See also: [estimation — IOV](../ferx-core/estimation.qmd#inter-occasion-variab
 ### Diagonal kappa — Option A
 
 ```
-kappa NAME ~ variance
-kappa NAME ~ variance FIX
+kappa NAME ~ value              # value is a variance (default)
+kappa NAME ~ value (sd)         # value is a standard deviation
+kappa NAME ~ value FIX
 ```
 
 Each `kappa` line adds one diagonal element to the IOV omega matrix. Occasions
-are independent.
+are independent. The `(sd)` annotation has the same semantics as for omega.
+`block_kappa` is variance-only.
 
 ```
 kappa KAPPA_CL ~ 0.05
@@ -195,21 +205,28 @@ A name may not appear in both `kappa` and `block_kappa` — this is a parse erro
 ## Sigma (residual error)
 
 ```
-sigma NAME ~ value
+sigma NAME ~ value              # value is a variance (default)
+sigma NAME ~ value (sd)         # value is a standard deviation
+sigma NAME ~ value (variance)   # explicit — same as default
 ```
 
 - **NAME** — residual error parameter name, referenced in `[error_model]`
-- **value** — initial value
+- **value** — initial value; default scale is **variance**, matching omega
+
+The `(sd)` annotation tells the parser that the initial value is a standard
+deviation — it squares it before storing. This is the form used throughout the
+bundled examples because writing "I expect 2% CV" as `~ 0.02 (sd)` is more
+readable than computing the variance `0.02² = 0.0004` and writing `~ 0.0004`.
 
 ```
-sigma PROP_ERR ~ 0.01
-sigma ADD_ERR  ~ 1.0
+sigma PROP_ERR ~ 0.0004          # variance 0.0004  →  SD 0.02  →  2% CV
+sigma PROP_ERR ~ 0.02 (sd)       # same thing, SD coding
 ```
 
-**Sigma is always on the standard-deviation scale**, not the variance scale.
-`sigma PROP_ERR ~ 0.1` for a proportional model is a **10% CV** initial value.
+Regardless of how the initial value is written, **estimates are always
+reported on the SD scale** — both in `print(fit)` and in `ferx_estimates()`.
 
-See [Error Model](error-model.qmd) for how each sigma is interpreted.
+See [Error Model — Sigma scale](error-model.qmd#sigma-scale) for how each sigma is interpreted.
 
 ## Parameter-level correlation in output
 
