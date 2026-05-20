@@ -17,10 +17,9 @@ OFV.
 
 ## How it works
 
-- **Start 0** always uses the exact initial values from the model file
-- **Starts 1..n** apply a log-space perturbation of size `start_sigma` to each
-  theta. The default `start_sigma = 0.3` is a ±30% multiplicative perturbation
-  on the natural scale
+- All starts apply a log-space perturbation of size `start_sigma` to the
+  initial theta values. The default `start_sigma = 0.3` is a ±30%
+  multiplicative perturbation on the natural scale
 - All starts run in parallel via Rayon; on an 8-core machine `n_starts = 8`
   costs approximately the same wall-clock time as a single run
 - The fit with the lowest OFV is returned
