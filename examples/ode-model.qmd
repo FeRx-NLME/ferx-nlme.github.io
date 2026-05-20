@@ -92,7 +92,10 @@ evidence of between-subject variability.
 ## In R
 
 ```r
-fit <- ferx_fit("mm_oral.ferx", "mm_oral.csv")
+library(ferx)
+ex  <- ferx_example("mm_oral")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
 fit$gradient_used
 # "finite_differences" — ODE models always use FD (no Enzyme AD path)
 ```

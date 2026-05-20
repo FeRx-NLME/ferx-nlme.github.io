@@ -69,33 +69,15 @@ The only change from a standard fit is `bloq_method = m3` in `[fit_options]`:
 ## Running
 
 ```r
-fit <- ferx_fit("warfarin_bloq.ferx", "warfarin_bloq.csv")
+library(ferx)
+ex  <- ferx_example("warfarin_bloq")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
 ```
 
 Both pieces are required: the `CENS` column in the CSV **and** `bloq_method = m3`
 in `[fit_options]`. Without the option, `CENS=1` rows are treated as ordinary
 observations at the LLOQ value, which biases the fit.
-
-## Expected output
-
-```
---- Objective Function ---
-OFV:  -213.9104
-AIC:  ...
-BIC:  ...
-
---- THETA Estimates ---
-Parameter           Estimate           SE       %RSE
-----------------------------------------------------
-TVCL              0.126263          N/A        N/A
-TVV               7.629401          N/A        N/A
-TVKA              1.083302          N/A        N/A
-
---- OMEGA Estimates ---
-  ETA_CL                   [log-normal]  = 0.031381  CV% = 17.7  SE = N/A
-  ETA_V                    [log-normal]  = 0.009723  CV% = 9.9   SE = N/A
-  ETA_KA                   [log-normal]  = 0.419327  CV% = 64.8  SE = N/A
-```
 
 The sdtab gains a `CENS` column, and `IWRES`/`CWRES` cells for censored rows
 are empty (a weighted Gaussian residual is undefined when the value is censored).

@@ -79,10 +79,6 @@ as a near-identity modulator.
 
 ## Fitting
 
-The bundled example (`ferx_example("warfarin_dcm")`) pairs the model with
-a dataset simulated from a non-linear ground truth (sharp kink in CL at
-WT = 70). This makes DCM vs. no-covariate baseline a fair competition:
-
 ```r
 library(ferx)
 ex  <- ferx_example("warfarin_dcm")
@@ -115,20 +111,11 @@ nn$weights_offset     # index into the flat theta vector where weights start
 
 DCM is worth the extra parameters (~141 weights for `[2, 8, 8, 5]`) only
 when covariates are genuinely predictive and the analytical covariate model
-cannot capture the relationship. Compare AIC/OFV against a simpler baseline:
+cannot capture the relationship.
 
-```r
-# Fit no-covariate comparator on the same data
-ex_base <- ferx_example("warfarin")
-fit_base <- ferx_fit(ex_base$model, ex$data,
-                     settings = list(optimizer = "lbfgs"))
-
-cat(sprintf("ΔAIC (no-cov − DCM): %+.1f\n", fit_base$aic - fit$aic))
-# positive ⇒ DCM wins overall after the parameter penalty
-```
-
-For the full worked comparison — including covariate-importance heuristics,
-individual profile plots, and an optional VPC — run the bundled script:
+The bundled script fits a DCM and a no-covariate two-compartment baseline on
+the same dataset and compares AIC and OFV, with covariate-importance heuristics
+and individual profile plots:
 
 ```r
 source(system.file("examples/ex_warfarin_dcm.R", package = "ferx"))

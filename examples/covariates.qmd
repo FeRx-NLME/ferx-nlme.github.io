@@ -86,10 +86,13 @@ those used in `[individual_parameters]`.
 ## In R
 
 ```r
-fit <- ferx_fit("two_cpt_oral_cov.ferx", "data.csv")
+library(ferx)
+ex  <- ferx_example("two_cpt_oral_cov")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
 
 # ETA-covariate correlations: check if covariates were absorbed
-data <- read.csv("data.csv")
+data <- read.csv(ex$data)
 ferx_eta_cov(fit, data)
 # ETA_CL correlations with WT and CRCL should be near zero after fitting
 ```

@@ -79,19 +79,10 @@ expected to correlate with CL or V.
 library(ferx)
 ex  <- ferx_example("warfarin_block_omega")
 fit <- ferx_fit(ex$model, ex$data)
-fit
+print(fit)
 
-# Off-diagonal correlations
+# Off-diagonal correlations — converts estimated Ω to a correlation matrix
 ferx_cor_matrix(fit)
-```
-
-`ferx_cor_matrix()` converts the estimated Ω to a correlation matrix:
-
-```
-        ETA_CL  ETA_V  ETA_KA
-ETA_CL   1.000  0.612   0.000
-ETA_V    0.612  1.000   0.000
-ETA_KA   0.000  0.000   1.000
 ```
 
 ## Tips
