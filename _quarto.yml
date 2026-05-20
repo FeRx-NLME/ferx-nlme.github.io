@@ -72,6 +72,8 @@ website:
             href: examples/block-omega.qmd
           - text: "Conditional covariate (if/else)"
             href: examples/conditional-covariate.qmd
+          - text: "Deep Compartment Model (DCM)"
+            href: examples/dcm.qmd
       - text: "ferx-core"
         menu:
           - text: "Overview"

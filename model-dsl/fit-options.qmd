@@ -27,6 +27,11 @@ entirely for a simple FOCE fit.
 | `bloq_method` | `drop`, `m3` | `drop` | BLOQ handling: `drop` ignores censored rows; `m3` uses Beal's M3 likelihood |
 | `iov_column` | string | — | Name of the occasion column in the dataset (required for IOV models) |
 | `optimizer_trace` | `true`, `false` | `false` | Write per-iteration CSV to `/tmp/ferx_trace_<pid>_<ts>.csv` |
+| `n_starts` | integer | `1` | Number of independent fits from perturbed initial values; the run with the lowest OFV is returned. `1` disables multi-start. |
+| `start_sigma` | float | `0.3` | Log-space perturbation size applied to theta for starts 1..n. Start 0 always uses the exact initial values from the model file. |
+| `multi_start_seed` | integer | — | RNG seed for reproducible multi-start perturbations |
+| `max_unconverged_frac` | float (0–1) | `0.3` | Fraction of subjects allowed to have unconverged inner loops without triggering a warning. Raise when fitting complex models with sparse data. |
+| `min_obs_for_convergence_check` | integer | `1` | Minimum number of observations a subject must have before its inner convergence is counted toward `max_unconverged_frac`. |
 
 ## Estimation methods
 
@@ -175,6 +180,17 @@ Standard FOCE with defaults:
   method     = foce
   maxiter    = 300
   covariance = true
+```
+
+Multi-start FOCEI (8 parallel starts, reproducible):
+
+```
+[fit_options]
+  method           = focei
+  covariance       = true
+  n_starts         = 8
+  start_sigma      = 0.3
+  multi_start_seed = 42
 ```
 
 FOCEI with global search:

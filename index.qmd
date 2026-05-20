@@ -1,5 +1,5 @@
 ---
-pagetitle: "ferx · open-source NLME for population PK/PD"
+pagetitle: "ferx · open-source NLME for population PK"
 toc: false
 page-layout: full
 ---
@@ -18,7 +18,7 @@ page-layout: full
 Fe[·]{.dot}[R[*x*]{style="font-style:italic"}]{.rx}
 :::
 
-### A nonlinear mixed-effects engine for *population PK/PD*, written in Rust. {.headline}
+### A nonlinear mixed-effects engine for *population PK*, written in Rust. {.headline}
 
 ::: {.lede}
 ferx fits models defined in a small, readable DSL — bracket-sectioned `.ferx` files — powered by a Rust backend with [Enzyme](https://enzyme.mit.edu/) automatic differentiation for exact gradients. FOCE/FOCEI estimation. MIT-licensed.

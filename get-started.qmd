@@ -4,28 +4,50 @@ title: "Get started"
 
 ## Quick install
 
-**Prerequisites:** R ≥ 4.1 and Rust / Cargo (via [rustup](https://rustup.rs)).
+**Prerequisites:** R ≥ 4.2, cmake, and Rust stable (via [rustup](https://rustup.rs)).
 
-Install the R package:
+The standard build uses `FERX_NO_AUTODIFF=1`, which skips the Enzyme toolchain and
+falls back to finite-difference gradients. Estimates are identical; compile time
+is ~2 minutes. Enzyme (exact autodiff) is optional and documented below.
 
-```r
-remotes::install_github("FeRx-NLME/ferx-r")
-```
-
-Then run the warfarin example:
-
-```r
-library(ferx)
-paths <- ferx_example("warfarin")
-fit   <- ferx_fit(paths$model, paths$data)
-print(fit)
-summary(fit)
-```
-
-For a **dev build without autodiff** (uses finite differences; ~2 min compile):
+### macOS
 
 ```bash
-FERX_NO_AUTODIFF=1 R CMD INSTALL --no-lock .
+brew install cmake
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+RStudio on macOS does not inherit the Homebrew `PATH`. Add cmake explicitly before installing:
+
+```r
+# Apple Silicon (M1/M2/M3):
+Sys.setenv(PATH = paste("/opt/homebrew/opt/cmake/bin", Sys.getenv("PATH"), sep = ":"))
+# Intel Mac — use this line instead:
+# Sys.setenv(PATH = paste("/usr/local/opt/cmake/bin", Sys.getenv("PATH"), sep = ":"))
+
+Sys.setenv(FERX_NO_AUTODIFF = "1")
+devtools::install_github("FeRx-NLME/ferx-r")
+```
+
+### Windows
+
+Install [Rtools44](https://cran.r-project.org/bin/windows/Rtools/rtools44/rtools.html) and [Rust via rustup](https://rustup.rs). cmake ships with Rtools44.
+
+```r
+Sys.setenv(FERX_NO_AUTODIFF = "1")
+devtools::install_github("FeRx-NLME/ferx-r")
+```
+
+### Linux
+
+```bash
+sudo apt-get install cmake   # Debian / Ubuntu
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+```r
+Sys.setenv(FERX_NO_AUTODIFF = "1")
+devtools::install_github("FeRx-NLME/ferx-r")
 ```
 
 ---
@@ -244,7 +266,7 @@ You do **not** need to make it the default — the package build pins this toolc
 Then install in R:
 
 ```r
-remotes::install_github("FeRx-NLME/ferx-r")
+devtools::install_github("FeRx-NLME/ferx-r")
 ```
 
 ### Option C — Docker (full autodiff on Windows)
@@ -317,15 +339,15 @@ See [`INSTALL-SYSADMIN.md`](https://github.com/FeRx-NLME/ferx-r/blob/main/INSTAL
 Once your Enzyme toolchain is in place, install the R package:
 
 ```r
-remotes::install_github("FeRx-NLME/ferx-r")
+devtools::install_github("FeRx-NLME/ferx-r")
 ```
 
 Then run the warfarin example:
 
 ```r
 library(ferx)
-paths <- ferx_example("warfarin")
-fit   <- ferx_fit(paths$model, paths$data)
+ex  <- ferx_example("warfarin")
+fit <- ferx_fit(ex$model, ex$data)
 print(fit)
 summary(fit)
 ```
