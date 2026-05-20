@@ -756,18 +756,20 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="sampling-importance-resampling-sir">Sampling Importance Resampling (SIR)</h2>
 <p>SIR is an optional post-estimation step that provides non-parametric parameter uncertainty estimates, more robust than the asymptotic covariance matrix for small datasets or boundary estimates.</p>
 <ol type="1">
-<li>Draw M parameter vectors from <span class="math inline">\(\mathcal{N}(\hat{\theta}, \hat{\Sigma})\)</span></li>
+<li>Draw M parameter vectors from a multivariate Student-t proposal centred on <span class="math inline">\(\hat{\theta}\)</span> with covariance <span class="math inline">\(\hat{\Sigma}\)</span> and degrees of freedom ν (default ν = 5). The heavy tails relative to Normal help cover the posterior when the proposal covariance underestimates uncertainty.</li>
 <li>Compute importance weights from OFV differences</li>
 <li>Resample m vectors proportional to weights</li>
 </ol>
 <p>The effective sample size (ESS) diagnostic indicates fit quality: ESS &gt; m is excellent; ESS &lt; 100 suggests the proposal is a poor match.</p>
 <pre><code>[fit_options]
-  method        = focei
-  covariance    = true
-  sir           = true
-  sir_samples   = 1000
-  sir_resamples = 250
-  sir_seed      = 42</code></pre>
+  method           = focei
+  covariance       = true
+  sir              = true
+  sir_samples      = 1000
+  sir_resamples    = 250
+  sir_seed         = 42
+  sir_df           = 5       # Student-t degrees of freedom (default 5)
+  sir_keep_samples = false   # set true to access raw proposal draws</code></pre>
 <p>Reference: Dosne et al.&nbsp;(2017), <em>J Pharmacokinet Pharmacodyn</em> 44(6):539-562.</p>
 </section>
 <section id="mu-referencing" class="level2">

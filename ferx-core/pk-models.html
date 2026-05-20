@@ -603,7 +603,7 @@ window.Quarto = {
 <section id="oral-absorption" class="level3">
 <h3 class="anchored" data-anchor-id="oral-absorption">Oral absorption</h3>
 <pre><code>pk one_cpt_oral(cl=CL, v=V, ka=KA)
-pk one_cpt_oral_f(cl=CL, v=V, ka=KA, f=F)   # with bioavailability</code></pre>
+pk one_cpt_oral(cl=CL, v=V, ka=KA, f=F)     # with bioavailability</code></pre>
 <p><span class="math display">\[C(t) = \frac{F \cdot \text{Dose} \cdot K_A}{V (K_A - k)} \left(e^{-k t} - e^{-K_A t}\right)\]</span></p>
 <p>When <span class="math inline">\(K_A \approx k\)</span> (flip-flop, within <code>1e-6</code>), the L’Hôpital limit is used to avoid catastrophic cancellation:</p>
 <p><span class="math display">\[C(t) = \frac{F \cdot \text{Dose} \cdot K_A}{V} \cdot t \cdot e^{-k t}\]</span></p>
@@ -630,7 +630,7 @@ pk one_cpt_oral_f(cl=CL, v=V, ka=KA, f=F)   # with bioavailability</code></pre>
 <section id="oral-absorption-1" class="level3">
 <h3 class="anchored" data-anchor-id="oral-absorption-1">Oral absorption</h3>
 <pre><code>pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)
-pk two_cpt_oral_f(cl=CL, v1=V1, q=Q, v2=V2, ka=KA, f=F)</code></pre>
+pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA, f=F)     # with bioavailability</code></pre>
 <p><span class="math display">\[C(t) = Ae^{-\alpha t} + Be^{-\beta t} + Ce^{-K_A t}\]</span></p>
 <p>Coefficients derived analytically; degenerate cases (<span class="math inline">\(K_A \approx \alpha\)</span> or <span class="math inline">\(K_A \approx \beta\)</span>) handled via L’Hôpital limits.</p>
 </section>

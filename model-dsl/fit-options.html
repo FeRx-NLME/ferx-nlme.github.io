@@ -635,33 +635,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Write per-iteration CSV to <code>/tmp/ferx_trace_&lt;pid&gt;_&lt;ts&gt;.csv</code></td>
 </tr>
 <tr class="odd">
+<td><code>gradient_method</code></td>
+<td><code>auto</code>, <code>enzyme</code>, <code>fd</code></td>
+<td><code>auto</code></td>
+<td>Gradient computation method. <code>auto</code> uses Enzyme if available, otherwise finite differences. <code>fd</code> forces finite differences (required for SDE/diffusion models).</td>
+</tr>
+<tr class="even">
 <td><code>n_starts</code></td>
 <td>integer</td>
 <td><code>1</code></td>
 <td>Number of independent fits from perturbed initial values; the run with the lowest OFV is returned. <code>1</code> disables multi-start.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>start_sigma</code></td>
 <td>float</td>
 <td><code>0.3</code></td>
 <td>Log-space perturbation size applied to theta for starts 1..n. Start 0 always uses the exact initial values from the model file.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>multi_start_seed</code></td>
 <td>integer</td>
 <td>—</td>
 <td>RNG seed for reproducible multi-start perturbations</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>max_unconverged_frac</code></td>
 <td>float (0–1)</td>
-<td><code>0.3</code></td>
+<td><code>0.1</code></td>
 <td>Fraction of subjects allowed to have unconverged inner loops without triggering a warning. Raise when fitting complex models with sparse data.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>min_obs_for_convergence_check</code></td>
 <td>integer</td>
-<td><code>1</code></td>
+<td><code>2</code></td>
 <td>Minimum number of observations a subject must have before its inner convergence is counted toward <code>max_unconverged_frac</code>.</td>
 </tr>
 </tbody>
