@@ -550,8 +550,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="how-it-works" class="level2">
 <h2 class="anchored" data-anchor-id="how-it-works">How it works</h2>
 <ul>
-<li><strong>Start 0</strong> always uses the exact initial values from the model file</li>
-<li><strong>Starts 1..n</strong> apply a log-space perturbation of size <code>start_sigma</code> to each theta. The default <code>start_sigma = 0.3</code> is a ±30% multiplicative perturbation on the natural scale</li>
+<li>All starts apply a log-space perturbation of size <code>start_sigma</code> to the initial theta values. The default <code>start_sigma = 0.3</code> is a ±30% multiplicative perturbation on the natural scale</li>
 <li>All starts run in parallel via Rayon; on an 8-core machine <code>n_starts = 8</code> costs approximately the same wall-clock time as a single run</li>
 <li>The fit with the lowest OFV is returned</li>
 </ul>
