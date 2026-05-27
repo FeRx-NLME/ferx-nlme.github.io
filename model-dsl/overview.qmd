@@ -72,7 +72,7 @@ file. Any column in the CSV not in the standard NONMEM set (ID, TIME, DV, EVID,
 AMT, CMT, RATE, MDV, CENS, II, SS) is automatically treated as a covariate and
 can be referenced by name in `[individual_parameters]`.
 
-See [Data Format](../ferx-core/data-format.qmd) for the full column reference.
+See [Data Format](https://ferx-nlme.github.io/ferx-core/data-format.html) for the full column reference.
 
 ## Further reading
 
@@ -81,4 +81,10 @@ See [Data Format](../ferx-core/data-format.qmd) for the full column reference.
 - [Structural Model](structural-model.qmd) — analytical PK model functions
 - [ODE Models](odes.qmd) — ODE syntax, solver settings, dose handling
 - [Error Model](error-model.qmd) — additive, proportional, combined; sigma scale
+- [Lag time](lag-time.qmd) — `lagtime` / `alag` PK slot
+- [Steady-state doses (SS=1)](steady-state.qmd) — dataset-driven SS dosing
+- [Scaling](scaling.qmd) — `[scaling]` block: unit conversion, per-CMT, ODE output
+- [Diffusion (SDE)](diffusion.qmd) — `[diffusion]` block: system noise via EKF
+- [Covariate NN (DCM)](covariate-nn.qmd) — `[covariate_nn]` block: deep compartment models
+- [Simulation](simulation.qmd) — `[simulation]` block: virtual trial design
 - [Fit Options](fit-options.qmd) — complete settings reference

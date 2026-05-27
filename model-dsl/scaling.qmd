@@ -1,0 +1,170 @@
+---
+title: "Scaling"
+---
+
+The optional `[scaling]` block declares how the structural model's
+raw output maps to the observed `DV`. It exists so unit conversions
+and amount-to-concentration arithmetic don't have to be folded into
+`[structural_model]` or `[odes]` — keeping the model readable, and
+making mixed-unit data (e.g. data in ng/mL when the model thinks in
+mg/L) straightforward.
+
+The convention is **divisive**: `pred_scaled = pred_raw / scale`.
+`obs_scale = V/1000` reads as *"divide raw prediction by V/1000 to
+get the observation."*
+
+Three forms are supported. Each is optional; omitting `[scaling]`
+keeps the historical "raw prediction equals DV" behaviour.
+
+## Form A — scalar divisor
+
+For fixed unit conversion (e.g. mg/L → ng/mL is a constant 1000):
+
+```
+[scaling]
+  obs_scale = 1000
+```
+
+Works on analytical PK and ODE models alike: every prediction is
+divided by the constant before reaching the residual error model.
+
+## Form B — expression divisor
+
+For scales that depend on theta, eta, or a covariate:
+
+```
+[scaling]
+  obs_scale = WT / 70
+```
+
+Expressions may reference thetas, etas, covariates, and individual
+parameters declared in `[individual_parameters]` (e.g. `V`, `CL`).
+Individual parameters are resolved from a subject-static evaluation
+at scale-evaluation time, so `obs_scale = 1000 / V` uses the
+per-subject `V` (typical value times the EBE eta).
+
+The scale is evaluated **once per subject** with subject-level
+covariates. Time-varying-covariate support for expression scales is
+deferred to a future phase.
+
+## Form C — explicit output expression (ODE only)
+
+For ODE models where the state is held as an amount and the
+observation is a concentration. Form C replaces the default
+`obs_cmt` readout entirely.
+
+```
+[structural_model]
+  ode(states=[depot, central])     # no obs_cmt — Form C provides it
+
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) = KA * depot - CL/V * central   # central holds amount
+
+[scaling]
+  y = central / V
+```
+
+The right-hand side may reference state names (`depot`, `central`),
+individual parameters (`CL`, `V`, `KA`), thetas, etas, and covariates.
+Form C is rejected on analytical models with a clear error.
+
+## Multi-analyte / per-CMT scaling
+
+For models that observe multiple compartments (parent + metabolite,
+free vs. total, ...), specify a separate scale per observed CMT:
+
+```
+[scaling]
+  obs_scale[CMT=1] = 1000    # parent in mg/L → mg/mL
+  obs_scale[CMT=2] = 1       # metabolite already in target units
+```
+
+Form C per-CMT (ODE):
+
+```
+[structural_model]
+  ode(states=[depot, parent, metab])
+
+[scaling]
+  y[CMT=1] = parent / V_parent
+  y[CMT=2] = metab  / V_metab
+```
+
+`N` in `[CMT=N]` is the 1-based CMT index from the data file's `CMT`
+column.
+
+**Coverage rule** — every CMT that has at least one observation in
+the data must have a matching `[CMT=N]` entry. The fit-time
+validation errors with a list of the missing CMTs.
+
+**Mixing rule** — the uniform form (`obs_scale = K`) and the per-CMT
+form (`obs_scale[CMT=N] = K`) are mutually exclusive within the same
+group. The same rule applies to `y` and `y[CMT=N]`.
+
+## Runtime behaviour on bad scales
+
+If an expression scale (Form B or C) evaluates to non-positive or
+non-finite at runtime — e.g. `WT / 70` with missing `WT` (reads `0`),
+or `1 / (TVV - x)` near a singularity — every prediction for that
+subject is set to `NaN`. The outer NLL then evaluates to `NaN` and
+the optimizer rejects the step. This matches NONMEM's `OBJFN = NaN →
+step rejection` convention and surfaces bad scales in the per-subject
+diagnostics rather than silently producing a mis-scaled fit.
+
+## Gradients (AD vs FD)
+
+All `[scaling]` variants on the **analytical PK path** support both
+`gradient = ad` and `gradient = fd`:
+
+| Form                              | AD                | FD     | Notes |
+|-----------------------------------|-------------------|--------|-------|
+| Scalar `obs_scale = K`            | ✓ exact           | ✓ exact| Threads as a `Const` slice (one entry per obs) |
+| Expression `obs_scale = <expr>`   | ✓ subject-static  | ✓ exact| See subject-static caveat below |
+| Per-CMT `obs_scale[CMT=N]`        | ✓ subject-static  | ✓ exact| Dispatched per observation by `CMT` |
+| Form C `y[…] = <expr>` (ODE only) | ✗ — forces `fd`   | ✓      | Form C only exists on ODE models, where the AD path isn't available regardless of scaling |
+
+**Subject-static caveat.** The per-observation scale array passed to
+AD is materialised from a single subject-static evaluation. AD treats
+the scale as constant w.r.t. eta. For the common eta-independent
+scale (`WT/70`, `TVV/1000`, or `V` reading the EBE value) AD and FD
+gradients are identical. If the scale expression explicitly
+references eta (e.g. `obs_scale = exp(ETA_V)`), the AD gradient
+ignores that dependence while FD captures it — set `gradient = fd`
+for that case.
+
+## Interaction with `[diffusion]`
+
+`[scaling]` is **not supported** on SDE models. The parser rejects
+any `[scaling]` block on a model that also has a `[diffusion]` block
+(all three forms). A correct SDE+scaling integration needs the scale
+factor threaded into both the EKF observation-covariance propagation
+and the residual variance callback — deferred to a future phase.
+
+## NONMEM and nlmixr2 mapping
+
+| Need                                          | NONMEM                         | nlmixr2                                  | ferx                                       |
+|-----------------------------------------------|--------------------------------|------------------------------------------|--------------------------------------------|
+| Scalar unit conversion                        | `S1 = 1000`                    | (multiplier in `cmt`/`f`)                | `[scaling] obs_scale = 1000`               |
+| Amount-state ODE with concentration DV        | `S2 = V/1000` plus `Y = A(2)/S2` | `cmt(central); f = central/V/1000`    | `[scaling] y = central / (V/1000)`         |
+
+## Runnable example
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_scaled")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
+```
+
+The bundled `warfarin_scaled` model demonstrates Form A. The dataset
+records `AMT` in micrograms while `DV` is in mg/L, so the model
+predicts in µg/L; `obs_scale = 1000` divides every prediction by
+1000 before the residual is computed. The fit converges to the same
+estimates as the standard `warfarin` example.
+
+## See also
+
+- [Scaling — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/scaling.html)
+  — full reference including the subject-static caveat derivation
+- [Structural model](structural-model.qmd) — `pk` line, ODE `states=`

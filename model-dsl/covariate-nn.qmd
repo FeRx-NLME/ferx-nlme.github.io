@@ -1,0 +1,151 @@
+---
+title: "Covariate NN (DCM)"
+---
+
+The `[covariate_nn]` block replaces the typical-value covariate model
+with a small feed-forward neural network. This is the
+**Deep Compartment Model** (DCM) approach of Janssen et al. (2022).
+The compartmental structure downstream is unchanged; etas attach to
+the *final* PK parameters, so the inner FOCEI loop runs exactly as
+it does for an analytical model.
+
+> **Reference**: Janssen A. et al. (2022). *Deep compartment models:
+> A deep learning approach for the reliable prediction of time-series
+> data in pharmacokinetic modeling.* CPT Pharmacometrics Syst
+> Pharmacol 11:934–945.
+> DOI [10.1002/psp4.12808](https://doi.org/10.1002/psp4.12808).
+
+## Availability
+
+`[covariate_nn]` is gated behind the `nn` cargo feature in ferx-core.
+**ferx-r enables this feature by default**, so DCM works out of the
+box when you `library(ferx)`. Users building ferx-core directly need:
+
+```sh
+cargo build --release --features nn
+```
+
+## Syntax
+
+```
+[covariate_nn NAME]
+  inputs     = [COV_1, COV_2, ...]
+  outputs    = [PK_PARAM_1, PK_PARAM_2, ...]
+  layers     = [hidden_1, hidden_2, ...]
+  activation = tanh | relu | sigmoid | softplus | exp | identity
+  output     = tanh | relu | sigmoid | softplus | exp | identity   # optional, default `identity`
+```
+
+| Field        | Required | Meaning |
+|--------------|----------|---------|
+| `NAME`       | yes      | Block name; used as the dot-access prefix (`NAME.CL`) in `[individual_parameters]` |
+| `inputs`     | yes      | Covariate column names from the NONMEM CSV |
+| `outputs`    | yes      | PK parameter names: `cl`, `v` / `v1`, `q` / `q2`, `v2`, `ka`, `f`, `q3`, `v3`, `lagtime` / `alag` |
+| `layers`     | yes      | Hidden-layer widths, in order; at least one entry required |
+| `activation` | yes      | Hidden-layer element-wise activation |
+| `output`     | no       | Output-layer activation (default `identity`) |
+
+Multiple `[covariate_nn]` blocks per model are permitted; they're keyed
+by NAME and ordered alphabetically when generating theta names.
+
+## Composing with etas
+
+The bundled DCM example uses a **multiplicative modulator** pattern:
+baseline thetas carry the absolute scale and the NN learns the
+covariate-driven deviation from baseline.
+
+```
+[individual_parameters]
+  CL = TVCL * TYPICAL_PK.CL * exp(ETA_CL)
+  V1 = TVV1 * TYPICAL_PK.V1 * exp(ETA_V1)
+  Q  = TVQ  * TYPICAL_PK.Q  * exp(ETA_Q)
+  V2 = TVV2 * TYPICAL_PK.V2 * exp(ETA_V2)
+  KA = TVKA * TYPICAL_PK.KA * exp(ETA_KA)
+```
+
+With `output = exp` the NN outputs are exactly `1.0` at init
+(`exp(0) = 1`), so initial typical values fall back to the declared
+`TVCL` / `TVV1` / … thetas. The NN then learns the multiplicative
+covariate effect over training.
+
+The simpler "NN replaces typical values entirely" pattern
+(`CL = TYPICAL_PK.CL * exp(ETA_CL)` with `output = softplus`) is
+syntactically valid and recognised by the parser, but in practice
+struggles to span the 1–100× range across CL/V/Q/V2/KA from Glorot
+initialisation. Prefer the multiplicative form.
+
+## Auto-generated parameters
+
+For each block, the parser generates one theta per weight and bias:
+
+- `W_<NAME>_<l>_<i>_<j>` — weight from input unit `j` (layer `l−1`)
+  to output unit `i` (layer `l`)
+- `B_<NAME>_<l>_<i>` — bias of output unit `i` in layer `l`
+
+Layers are 1-indexed (input layer is layer 0, has no weights). For a
+`2 → 8 → 8 → 5` network: `2·8 + 8 + 8·8 + 8 + 8·5 + 5 = 141 thetas`.
+
+Initial weights use a Glorot-style deterministic scheme seeded by the
+block NAME, so builds are reproducible without pulling `rand` into
+the parser. Weights are unbounded (identity-packed): the optimizer
+sees them on the natural scale, no log transform. Biases initialise
+to `0`.
+
+## Activations
+
+| Value      | Behavior                  | Typical use                                                                          |
+|------------|---------------------------|--------------------------------------------------------------------------------------|
+| `identity` | `f(x) = x`                | Output layer when wrapping with a manual positivity head                             |
+| `relu`     | `f(x) = max(0, x)`        | Cheap hidden activation, but kinks reduce smoothness for FOCEI                       |
+| `tanh`     | `f(x) = tanh(x)`          | **Recommended hidden default** — smooth, bounded `(−1, 1)`                           |
+| `sigmoid`  | `f(x) = 1 / (1 + exp(-x))`| Bounded `(0, 1)`; useful for `F` bioavailability outputs                             |
+| `softplus` | `f(x) = ln(1 + exp(x))`   | Smooth positive output                                                               |
+| `exp`      | `f(x) = exp(x)`           | **Recommended for multiplicative-modulator form** — `exp(0) = 1` at init             |
+
+The bundled DCM example uses `activation = tanh`, `output = exp`.
+
+## Optimizer caveat
+
+The default outer optimizer (SLSQP) currently silently no-ops on
+mu-ref-active NN models (see ferx-core#55). Use `optimizer = lbfgs`,
+either in `[fit_options]` or via `ferx_fit(..., settings = list(optimizer = "lbfgs"))`.
+The bundled example sets it in the model file.
+
+## Runnable example
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_dcm")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
+```
+
+This is a 2-cpt oral warfarin model whose typical PK values are
+modulated by a 2 → 8 → 8 → 5 MLP over `WT` and `CRCL`. Compare with
+`ferx_example("two_cpt_oral_cov")` for the same data and structure
+using an analytical covariate model.
+
+## Fit output
+
+The fit object's `theta` vector contains the NN weights at indices
+`weights_offset .. weights_offset + n_weights`. The corresponding
+`.fitrx` archive and `{model}-fit.yaml` emit a compact summary
+(shape, activations, weight count, weight-vector statistics) rather
+than dumping one row per weight.
+
+## What's not yet wired
+
+- `method = nn_mse` — Janssen 2022's original fixed-effects MSE
+  objective. Not implemented; FOCEI is the default and works today.
+- AD-aware mu-ref re-centering for NN-anchored etas. Fits work, but
+  the inner-loop AD fast path skips NN-anchored etas — a performance
+  issue, not a correctness issue.
+- `[dynamics_nn]` block for neural-ODE-style RHS terms (Phase B / not
+  shipped).
+
+## See also
+
+- [Covariate NN (DCM) — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/covariate-nn.html)
+  — full reference including fit-output YAML schema
+- [Neural Networks — landing page](https://ferx-nlme.github.io/ferx-core/model-file/neural-networks.html)
+- [DCM example](../examples/dcm.qmd) — runnable walkthrough

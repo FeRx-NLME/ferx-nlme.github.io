@@ -100,7 +100,7 @@ concentration for the elimination term.
 | Minimum step size | 1e-12 |
 
 The solver adapts step size based on local error estimates. See also
-[ODE Solver](../ferx-core/ode-solver.qmd) for the full reference.
+[ODE Models — Solver Details](https://ferx-nlme.github.io/ferx-core/model-file/ode-models.html#solver-details) for the full reference.
 
 ## Dose handling in ODE models
 

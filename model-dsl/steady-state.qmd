@@ -1,0 +1,112 @@
+---
+title: "Steady-state doses (SS=1)"
+---
+
+A dose record with `SS=1` and `II > 0` tells ferx-core that, at the
+time of the record, the compartmental state is at steady state under
+repeated dosing of that amount/rate every `II` time units. The record
+itself counts as one of the pulses in the train.
+
+**No new DSL syntax is required.** Steady state is a property of the
+dataset — the model file is identical to a single-dose model.
+
+This matches NONMEM's `SS=1` semantic: the compartments are
+initialised to the value that would arise from an infinite-past pulse
+train at interval `II`. Subsequent observations decay from that loaded
+state under the model's normal dynamics; the SS train is **not**
+implicitly continued past the SS dose record. To keep dosing forward
+in time, add explicit dose rows after the SS row.
+
+## Dataset columns
+
+A steady-state row uses two NONMEM-format columns: `SS` and `II`.
+
+```
+ID,TIME,DV,EVID,AMT,CMT,RATE,MDV,II,SS
+1,0,.,1,100,1,0,1,24,1     # SS=1: at steady state, q24h dosing of AMT=100
+1,1,4.18,0,.,1,0,0,.,.
+1,4,3.86,0,.,1,0,0,.,.
+1,12,1.78,0,.,1,0,0,.,.
+1,23,0.59,0,.,1,0,0,.,.
+```
+
+`II` is the dosing interval. For a bolus row (`RATE=0`) and an
+infusion row (`RATE>0`), `SS=1` works the same way — the steady-state
+state is computed from the corresponding single-dose response repeated
+every `II`.
+
+## Supported paths
+
+Every prediction path in ferx-core honours `SS=1`:
+
+| Path                                                | How                                       |
+|-----------------------------------------------------|-------------------------------------------|
+| Analytical (1-/2-/3-cpt, no time-varying covariates) | Closed-form geometric series             |
+| Analytical (1-/2-/3-cpt, time-varying covariates)    | Numerical pulse expansion (50 cycles)    |
+| ODE (`[odes]`-block models)                          | Numerical pulse expansion (50 cycles)    |
+
+For linear PK the analytical closed form is exact (effectively free).
+For ODE models, the steady-state state is built by running 50 cycles
+of "apply dose, propagate by `II`" — about 50× the per-prediction cost
+of a non-SS dose. SS doses are typically rare (one per subject), so
+the absolute overhead per fit iteration is modest even for ODE models.
+
+## Combining with `lagtime`
+
+`lagtime` shifts every pulse in the SS train, including the SS pulse
+itself. A sample taken **earlier than the lagtime** (between the dose
+record time and the lagged arrival) is still at steady state, showing
+the decaying tail of the *previous* interval — not zero. ferx-core
+implements this on all three prediction paths and the SS+lagtime
+combination is validated against NONMEM `ALAG1` + `SS=1` to 5
+significant figures. Declaring `lagtime` on a steady-state model is
+fully supported.
+
+See [Lag time](lag-time.qmd) for the `lagtime` DSL.
+
+## Limitations
+
+For these malformed configurations, ferx-core **skips** the SS
+pre-equilibration (treating the dose as a single, non-SS bolus or
+infusion) and emits a warning in `FitResult.warnings`. The dose is
+still applied through the normal flow, but the system isn't actually
+at steady state at the dose time.
+
+- **`SS=1` with `II ≤ 0`** — interval is required; set `II` or remove
+  the `SS=1` flag.
+- **`SS=1` infusion with `T_inf > II`** (overlapping pulses) — no
+  closed-form solution or pulse-expansion scheme covers this. Use a
+  shorter infusion (`T_inf ≤ II`), or model overlapping infusions with
+  an `[odes]` block and explicit periodic dose records (without
+  `SS=1`).
+
+### `SS=2`
+
+NONMEM's `SS=2` semantic ("add to the existing train without
+re-equilibrating") is **not implemented**. Any positive integer in the
+`SS` column is treated as a boolean: an `SS=2` row is parsed
+identically to `SS=1` and goes through the re-equilibration path.
+Convert `SS=2` rows to explicit dose records if you need the
+no-re-equilibration semantic.
+
+## Runnable example
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_ss")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
+```
+
+The bundled `warfarin_ss` model is a 1-cpt oral model identical in
+structure to the single-dose warfarin example; the dataset
+(`warfarin_ss.csv`) records once-daily dosing at steady state
+(`SS=1`, `II=24`).
+
+## See also
+
+- [Steady-State Doses — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/steady-state.html)
+  — full algorithm details, NONMEM equivalence, and validation notes
+- [Data Format (ferx-core book)](https://ferx-nlme.github.io/ferx-core/data-format.html)
+  — `SS` and `II` column reference
+- [Lag time](lag-time.qmd) — interaction with `lagtime`

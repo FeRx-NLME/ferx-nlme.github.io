@@ -52,6 +52,18 @@ website:
             href: model-dsl/odes.qmd
           - text: "Error model"
             href: model-dsl/error-model.qmd
+          - text: "Lag time"
+            href: model-dsl/lag-time.qmd
+          - text: "Steady-state doses (SS=1)"
+            href: model-dsl/steady-state.qmd
+          - text: "Scaling"
+            href: model-dsl/scaling.qmd
+          - text: "Diffusion (SDE)"
+            href: model-dsl/diffusion.qmd
+          - text: "Covariate NN (DCM)"
+            href: model-dsl/covariate-nn.qmd
+          - text: "Simulation"
+            href: model-dsl/simulation.qmd
           - text: "Fit options"
             href: model-dsl/fit-options.qmd
       - text: "Examples"

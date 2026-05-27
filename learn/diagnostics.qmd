@@ -239,5 +239,5 @@ call in the current session:
 ferx_trace()    # same as ferx_trace(fit) after the above
 ```
 
-See [Output Reference — Optimizer trace CSV](../ferx-core/output.qmd#optimizer-trace-csv)
+See [Output Files — Optimizer trace CSV (ferx-core book)](https://ferx-nlme.github.io/ferx-core/output.html#optimizer-trace-csv)
 for the full column reference.

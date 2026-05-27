@@ -131,4 +131,4 @@ columns in the sdtab CSV. Per-kappa shrinkage is not yet computed.
 
 - [Parameters — Kappa](../model-dsl/parameters.qmd#kappa-inter-occasion-variability)
 - [Fit Options — iov_column](../model-dsl/fit-options.qmd)
-- [Data Format — Occasion column](../ferx-core/data-format.qmd#occasion-column-iov)
+- [Data Format — Occasion column (ferx-core book)](https://ferx-nlme.github.io/ferx-core/data-format.html#occasion-column-iov)

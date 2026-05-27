@@ -89,4 +89,4 @@ fit
 
 - [Example: Three-compartment IV](three-cpt-iv.qmd)
 - [Example: Covariate model](covariates.qmd)
-- [Analytical PK models — two_cpt_iv_bolus](../ferx-core/pk-models.qmd)
+- [Analytical PK models — two_cpt_iv_bolus (ferx-core book)](https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html)

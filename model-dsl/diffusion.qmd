@@ -1,0 +1,152 @@
+---
+title: "Diffusion (SDE)"
+---
+
+The optional `[diffusion]` block adds continuous Wiener-process noise
+to ODE state variables. This models **system noise** — structural
+uncertainty that accumulates between observations — as opposed to
+measurement noise (sigma) or inter-individual variability (omega).
+
+`[diffusion]` is only valid on ODE models (`[odes]` block present); it
+is rejected at parse time on analytical `pk` models.
+
+## What it does
+
+The deterministic ODE
+
+```
+dX/dt = f(X, t, θ)
+```
+
+is replaced by the Itô SDE
+
+```
+dX = f(X, t, θ) dt  +  diag(σ_w) dW
+```
+
+where `dW` is a vector of independent Wiener increments. ferx-core
+propagates the state covariance alongside the trajectory with an
+Extended Kalman Filter (EKF) and inflates the observation variance at
+each measurement:
+
+```
+V_total = P_EKF[obs_cmt, obs_cmt]  +  V_residual
+```
+
+where `V_residual` comes from `[error_model]`.
+
+## Syntax
+
+```
+[diffusion]
+  STATE_NAME ~ initial_variance
+  STATE_NAME ~ initial_variance FIX
+```
+
+- `STATE_NAME` must appear in `[structural_model]`'s `states = [...]`.
+- The value after `~` is the **initial estimate of the variance** σ²_w
+  (must be ≥ 0).
+- `FIX` pins the value (not estimated).
+- Each declared state generates one population parameter named
+  `DIFF_<STATE>` (e.g. `DIFF_CENTRAL`). These appear in the fit
+  result's `theta_names` alongside the regular structural parameters.
+
+## How it differs from sigma and omega
+
+|                | **sigma**                              | **omega**                               | **diffusion**                                  |
+|----------------|----------------------------------------|-----------------------------------------|------------------------------------------------|
+| What it is     | Measurement noise (assay/residual)     | Between-subject variability             | Within-subject system noise                    |
+| When it acts   | At each observation time               | At model initialisation (between subjects) | Continuously along the trajectory           |
+| What it affects| Observation residuals only             | Individual parameter values             | State trajectories between doses               |
+| NONMEM analogy | `EPS` / `SIGMA`                        | `ETA` / `OMEGA`                         | No direct analogy                              |
+
+A large estimated `DIFF_<STATE>` relative to sigma suggests the ODE
+structure is missing an important mechanism (e.g. a compartment, a
+feedback loop, or a covariate effect).
+
+## When to add a diffusion term
+
+The primary signal is **residual autocorrelation**: if the IWRES
+Durbin–Watson statistic from a fitted ODE model is low (< 1.5), adding
+a diffusion term on the slow-varying compartment often absorbs the
+systematic drift.
+
+## Unit convention (important)
+
+The EKF propagates the variance of the **ODE state in whatever units
+the user defined it**. ferx-core adds `dose.amt` directly to the state
+and returns the raw state as `ipred` — there is no implicit
+`amount → concentration` normalisation.
+
+For a 1-cpt oral model, two equivalent forms:
+
+```
+# State = amount (mg). DV must be in mg.
+d/dt(depot)   = -KA * depot
+d/dt(central) =  KA * depot - (CL / V) * central
+
+# State = concentration (mg/L). DV must be in mg/L.
+d/dt(depot)   = -KA * depot
+d/dt(central) =  KA * depot / V - (CL / V) * central
+```
+
+If state and DV don't match, predictions and observations differ by a
+factor of `V` and the fit will not converge. `DIFF_<STATE>` is the
+variance of process noise *in the same units as the state* — e.g.
+`(mg/L)²` for the concentration form.
+
+## Constraints
+
+| Situation                                       | Behaviour                                          |
+|-------------------------------------------------|----------------------------------------------------|
+| `[diffusion]` on an analytical `pk` model       | Parse-time error                                   |
+| `method = saem` with `[diffusion]`              | Hard error at fit time                             |
+| `gradient_method = ad` with `[diffusion]`       | Warning emitted; automatically switched to `fd`    |
+| State name not in `states = [...]`              | Parse-time error                                   |
+| Negative initial value                          | Parse-time error                                   |
+| `[scaling]` combined with `[diffusion]`         | Parse-time error (deferred to a future phase)      |
+
+The bundled SDE example sets `gradient_method = fd` explicitly rather
+than relying on the auto-switch.
+
+## Runnable example
+
+The bundled `warfarin_sde` example demonstrates `[diffusion]` on the
+central compartment of a 1-cpt oral concentration-form ODE:
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_sde")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
+```
+
+The full DSL is:
+
+```
+[structural_model]
+  ode(obs_cmt=central, states=[depot, central])
+
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) =  KA * depot / V - (CL / V) * central
+
+[diffusion]
+  central ~ 0.01
+
+[fit_options]
+  method          = foce
+  gradient_method = fd
+```
+
+The estimated `DIFF_CENTRAL` is the variance of stochastic driving
+noise on the central compartment per unit time. A value near zero
+indicates the ODE alone explains the data; a large value suggests
+model misspecification.
+
+## See also
+
+- [Stochastic Differential Equations — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/diffusion.html)
+  — full EKF derivation, unit-convention discussion, and constraint
+  list
+- [SDE example](../examples/sde.qmd) — full walkthrough

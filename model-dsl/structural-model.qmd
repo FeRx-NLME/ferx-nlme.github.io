@@ -86,8 +86,8 @@ Analytical solutions include special handling for degenerate cases:
 - **Near-equal rate constants** — when KA ≈ k, L'Hôpital's rule avoids division by near-zero
 - **Two-compartment eigenvalues** — Vieta's formula (`β = d/α`) avoids catastrophic cancellation when the discriminant is small
 
-See [Analytical PK Models](../ferx-core/pk-models.qmd) for the full mathematical
-reference.
+See [Structural Model — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html)
+for the full mathematical reference.
 
 ## ODE models
 

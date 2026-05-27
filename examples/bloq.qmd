@@ -99,4 +99,4 @@ are empty (a weighted Gaussian residual is undefined when the value is censored)
 ## See also
 
 - [Fit Options — bloq_method](../model-dsl/fit-options.qmd)
-- [Data Format — BLOQ observations](../ferx-core/data-format.qmd#bloq-observations)
+- [Data Format (ferx-core book)](https://ferx-nlme.github.io/ferx-core/data-format.html) — see the `CENS` column row

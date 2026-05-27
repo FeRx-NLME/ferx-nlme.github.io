@@ -115,4 +115,4 @@ fit$gradient_used
 ## See also
 
 - [ODE Models DSL](../model-dsl/odes.qmd)
-- [ODE Solver](../ferx-core/ode-solver.qmd)
+- [ODE Models — Solver Details (ferx-core book)](https://ferx-nlme.github.io/ferx-core/model-file/ode-models.html#solver-details)

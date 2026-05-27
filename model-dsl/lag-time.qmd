@@ -1,0 +1,92 @@
+---
+title: "Lag time"
+---
+
+`lagtime` is a PK parameter slot on the analytical `[structural_model]`
+that shifts the effective start of every dose by a fixed amount.
+ferx-core's name for what NONMEM calls `ALAG`.
+
+## Syntax
+
+Declare a theta (and optional ETA) for the lag, map it to an individual
+parameter, then pass it on the `pk` line:
+
+```
+[parameters]
+  theta TVLAGTIME(0.5, 0.001, 5.0)
+  omega ETA_LAGTIME ~ 0.10
+  # ... other parameters
+
+[individual_parameters]
+  LAGTIME = TVLAGTIME * exp(ETA_LAGTIME)
+  # ... other individual parameters
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA, lagtime=LAGTIME)
+```
+
+Both `lagtime=` (preferred) and `alag=` are accepted on the `pk` line
+and route to the same slot. If both keys are supplied, `lagtime` wins.
+
+## Semantics
+
+For every dose record (bolus, infusion, or oral depot), the effective
+arrival time is `dose.time + lagtime`. For infusions the **duration is
+unchanged** — only the start (and therefore the end) shifts. An
+observation taken before the lagged arrival reads `0` at single-dose;
+at steady state it reads the decaying tail of the previous interval.
+
+If `lagtime` is not declared, the slot defaults to `0.0`.
+
+## Supported paths
+
+`lagtime` is supported on:
+
+- the analytical superposition path,
+- the autodiff (single-snapshot) path used during `fit()`,
+- the ODE path,
+- steady-state doses (`SS=1`).
+
+In the niche case of a time-varying-covariate subject combined with a
+lagtime-bearing model, ferx-core silently falls back from the
+event-driven autodiff path to finite differences — correctness is
+preserved at a small performance cost.
+
+## Notes and caveats
+
+- A negative `lagtime` is not clamped. If your parameterisation can
+  yield a negative value, predictions will treat the dose as effective
+  *before* its record time. Prefer a log-link (`exp(...)`) or any
+  parameterisation that keeps `lagtime ≥ 0`. ferx-core emits a warning
+  in `FitResult.warnings` when the initial typical-value lagtime is
+  negative.
+- An **additive** ETA on the lag (`LAGTIME = TVLAGTIME + ETA_LAGTIME`)
+  is also common. The variance is then in units of time²; individual
+  lag times remain positive as long as `TVLAGTIME ≫ ω_LAGTIME`. See
+  [Parameter transforms](../learn/parameter-transforms.qmd) for the
+  full additive-ETA discussion.
+- NONMEM's per-compartment `ALAG1`, `ALAG2`, … map to ferx-core's
+  single `lagtime` slot applied to all dose records.
+
+## Runnable example
+
+The bundled `warfarin_additive_eta` example demonstrates `lagtime` with
+an additive ETA:
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_additive_eta")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
+```
+
+A worked walkthrough is on the
+[Absorption lag time example page](../examples/lag-time.qmd).
+
+## See also
+
+- [Lagtime — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/lagtime.html)
+  — full reference including NONMEM equivalence and the SS+lag
+  validation
+- [Steady-State Doses](steady-state.qmd) — interaction of `SS=1` with
+  `lagtime`

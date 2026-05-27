@@ -152,7 +152,7 @@ post-estimation step. Requires `covariance = true`.
 | `sir_resamples` | `250` | Number of resampled vectors (m) |
 | `sir_seed` | `12345` | RNG seed |
 
-See [Estimation — SIR](../ferx-core/estimation.qmd#sampling-importance-resampling-sir) for details.
+See [Estimation — SIR (ferx-core book)](https://ferx-nlme.github.io/ferx-core/estimation/sir.html) for details.
 
 ## Parameter scaling and EBE convergence guard
 
@@ -279,7 +279,7 @@ M3 BLOQ handling:
 
 When `optimizer_trace = true`, a CSV is written to `/tmp/ferx_trace_<pid>_<ts>.csv`
 and the path is stored in `FitResult::trace_path`. Each row is one outer iteration.
-See [Output Reference — Optimizer trace CSV](../ferx-core/output.qmd#optimizer-trace-csv)
+See [Output Files — Optimizer trace CSV (ferx-core book)](https://ferx-nlme.github.io/ferx-core/output.html#optimizer-trace-csv)
 for the full column reference.
 
 In R:

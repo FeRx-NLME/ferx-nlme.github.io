@@ -96,5 +96,5 @@ fit
 ## See also
 
 - [Example: Two-compartment IV](two-cpt-iv.qmd)
-- [Analytical PK models — three_cpt_iv_bolus](../ferx-core/pk-models.qmd)
+- [Analytical PK models — three_cpt_iv_bolus (ferx-core book)](https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html)
 - [Fit options — chained methods](../model-dsl/fit-options.qmd#chained-methods)

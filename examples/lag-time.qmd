@@ -109,4 +109,4 @@ fit
 
 - [Parameter transforms — additive ETA](../learn/parameter-transforms.qmd)
 - [Structural model — lagtime slot](../model-dsl/structural-model.qmd)
-- [Analytical PK models — one_cpt_oral](../ferx-core/pk-models.qmd)
+- [Analytical PK models — one_cpt_oral (ferx-core book)](https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html)
