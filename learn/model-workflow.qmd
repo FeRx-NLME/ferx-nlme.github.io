@@ -186,6 +186,41 @@ ferx_plot_trace(chk$fit)   # visual check: first few iterations
 If `ofv_drop` is small or negative, the initial values are likely poor — adjust
 them in `[parameters]` or widen the parameter bounds before proceeding.
 
+### Derive starting values from NCA
+
+`ferx_inits_from_nca()` estimates population starting values directly from the
+data using non-compartmental analysis, without running a fit. Use it to sanity-
+check the values in `[parameters]` before a long run, or to feed better starting
+points into a model file. Three strategies trade speed for refinement:
+
+| `method` | Behaviour |
+|---|---|
+| `"nca"` | NCA only (fastest); leaves parameters NCA can't estimate at the model default |
+| `"nca_sweep"` *(default)* | NCA, then a log-space rRMSE grid sweep over remaining thetas (population predictions) |
+| `"nca_ebe"` | Like `nca_sweep` but evaluates the grid with empirical Bayes estimates; more accurate under large BSV |
+
+```r
+inits <- ferx_inits_from_nca(ex$model, ex$data)
+inits$theta    # named numeric vector of suggested thetas
+inits$omega    # suggested omega matrix
+inits$warnings # notes about what was / wasn't estimated
+```
+
+It also unpacks a `ferx_model` so the pipe stays clean:
+
+```r
+ex$data |>
+  ferx_model(ex$model) |>
+  ferx_inits_from_nca(method = "nca_ebe")
+```
+
+To apply NCA-derived inits automatically inside the optimizer, pass the same
+strategy to `ferx_fit()` via `inits_from_nca`:
+
+```r
+ferx_fit(ex$model, ex$data, inits_from_nca = "nca_ebe")
+```
+
 ### Multi-stage method chain
 
 Pass a character vector to `method` to chain stages — each stage starts from
