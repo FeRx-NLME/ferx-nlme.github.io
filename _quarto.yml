@@ -81,7 +81,7 @@ website:
           - text: "Oral bioavailability (logit-normal F)"
             href: examples/bioavailability.qmd
     right:
-      - text: "Book"
+      - text: "ferx-r"
         href: https://ferx-nlme.github.io/ferx-book/
       - text: "ferx-core"
         menu:

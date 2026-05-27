@@ -10,10 +10,6 @@ page-layout: full
 ::: {.hero-grid}
 ::: {.hero-left}
 
-::: {.eyebrow}
-[]{.dot-live} open-source NLME · [v0.1.2]{.ver}
-:::
-
 ::: {.wordmark}
 Fe[·]{.dot}[R[*x*]{style="font-style:italic"}]{.rx}
 :::
