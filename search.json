@@ -1050,11 +1050,18 @@
     "text": "Fe·Rx\n\n\n\n\nferx fits models defined in a small, readable DSL — bracket-sectioned .ferx files — powered by a Rust backend with Enzyme automatic differentiation for exact gradients. MIT-licensed.\n\n\n26 — iron, the element   2026 — launch year   MIT — license"
   },
   {
+    "objectID": "index.html#how-ferx-is-built",
+    "href": "index.html#how-ferx-is-built",
+    "title": "ferx",
+    "section": "How ferx is built",
+    "text": "How ferx is built\nferx-core is the Rust engine — it parses .ferx model files, runs the estimators, computes gradients (Enzyme autodiff or finite differences), and produces fits. All numerical work happens here. It ships with a standalone command-line tool (the ferx CLI) that reads a .ferx file plus a CSV dataset and writes results to disk, so you can use the engine directly with no R involved.\nferx-r is a thin R wrapper around ferx-core. It exposes the same engine through R functions, hands data.frames to the core, and returns fit objects you can pipe into R’s plotting and reporting ecosystem. Because ferx-core is a stable library, you (or anyone else) can build a different wrapper on top of it — Python, Julia, a web service — and get the exact same numerical results as the CLI and ferx-r."
+  },
+  {
     "objectID": "index.html#learn-ferx",
     "href": "index.html#learn-ferx",
     "title": "ferx",
     "section": "Learn ferx",
-    "text": "Learn ferx\n\n\nBook\nComprehensive narrative guide — installation through ODE models, BLOQ, and IOV. All code runs on CI.\n\n\nGet started\nInstall ferx and run the warfarin quickstart in under five minutes.\n\n\nReference\nFunction-level documentation for every exported function in ferx-r.\n\n\nModel DSL\nComplete syntax reference for .ferx model files."
+    "text": "Learn ferx\n\n\nferx-r book\nComprehensive narrative guide — installation through ODE models, BLOQ, and IOV. All code runs on CI.\n\n\nGet started\nInstall ferx and run the warfarin quickstart in under five minutes.\n\n\nReference\nFunction-level documentation for every exported function in ferx-r.\n\n\nModel DSL\nComplete syntax reference for .ferx model files."
   },
   {
     "objectID": "learn/diagnostics.html",
