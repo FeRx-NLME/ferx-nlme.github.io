@@ -851,7 +851,7 @@
     "href": "get-started.html#next-steps",
     "title": "Get started",
     "section": "Next steps",
-    "text": "Next steps\n\nBook — comprehensive narrative guide with runnable examples\nModel workflow — full fitting workflow\nModel DSL — write your own .ferx model files\nReference — function documentation\nferx-core installation — full toolchain detail and troubleshooting"
+    "text": "Next steps\n\nferx-r — narrative guide to the R package with runnable examples\nferx-core — mdBook for the Rust engine, CLI, and .ferx DSL spec\nModel workflow — full fitting workflow\nModel DSL — write your own .ferx model files\nReference — function documentation\nferx-core installation — full toolchain detail and troubleshooting"
   },
   {
     "objectID": "learn/model-workflow.html",
