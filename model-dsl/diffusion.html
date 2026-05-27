@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Three-compartment IV – ferx</title>
+<title>Diffusion (SDE) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -503,10 +503,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset">Dataset</a></li>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
+  <li><a href="#what-it-does" id="toc-what-it-does" class="nav-link active" data-scroll-target="#what-it-does">What it does</a></li>
+  <li><a href="#syntax" id="toc-syntax" class="nav-link" data-scroll-target="#syntax">Syntax</a></li>
+  <li><a href="#how-it-differs-from-sigma-and-omega" id="toc-how-it-differs-from-sigma-and-omega" class="nav-link" data-scroll-target="#how-it-differs-from-sigma-and-omega">How it differs from sigma and omega</a></li>
+  <li><a href="#when-to-add-a-diffusion-term" id="toc-when-to-add-a-diffusion-term" class="nav-link" data-scroll-target="#when-to-add-a-diffusion-term">When to add a diffusion term</a></li>
+  <li><a href="#unit-convention-important" id="toc-unit-convention-important" class="nav-link" data-scroll-target="#unit-convention-important">Unit convention (important)</a></li>
+  <li><a href="#constraints" id="toc-constraints" class="nav-link" data-scroll-target="#constraints">Constraints</a></li>
+  <li><a href="#runnable-example" id="toc-runnable-example" class="nav-link" data-scroll-target="#runnable-example">Runnable example</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -517,7 +520,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example: Three-compartment IV</h1>
+<h1 class="title">Diffusion (SDE)</h1>
 </div>
 
 
@@ -534,82 +537,163 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example fits a three-compartment IV bolus model. A third compartment is warranted when the concentration-time profile shows a distinct tri-exponential decline — an initial rapid distribution phase, a slower redistribution phase, and a terminal elimination phase.</p>
-<p>Common drug classes: aminoglycosides at high doses, certain anesthetics (propofol, fentanyl), and some biologics with tissue redistribution.</p>
-<section id="dataset" class="level2">
-<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<p>Standard NONMEM IV bolus format — identical to the two-compartment case. No absorption column required:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
-1,0,.,1,200,1,0,1
-1,0.25,18.4,0,.,1,0,0
-1,0.5,14.1,0,.,1,0,0
-1,1,10.2,0,.,1,0,0
-1,2,7.8,0,.,1,0,0
-1,4,5.3,0,.,1,0,0
-1,8,3.8,0,.,1,0,0
-1,24,1.9,0,.,1,0,0</code></pre>
+<p>The optional <code>[diffusion]</code> block adds continuous Wiener-process noise to ODE state variables. This models <strong>system noise</strong> — structural uncertainty that accumulates between observations — as opposed to measurement noise (sigma) or inter-individual variability (omega).</p>
+<p><code>[diffusion]</code> is only valid on ODE models (<code>[odes]</code> block present); it is rejected at parse time on analytical <code>pk</code> models.</p>
+<section id="what-it-does" class="level2">
+<h2 class="anchored" data-anchor-id="what-it-does">What it does</h2>
+<p>The deterministic ODE</p>
+<pre><code>dX/dt = f(X, t, θ)</code></pre>
+<p>is replaced by the Itô SDE</p>
+<pre><code>dX = f(X, t, θ) dt  +  diag(σ_w) dW</code></pre>
+<p>where <code>dW</code> is a vector of independent Wiener increments. ferx-core propagates the state covariance alongside the trajectory with an Extended Kalman Filter (EKF) and inflates the observation variance at each measurement:</p>
+<pre><code>V_total = P_EKF[obs_cmt, obs_cmt]  +  V_residual</code></pre>
+<p>where <code>V_residual</code> comes from <code>[error_model]</code>.</p>
 </section>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code>[parameters]
-  theta TVCL(5.0, 0.1, 100.0)
-  theta TVV1(10.0, 0.1, 500.0)
-  theta TVQ2(2.0, 0.01, 50.0)
-  theta TVV2(20.0, 0.1, 1000.0)
-  theta TVQ3(1.5, 0.01, 50.0)
-  theta TVV3(30.0, 0.1, 1000.0)
+<section id="syntax" class="level2">
+<h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
+<pre><code>[diffusion]
+  STATE_NAME ~ initial_variance
+  STATE_NAME ~ initial_variance FIX</code></pre>
+<ul>
+<li><code>STATE_NAME</code> must appear in <code>[structural_model]</code>’s <code>states = [...]</code>.</li>
+<li>The value after <code>~</code> is the <strong>initial estimate of the variance</strong> σ²_w (must be ≥ 0).</li>
+<li><code>FIX</code> pins the value (not estimated).</li>
+<li>Each declared state generates one population parameter named <code>DIFF_&lt;STATE&gt;</code> (e.g.&nbsp;<code>DIFF_CENTRAL</code>). These appear in the fit result’s <code>theta_names</code> alongside the regular structural parameters.</li>
+</ul>
+</section>
+<section id="how-it-differs-from-sigma-and-omega" class="level2">
+<h2 class="anchored" data-anchor-id="how-it-differs-from-sigma-and-omega">How it differs from sigma and omega</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 27%">
+<col style="width: 28%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>sigma</strong></th>
+<th><strong>omega</strong></th>
+<th><strong>diffusion</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>What it is</td>
+<td>Measurement noise (assay/residual)</td>
+<td>Between-subject variability</td>
+<td>Within-subject system noise</td>
+</tr>
+<tr class="even">
+<td>When it acts</td>
+<td>At each observation time</td>
+<td>At model initialisation (between subjects)</td>
+<td>Continuously along the trajectory</td>
+</tr>
+<tr class="odd">
+<td>What it affects</td>
+<td>Observation residuals only</td>
+<td>Individual parameter values</td>
+<td>State trajectories between doses</td>
+</tr>
+<tr class="even">
+<td>NONMEM analogy</td>
+<td><code>EPS</code> / <code>SIGMA</code></td>
+<td><code>ETA</code> / <code>OMEGA</code></td>
+<td>No direct analogy</td>
+</tr>
+</tbody>
+</table>
+<p>A large estimated <code>DIFF_&lt;STATE&gt;</code> relative to sigma suggests the ODE structure is missing an important mechanism (e.g.&nbsp;a compartment, a feedback loop, or a covariate effect).</p>
+</section>
+<section id="when-to-add-a-diffusion-term" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-add-a-diffusion-term">When to add a diffusion term</h2>
+<p>The primary signal is <strong>residual autocorrelation</strong>: if the IWRES Durbin–Watson statistic from a fitted ODE model is low (&lt; 1.5), adding a diffusion term on the slow-varying compartment often absorbs the systematic drift.</p>
+</section>
+<section id="unit-convention-important" class="level2">
+<h2 class="anchored" data-anchor-id="unit-convention-important">Unit convention (important)</h2>
+<p>The EKF propagates the variance of the <strong>ODE state in whatever units the user defined it</strong>. ferx-core adds <code>dose.amt</code> directly to the state and returns the raw state as <code>ipred</code> — there is no implicit <code>amount → concentration</code> normalisation.</p>
+<p>For a 1-cpt oral model, two equivalent forms:</p>
+<pre><code># State = amount (mg). DV must be in mg.
+d/dt(depot)   = -KA * depot
+d/dt(central) =  KA * depot - (CL / V) * central
 
-  omega ETA_CL ~ 0.09
-  omega ETA_V1 ~ 0.04
-  omega ETA_Q2 ~ 0.04
-  omega ETA_V2 ~ 0.04
-  omega ETA_Q3 ~ 0.04
-  omega ETA_V3 ~ 0.04
+# State = concentration (mg/L). DV must be in mg/L.
+d/dt(depot)   = -KA * depot
+d/dt(central) =  KA * depot / V - (CL / V) * central</code></pre>
+<p>If state and DV don’t match, predictions and observations differ by a factor of <code>V</code> and the fit will not converge. <code>DIFF_&lt;STATE&gt;</code> is the variance of process noise <em>in the same units as the state</em> — e.g. <code>(mg/L)²</code> for the concentration form.</p>
+</section>
+<section id="constraints" class="level2">
+<h2 class="anchored" data-anchor-id="constraints">Constraints</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 48%">
+<col style="width: 51%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>[diffusion]</code> on an analytical <code>pk</code> model</td>
+<td>Parse-time error</td>
+</tr>
+<tr class="even">
+<td><code>method = saem</code> with <code>[diffusion]</code></td>
+<td>Hard error at fit time</td>
+</tr>
+<tr class="odd">
+<td><code>gradient_method = ad</code> with <code>[diffusion]</code></td>
+<td>Warning emitted; automatically switched to <code>fd</code></td>
+</tr>
+<tr class="even">
+<td>State name not in <code>states = [...]</code></td>
+<td>Parse-time error</td>
+</tr>
+<tr class="odd">
+<td>Negative initial value</td>
+<td>Parse-time error</td>
+</tr>
+<tr class="even">
+<td><code>[scaling]</code> combined with <code>[diffusion]</code></td>
+<td>Parse-time error (deferred to a future phase)</td>
+</tr>
+</tbody>
+</table>
+<p>The bundled SDE example sets <code>gradient_method = fd</code> explicitly rather than relying on the auto-switch.</p>
+</section>
+<section id="runnable-example" class="level2">
+<h2 class="anchored" data-anchor-id="runnable-example">Runnable example</h2>
+<p>The bundled <code>warfarin_sde</code> example demonstrates <code>[diffusion]</code> on the central compartment of a 1-cpt oral concentration-form ODE:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_sde"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The full DSL is:</p>
+<pre><code>[structural_model]
+  ode(obs_cmt=central, states=[depot, central])
 
-  sigma PROP_ERR ~ 0.04
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) =  KA * depot / V - (CL / V) * central
 
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V1 = TVV1 * exp(ETA_V1)
-  Q2 = TVQ2 * exp(ETA_Q2)
-  V2 = TVV2 * exp(ETA_V2)
-  Q3 = TVQ3 * exp(ETA_Q3)
-  V3 = TVV3 * exp(ETA_V3)
-
-[structural_model]
-  pk three_cpt_iv_bolus(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
+[diffusion]
+  central ~ 0.01
 
 [fit_options]
-  method     = foce
-  maxiter    = 300
-  covariance = true</code></pre>
-<p>The <code>three_cpt_iv_bolus</code> built-in solves the three-compartment system analytically, without ODE integration. Six macro parameters are estimated.</p>
-</section>
-<section id="running" class="level2">
-<h2 class="anchored" data-anchor-id="running">Running</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"three_cpt_iv"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="tips" class="level2">
-<h2 class="anchored" data-anchor-id="tips">Tips</h2>
-<ul>
-<li><strong>Dataset requirements</strong>: six partially-collinear parameters (CL, V1, Q2, V2, Q3, V3) need dense sampling from the first minutes post-dose through the terminal phase. Sparse designs frequently produce non-estimable Q3 or V3.</li>
-<li><strong>Run time</strong>: expect roughly 2–5× longer than a comparable two-compartment fit. For exploratory runs, drop BSV on the inter-compartmental parameters (Q2, V2, Q3, V3) and re-add after the structural model converges.</li>
-<li><strong>Identifiability check</strong>: inspect condition number of the covariance matrix (<code>fit$cov_matrix</code>). A condition number &gt; 1000 suggests parameter collinearity; consider fixing one of Q2/Q3 to a literature value.</li>
-<li><strong>SAEM→FOCEI chain</strong>: for complex datasets where FOCEI alone stalls, <code>method = [saem, focei]</code> often finds the global minimum more reliably.</li>
-</ul>
+  method          = foce
+  gradient_method = fd</code></pre>
+<p>The estimated <code>DIFF_CENTRAL</code> is the variance of stochastic driving noise on the central compartment per unit time. A value near zero indicates the ODE alone explains the data; a large value suggests model misspecification.</p>
 </section>
 <section id="see-also" class="level2">
 <h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><a href="../examples/two-cpt-iv.html">Example: Two-compartment IV</a></li>
-<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html">Analytical PK models — three_cpt_iv_bolus (ferx-core book)</a></li>
-<li><a href="../model-dsl/fit-options.html#chained-methods">Fit options — chained methods</a></li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/diffusion.html">Stochastic Differential Equations — ferx-core book</a> — full EKF derivation, unit-convention discussion, and constraint list</li>
+<li><a href="../examples/sde.html">SDE example</a> — full walkthrough</li>
 </ul>
 
 

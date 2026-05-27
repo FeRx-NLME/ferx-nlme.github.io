@@ -80,9 +80,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-68b8ee346e63b628fb741183f00ad06a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -365,6 +365,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../model-dsl/error-model.html">
  <span class="dropdown-text">Error model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../model-dsl/lag-time.html">
+ <span class="dropdown-text">Lag time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../model-dsl/steady-state.html">
+ <span class="dropdown-text">Steady-state doses (SS=1)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../model-dsl/scaling.html">
+ <span class="dropdown-text">Scaling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../model-dsl/diffusion.html">
+ <span class="dropdown-text">Diffusion (SDE)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../model-dsl/covariate-nn.html">
+ <span class="dropdown-text">Covariate NN (DCM)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../model-dsl/simulation.html">
+ <span class="dropdown-text">Simulation</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../model-dsl/fit-options.html">
@@ -842,7 +866,7 @@ method = gn_hybrid</code></pre>
 </tr>
 </tbody>
 </table>
-<p>See <a href="../ferx-core/estimation.qmd#sampling-importance-resampling-sir">Estimation — SIR</a> for details.</p>
+<p>See <a href="https://ferx-nlme.github.io/ferx-core/estimation/sir.html">Estimation — SIR (ferx-core book)</a> for details.</p>
 </section>
 <section id="parameter-scaling-and-ebe-convergence-guard" class="level2">
 <h2 class="anchored" data-anchor-id="parameter-scaling-and-ebe-convergence-guard">Parameter scaling and EBE convergence guard</h2>
@@ -954,7 +978,7 @@ method = gn_hybrid</code></pre>
 </section>
 <section id="optimizer-trace" class="level2">
 <h2 class="anchored" data-anchor-id="optimizer-trace">Optimizer trace</h2>
-<p>When <code>optimizer_trace = true</code>, a CSV is written to <code>/tmp/ferx_trace_&lt;pid&gt;_&lt;ts&gt;.csv</code> and the path is stored in <code>FitResult::trace_path</code>. Each row is one outer iteration. See <a href="../ferx-core/output.qmd#optimizer-trace-csv">Output Reference — Optimizer trace CSV</a> for the full column reference.</p>
+<p>When <code>optimizer_trace = true</code>, a CSV is written to <code>/tmp/ferx_trace_&lt;pid&gt;_&lt;ts&gt;.csv</code> and the path is stored in <code>FitResult::trace_path</code>. Each row is one outer iteration. See <a href="https://ferx-nlme.github.io/ferx-core/output.html#optimizer-trace-csv">Output Files — Optimizer trace CSV (ferx-core book)</a> for the full column reference.</p>
 <p>In R:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(model, data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>tr  <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)       <span class="co"># read the CSV</span></span>

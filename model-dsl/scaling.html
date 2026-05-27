@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Three-compartment IV – ferx</title>
+<title>Scaling – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -503,10 +503,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset">Dataset</a></li>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
+  <li><a href="#form-a-scalar-divisor" id="toc-form-a-scalar-divisor" class="nav-link active" data-scroll-target="#form-a-scalar-divisor">Form A — scalar divisor</a></li>
+  <li><a href="#form-b-expression-divisor" id="toc-form-b-expression-divisor" class="nav-link" data-scroll-target="#form-b-expression-divisor">Form B — expression divisor</a></li>
+  <li><a href="#form-c-explicit-output-expression-ode-only" id="toc-form-c-explicit-output-expression-ode-only" class="nav-link" data-scroll-target="#form-c-explicit-output-expression-ode-only">Form C — explicit output expression (ODE only)</a></li>
+  <li><a href="#multi-analyte-per-cmt-scaling" id="toc-multi-analyte-per-cmt-scaling" class="nav-link" data-scroll-target="#multi-analyte-per-cmt-scaling">Multi-analyte / per-CMT scaling</a></li>
+  <li><a href="#runtime-behaviour-on-bad-scales" id="toc-runtime-behaviour-on-bad-scales" class="nav-link" data-scroll-target="#runtime-behaviour-on-bad-scales">Runtime behaviour on bad scales</a></li>
+  <li><a href="#gradients-ad-vs-fd" id="toc-gradients-ad-vs-fd" class="nav-link" data-scroll-target="#gradients-ad-vs-fd">Gradients (AD vs FD)</a></li>
+  <li><a href="#interaction-with-diffusion" id="toc-interaction-with-diffusion" class="nav-link" data-scroll-target="#interaction-with-diffusion">Interaction with <code>[diffusion]</code></a></li>
+  <li><a href="#nonmem-and-nlmixr2-mapping" id="toc-nonmem-and-nlmixr2-mapping" class="nav-link" data-scroll-target="#nonmem-and-nlmixr2-mapping">NONMEM and nlmixr2 mapping</a></li>
+  <li><a href="#runnable-example" id="toc-runnable-example" class="nav-link" data-scroll-target="#runnable-example">Runnable example</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -517,7 +522,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example: Three-compartment IV</h1>
+<h1 class="title">Scaling</h1>
 </div>
 
 
@@ -534,82 +539,156 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example fits a three-compartment IV bolus model. A third compartment is warranted when the concentration-time profile shows a distinct tri-exponential decline — an initial rapid distribution phase, a slower redistribution phase, and a terminal elimination phase.</p>
-<p>Common drug classes: aminoglycosides at high doses, certain anesthetics (propofol, fentanyl), and some biologics with tissue redistribution.</p>
-<section id="dataset" class="level2">
-<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<p>Standard NONMEM IV bolus format — identical to the two-compartment case. No absorption column required:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
-1,0,.,1,200,1,0,1
-1,0.25,18.4,0,.,1,0,0
-1,0.5,14.1,0,.,1,0,0
-1,1,10.2,0,.,1,0,0
-1,2,7.8,0,.,1,0,0
-1,4,5.3,0,.,1,0,0
-1,8,3.8,0,.,1,0,0
-1,24,1.9,0,.,1,0,0</code></pre>
+<p>The optional <code>[scaling]</code> block declares how the structural model’s raw output maps to the observed <code>DV</code>. It exists so unit conversions and amount-to-concentration arithmetic don’t have to be folded into <code>[structural_model]</code> or <code>[odes]</code> — keeping the model readable, and making mixed-unit data (e.g.&nbsp;data in ng/mL when the model thinks in mg/L) straightforward.</p>
+<p>The convention is <strong>divisive</strong>: <code>pred_scaled = pred_raw / scale</code>. <code>obs_scale = V/1000</code> reads as <em>“divide raw prediction by V/1000 to get the observation.”</em></p>
+<p>Three forms are supported. Each is optional; omitting <code>[scaling]</code> keeps the historical “raw prediction equals DV” behaviour.</p>
+<section id="form-a-scalar-divisor" class="level2">
+<h2 class="anchored" data-anchor-id="form-a-scalar-divisor">Form A — scalar divisor</h2>
+<p>For fixed unit conversion (e.g.&nbsp;mg/L → ng/mL is a constant 1000):</p>
+<pre><code>[scaling]
+  obs_scale = 1000</code></pre>
+<p>Works on analytical PK and ODE models alike: every prediction is divided by the constant before reaching the residual error model.</p>
 </section>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code>[parameters]
-  theta TVCL(5.0, 0.1, 100.0)
-  theta TVV1(10.0, 0.1, 500.0)
-  theta TVQ2(2.0, 0.01, 50.0)
-  theta TVV2(20.0, 0.1, 1000.0)
-  theta TVQ3(1.5, 0.01, 50.0)
-  theta TVV3(30.0, 0.1, 1000.0)
-
-  omega ETA_CL ~ 0.09
-  omega ETA_V1 ~ 0.04
-  omega ETA_Q2 ~ 0.04
-  omega ETA_V2 ~ 0.04
-  omega ETA_Q3 ~ 0.04
-  omega ETA_V3 ~ 0.04
-
-  sigma PROP_ERR ~ 0.04
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V1 = TVV1 * exp(ETA_V1)
-  Q2 = TVQ2 * exp(ETA_Q2)
-  V2 = TVV2 * exp(ETA_V2)
-  Q3 = TVQ3 * exp(ETA_Q3)
-  V3 = TVV3 * exp(ETA_V3)
-
-[structural_model]
-  pk three_cpt_iv_bolus(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-
-[fit_options]
-  method     = foce
-  maxiter    = 300
-  covariance = true</code></pre>
-<p>The <code>three_cpt_iv_bolus</code> built-in solves the three-compartment system analytically, without ODE integration. Six macro parameters are estimated.</p>
+<section id="form-b-expression-divisor" class="level2">
+<h2 class="anchored" data-anchor-id="form-b-expression-divisor">Form B — expression divisor</h2>
+<p>For scales that depend on theta, eta, or a covariate:</p>
+<pre><code>[scaling]
+  obs_scale = WT / 70</code></pre>
+<p>Expressions may reference thetas, etas, covariates, and individual parameters declared in <code>[individual_parameters]</code> (e.g.&nbsp;<code>V</code>, <code>CL</code>). Individual parameters are resolved from a subject-static evaluation at scale-evaluation time, so <code>obs_scale = 1000 / V</code> uses the per-subject <code>V</code> (typical value times the EBE eta).</p>
+<p>The scale is evaluated <strong>once per subject</strong> with subject-level covariates. Time-varying-covariate support for expression scales is deferred to a future phase.</p>
 </section>
-<section id="running" class="level2">
-<h2 class="anchored" data-anchor-id="running">Running</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"three_cpt_iv"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="form-c-explicit-output-expression-ode-only" class="level2">
+<h2 class="anchored" data-anchor-id="form-c-explicit-output-expression-ode-only">Form C — explicit output expression (ODE only)</h2>
+<p>For ODE models where the state is held as an amount and the observation is a concentration. Form C replaces the default <code>obs_cmt</code> readout entirely.</p>
+<pre><code>[structural_model]
+  ode(states=[depot, central])     # no obs_cmt — Form C provides it
+
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) = KA * depot - CL/V * central   # central holds amount
+
+[scaling]
+  y = central / V</code></pre>
+<p>The right-hand side may reference state names (<code>depot</code>, <code>central</code>), individual parameters (<code>CL</code>, <code>V</code>, <code>KA</code>), thetas, etas, and covariates. Form C is rejected on analytical models with a clear error.</p>
 </section>
-<section id="tips" class="level2">
-<h2 class="anchored" data-anchor-id="tips">Tips</h2>
-<ul>
-<li><strong>Dataset requirements</strong>: six partially-collinear parameters (CL, V1, Q2, V2, Q3, V3) need dense sampling from the first minutes post-dose through the terminal phase. Sparse designs frequently produce non-estimable Q3 or V3.</li>
-<li><strong>Run time</strong>: expect roughly 2–5× longer than a comparable two-compartment fit. For exploratory runs, drop BSV on the inter-compartmental parameters (Q2, V2, Q3, V3) and re-add after the structural model converges.</li>
-<li><strong>Identifiability check</strong>: inspect condition number of the covariance matrix (<code>fit$cov_matrix</code>). A condition number &gt; 1000 suggests parameter collinearity; consider fixing one of Q2/Q3 to a literature value.</li>
-<li><strong>SAEM→FOCEI chain</strong>: for complex datasets where FOCEI alone stalls, <code>method = [saem, focei]</code> often finds the global minimum more reliably.</li>
-</ul>
+<section id="multi-analyte-per-cmt-scaling" class="level2">
+<h2 class="anchored" data-anchor-id="multi-analyte-per-cmt-scaling">Multi-analyte / per-CMT scaling</h2>
+<p>For models that observe multiple compartments (parent + metabolite, free vs.&nbsp;total, …), specify a separate scale per observed CMT:</p>
+<pre><code>[scaling]
+  obs_scale[CMT=1] = 1000    # parent in mg/L → mg/mL
+  obs_scale[CMT=2] = 1       # metabolite already in target units</code></pre>
+<p>Form C per-CMT (ODE):</p>
+<pre><code>[structural_model]
+  ode(states=[depot, parent, metab])
+
+[scaling]
+  y[CMT=1] = parent / V_parent
+  y[CMT=2] = metab  / V_metab</code></pre>
+<p><code>N</code> in <code>[CMT=N]</code> is the 1-based CMT index from the data file’s <code>CMT</code> column.</p>
+<p><strong>Coverage rule</strong> — every CMT that has at least one observation in the data must have a matching <code>[CMT=N]</code> entry. The fit-time validation errors with a list of the missing CMTs.</p>
+<p><strong>Mixing rule</strong> — the uniform form (<code>obs_scale = K</code>) and the per-CMT form (<code>obs_scale[CMT=N] = K</code>) are mutually exclusive within the same group. The same rule applies to <code>y</code> and <code>y[CMT=N]</code>.</p>
+</section>
+<section id="runtime-behaviour-on-bad-scales" class="level2">
+<h2 class="anchored" data-anchor-id="runtime-behaviour-on-bad-scales">Runtime behaviour on bad scales</h2>
+<p>If an expression scale (Form B or C) evaluates to non-positive or non-finite at runtime — e.g.&nbsp;<code>WT / 70</code> with missing <code>WT</code> (reads <code>0</code>), or <code>1 / (TVV - x)</code> near a singularity — every prediction for that subject is set to <code>NaN</code>. The outer NLL then evaluates to <code>NaN</code> and the optimizer rejects the step. This matches NONMEM’s <code>OBJFN = NaN → step rejection</code> convention and surfaces bad scales in the per-subject diagnostics rather than silently producing a mis-scaled fit.</p>
+</section>
+<section id="gradients-ad-vs-fd" class="level2">
+<h2 class="anchored" data-anchor-id="gradients-ad-vs-fd">Gradients (AD vs FD)</h2>
+<p>All <code>[scaling]</code> variants on the <strong>analytical PK path</strong> support both <code>gradient = ad</code> and <code>gradient = fd</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 27%">
+<col style="width: 11%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Form</th>
+<th>AD</th>
+<th>FD</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Scalar <code>obs_scale = K</code></td>
+<td>✓ exact</td>
+<td>✓ exact</td>
+<td>Threads as a <code>Const</code> slice (one entry per obs)</td>
+</tr>
+<tr class="even">
+<td>Expression <code>obs_scale = &lt;expr&gt;</code></td>
+<td>✓ subject-static</td>
+<td>✓ exact</td>
+<td>See subject-static caveat below</td>
+</tr>
+<tr class="odd">
+<td>Per-CMT <code>obs_scale[CMT=N]</code></td>
+<td>✓ subject-static</td>
+<td>✓ exact</td>
+<td>Dispatched per observation by <code>CMT</code></td>
+</tr>
+<tr class="even">
+<td>Form C <code>y[…] = &lt;expr&gt;</code> (ODE only)</td>
+<td>✗ — forces <code>fd</code></td>
+<td>✓</td>
+<td>Form C only exists on ODE models, where the AD path isn’t available regardless of scaling</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Subject-static caveat.</strong> The per-observation scale array passed to AD is materialised from a single subject-static evaluation. AD treats the scale as constant w.r.t. eta. For the common eta-independent scale (<code>WT/70</code>, <code>TVV/1000</code>, or <code>V</code> reading the EBE value) AD and FD gradients are identical. If the scale expression explicitly references eta (e.g.&nbsp;<code>obs_scale = exp(ETA_V)</code>), the AD gradient ignores that dependence while FD captures it — set <code>gradient = fd</code> for that case.</p>
+</section>
+<section id="interaction-with-diffusion" class="level2">
+<h2 class="anchored" data-anchor-id="interaction-with-diffusion">Interaction with <code>[diffusion]</code></h2>
+<p><code>[scaling]</code> is <strong>not supported</strong> on SDE models. The parser rejects any <code>[scaling]</code> block on a model that also has a <code>[diffusion]</code> block (all three forms). A correct SDE+scaling integration needs the scale factor threaded into both the EKF observation-covariance propagation and the residual variance callback — deferred to a future phase.</p>
+</section>
+<section id="nonmem-and-nlmixr2-mapping" class="level2">
+<h2 class="anchored" data-anchor-id="nonmem-and-nlmixr2-mapping">NONMEM and nlmixr2 mapping</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 19%">
+<col style="width: 25%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Need</th>
+<th>NONMEM</th>
+<th>nlmixr2</th>
+<th>ferx</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Scalar unit conversion</td>
+<td><code>S1 = 1000</code></td>
+<td>(multiplier in <code>cmt</code>/<code>f</code>)</td>
+<td><code>[scaling] obs_scale = 1000</code></td>
+</tr>
+<tr class="even">
+<td>Amount-state ODE with concentration DV</td>
+<td><code>S2 = V/1000</code> plus <code>Y = A(2)/S2</code></td>
+<td><code>cmt(central); f = central/V/1000</code></td>
+<td><code>[scaling] y = central / (V/1000)</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="runnable-example" class="level2">
+<h2 class="anchored" data-anchor-id="runnable-example">Runnable example</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_scaled"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The bundled <code>warfarin_scaled</code> model demonstrates Form A. The dataset records <code>AMT</code> in micrograms while <code>DV</code> is in mg/L, so the model predicts in µg/L; <code>obs_scale = 1000</code> divides every prediction by 1000 before the residual is computed. The fit converges to the same estimates as the standard <code>warfarin</code> example.</p>
 </section>
 <section id="see-also" class="level2">
 <h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><a href="../examples/two-cpt-iv.html">Example: Two-compartment IV</a></li>
-<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html">Analytical PK models — three_cpt_iv_bolus (ferx-core book)</a></li>
-<li><a href="../model-dsl/fit-options.html#chained-methods">Fit options — chained methods</a></li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/scaling.html">Scaling — ferx-core book</a> — full reference including the subject-static caveat derivation</li>
+<li><a href="../model-dsl/structural-model.html">Structural model</a> — <code>pk</code> line, ODE <code>states=</code></li>
 </ul>
 
 

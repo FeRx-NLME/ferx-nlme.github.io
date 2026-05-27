@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Three-compartment IV – ferx</title>
+<title>Steady-state doses (SS=1) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -503,10 +503,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset">Dataset</a></li>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
+  <li><a href="#dataset-columns" id="toc-dataset-columns" class="nav-link active" data-scroll-target="#dataset-columns">Dataset columns</a></li>
+  <li><a href="#supported-paths" id="toc-supported-paths" class="nav-link" data-scroll-target="#supported-paths">Supported paths</a></li>
+  <li><a href="#combining-with-lagtime" id="toc-combining-with-lagtime" class="nav-link" data-scroll-target="#combining-with-lagtime">Combining with <code>lagtime</code></a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a>
+  <ul class="collapse">
+  <li><a href="#ss2" id="toc-ss2" class="nav-link" data-scroll-target="#ss2"><code>SS=2</code></a></li>
+  </ul></li>
+  <li><a href="#runnable-example" id="toc-runnable-example" class="nav-link" data-scroll-target="#runnable-example">Runnable example</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -517,7 +521,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example: Three-compartment IV</h1>
+<h1 class="title">Steady-state doses (SS=1)</h1>
 </div>
 
 
@@ -534,82 +538,82 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example fits a three-compartment IV bolus model. A third compartment is warranted when the concentration-time profile shows a distinct tri-exponential decline — an initial rapid distribution phase, a slower redistribution phase, and a terminal elimination phase.</p>
-<p>Common drug classes: aminoglycosides at high doses, certain anesthetics (propofol, fentanyl), and some biologics with tissue redistribution.</p>
-<section id="dataset" class="level2">
-<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<p>Standard NONMEM IV bolus format — identical to the two-compartment case. No absorption column required:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
-1,0,.,1,200,1,0,1
-1,0.25,18.4,0,.,1,0,0
-1,0.5,14.1,0,.,1,0,0
-1,1,10.2,0,.,1,0,0
-1,2,7.8,0,.,1,0,0
-1,4,5.3,0,.,1,0,0
-1,8,3.8,0,.,1,0,0
-1,24,1.9,0,.,1,0,0</code></pre>
+<p>A dose record with <code>SS=1</code> and <code>II &gt; 0</code> tells ferx-core that, at the time of the record, the compartmental state is at steady state under repeated dosing of that amount/rate every <code>II</code> time units. The record itself counts as one of the pulses in the train.</p>
+<p><strong>No new DSL syntax is required.</strong> Steady state is a property of the dataset — the model file is identical to a single-dose model.</p>
+<p>This matches NONMEM’s <code>SS=1</code> semantic: the compartments are initialised to the value that would arise from an infinite-past pulse train at interval <code>II</code>. Subsequent observations decay from that loaded state under the model’s normal dynamics; the SS train is <strong>not</strong> implicitly continued past the SS dose record. To keep dosing forward in time, add explicit dose rows after the SS row.</p>
+<section id="dataset-columns" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-columns">Dataset columns</h2>
+<p>A steady-state row uses two NONMEM-format columns: <code>SS</code> and <code>II</code>.</p>
+<pre><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV,II,SS
+1,0,.,1,100,1,0,1,24,1     # SS=1: at steady state, q24h dosing of AMT=100
+1,1,4.18,0,.,1,0,0,.,.
+1,4,3.86,0,.,1,0,0,.,.
+1,12,1.78,0,.,1,0,0,.,.
+1,23,0.59,0,.,1,0,0,.,.</code></pre>
+<p><code>II</code> is the dosing interval. For a bolus row (<code>RATE=0</code>) and an infusion row (<code>RATE&gt;0</code>), <code>SS=1</code> works the same way — the steady-state state is computed from the corresponding single-dose response repeated every <code>II</code>.</p>
 </section>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code>[parameters]
-  theta TVCL(5.0, 0.1, 100.0)
-  theta TVV1(10.0, 0.1, 500.0)
-  theta TVQ2(2.0, 0.01, 50.0)
-  theta TVV2(20.0, 0.1, 1000.0)
-  theta TVQ3(1.5, 0.01, 50.0)
-  theta TVV3(30.0, 0.1, 1000.0)
-
-  omega ETA_CL ~ 0.09
-  omega ETA_V1 ~ 0.04
-  omega ETA_Q2 ~ 0.04
-  omega ETA_V2 ~ 0.04
-  omega ETA_Q3 ~ 0.04
-  omega ETA_V3 ~ 0.04
-
-  sigma PROP_ERR ~ 0.04
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V1 = TVV1 * exp(ETA_V1)
-  Q2 = TVQ2 * exp(ETA_Q2)
-  V2 = TVV2 * exp(ETA_V2)
-  Q3 = TVQ3 * exp(ETA_Q3)
-  V3 = TVV3 * exp(ETA_V3)
-
-[structural_model]
-  pk three_cpt_iv_bolus(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-
-[fit_options]
-  method     = foce
-  maxiter    = 300
-  covariance = true</code></pre>
-<p>The <code>three_cpt_iv_bolus</code> built-in solves the three-compartment system analytically, without ODE integration. Six macro parameters are estimated.</p>
+<section id="supported-paths" class="level2">
+<h2 class="anchored" data-anchor-id="supported-paths">Supported paths</h2>
+<p>Every prediction path in ferx-core honours <code>SS=1</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 55%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Path</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Analytical (1-/2-/3-cpt, no time-varying covariates)</td>
+<td>Closed-form geometric series</td>
+</tr>
+<tr class="even">
+<td>Analytical (1-/2-/3-cpt, time-varying covariates)</td>
+<td>Numerical pulse expansion (50 cycles)</td>
+</tr>
+<tr class="odd">
+<td>ODE (<code>[odes]</code>-block models)</td>
+<td>Numerical pulse expansion (50 cycles)</td>
+</tr>
+</tbody>
+</table>
+<p>For linear PK the analytical closed form is exact (effectively free). For ODE models, the steady-state state is built by running 50 cycles of “apply dose, propagate by <code>II</code>” — about 50× the per-prediction cost of a non-SS dose. SS doses are typically rare (one per subject), so the absolute overhead per fit iteration is modest even for ODE models.</p>
 </section>
-<section id="running" class="level2">
-<h2 class="anchored" data-anchor-id="running">Running</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"three_cpt_iv"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="combining-with-lagtime" class="level2">
+<h2 class="anchored" data-anchor-id="combining-with-lagtime">Combining with <code>lagtime</code></h2>
+<p><code>lagtime</code> shifts every pulse in the SS train, including the SS pulse itself. A sample taken <strong>earlier than the lagtime</strong> (between the dose record time and the lagged arrival) is still at steady state, showing the decaying tail of the <em>previous</em> interval — not zero. ferx-core implements this on all three prediction paths and the SS+lagtime combination is validated against NONMEM <code>ALAG1</code> + <code>SS=1</code> to 5 significant figures. Declaring <code>lagtime</code> on a steady-state model is fully supported.</p>
+<p>See <a href="../model-dsl/lag-time.html">Lag time</a> for the <code>lagtime</code> DSL.</p>
 </section>
-<section id="tips" class="level2">
-<h2 class="anchored" data-anchor-id="tips">Tips</h2>
+<section id="limitations" class="level2">
+<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
+<p>For these malformed configurations, ferx-core <strong>skips</strong> the SS pre-equilibration (treating the dose as a single, non-SS bolus or infusion) and emits a warning in <code>FitResult.warnings</code>. The dose is still applied through the normal flow, but the system isn’t actually at steady state at the dose time.</p>
 <ul>
-<li><strong>Dataset requirements</strong>: six partially-collinear parameters (CL, V1, Q2, V2, Q3, V3) need dense sampling from the first minutes post-dose through the terminal phase. Sparse designs frequently produce non-estimable Q3 or V3.</li>
-<li><strong>Run time</strong>: expect roughly 2–5× longer than a comparable two-compartment fit. For exploratory runs, drop BSV on the inter-compartmental parameters (Q2, V2, Q3, V3) and re-add after the structural model converges.</li>
-<li><strong>Identifiability check</strong>: inspect condition number of the covariance matrix (<code>fit$cov_matrix</code>). A condition number &gt; 1000 suggests parameter collinearity; consider fixing one of Q2/Q3 to a literature value.</li>
-<li><strong>SAEM→FOCEI chain</strong>: for complex datasets where FOCEI alone stalls, <code>method = [saem, focei]</code> often finds the global minimum more reliably.</li>
+<li><strong><code>SS=1</code> with <code>II ≤ 0</code></strong> — interval is required; set <code>II</code> or remove the <code>SS=1</code> flag.</li>
+<li><strong><code>SS=1</code> infusion with <code>T_inf &gt; II</code></strong> (overlapping pulses) — no closed-form solution or pulse-expansion scheme covers this. Use a shorter infusion (<code>T_inf ≤ II</code>), or model overlapping infusions with an <code>[odes]</code> block and explicit periodic dose records (without <code>SS=1</code>).</li>
 </ul>
+<section id="ss2" class="level3">
+<h3 class="anchored" data-anchor-id="ss2"><code>SS=2</code></h3>
+<p>NONMEM’s <code>SS=2</code> semantic (“add to the existing train without re-equilibrating”) is <strong>not implemented</strong>. Any positive integer in the <code>SS</code> column is treated as a boolean: an <code>SS=2</code> row is parsed identically to <code>SS=1</code> and goes through the re-equilibration path. Convert <code>SS=2</code> rows to explicit dose records if you need the no-re-equilibration semantic.</p>
+</section>
+</section>
+<section id="runnable-example" class="level2">
+<h2 class="anchored" data-anchor-id="runnable-example">Runnable example</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_ss"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The bundled <code>warfarin_ss</code> model is a 1-cpt oral model identical in structure to the single-dose warfarin example; the dataset (<code>warfarin_ss.csv</code>) records once-daily dosing at steady state (<code>SS=1</code>, <code>II=24</code>).</p>
 </section>
 <section id="see-also" class="level2">
 <h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><a href="../examples/two-cpt-iv.html">Example: Two-compartment IV</a></li>
-<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html">Analytical PK models — three_cpt_iv_bolus (ferx-core book)</a></li>
-<li><a href="../model-dsl/fit-options.html#chained-methods">Fit options — chained methods</a></li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/steady-state.html">Steady-State Doses — ferx-core book</a> — full algorithm details, NONMEM equivalence, and validation notes</li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/data-format.html">Data Format (ferx-core book)</a> — <code>SS</code> and <code>II</code> column reference</li>
+<li><a href="../model-dsl/lag-time.html">Lag time</a> — interaction with <code>lagtime</code></li>
 </ul>
 
 

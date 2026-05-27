@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Three-compartment IV – ferx</title>
+<title>Simulation – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -111,6 +111,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -503,10 +532,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset">Dataset</a></li>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
+  <li><a href="#syntax" id="toc-syntax" class="nav-link active" data-scroll-target="#syntax">Syntax</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  <li><a href="#running-a-simulationestimation-study" id="toc-running-a-simulationestimation-study" class="nav-link" data-scroll-target="#running-a-simulationestimation-study">Running a simulation–estimation study</a></li>
+  <li><a href="#what-happens-under-the-hood" id="toc-what-happens-under-the-hood" class="nav-link" data-scroll-target="#what-happens-under-the-hood">What happens under the hood</a></li>
+  <li><a href="#covariates" id="toc-covariates" class="nav-link" data-scroll-target="#covariates">Covariates</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -517,7 +547,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example: Three-compartment IV</h1>
+<h1 class="title">Simulation</h1>
 </div>
 
 
@@ -534,82 +564,88 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example fits a three-compartment IV bolus model. A third compartment is warranted when the concentration-time profile shows a distinct tri-exponential decline — an initial rapid distribution phase, a slower redistribution phase, and a terminal elimination phase.</p>
-<p>Common drug classes: aminoglycosides at high doses, certain anesthetics (propofol, fentanyl), and some biologics with tissue redistribution.</p>
-<section id="dataset" class="level2">
-<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<p>Standard NONMEM IV bolus format — identical to the two-compartment case. No absorption column required:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
-1,0,.,1,200,1,0,1
-1,0.25,18.4,0,.,1,0,0
-1,0.5,14.1,0,.,1,0,0
-1,1,10.2,0,.,1,0,0
-1,2,7.8,0,.,1,0,0
-1,4,5.3,0,.,1,0,0
-1,8,3.8,0,.,1,0,0
-1,24,1.9,0,.,1,0,0</code></pre>
+<p>The optional <code>[simulation]</code> block defines a virtual clinical trial design for generating simulated data from the model. The block is consumed by the ferx-core CLI’s <code>--simulate</code> workflow.</p>
+<section id="syntax" class="level2">
+<h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
+<pre><code>[simulation]
+  subjects = N
+  dose     = AMOUNT
+  cmt      = COMPARTMENT
+  seed     = SEED
+  times    = [t1, t2, t3, ...]</code></pre>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>subjects</code></td>
+<td>Number of virtual subjects to simulate</td>
+</tr>
+<tr class="even">
+<td><code>dose</code></td>
+<td>Dose amount administered to each subject</td>
+</tr>
+<tr class="odd">
+<td><code>cmt</code></td>
+<td>Dosing compartment (1-indexed)</td>
+</tr>
+<tr class="even">
+<td><code>seed</code></td>
+<td>Random seed for reproducible simulations</td>
+</tr>
+<tr class="odd">
+<td><code>times</code></td>
+<td>Observation time points</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code>[parameters]
-  theta TVCL(5.0, 0.1, 100.0)
-  theta TVV1(10.0, 0.1, 500.0)
-  theta TVQ2(2.0, 0.01, 50.0)
-  theta TVV2(20.0, 0.1, 1000.0)
-  theta TVQ3(1.5, 0.01, 50.0)
-  theta TVV3(30.0, 0.1, 1000.0)
-
-  omega ETA_CL ~ 0.09
-  omega ETA_V1 ~ 0.04
-  omega ETA_Q2 ~ 0.04
-  omega ETA_V2 ~ 0.04
-  omega ETA_Q3 ~ 0.04
-  omega ETA_V3 ~ 0.04
-
-  sigma PROP_ERR ~ 0.04
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V1 = TVV1 * exp(ETA_V1)
-  Q2 = TVQ2 * exp(ETA_Q2)
-  V2 = TVV2 * exp(ETA_V2)
-  Q3 = TVQ3 * exp(ETA_Q3)
-  V3 = TVV3 * exp(ETA_V3)
-
-[structural_model]
-  pk three_cpt_iv_bolus(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-
-[fit_options]
-  method     = foce
-  maxiter    = 300
-  covariance = true</code></pre>
-<p>The <code>three_cpt_iv_bolus</code> built-in solves the three-compartment system analytically, without ODE integration. Six macro parameters are estimated.</p>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<pre><code>[simulation]
+  subjects = 100
+  dose     = 100
+  cmt      = 1
+  seed     = 12345
+  times    = [0.5, 1, 2, 4, 8, 12, 24]</code></pre>
+<p>This simulates 100 subjects, each receiving a dose of 100 units into compartment 1, with observations at 0.5, 1, 2, 4, 8, 12, and 24 time units.</p>
 </section>
-<section id="running" class="level2">
-<h2 class="anchored" data-anchor-id="running">Running</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"three_cpt_iv"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="running-a-simulationestimation-study" class="level2">
+<h2 class="anchored" data-anchor-id="running-a-simulationestimation-study">Running a simulation–estimation study</h2>
+<p>Run from the ferx-core CLI:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ferx</span> model.ferx <span class="at">--simulate</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This will:</p>
+<ol type="1">
+<li>Parse the model and <code>[simulation]</code> block.</li>
+<li>Generate simulated data from the model’s default parameters and random effects.</li>
+<li>Fit the model to the simulated data.</li>
+<li>Report parameter estimates and diagnostics.</li>
+</ol>
 </section>
-<section id="tips" class="level2">
-<h2 class="anchored" data-anchor-id="tips">Tips</h2>
-<ul>
-<li><strong>Dataset requirements</strong>: six partially-collinear parameters (CL, V1, Q2, V2, Q3, V3) need dense sampling from the first minutes post-dose through the terminal phase. Sparse designs frequently produce non-estimable Q3 or V3.</li>
-<li><strong>Run time</strong>: expect roughly 2–5× longer than a comparable two-compartment fit. For exploratory runs, drop BSV on the inter-compartmental parameters (Q2, V2, Q3, V3) and re-add after the structural model converges.</li>
-<li><strong>Identifiability check</strong>: inspect condition number of the covariance matrix (<code>fit$cov_matrix</code>). A condition number &gt; 1000 suggests parameter collinearity; consider fixing one of Q2/Q3 to a literature value.</li>
-<li><strong>SAEM→FOCEI chain</strong>: for complex datasets where FOCEI alone stalls, <code>method = [saem, focei]</code> often finds the global minimum more reliably.</li>
-</ul>
+<section id="what-happens-under-the-hood" class="level2">
+<h2 class="anchored" data-anchor-id="what-happens-under-the-hood">What happens under the hood</h2>
+<p>For each subject:</p>
+<ol type="1">
+<li>Random effects are sampled: <span class="math inline">\(\eta_i \sim N(0, \Omega)\)</span>.</li>
+<li>Individual parameters are computed using the <code>[individual_parameters]</code> equations.</li>
+<li>Predictions are generated using the structural model.</li>
+<li>Residual error is added: <span class="math inline">\(DV = IPRED + \epsilon\)</span>, with <span class="math inline">\(\epsilon \sim N(0, V)\)</span>.</li>
+<li>Observations below <code>0.001</code> are clipped to <code>0.001</code>.</li>
+</ol>
+</section>
+<section id="covariates" class="level2">
+<h2 class="anchored" data-anchor-id="covariates">Covariates</h2>
+<p>Covariates can be referenced in <code>[individual_parameters]</code> as usual. The simulated population currently uses default covariate values — covariates are not randomised by the simulation block itself.</p>
 </section>
 <section id="see-also" class="level2">
 <h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><a href="../examples/two-cpt-iv.html">Example: Two-compartment IV</a></li>
-<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html">Analytical PK models — three_cpt_iv_bolus (ferx-core book)</a></li>
-<li><a href="../model-dsl/fit-options.html#chained-methods">Fit options — chained methods</a></li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/simulation.html">Simulation — ferx-core book</a> — full reference</li>
+<li><a href="../learn/simulation.html">Simulation (R-side workflow)</a> — running simulations from a fitted model via ferx-r</li>
 </ul>
 
 

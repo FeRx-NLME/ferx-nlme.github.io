@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Three-compartment IV – ferx</title>
+<title>Lag time – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -503,10 +503,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset">Dataset</a></li>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
+  <li><a href="#syntax" id="toc-syntax" class="nav-link active" data-scroll-target="#syntax">Syntax</a></li>
+  <li><a href="#semantics" id="toc-semantics" class="nav-link" data-scroll-target="#semantics">Semantics</a></li>
+  <li><a href="#supported-paths" id="toc-supported-paths" class="nav-link" data-scroll-target="#supported-paths">Supported paths</a></li>
+  <li><a href="#notes-and-caveats" id="toc-notes-and-caveats" class="nav-link" data-scroll-target="#notes-and-caveats">Notes and caveats</a></li>
+  <li><a href="#runnable-example" id="toc-runnable-example" class="nav-link" data-scroll-target="#runnable-example">Runnable example</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -517,7 +518,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example: Three-compartment IV</h1>
+<h1 class="title">Lag time</h1>
 </div>
 
 
@@ -534,82 +535,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example fits a three-compartment IV bolus model. A third compartment is warranted when the concentration-time profile shows a distinct tri-exponential decline — an initial rapid distribution phase, a slower redistribution phase, and a terminal elimination phase.</p>
-<p>Common drug classes: aminoglycosides at high doses, certain anesthetics (propofol, fentanyl), and some biologics with tissue redistribution.</p>
-<section id="dataset" class="level2">
-<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<p>Standard NONMEM IV bolus format — identical to the two-compartment case. No absorption column required:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
-1,0,.,1,200,1,0,1
-1,0.25,18.4,0,.,1,0,0
-1,0.5,14.1,0,.,1,0,0
-1,1,10.2,0,.,1,0,0
-1,2,7.8,0,.,1,0,0
-1,4,5.3,0,.,1,0,0
-1,8,3.8,0,.,1,0,0
-1,24,1.9,0,.,1,0,0</code></pre>
-</section>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
+<p><code>lagtime</code> is a PK parameter slot on the analytical <code>[structural_model]</code> that shifts the effective start of every dose by a fixed amount. ferx-core’s name for what NONMEM calls <code>ALAG</code>.</p>
+<section id="syntax" class="level2">
+<h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
+<p>Declare a theta (and optional ETA) for the lag, map it to an individual parameter, then pass it on the <code>pk</code> line:</p>
 <pre><code>[parameters]
-  theta TVCL(5.0, 0.1, 100.0)
-  theta TVV1(10.0, 0.1, 500.0)
-  theta TVQ2(2.0, 0.01, 50.0)
-  theta TVV2(20.0, 0.1, 1000.0)
-  theta TVQ3(1.5, 0.01, 50.0)
-  theta TVV3(30.0, 0.1, 1000.0)
-
-  omega ETA_CL ~ 0.09
-  omega ETA_V1 ~ 0.04
-  omega ETA_Q2 ~ 0.04
-  omega ETA_V2 ~ 0.04
-  omega ETA_Q3 ~ 0.04
-  omega ETA_V3 ~ 0.04
-
-  sigma PROP_ERR ~ 0.04
+  theta TVLAGTIME(0.5, 0.001, 5.0)
+  omega ETA_LAGTIME ~ 0.10
+  # ... other parameters
 
 [individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V1 = TVV1 * exp(ETA_V1)
-  Q2 = TVQ2 * exp(ETA_Q2)
-  V2 = TVV2 * exp(ETA_V2)
-  Q3 = TVQ3 * exp(ETA_Q3)
-  V3 = TVV3 * exp(ETA_V3)
+  LAGTIME = TVLAGTIME * exp(ETA_LAGTIME)
+  # ... other individual parameters
 
 [structural_model]
-  pk three_cpt_iv_bolus(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-
-[fit_options]
-  method     = foce
-  maxiter    = 300
-  covariance = true</code></pre>
-<p>The <code>three_cpt_iv_bolus</code> built-in solves the three-compartment system analytically, without ODE integration. Six macro parameters are estimated.</p>
+  pk one_cpt_oral(cl=CL, v=V, ka=KA, lagtime=LAGTIME)</code></pre>
+<p>Both <code>lagtime=</code> (preferred) and <code>alag=</code> are accepted on the <code>pk</code> line and route to the same slot. If both keys are supplied, <code>lagtime</code> wins.</p>
 </section>
-<section id="running" class="level2">
-<h2 class="anchored" data-anchor-id="running">Running</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"three_cpt_iv"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="semantics" class="level2">
+<h2 class="anchored" data-anchor-id="semantics">Semantics</h2>
+<p>For every dose record (bolus, infusion, or oral depot), the effective arrival time is <code>dose.time + lagtime</code>. For infusions the <strong>duration is unchanged</strong> — only the start (and therefore the end) shifts. An observation taken before the lagged arrival reads <code>0</code> at single-dose; at steady state it reads the decaying tail of the previous interval.</p>
+<p>If <code>lagtime</code> is not declared, the slot defaults to <code>0.0</code>.</p>
 </section>
-<section id="tips" class="level2">
-<h2 class="anchored" data-anchor-id="tips">Tips</h2>
+<section id="supported-paths" class="level2">
+<h2 class="anchored" data-anchor-id="supported-paths">Supported paths</h2>
+<p><code>lagtime</code> is supported on:</p>
 <ul>
-<li><strong>Dataset requirements</strong>: six partially-collinear parameters (CL, V1, Q2, V2, Q3, V3) need dense sampling from the first minutes post-dose through the terminal phase. Sparse designs frequently produce non-estimable Q3 or V3.</li>
-<li><strong>Run time</strong>: expect roughly 2–5× longer than a comparable two-compartment fit. For exploratory runs, drop BSV on the inter-compartmental parameters (Q2, V2, Q3, V3) and re-add after the structural model converges.</li>
-<li><strong>Identifiability check</strong>: inspect condition number of the covariance matrix (<code>fit$cov_matrix</code>). A condition number &gt; 1000 suggests parameter collinearity; consider fixing one of Q2/Q3 to a literature value.</li>
-<li><strong>SAEM→FOCEI chain</strong>: for complex datasets where FOCEI alone stalls, <code>method = [saem, focei]</code> often finds the global minimum more reliably.</li>
+<li>the analytical superposition path,</li>
+<li>the autodiff (single-snapshot) path used during <code>fit()</code>,</li>
+<li>the ODE path,</li>
+<li>steady-state doses (<code>SS=1</code>).</li>
 </ul>
+<p>In the niche case of a time-varying-covariate subject combined with a lagtime-bearing model, ferx-core silently falls back from the event-driven autodiff path to finite differences — correctness is preserved at a small performance cost.</p>
+</section>
+<section id="notes-and-caveats" class="level2">
+<h2 class="anchored" data-anchor-id="notes-and-caveats">Notes and caveats</h2>
+<ul>
+<li>A negative <code>lagtime</code> is not clamped. If your parameterisation can yield a negative value, predictions will treat the dose as effective <em>before</em> its record time. Prefer a log-link (<code>exp(...)</code>) or any parameterisation that keeps <code>lagtime ≥ 0</code>. ferx-core emits a warning in <code>FitResult.warnings</code> when the initial typical-value lagtime is negative.</li>
+<li>An <strong>additive</strong> ETA on the lag (<code>LAGTIME = TVLAGTIME + ETA_LAGTIME</code>) is also common. The variance is then in units of time²; individual lag times remain positive as long as <code>TVLAGTIME ≫ ω_LAGTIME</code>. See <a href="../learn/parameter-transforms.html">Parameter transforms</a> for the full additive-ETA discussion.</li>
+<li>NONMEM’s per-compartment <code>ALAG1</code>, <code>ALAG2</code>, … map to ferx-core’s single <code>lagtime</code> slot applied to all dose records.</li>
+</ul>
+</section>
+<section id="runnable-example" class="level2">
+<h2 class="anchored" data-anchor-id="runnable-example">Runnable example</h2>
+<p>The bundled <code>warfarin_additive_eta</code> example demonstrates <code>lagtime</code> with an additive ETA:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_additive_eta"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A worked walkthrough is on the <a href="../examples/lag-time.html">Absorption lag time example page</a>.</p>
 </section>
 <section id="see-also" class="level2">
 <h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><a href="../examples/two-cpt-iv.html">Example: Two-compartment IV</a></li>
-<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html">Analytical PK models — three_cpt_iv_bolus (ferx-core book)</a></li>
-<li><a href="../model-dsl/fit-options.html#chained-methods">Fit options — chained methods</a></li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/lagtime.html">Lagtime — ferx-core book</a> — full reference including NONMEM equivalence and the SS+lag validation</li>
+<li><a href="../model-dsl/steady-state.html">Steady-State Doses</a> — interaction of <code>SS=1</code> with <code>lagtime</code></li>
 </ul>
 
 

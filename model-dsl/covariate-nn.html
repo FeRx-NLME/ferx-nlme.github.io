@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Three-compartment IV – ferx</title>
+<title>Covariate NN (DCM) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -503,10 +503,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset">Dataset</a></li>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
+  <li><a href="#availability" id="toc-availability" class="nav-link active" data-scroll-target="#availability">Availability</a></li>
+  <li><a href="#syntax" id="toc-syntax" class="nav-link" data-scroll-target="#syntax">Syntax</a></li>
+  <li><a href="#composing-with-etas" id="toc-composing-with-etas" class="nav-link" data-scroll-target="#composing-with-etas">Composing with etas</a></li>
+  <li><a href="#auto-generated-parameters" id="toc-auto-generated-parameters" class="nav-link" data-scroll-target="#auto-generated-parameters">Auto-generated parameters</a></li>
+  <li><a href="#activations" id="toc-activations" class="nav-link" data-scroll-target="#activations">Activations</a></li>
+  <li><a href="#optimizer-caveat" id="toc-optimizer-caveat" class="nav-link" data-scroll-target="#optimizer-caveat">Optimizer caveat</a></li>
+  <li><a href="#runnable-example" id="toc-runnable-example" class="nav-link" data-scroll-target="#runnable-example">Runnable example</a></li>
+  <li><a href="#fit-output" id="toc-fit-output" class="nav-link" data-scroll-target="#fit-output">Fit output</a></li>
+  <li><a href="#whats-not-yet-wired" id="toc-whats-not-yet-wired" class="nav-link" data-scroll-target="#whats-not-yet-wired">What’s not yet wired</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -517,7 +522,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example: Three-compartment IV</h1>
+<h1 class="title">Covariate NN (DCM)</h1>
 </div>
 
 
@@ -534,82 +539,173 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example fits a three-compartment IV bolus model. A third compartment is warranted when the concentration-time profile shows a distinct tri-exponential decline — an initial rapid distribution phase, a slower redistribution phase, and a terminal elimination phase.</p>
-<p>Common drug classes: aminoglycosides at high doses, certain anesthetics (propofol, fentanyl), and some biologics with tissue redistribution.</p>
-<section id="dataset" class="level2">
-<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<p>Standard NONMEM IV bolus format — identical to the two-compartment case. No absorption column required:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
-1,0,.,1,200,1,0,1
-1,0.25,18.4,0,.,1,0,0
-1,0.5,14.1,0,.,1,0,0
-1,1,10.2,0,.,1,0,0
-1,2,7.8,0,.,1,0,0
-1,4,5.3,0,.,1,0,0
-1,8,3.8,0,.,1,0,0
-1,24,1.9,0,.,1,0,0</code></pre>
+<p>The <code>[covariate_nn]</code> block replaces the typical-value covariate model with a small feed-forward neural network. This is the <strong>Deep Compartment Model</strong> (DCM) approach of Janssen et al.&nbsp;(2022). The compartmental structure downstream is unchanged; etas attach to the <em>final</em> PK parameters, so the inner FOCEI loop runs exactly as it does for an analytical model.</p>
+<blockquote class="blockquote">
+<p><strong>Reference</strong>: Janssen A. et al.&nbsp;(2022). <em>Deep compartment models: A deep learning approach for the reliable prediction of time-series data in pharmacokinetic modeling.</em> CPT Pharmacometrics Syst Pharmacol 11:934–945. DOI <a href="https://doi.org/10.1002/psp4.12808">10.1002/psp4.12808</a>.</p>
+</blockquote>
+<section id="availability" class="level2">
+<h2 class="anchored" data-anchor-id="availability">Availability</h2>
+<p><code>[covariate_nn]</code> is gated behind the <code>nn</code> cargo feature in ferx-core. <strong>ferx-r enables this feature by default</strong>, so DCM works out of the box when you <code>library(ferx)</code>. Users building ferx-core directly need:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">--release</span> <span class="at">--features</span> nn</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code>[parameters]
-  theta TVCL(5.0, 0.1, 100.0)
-  theta TVV1(10.0, 0.1, 500.0)
-  theta TVQ2(2.0, 0.01, 50.0)
-  theta TVV2(20.0, 0.1, 1000.0)
-  theta TVQ3(1.5, 0.01, 50.0)
-  theta TVV3(30.0, 0.1, 1000.0)
-
-  omega ETA_CL ~ 0.09
-  omega ETA_V1 ~ 0.04
-  omega ETA_Q2 ~ 0.04
-  omega ETA_V2 ~ 0.04
-  omega ETA_Q3 ~ 0.04
-  omega ETA_V3 ~ 0.04
-
-  sigma PROP_ERR ~ 0.04
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V1 = TVV1 * exp(ETA_V1)
-  Q2 = TVQ2 * exp(ETA_Q2)
-  V2 = TVV2 * exp(ETA_V2)
-  Q3 = TVQ3 * exp(ETA_Q3)
-  V3 = TVV3 * exp(ETA_V3)
-
-[structural_model]
-  pk three_cpt_iv_bolus(cl=CL, v1=V1, q2=Q2, v2=V2, q3=Q3, v3=V3)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-
-[fit_options]
-  method     = foce
-  maxiter    = 300
-  covariance = true</code></pre>
-<p>The <code>three_cpt_iv_bolus</code> built-in solves the three-compartment system analytically, without ODE integration. Six macro parameters are estimated.</p>
+<section id="syntax" class="level2">
+<h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
+<pre><code>[covariate_nn NAME]
+  inputs     = [COV_1, COV_2, ...]
+  outputs    = [PK_PARAM_1, PK_PARAM_2, ...]
+  layers     = [hidden_1, hidden_2, ...]
+  activation = tanh | relu | sigmoid | softplus | exp | identity
+  output     = tanh | relu | sigmoid | softplus | exp | identity   # optional, default `identity`</code></pre>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 30%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Required</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>NAME</code></td>
+<td>yes</td>
+<td>Block name; used as the dot-access prefix (<code>NAME.CL</code>) in <code>[individual_parameters]</code></td>
+</tr>
+<tr class="even">
+<td><code>inputs</code></td>
+<td>yes</td>
+<td>Covariate column names from the NONMEM CSV</td>
+</tr>
+<tr class="odd">
+<td><code>outputs</code></td>
+<td>yes</td>
+<td>PK parameter names: <code>cl</code>, <code>v</code> / <code>v1</code>, <code>q</code> / <code>q2</code>, <code>v2</code>, <code>ka</code>, <code>f</code>, <code>q3</code>, <code>v3</code>, <code>lagtime</code> / <code>alag</code></td>
+</tr>
+<tr class="even">
+<td><code>layers</code></td>
+<td>yes</td>
+<td>Hidden-layer widths, in order; at least one entry required</td>
+</tr>
+<tr class="odd">
+<td><code>activation</code></td>
+<td>yes</td>
+<td>Hidden-layer element-wise activation</td>
+</tr>
+<tr class="even">
+<td><code>output</code></td>
+<td>no</td>
+<td>Output-layer activation (default <code>identity</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Multiple <code>[covariate_nn]</code> blocks per model are permitted; they’re keyed by NAME and ordered alphabetically when generating theta names.</p>
 </section>
-<section id="running" class="level2">
-<h2 class="anchored" data-anchor-id="running">Running</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"three_cpt_iv"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="composing-with-etas" class="level2">
+<h2 class="anchored" data-anchor-id="composing-with-etas">Composing with etas</h2>
+<p>The bundled DCM example uses a <strong>multiplicative modulator</strong> pattern: baseline thetas carry the absolute scale and the NN learns the covariate-driven deviation from baseline.</p>
+<pre><code>[individual_parameters]
+  CL = TVCL * TYPICAL_PK.CL * exp(ETA_CL)
+  V1 = TVV1 * TYPICAL_PK.V1 * exp(ETA_V1)
+  Q  = TVQ  * TYPICAL_PK.Q  * exp(ETA_Q)
+  V2 = TVV2 * TYPICAL_PK.V2 * exp(ETA_V2)
+  KA = TVKA * TYPICAL_PK.KA * exp(ETA_KA)</code></pre>
+<p>With <code>output = exp</code> the NN outputs are exactly <code>1.0</code> at init (<code>exp(0) = 1</code>), so initial typical values fall back to the declared <code>TVCL</code> / <code>TVV1</code> / … thetas. The NN then learns the multiplicative covariate effect over training.</p>
+<p>The simpler “NN replaces typical values entirely” pattern (<code>CL = TYPICAL_PK.CL * exp(ETA_CL)</code> with <code>output = softplus</code>) is syntactically valid and recognised by the parser, but in practice struggles to span the 1–100× range across CL/V/Q/V2/KA from Glorot initialisation. Prefer the multiplicative form.</p>
 </section>
-<section id="tips" class="level2">
-<h2 class="anchored" data-anchor-id="tips">Tips</h2>
+<section id="auto-generated-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="auto-generated-parameters">Auto-generated parameters</h2>
+<p>For each block, the parser generates one theta per weight and bias:</p>
 <ul>
-<li><strong>Dataset requirements</strong>: six partially-collinear parameters (CL, V1, Q2, V2, Q3, V3) need dense sampling from the first minutes post-dose through the terminal phase. Sparse designs frequently produce non-estimable Q3 or V3.</li>
-<li><strong>Run time</strong>: expect roughly 2–5× longer than a comparable two-compartment fit. For exploratory runs, drop BSV on the inter-compartmental parameters (Q2, V2, Q3, V3) and re-add after the structural model converges.</li>
-<li><strong>Identifiability check</strong>: inspect condition number of the covariance matrix (<code>fit$cov_matrix</code>). A condition number &gt; 1000 suggests parameter collinearity; consider fixing one of Q2/Q3 to a literature value.</li>
-<li><strong>SAEM→FOCEI chain</strong>: for complex datasets where FOCEI alone stalls, <code>method = [saem, focei]</code> often finds the global minimum more reliably.</li>
+<li><code>W_&lt;NAME&gt;_&lt;l&gt;_&lt;i&gt;_&lt;j&gt;</code> — weight from input unit <code>j</code> (layer <code>l−1</code>) to output unit <code>i</code> (layer <code>l</code>)</li>
+<li><code>B_&lt;NAME&gt;_&lt;l&gt;_&lt;i&gt;</code> — bias of output unit <code>i</code> in layer <code>l</code></li>
+</ul>
+<p>Layers are 1-indexed (input layer is layer 0, has no weights). For a <code>2 → 8 → 8 → 5</code> network: <code>2·8 + 8 + 8·8 + 8 + 8·5 + 5 = 141 thetas</code>.</p>
+<p>Initial weights use a Glorot-style deterministic scheme seeded by the block NAME, so builds are reproducible without pulling <code>rand</code> into the parser. Weights are unbounded (identity-packed): the optimizer sees them on the natural scale, no log transform. Biases initialise to <code>0</code>.</p>
+</section>
+<section id="activations" class="level2">
+<h2 class="anchored" data-anchor-id="activations">Activations</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 21%">
+<col style="width: 68%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Value</th>
+<th>Behavior</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>identity</code></td>
+<td><code>f(x) = x</code></td>
+<td>Output layer when wrapping with a manual positivity head</td>
+</tr>
+<tr class="even">
+<td><code>relu</code></td>
+<td><code>f(x) = max(0, x)</code></td>
+<td>Cheap hidden activation, but kinks reduce smoothness for FOCEI</td>
+</tr>
+<tr class="odd">
+<td><code>tanh</code></td>
+<td><code>f(x) = tanh(x)</code></td>
+<td><strong>Recommended hidden default</strong> — smooth, bounded <code>(−1, 1)</code></td>
+</tr>
+<tr class="even">
+<td><code>sigmoid</code></td>
+<td><code>f(x) = 1 / (1 + exp(-x))</code></td>
+<td>Bounded <code>(0, 1)</code>; useful for <code>F</code> bioavailability outputs</td>
+</tr>
+<tr class="odd">
+<td><code>softplus</code></td>
+<td><code>f(x) = ln(1 + exp(x))</code></td>
+<td>Smooth positive output</td>
+</tr>
+<tr class="even">
+<td><code>exp</code></td>
+<td><code>f(x) = exp(x)</code></td>
+<td><strong>Recommended for multiplicative-modulator form</strong> — <code>exp(0) = 1</code> at init</td>
+</tr>
+</tbody>
+</table>
+<p>The bundled DCM example uses <code>activation = tanh</code>, <code>output = exp</code>.</p>
+</section>
+<section id="optimizer-caveat" class="level2">
+<h2 class="anchored" data-anchor-id="optimizer-caveat">Optimizer caveat</h2>
+<p>The default outer optimizer (SLSQP) currently silently no-ops on mu-ref-active NN models (see ferx-core#55). Use <code>optimizer = lbfgs</code>, either in <code>[fit_options]</code> or via <code>ferx_fit(..., settings = list(optimizer = "lbfgs"))</code>. The bundled example sets it in the model file.</p>
+</section>
+<section id="runnable-example" class="level2">
+<h2 class="anchored" data-anchor-id="runnable-example">Runnable example</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_dcm"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is a 2-cpt oral warfarin model whose typical PK values are modulated by a 2 → 8 → 8 → 5 MLP over <code>WT</code> and <code>CRCL</code>. Compare with <code>ferx_example("two_cpt_oral_cov")</code> for the same data and structure using an analytical covariate model.</p>
+</section>
+<section id="fit-output" class="level2">
+<h2 class="anchored" data-anchor-id="fit-output">Fit output</h2>
+<p>The fit object’s <code>theta</code> vector contains the NN weights at indices <code>weights_offset .. weights_offset + n_weights</code>. The corresponding <code>.fitrx</code> archive and <code>{model}-fit.yaml</code> emit a compact summary (shape, activations, weight count, weight-vector statistics) rather than dumping one row per weight.</p>
+</section>
+<section id="whats-not-yet-wired" class="level2">
+<h2 class="anchored" data-anchor-id="whats-not-yet-wired">What’s not yet wired</h2>
+<ul>
+<li><code>method = nn_mse</code> — Janssen 2022’s original fixed-effects MSE objective. Not implemented; FOCEI is the default and works today.</li>
+<li>AD-aware mu-ref re-centering for NN-anchored etas. Fits work, but the inner-loop AD fast path skips NN-anchored etas — a performance issue, not a correctness issue.</li>
+<li><code>[dynamics_nn]</code> block for neural-ODE-style RHS terms (Phase B / not shipped).</li>
 </ul>
 </section>
 <section id="see-also" class="level2">
 <h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><a href="../examples/two-cpt-iv.html">Example: Two-compartment IV</a></li>
-<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html">Analytical PK models — three_cpt_iv_bolus (ferx-core book)</a></li>
-<li><a href="../model-dsl/fit-options.html#chained-methods">Fit options — chained methods</a></li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/covariate-nn.html">Covariate NN (DCM) — ferx-core book</a> — full reference including fit-output YAML schema</li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/neural-networks.html">Neural Networks — landing page</a></li>
+<li><a href="../examples/dcm.html">DCM example</a> — runnable walkthrough</li>
 </ul>
 
 
