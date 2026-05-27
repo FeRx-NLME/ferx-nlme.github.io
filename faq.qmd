@@ -199,4 +199,4 @@ The gradient path is resolved per-subject at runtime:
 | `Fd` (central finite differences) | `FERX_NO_AUTODIFF=1` build, ODE model, or TV-cov on 3-cpt model |
 
 `fit$gradient_used` (in R) shows which path was resolved. See
-[Autodiff](ferx-core/autodiff.qmd) for details.
+the [ferx-core book](https://ferx-nlme.github.io/ferx-core/) for details.

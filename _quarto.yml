@@ -88,26 +88,7 @@ website:
       - text: "ferx-r"
         href: https://ferx-nlme.github.io/ferx-book/
       - text: "ferx-core"
-        menu:
-          - text: "ferx-core book (mdBook) ↗"
-            href: https://ferx-nlme.github.io/ferx-core/
-          - text: "---"
-          - text: "Overview"
-            href: ferx-core/overview.qmd
-          - text: "Architecture"
-            href: ferx-core/architecture.qmd
-          - text: "Data format"
-            href: ferx-core/data-format.qmd
-          - text: "Estimation (FOCE/FOCEI)"
-            href: ferx-core/estimation.qmd
-          - text: "Autodiff (Enzyme)"
-            href: ferx-core/autodiff.qmd
-          - text: "Analytical PK models"
-            href: ferx-core/pk-models.qmd
-          - text: "ODE solver"
-            href: ferx-core/ode-solver.qmd
-          - text: "Output reference"
-            href: ferx-core/output.qmd
+        href: https://ferx-nlme.github.io/ferx-core/
       - text: "Reference"
         href: reference/index.html
       - text: "FAQ"
