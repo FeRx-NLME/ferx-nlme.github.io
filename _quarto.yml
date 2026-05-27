@@ -34,6 +34,10 @@ website:
             href: learn/diagnostics.qmd
           - text: "Simulation"
             href: learn/simulation.qmd
+          - text: "Special features"
+            href: learn/special-features.qmd
+          - text: "Uncertainty (SIR)"
+            href: learn/uncertainty-sir.qmd
       - text: "Model DSL"
         menu:
           - text: "Overview"

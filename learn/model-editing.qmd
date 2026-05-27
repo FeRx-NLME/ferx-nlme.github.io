@@ -3,8 +3,9 @@ title: "Editing ferx model files programmatically"
 ---
 
 ferx model files (`.ferx`) are plain text, so you can create and modify them
-entirely from R without opening an editor. This article covers the functions
-that support that workflow.
+entirely from R without opening an editor. This article covers the three
+functions that support that workflow: `ferx_model_new()`,
+`ferx_model_section()`, and `ferx_model_set_section()`.
 
 ::: {.callout-tip}
 See also [Chapter 3 (Model DSL)](https://ferx-nlme.github.io/ferx-book/chapters/03-model-dsl.html) in the ferx book for a complete reference with examples.
@@ -19,14 +20,18 @@ templates: `"1cpt_oral"` (default), `"1cpt_iv"`, `"2cpt_oral"`, `"2cpt_iv"`,
 and `"ode"`.
 
 Pass `print = TRUE` to preview a template in the console without writing any
-file:
+file — useful when you are exploring or copy-pasting a starting point:
 
 ```r
 ferx_model_new(print = TRUE)
+```
+
+```r
 ferx_model_new(template = "2cpt_iv", print = TRUE)
 ```
 
-To write a file, supply a path. Pass `edit = FALSE` to skip opening your editor:
+To write a file, supply a path. By default the file is also opened in your
+editor (`edit = TRUE`); pass `edit = FALSE` to skip that:
 
 ```r
 ferx_model_new("my_model.ferx", edit = FALSE)
@@ -36,14 +41,16 @@ ferx_model_new("my_model.ferx", edit = FALSE)
 
 ## Inspecting a section
 
-`ferx_model_section()` extracts and prints the body of a named section:
+`ferx_model_section()` extracts the body of a named section and prints it.
+Start with the bundled warfarin example:
 
 ```r
 ex <- ferx_example("warfarin")
 ferx_model_section(ex$model, "parameters")
 ```
 
-The return value is the character vector of lines (invisibly):
+The return value is the character vector of lines, returned invisibly, so you
+can capture it:
 
 ```r
 params <- ferx_model_section(ex$model, "parameters")
@@ -54,24 +61,25 @@ params
 
 ## Scripted read-modify-write
 
-The extract → modify → write-back pattern changes a model programmatically
-without an editor:
+The extract → modify → write-back pattern lets you change a model
+programmatically without an editor. Here we raise the initial CL estimate in
+the `parameters` section and write the result to a temporary copy:
 
 ```r
-# Work in a fresh temp file
+# work in a fresh temp file so re-knitting never reuses stale state
 model_path <- tempfile(fileext = ".ferx")
-file.copy(ex$model, model_path)
+stopifnot(file.copy(ex$model, model_path))
 
-# Read the section
+# read the section
 lines <- ferx_model_section(model_path, "parameters")
 
-# Modify: raise the TVCL initial value from 0.134 to 0.5
+# modify: change the TVCL initial value from 0.134 to 0.5
 lines <- sub("TVCL\\([^,]+,", "TVCL(0.5,", lines)
 
-# Write back
+# write back
 ferx_model_set_section(model_path, "parameters", lines)
 
-# Verify
+# verify
 ferx_model_section(model_path, "parameters")
 ```
 
@@ -82,7 +90,9 @@ sections are left untouched.
 
 ## Console-only workflow: create, tweak, fit
 
-From nothing to an estimated model without opening a text editor:
+You can go from nothing to an estimated model without ever opening a text
+editor. The steps below create a one-compartment oral model file, switch the
+estimation method to FOCEI, and run `ferx_fit()`:
 
 ```r
 model_path <- file.path(tempdir(), "run1.ferx")
@@ -90,16 +100,16 @@ model_path <- file.path(tempdir(), "run1.ferx")
 # 1. Write a skeleton
 ferx_model_new(model_path, template = "1cpt_oral", edit = FALSE)
 
-# 2. Switch method to FOCEI
+# 2. Switch method to focei
 ferx_model_set_section(model_path, "fit_options", c(
   "  method     = focei",
   "  maxiter    = 300",
   "  covariance = true"
 ))
 
-# 3. Fit
-ex  <- ferx_example("warfarin")
-fit <- ferx_fit(model_path, ex$data)
+# 3. Fit (uses the bundled warfarin data for illustration)
+ex   <- ferx_example("warfarin")
+fit  <- ferx_fit(model_path, ex$data)
 print(fit)
 ```
 
@@ -107,20 +117,21 @@ print(fit)
 
 ## Opening a model in an editor
 
-`ferx_model_edit()` copies a bundled example to a destination directory and
-opens it in your editor:
+`ferx_model_edit()` copies a bundled example to a destination directory (or
+leaves a user-owned file in place) and opens it in your editor. It is the
+interactive companion to the scripted functions above.
 
 ```r
 # Copy the bundled warfarin model to tempdir() and open it
 my_model <- ferx_model_edit(ex$model, dest = tempdir())
 
-# After editing, save the result under a new name
+# After editing, save the result under a new name for version control
 ferx_model_edit("run1.ferx", save_as = "run2.ferx")
 ```
 
 The `dest` argument controls where the copy lands. If the source file is
 already outside the installed package directory, `ferx_model_edit()` edits it
-in place unless `dest` is set explicitly.
+in place (no copy) unless `dest` is set explicitly.
 
 ---
 
@@ -132,11 +143,9 @@ sections before running the optimizer:
 
 ```r
 ferx_model_validate(ex$model)
-#> [ok] All required sections present: parameters, individual_parameters,
-#>      structural_model, error_model
 ```
 
-A model missing required sections produces a clear list:
+A model missing required sections produces a clear error list:
 
 ```r
 bad <- tempfile(fileext = ".ferx")
@@ -147,8 +156,6 @@ writeLines(c(
   "  pk one_cpt_oral(cl=CL, v=V, ka=KA)"
 ), bad)
 ferx_model_validate(bad)
-#> [missing] individual_parameters
-#> [missing] error_model
 ```
 
 ---
@@ -165,10 +172,13 @@ tryCatch(
   ferx_model_new(model_path, edit = FALSE),          # would overwrite — error
   error = function(e) message(conditionMessage(e))
 )
-#> Error: file already exists. Use overwrite = TRUE to replace it.
+```
 
-# Opt in explicitly:
+Opt in explicitly with `overwrite = TRUE`:
+
+```r
 ferx_model_new(model_path, template = "1cpt_iv", overwrite = TRUE, edit = FALSE)
+ferx_model_section(model_path, "structural_model")
 ```
 
 ---

@@ -21,7 +21,10 @@ For a deeper treatment with CV% formulas and worked examples, see [Chapter 7 (Pa
 
 ## Log-normal ETAs (default)
 
-The standard warfarin model uses log-normal ETAs for CL, V, and KA:
+The standard warfarin model uses log-normal ETAs for CL, V, and KA. This is
+the default: each individual parameter equals the typical value multiplied by
+`exp(ETA)`, which keeps the parameter positive and gives a log-normal
+distribution across subjects.
 
 ```r
 ex <- ferx_example("warfarin")
@@ -31,135 +34,206 @@ ferx_model_inspect(ex$model)
 After fitting, `print()` reports omega as `[log-normal]` with a CV%:
 
 ```r
-fit <- ferx_fit(ex$model, ex$data)
+fit <- ferx_fit(ex$model, ex$data, method = "focei", covariance = FALSE)
 fit
 # --- OMEGA Estimates ---
-#   ETA_CL                   [log-normal]  = 0.042300  CV% = 20.8  SE = 0.012100
-#   ETA_V                    [log-normal]  = 0.019800  CV% = 14.2  SE = 0.008900
-#   ETA_KA                   [log-normal]  = 0.157000  CV% = 41.5  SE = 0.048000
+#   ETA_CL    [log-normal]  = 0.027888  CV% = 16.8  SE = N/A
+#   ETA_V     [log-normal]  = 0.009489  CV%  = 9.8  SE = N/A
+#   ETA_KA    [log-normal]  = 0.356897  CV% = 65.5  SE = N/A
+# (covariance = FALSE, so SE columns are NA)
 ```
 
-The CV% is derived from the log-scale variance as:
+The CV% is derived from the log-scale variance as
+`CV% = 100 * sqrt(exp(omega_var) - 1)`. For small variances this is
+approximately `100 * sqrt(omega_var)`, but the exact formula is always used.
 
-$$\text{CV\%} = 100 \times \sqrt{\exp(\omega) - 1}$$
-
-For small variances this is approximately $100\sqrt{\omega}$, but the exact
-formula is always used.
-
-`ferx_estimates()` returns omega rows with `transform = "variance"` (all omega
-rows use this label regardless of ETA parameterisation style — the log-normal
-interpretation is conveyed by `print.ferx_fit()`, not the tidy table):
+`ferx_estimates()` returns the omega variance on the log scale in `estimate`,
+with `transform = "variance"` (omega rows always use this label regardless of
+the ETA parameterisation style — the log-normal interpretation is conveyed by
+`print.ferx_fit()`, not by the tidy table). SE and 95 % CI columns are on the
+same log-variance scale:
 
 ```r
 ferx_estimates(fit)
-#   param    transform  estimate      se  rse_pct  lower_95  upper_95
-#   ETA_CL   variance     0.0423  0.0121     28.6    0.0186    0.0660
-#   ETA_V    variance     0.0198  0.0089     44.9    0.0024    0.0372
-#   ETA_KA   variance     0.1570  0.0480     30.6    0.0629    0.2511
+#   param              transform  estimate      se  rse_pct  lower_95  upper_95
+#   OMEGA(ETA_CL)      variance     0.0423  0.0121     28.6    0.0186    0.0660
+#   OMEGA(ETA_V)       variance     0.0198  0.0089     44.9    0.0024    0.0372
+#   OMEGA(ETA_KA)      variance     0.1570  0.0480     30.6    0.0629    0.2511
+# estimate_natural / lower_95_natural / upper_95_natural are NA for omega rows
+# (back-transform is not defined for variance parameters)
 ```
+
+### Choosing initial omega values
+
+A common question is: "what omega value corresponds to 30% BSV?"
+
+```r
+cv_targets <- c(10, 20, 30, 40, 50, 60, 80, 100)
+data.frame(
+  cv_pct    = cv_targets,
+  omega_approx = round((cv_targets / 100)^2, 4),
+  omega_exact  = round(log(1 + (cv_targets / 100)^2), 4)
+)
+```
+
+Use the **exact** formula (`log(1 + CV²)`) for omega variances above 30% — the
+approximate formula `CV²/100²` underestimates the required starting value and
+can slow convergence.
+
+Quick rule: for CV% ≤ 30%, `omega ≈ (CV/100)²` is fine. For CV% > 30%, use
+`omega = log(1 + (CV/100)²)`.
 
 ---
 
 ## Logit-normal ETA (bioavailability)
 
 When a parameter is a fraction bounded between 0 and 1, use `inv_logit` /
-`logit` to ensure individual values stay in (0, 1):
+`logit` to ensure the individual values stay in (0, 1):
 
 ```
 F = inv_logit(logit(THETA_F) + ETA_F)
 ```
 
-`THETA_F` is specified on the natural (0, 1) scale in `[parameters]`. When
-`ETA_F = 0`, `F_i = THETA_F` exactly (the logit and inv_logit cancel). The
-omega for `ETA_F` is the variance on the logit scale.
+`THETA_F` is specified on the natural (0, 1) scale in `[parameters]`; ferx
+maps it to the logit scale internally so the optimiser works on an unbounded
+space. The omega for `ETA_F` is the variance on the logit scale.
 
 ```r
 ex_logit <- ferx_example("warfarin_logit_f")
 ferx_model_inspect(ex_logit$model)
+```
 
+After fitting, `print()` shows:
+
+- `THETA_F` with `[logit scale]` and a 95 % CI back-transformed through
+  `inv_logit` so the CI is on the (0, 1) scale.
+- `ETA_F` with `[logit]`, `SD_logit`, and a ±1 SD interval on the (0, 1)
+  scale.
+
+```r
 fit_logit <- ferx_fit(ex_logit$model, ex_logit$data)
 fit_logit
 ```
 
 `ferx_estimates()` populates `estimate_natural`, `lower_95_natural`, and
 `upper_95_natural` for logit-transformed thetas. The CI is computed
-symmetrically on the logit scale and back-transformed through `inv_logit`,
+symmetrically on the logit scale and then back-transformed through `inv_logit`,
 giving an asymmetric interval on the (0, 1) scale:
+
+The `transform` value the backend reports for a logit-scaled theta is
+`"logit_probability"` (not `"logit"`):
 
 ```r
 est <- ferx_estimates(fit_logit)
 est[est$param == "THETA_F", ]
-#   param    transform  estimate    se  rse_pct  estimate_natural  lower_95_natural  upper_95_natural
-#   THETA_F  logit        0.847  0.143     16.9             0.700             0.638             0.755
+#   param           transform   estimate     se  rse_pct  lower_95  upper_95  estimate_natural  lower_95_natural  upper_95_natural
+#   THETA_F  logit_probability   0.80197 0.00652   0.8136   0.78918   0.81476           0.69040           0.68766           0.69312
+# estimate         - logit scale (what the optimiser works with)
+# estimate_natural - inv_logit(estimate) = probability on (0, 1) scale
+# lower/upper_95_natural - asymmetric CI back-transformed to (0, 1)
+# (values captured from a real warfarin_logit_f fit)
 ```
 
-The omega for `ETA_F` has `transform = "variance"` (same label as all omega rows):
+The omega for `ETA_F` has `transform = "variance"` (variance on the logit
+scale, symmetric CI - same label as all omega rows; the bare ETA name is the
+parameter label):
 
 ```r
 est[est$param == "ETA_F", ]
-#   param  transform  estimate     se  rse_pct
-#   ETA_F  variance     0.0631  0.028     44.4
+#   param  transform  estimate      se  rse_pct  lower_95  upper_95  init_as_sd
+#   ETA_F   variance    0.1000  0.0633    63.3   -0.0240    0.2240       FALSE
+# lower_95 < 0 can occur with Wald CIs when RSE% is large; variance is
+# non-negative by definition but the symmetric Wald interval is not constrained.
 ```
 
 ---
 
 ## Additive ETA (lag time)
 
-When the BSV on a parameter is additive — for example, a lag time where the
-subject-level deviation is in hours — use a plain sum:
+When the BSV on a parameter has an additive rather than multiplicative
+structure — for example, a lag time where the subject-level deviation is in
+hours — use a plain sum:
 
 ```
 TLAG = TVTLAG + ETA_TLAG
 ```
 
-`ETA_TLAG` follows N(0, ω_TLAG), so individual lag times are normally
+`ETA_TLAG` follows a normal distribution with mean 0 and variance given by the
+corresponding omega element. The individual lag times are therefore normally
 distributed around `TVTLAG`.
 
 ```r
 ex_add <- ferx_example("warfarin_additive_eta")
 ferx_model_inspect(ex_add$model)
-
-fit_add <- ferx_fit(ex_add$model, ex_add$data)
-fit_add
-# --- OMEGA Estimates ---
-#   ETA_TLAG                 [additive]    = 0.312000  SD = 0.5600  SE = N/A
 ```
 
-`ferx_estimates()` returns `transform = "variance"` for the omega element
-(all omega rows). The `estimate` is the variance in the original units (hours²);
-no back-transform is applied:
+After fitting, the `ETA_TLAG` row in the omega block is printed with
+`[additive]` and an SD in the original units (hours):
+
+```r
+fit_add <- ferx_fit(ex_add$model, ex_add$data)
+fit_add
+```
+
+`ferx_estimates()` returns `transform = "variance"` for that omega element
+(all omega rows use this label). The `estimate` is the variance in the original
+units (hours²), and the CI is symmetric — no back-transform is applied:
 
 ```r
 ferx_estimates(fit_add)
-#   param    transform  estimate     se  rse_pct
-#   ETA_TLAG variance     0.312   0.098     31.4
-# SD in original units = sqrt(0.312) ≈ 0.56 h
+#     param  transform  estimate  se  rse_pct  lower_95  upper_95  init_as_sd
+#  ETA_TLAG   variance   0.04003  NA       NA        NA        NA       FALSE
+# SD in original units = sqrt(0.04003) ~ 0.2001 h
+# estimate_natural / lower_95_natural / upper_95_natural are NA (not applicable)
+# (values captured from a real warfarin_additive_eta fit with covariance = FALSE,
+# so SE columns are NA; the bare ETA name is the parameter label - no OMEGA() wrap.)
 ```
 
 ---
 
 ## Mixing transforms in one model
 
-All three styles can appear in the same model:
+All three styles can appear in the same model. The standard two-compartment
+oral model with a logit bioavailability and an additive lag time would declare:
 
 ```
 [individual_parameters]
-  CL   = TVCL  * exp(ETA_CL)                    # log-normal
-  V1   = TVV1  * exp(ETA_V1)                    # log-normal
-  KA   = TVKA  * exp(ETA_KA)                    # log-normal
-  F    = inv_logit(logit(THETA_F) + ETA_F)      # logit-normal
-  TLAG = TVTLAG + ETA_TLAG                      # additive
+  CL   = TVCL  * exp(ETA_CL)        # log-normal
+  V1   = TVV1  * exp(ETA_V1)        # log-normal
+  KA   = TVKA  * exp(ETA_KA)        # log-normal
+  F    = inv_logit(logit(THETA_F) + ETA_F)   # logit-normal
+  TLAG = TVTLAG + ETA_TLAG          # additive
+
+[structural_model]
+  pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA, f=F, lagtime=TLAG)
 ```
 
 Each ETA is handled independently; the omega matrix contains the corresponding
-variances on their respective scales.
+variances on the respective scales (log, logit, or natural units).
+
+### Running the mixed-transform model
+
+Using the bundled two-compartment with covariate example as a proxy for a
+multi-transform model (it uses log-normal ETAs on all parameters), you can
+verify the pattern compiles and fits:
+
+```r
+ex2 <- ferx_example("two_cpt_oral_cov")
+ferx_model_inspect(ex2$model)
+fit2 <- ferx_fit(ex2$model, ex2$data, method = "gn", covariance = FALSE)
+fit2$theta
+```
+
+A model combining logit and additive ETAs follows exactly the same path —
+`ferx_fit()` detects each ETA's parameterisation from the `[individual_parameters]`
+expressions and applies the correct transform automatically.
 
 ---
 
 ## Summary table
 
-| Transform | Omega interpretation | `print()` label | `ferx_estimates()` |
+| Transform | Omega interpretation | Print label | `ferx_estimates()` columns |
 |---|---|---|---|
-| Log-normal | Variance on log scale | `[log-normal]` + CV% | `transform = "variance"`, symmetric CI on log-var scale |
-| Logit-normal | Variance on logit scale | `[logit]` + SD_logit + ±1 SD interval | `transform = "variance"`; logit theta gets `estimate_natural` etc. |
-| Additive | Variance in original units | `[additive]` + SD | `transform = "variance"`, symmetric CI in original units² |
+| Log-normal | variance on log scale | `[log-normal]` + CV% | `transform = "variance"`, symmetric CI on log-var scale |
+| Logit-normal | variance on logit scale | `[logit]` + SD_logit + ±1 SD interval | `transform = "variance"`; logit theta gets `estimate_natural` etc. |
+| Additive | variance in original units | `[additive]` + SD | `transform = "variance"`, symmetric CI in original units² |

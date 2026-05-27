@@ -13,13 +13,28 @@ Both produce the same `ferx_fit` result.
 This article gives a concise overview. For a complete walkthrough with runnable output, see [Chapter 2 (Quickstart)](https://ferx-nlme.github.io/ferx-book/chapters/02-quickstart.html) and [Chapter 4 (Fitting)](https://ferx-nlme.github.io/ferx-book/chapters/04-fitting.html) in the ferx book.
 :::
 
+**Entry point:** `ferx_model(data, model)` takes the data file first, which lets a data object flow naturally into a pipeline:
+
+```r
+ex$data |> ferx_model(ex$model) |> ferx_fit() |> summary()
+```
+
+You can also call it positionally or by name:
+
+```r
+ferx_model(ex$data, ex$model) |> ferx_fit() |> summary()
+ferx_model(data = ex$data, model = ex$model) |> ferx_fit() |> summary()
+```
+
+**Migration note:** Earlier versions used the order `ferx_model(model, data)`. Old-style positional calls (`ferx_model("pk.ferx")` or `ferx_model("pk.ferx", "data.csv")`) are detected by the `.ferx` extension and auto-corrected with a deprecation warning; this shim will be removed in a future release. Calls that pass `data` by name (`ferx_model("pk.ferx", data = "data.csv")`) keep working unchanged.
+
 ---
 
 ## Path-based workflow
 
 ### Step 1 — Get a model file
 
-`ferx_example()` returns paths to the bundled example models:
+`ferx_example()` returns paths to the bundled example models and their data:
 
 ```r
 ex <- ferx_example("warfarin")
@@ -27,23 +42,29 @@ ex$model  # path to warfarin.ferx
 ex$data   # path to warfarin.csv
 ```
 
+In a real workflow you would supply your own `.ferx` file here.
+
 ### Step 2 — Inspect before fitting
 
-`ferx_model_inspect()` parses the model and prints a concise summary without
-running the optimizer:
+`ferx_model_inspect()` parses the model file and prints a concise summary of
+its structure without running the optimizer. Use this to verify that ferx
+interprets your model the way you expect before committing to a long run.
 
 ```r
 ferx_model_inspect(ex$model)
 ```
 
-| Line | Meaning |
-|---|---|
-| **Structural** | PK model type and theta names |
-| **IIV** | Omega parameter names |
-| **IOV** | Kappa parameter names, or `none` |
-| **Residual** | Error model type |
+The printed summary has four lines:
 
-Returns the structure as a named list (invisibly):
+| Line | Meaning |
+|------|---------|
+| **Structural** | Detected PK model type and population parameter (theta) names |
+| **IIV** | Inter-individual variability (omega) parameter names |
+| **IOV** | Inter-occasion variability (kappa) parameter names, or `none` |
+| **Residual** | Error model type (`proportional`, `additive`, or `combined`) |
+
+`ferx_model_inspect()` returns the structure as a named list (invisibly), which
+is useful for programmatic checks:
 
 ```r
 s <- ferx_model_inspect(ex$model)
@@ -53,7 +74,14 @@ s$iiv           # IIV parameter names
 s$residual      # error model type
 ```
 
+If the printed summary does not match your expectations — for example the model
+type shows `NULL` or a parameter name is missing — fix the `.ferx` file before
+proceeding. This catches typos and structural mistakes cheaply, before the
+optimizer runs.
+
 ### Step 3 — Fit
+
+Once the structure looks correct, pass the same paths to `ferx_fit()`:
 
 ```r
 fit <- ferx_fit(ex$model, ex$data)
@@ -63,25 +91,36 @@ fit
 ### Step 4 — Re-inspect from the fitted result
 
 After fitting you can call `ferx_model_inspect()` directly on the `ferx_fit`
-object — no need to supply the model path again:
+object returned by `ferx_fit()` — no need to supply the model path again:
 
 ```r
 ferx_model_inspect(fit)
 ```
 
+The output is identical to the pre-fit inspection. This is convenient when you
+want to confirm the structure inside a script or report without keeping the
+model path in scope.
+
 ---
 
 ## Pipe-based workflow
 
-`ferx_model()` bundles model and data paths into a single object.
-**Entry point:** `ferx_model(data, model)` — data first, so it flows naturally
-into a pipeline:
+`ferx_model()` bundles model and data paths into a single object that flows
+through a `|>` chain. This is the preferred style when you need to adjust
+options before fitting or chain several post-fit steps.
+
+### Entry point
 
 ```r
-ex$data |> ferx_model(ex$model) |> ferx_fit() |> summary()
+ex <- ferx_example("warfarin")
+m <- ferx_model(ex$data, ex$model)
+m   # prints path, data path, and structure summary
 ```
 
-### Minimal pipe
+### Minimal pipe — inspect, fit, summarise
+
+`ferx_fit()` dispatches on the `ferx_model` object and picks up `$data`
+automatically.
 
 ```r
 ferx_model(ex$data, ex$model) |>
@@ -91,56 +130,73 @@ ferx_model(ex$data, ex$model) |>
 
 ### Peek at a section mid-pipe
 
-`ferx_get_section()` prints a named section and passes the object through:
+`ferx_get_section()` prints the named section to the console and passes the
+`ferx_model` object through unchanged, so the pipe continues:
 
 ```r
 ferx_model(ex$data, ex$model) |>
+  ferx_get_section("parameters")
+```
+
+```r
+# Print [parameters] then fit without interrupting the chain
+fit <- ferx_model(ex$data, ex$model) |>
   ferx_get_section("parameters") |>
   ferx_fit(method = "focei")
 ```
 
 ### Override fit options before fitting
 
-`ferx_set_section()` rewrites a section on disk and returns the object
-unchanged. **Copy the file first** if you do not want to modify the original:
+`ferx_set_section()` rewrites a section on disk and returns the `ferx_model`
+unchanged so the pipe can continue.
+
+**Copy-on-write for bundled examples:** when the model is inside the installed
+ferx package directory (i.e. came from `ferx_example()`), `ferx_set_section()`
+transparently copies it to `tempdir()` first and edits the copy; the bundled
+file is never modified. For user-owned files it edits in place. Copy the file
+yourself if you want a stable user-controlled path.
 
 ```r
-model_copy <- file.path(tempdir(), "warfarin.ferx")
-file.copy(ex$model, model_copy)
-
-fit <- ferx_model(ex$data, model_copy) |>
+fit <- ferx_model(ex$data, ex$model) |>
   ferx_set_section("fit_options", c(
     "  method     = focei",
     "  maxiter    = 500",
     "  covariance = true"
   )) |>
   ferx_fit()
+
+summary(fit)
+ferx_model_inspect(fit)    # no path needed after fitting
+ferx_cor_matrix(fit)       # parameter correlation matrix
+ferx_plot_trace(fit)       # OFV + gradient norm convergence plot
 ```
 
-### Quick convergence check
+### Validate before a long run
 
-`ferx_check_init()` runs only 5 iterations (20 for SAEM) and returns a trace
-and summary table. Use it to confirm the OFV is dropping before a long run:
+`ferx_check_init()` runs only 5 iterations and returns a trace and a summary
+table. Use it to confirm the OFV is dropping before committing to a long
+estimation:
 
 ```r
 chk <- ferx_check_init(ex$model, ex$data, method = "focei")
-chk$summary      # n_iter, ofv_start, ofv_end, ofv_drop, converged
-ferx_plot_trace(chk$fit)   # visual check of the first few iterations
+chk$summary      # ofv_start, ofv_end, ofv_drop — is OFV decreasing?
+ferx_plot_trace(chk$fit)   # visual check: first few iterations
 ```
 
+If `ofv_drop` is small or negative, the initial values are likely poor — adjust
+them in `[parameters]` or widen the parameter bounds before proceeding.
+
 ### Multi-stage method chain
+
+Pass a character vector to `method` to chain stages — each stage starts from
+the previous stage's converged parameters:
 
 ```r
 fit <- ferx_model(ex$data, ex$model) |>
   ferx_fit(method = c("saem", "focei"), covariance = TRUE)
 ```
 
-SAEM finds the basin; FOCEI polishes to the MLE and produces a valid covariance
-matrix. Recommended for complex models.
-
----
-
-## Simulation and prediction
+### Simulate and predict from fitted parameters
 
 ```r
 # Simulate 100 replicates using individual parameters from the fit
@@ -150,12 +206,9 @@ sim <- ferx_simulate(ex$model, ex$data, n_sim = 100, seed = 42, fit = fit)
 pred <- ferx_predict(ex$model, ex$data, fit = fit)
 ```
 
-See `vignette("learn/simulation")` or [Simulation](simulation.qmd) for a full
-worked example.
+See [Simulation](simulation.qmd) for a full worked example.
 
----
-
-## Post-fit diagnostics
+### Post-fit diagnostics
 
 All diagnostic outputs are fields on the `ferx_fit` object:
 
@@ -166,23 +219,41 @@ head(fit$individual_estimates) # individual PK parameters (CL, V, KA, ...)
 fit$eta_normality              # Shapiro-Wilk normality test per ETA
 ```
 
-`ferx_estimates()` collects all estimated parameters into a tidy data frame with
-SEs, %RSE, and 95% CIs:
+`ferx_estimates()` collects all estimated parameters (theta, omega diagonal,
+sigma, kappa diagonal if IOV is present) into a tidy data frame. Run it after
+any fit that used `covariance = TRUE` to populate the `se`, `rse_pct`,
+`lower_95`, and `upper_95` columns; without the covariance step those columns
+are `NA`. The `transform` column reflects how the parameter is reported by the
+backend - `"identity"`, `"log"`, `"logit"`, or `"proportional"`/`"additive"`
+for sigma rows. Omega rows always use `transform = "variance"` regardless of
+the ETA parameterisation (the interpretation is conveyed by `print.ferx_fit()`,
+not by the tidy table). The `init_as_sd` column is `TRUE` for omega/sigma/kappa
+rows where the initial value was annotated as a standard deviation in the
+`.ferx` file.
+
+The parameter labels are the bare declared names (`ETA_CL`, `PROP_ERR`);
+unnamed elements fall back to `OMEGA(i,i)` / `SIGMA(i)` / `KAPPA{i}`.
 
 ```r
 ferx_estimates(fit)
-#   param           transform  estimate     se  rse_pct  lower_95  upper_95
-#   TVCL            identity     0.134  0.0108     8.1     0.113     0.155
-#   TVV             identity     7.94   0.420      5.3     7.12      8.76
-#   TVKA            identity     1.07   0.160     14.9     0.756     1.38
-#   ETA_CL          variance     0.042  0.012     28.6    0.019     0.066
-#   ETA_V           variance     0.020  0.009     44.9    0.002     0.037
-#   ETA_KA          variance     0.157  0.048     30.6    0.063     0.251
-#   PROP_ERR        proportional 0.011  0.001      9.1    0.009     0.013
+#     param    transform   estimate         se  rse_pct  lower_95  upper_95  init_as_sd
+#      TVCL     identity 0.13273892 0.01446172  10.8949  0.104394  0.161084       FALSE
+#       TVV     identity 7.69480857 0.29200479   3.7948  7.122479  8.267138       FALSE
+#      TVKA     identity 0.75856259 0.03505402   4.6211  0.689857  0.827268       FALSE
+#    ETA_CL     variance 0.02854340 0.00637992  22.3516  0.016039  0.041048       FALSE
+#     ETA_V     variance 0.00961159 0.00216463  22.5210  0.005369  0.013854       FALSE
+#    ETA_KA     variance 0.34236514 0.07687305  22.4535  0.191694  0.493036       FALSE
+#  PROP_ERR proportional 0.01063348 0.00078565   7.3884  0.009094  0.012173        TRUE
+# estimate_natural / lower_95_natural / upper_95_natural columns are present
+# but only populated for log- or logit-transformed thetas.
 ```
 
+The output above is captured from a real `gn` fit of the bundled warfarin
+example with `covariance = TRUE`.
+
 `ferx_cor_matrix()` converts the parameter covariance matrix to correlations.
-A value near ±1 signals a structural identifiability problem:
+A value near ±1 between two parameters signals a structural identifiability
+problem worth investigating:
 
 ```r
 ferx_cor_matrix(fit)
@@ -192,52 +263,116 @@ ferx_cor_matrix(fit)
 
 ```r
 library(ggplot2)
+
 sdtab <- fit$sdtab
 
+# DV vs PRED
 ggplot(sdtab, aes(PRED, DV)) +
   geom_point(alpha = 0.4) +
   geom_abline(slope = 1, intercept = 0, colour = "steelblue") +
-  labs(title = "DV vs PRED")
+  labs(title = "DV vs PRED", x = "Population prediction", y = "Observed")
 
+# DV vs IPRED
 ggplot(sdtab, aes(IPRED, DV)) +
   geom_point(alpha = 0.4) +
   geom_abline(slope = 1, intercept = 0, colour = "steelblue") +
-  labs(title = "DV vs IPRED")
+  labs(title = "DV vs IPRED", x = "Individual prediction", y = "Observed")
 
+# CWRES vs TIME
 ggplot(sdtab, aes(TIME, CWRES)) +
   geom_point(alpha = 0.4) +
-  geom_hline(yintercept = c(-2, 0, 2),
-             linetype = c("dashed", "solid", "dashed"), colour = "steelblue") +
+  geom_hline(yintercept = c(-2, 0, 2), linetype = c("dashed", "solid", "dashed"),
+             colour = "steelblue") +
   labs(title = "CWRES vs TIME")
 
+# CWRES vs PRED
 ggplot(sdtab, aes(PRED, CWRES)) +
   geom_point(alpha = 0.4) +
-  geom_hline(yintercept = c(-2, 0, 2),
-             linetype = c("dashed", "solid", "dashed"), colour = "steelblue") +
+  geom_hline(yintercept = c(-2, 0, 2), linetype = c("dashed", "solid", "dashed"),
+             colour = "steelblue") +
   labs(title = "CWRES vs PRED")
 ```
 
 ETA-covariate correlations — identifies covariates worth testing in a formal
-covariate search. The warfarin dataset has no covariate columns; use
-`two_cpt_oral_cov` (which has WT and CRCL) to exercise `ferx_eta_cov()`:
+covariate search. Pass the original data frame (not the path); any numeric
+column that is constant within a subject and not a standard NONMEM column
+(TIME, DV, AMT, EVID, MDV, CMT, RATE) is treated as a covariate:
 
 ```r
+# The warfarin dataset has no covariate columns. The example below uses
+# two_cpt_oral_cov, which carries body weight (WT) and creatinine clearance
+# (CRCL). Rows are sorted by descending |r|; the `flag` column is set to
+# "[!]" whenever |r| >= 0.3 to highlight pairs worth formal testing.
 ex_cov   <- ferx_example("two_cpt_oral_cov")
-fit_cov  <- ferx_fit(ex_cov$model, ex_cov$data)
+fit_cov  <- ferx_fit(ex_cov$model, ex_cov$data, method = "gn", covariance = FALSE)
 data_cov <- read.csv(ex_cov$data)
 ferx_eta_cov(fit_cov, data_cov)
-#   eta      covariate    r   p_val  flag
-#   ETA_CL   WT        0.38  0.008   [!]
-#   ETA_CL   CRCL      0.41  0.003   [!]
-#   ETA_V1   WT        0.29  0.047
-# [!] flags |r| >= 0.3
+#       eta covariate      r  p_val flag
+#    ETA_KA        WT  0.144 0.4472
+#    ETA_CL      CRCL -0.117 0.5386
+#     ETA_Q        WT  0.105 0.5802
+#    ETA_V1        WT -0.093 0.6251
+#    ETA_V2      CRCL  0.081 0.6699
+#    ...
+# None reach |r| >= 0.3 in this dataset, so no rows are flagged. A real
+# covariate signal would show up at the top of the table with [!] in `flag`.
 ```
 
 See [Diagnostics](diagnostics.qmd) for the full diagnostics reference.
 
 ---
 
-## Quick reference
+## Parameter transforms
+
+ferx supports log and logit transforms for both thetas and ETAs directly in the
+model DSL. When a transform is in use, `print()` and `ferx_estimates()` display
+results on the natural scale alongside the estimation-scale values.
+
+```r
+# Log-normal CL (typical in PK — ETA_CL is additive on the log scale)
+CL = TVCL * exp(ETA_CL)  # TVCL is on the natural scale; BSV is log-normal
+
+# Logit-transformed bioavailability (constrained to (0, 1))
+F = inv_logit(logit(THETA_F) + ETA_F)
+```
+
+See [parameter transforms](parameter-transforms.qmd) for worked examples with bundled models.
+
+---
+
+## Saving and reloading fits
+
+Long estimation runs can be saved to disk and reloaded in a later session with
+`ferx_save_fit()` / `ferx_load_fit()`. The saved file is a compressed RDS and
+preserves the full `ferx_fit` object including `sdtab`, `ebe_etas`, trace path,
+and all metadata.
+
+```r
+# Save after a long run
+fit <- ferx_fit(ex$model, ex$data, method = "focei", covariance = TRUE)
+ferx_save_fit(fit, "warfarin_focei.rds")
+
+# Later — restore and continue working
+fit2 <- ferx_load_fit("warfarin_focei.rds")
+identical(fit$theta, fit2$theta)   # TRUE
+ferx_estimates(fit2)
+```
+
+The loaded object is indistinguishable from the original: all downstream
+functions (`ferx_estimates()`, `ferx_cor_matrix()`, `ferx_plot_trace()`,
+`ferx_simulate()`, etc.) work without modification.
+
+**Tip:** save immediately after fitting so a crash or session restart does not
+lose results. Use a naming convention that records the run number, method, and
+date:
+
+```r
+ferx_save_fit(fit, sprintf("run%02d_focei_%s.rds", run_number, Sys.Date()))
+```
+
+---
+
+## Summary
 
 ### Path-based
 
@@ -245,7 +380,7 @@ See [Diagnostics](diagnostics.qmd) for the full diagnostics reference.
 ex <- ferx_example("warfarin")
 ferx_model_inspect(ex$model)          # verify structure before fitting
 fit <- ferx_fit(ex$model, ex$data)
-ferx_model_inspect(fit)               # re-inspect post-fit
+ferx_model_inspect(fit)               # re-inspect post-fit (no path needed)
 ```
 
 ### Pipe-based
@@ -253,8 +388,20 @@ ferx_model_inspect(fit)               # re-inspect post-fit
 ```r
 ex <- ferx_example("warfarin")
 
+# Inspect, fit, summarise in one chain
 ferx_model(ex$data, ex$model) |>
-  ferx_get_section("parameters") |>
+  ferx_get_section("parameters") |>  # optional: peek before fitting
   ferx_fit(method = "focei", covariance = TRUE) |>
+  summary()
+
+# Edit options then fit. ferx_set_section() auto-copies bundled examples to
+# tempdir() before editing, so the package file stays pristine.
+ferx_model(ex$data, ex$model) |>
+  ferx_set_section("fit_options", c(
+    "  method     = focei",
+    "  maxiter    = 500",
+    "  covariance = true"
+  )) |>
+  ferx_fit() |>
   summary()
 ```

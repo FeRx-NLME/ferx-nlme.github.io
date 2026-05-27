@@ -1,9 +1,21 @@
 ---
-title: "Simulation and prediction"
+title: "Simulation, prediction, and uncertainty propagation"
 ---
 
-ferx provides two post-fit prediction functions and a built-in simulation mode
-for model validation.
+After a model has been fit, three functions cover the standard
+post-estimation workflow:
+
+| Function | Returns | Captures |
+|---|---|---|
+| `ferx_predict()` | population predictions (`PRED`) | typical-value trajectory (eta = 0) |
+| `ferx_simulate()` | replicates of `IPRED` and `DV_SIM` | between-subject variability + residual error |
+| `ferx_simulate_with_uncertainty()` | same + parameter draws | also propagates parameter uncertainty |
+
+All three take the same `(model, data)` pair as `ferx_fit()` and accept an
+optional `fit =` argument that substitutes the fitted parameter values for the
+model file's initial estimates. When `fit` is omitted, the initial values from
+the `.ferx` file are used - which is occasionally useful for sanity-checking a
+model before fitting, but the post-fit case is the common one.
 
 ::: {.callout-tip}
 For a full VPC walkthrough, see [Chapter 6 (Simulation & VPC)](https://ferx-nlme.github.io/ferx-book/chapters/06-simulation-vpc.html) in the ferx book.
@@ -11,143 +23,168 @@ For a full VPC walkthrough, see [Chapter 6 (Simulation & VPC)](https://ferx-nlme
 
 ---
 
-## `ferx_simulate()` — stochastic simulation
-
-`ferx_simulate()` draws random effects from the estimated omega and generates
-simulated observations, including residual error:
+## Setup
 
 ```r
 ex  <- ferx_example("warfarin")
-fit <- ferx_fit(ex$model, ex$data)   # fit first
-
-# 100 simulated replicates
-sim <- ferx_simulate(ex$model, ex$data,
-                     n_sim = 100,
-                     seed  = 42,
-                     fit   = fit)
-head(sim)
-#   SIM  ID  TIME  IPRED  DV_SIM
-#     1   1   0.5  9.81   10.2
-#     1   1   1.0  14.3   13.6
-#   ...
+fit <- ferx_fit(ex$model, ex$data,
+                method = "gn", covariance = TRUE, verbose = FALSE)
 ```
 
-Key arguments:
+The examples below run live against this fit, so the numeric outputs stay in
+sync with the package and the bundled warfarin dataset.
 
-| Argument | Description |
-|---|---|
-| `model` | Path to a `.ferx` model file, or a `ferx_model` object |
-| `data` | Path to a NONMEM CSV, or a `ferx_model` that carries a data path |
-| `n_sim` | Number of simulation replicates (default: 1) |
-| `seed` | RNG seed for reproducibility |
-| `fit` | A `ferx_fit` object to use fitted parameters; if `NULL`, uses the initial values from the model file |
-
-**Output columns:** `SIM`, `ID`, `TIME`, `IPRED` (individual prediction
-without residual error), `DV_SIM` (simulated observation including residual
-error).
-
-### Visual predictive check (VPC)
-
-A VPC overlays observed data with simulation percentiles to assess model fit:
-
-```r
-library(ggplot2)
-obs  <- read.csv(ex$data)
-obs  <- obs[obs$EVID == 0, ]   # observations only
-
-# Compute 5th / 50th / 95th percentiles of simulated DV at each time
-vpc <- aggregate(DV_SIM ~ TIME, sim, quantile, probs = c(0.05, 0.5, 0.95))
-
-ggplot() +
-  geom_ribbon(data = vpc,
-              aes(x = TIME, ymin = DV_SIM[, "5%"], ymax = DV_SIM[, "95%"]),
-              fill = "steelblue", alpha = 0.2) +
-  geom_line(data = vpc, aes(x = TIME, y = DV_SIM[, "50%"]),
-            colour = "steelblue") +
-  geom_point(data = obs, aes(x = TIME, y = DV), alpha = 0.6) +
-  labs(title = "Visual Predictive Check",
-       x = "Time (h)", y = "Concentration")
-```
+This chunk uses `message = FALSE, warning = FALSE` to keep the rendered
+output tidy. The same fit run interactively prints a model-file
+method-override warning (the bundled model file specifies `method = foce`
+while the call overrides to `gn`) and a few diagnostic notes; both are
+expected.
 
 ---
 
-## `ferx_predict()` — population predictions
+## Population prediction
 
-`ferx_predict()` computes population predictions using fitted theta values with
-all ETAs set to zero (i.e. the typical individual):
+`ferx_predict()` returns one row per observation in the data, with the
+typical-value prediction (eta = 0) for each subject's covariates and dosing
+record:
 
 ```r
 pred <- ferx_predict(ex$model, ex$data, fit = fit)
 head(pred)
-#   ID  TIME  PRED
-#    1   0.5  10.12
-#    1   1.0  14.87
-#   ...
 ```
 
-This is equivalent to `fit$sdtab$PRED` but can be used without a full fit object
-(e.g. to evaluate predictions from externally specified parameters).
+Without `fit =`, the `[parameters]` block's initial estimates are used. The
+columns are always `ID, TIME, PRED`.
 
 ---
 
-## `[simulation]` block — built-in virtual trial
+## Individual simulation
 
-For standalone simulations without real data, add a `[simulation]` block to
-the `.ferx` file:
+`ferx_simulate()` draws fresh etas and epsilons and returns simulated
+observations for each replicate. Each row carries:
 
-```
-[simulation]
-  subjects = 100
-  dose     = 100
-  cmt      = 1
-  seed     = 12345
-  times    = [0.5, 1, 2, 4, 8, 12, 24]
-```
-
-| Key | Description |
+| Column | Meaning |
 |---|---|
-| `subjects` | Number of virtual subjects |
-| `dose` | Dose amount administered to each subject |
-| `cmt` | Dosing compartment (1-indexed) |
-| `seed` | Random seed for reproducibility |
-| `times` | Observation time points |
-
-Run from the CLI:
-
-```bash
-ferx model.ferx --simulate
-```
-
-This will:
-
-1. Parse the model and `[simulation]` block
-2. Sample random effects: $\eta_i \sim N(0, \Omega)$
-3. Compute individual parameters via `[individual_parameters]`
-4. Generate predictions with the structural model
-5. Add residual error: $DV = IPRED + \varepsilon$, $\varepsilon \sim N(0, V)$
-6. Report parameter estimates and diagnostics
-
----
-
-## Simulation process (R and CLI)
-
-For each simulated subject:
-
-1. Sample $\eta_i \sim N(0, \hat{\Omega})$ (from fitted or specified omega)
-2. Compute individual PK parameters via the `[individual_parameters]` expressions
-3. Generate IPRED with the structural model at the dose and observation times
-4. Sample residual error: $\varepsilon_{ij} \sim N(0, V_{ij})$ where $V_{ij}$ is evaluated at IPRED
-5. $DV_{ij} = IPRED_{ij} + \varepsilon_{ij}$
-
----
-
-## Pipe-based simulation
+| `DRAW`  | Always `1` for `ferx_simulate()`; present so downstream code can share aggregation logic with `ferx_simulate_with_uncertainty()` |
+| `SIM`   | Replicate index, 1..`n_sim` |
+| `ID`    | Subject ID from the data file |
+| `TIME`  | Observation time from the data file |
+| `IPRED` | Individual prediction (using the drawn eta) |
+| `DV_SIM`| Simulated observation (IPRED plus residual error) |
 
 ```r
-ex <- ferx_example("warfarin")
-
-sim <- ex$data |>
-  ferx_model(ex$model) |>
-  ferx_fit(method = "focei") |>
-  (\(fit) ferx_simulate(ex$model, ex$data, n_sim = 200, seed = 1, fit = fit))()
+sim <- ferx_simulate(ex$model, ex$data, n_sim = 3L, seed = 1L, fit = fit)
+head(sim)
+nrow(sim)            # n_sim * n_obs
+unique(sim$SIM)
 ```
+
+`seed` makes the draws reproducible across runs.
+
+### Quick visual prediction interval
+
+A common diagnostic is a per-time prediction interval over the simulated
+replicates. With `n_sim = 100` and base aggregation:
+
+```r
+sim <- ferx_simulate(ex$model, ex$data, n_sim = 100L, seed = 1L, fit = fit)
+
+pi <- aggregate(DV_SIM ~ TIME, data = sim,
+                FUN = function(x) quantile(x, c(0.05, 0.5, 0.95)))
+head(pi)
+```
+
+To draw a visual predictive check with ggplot2 you would unpack the matrix
+column produced by `quantile()` into named columns and layer the ribbon over
+the observed `DV`:
+
+```r
+library(ggplot2)
+
+q <- as.data.frame(pi$DV_SIM)
+names(q) <- c("lo", "med", "hi")
+pi_df <- data.frame(TIME = pi$TIME, q)
+
+obs <- read.csv(ex$data)
+obs <- obs[obs$EVID == 0 & obs$MDV == 0, ]
+# DV is character in read.csv because dose rows use "." as a placeholder.
+# Coerce after filtering observation rows so the ribbon plot gets a numeric axis.
+obs$DV <- as.numeric(obs$DV)
+
+ggplot() +
+  geom_ribbon(data = pi_df, aes(TIME, ymin = lo, ymax = hi),
+              fill = "steelblue", alpha = 0.25) +
+  geom_line(data   = pi_df, aes(TIME, med),
+            colour = "steelblue") +
+  geom_point(data  = obs, aes(TIME, DV),
+             alpha = 0.4) +
+  labs(title = "Simulation-based 90% prediction interval",
+       y     = "DV")
+```
+
+The simple aggregation above stratifies only by `TIME`. For a "real" VPC you
+would also stratify by dose or covariate group, and bin times for sparse
+designs - both are downstream data-frame manipulations and are not built into
+ferx.
+
+---
+
+## Propagating parameter uncertainty
+
+`ferx_simulate_with_uncertainty()` adds an outer loop: for each of
+`n_uncertainty_draws` parameter sets drawn from the fit's uncertainty
+distribution, `n_sim_per_draw` eta/eps replicates are simulated. The result
+includes both the within-replicate variability and the parameter uncertainty
+itself.
+
+Two uncertainty sources are supported:
+
+| `method` | Requires | Sampling |
+|---|---|---|
+| `"asymptotic"` (default) | `fit$cov_matrix` (i.e. `ferx_fit(..., covariance = TRUE)`) | Multivariate-normal draws around the ML estimate, using the fit's covariance matrix as the proposal. Internally the engine works in a packed (log-theta, Cholesky-omega, log-sigma) parameterisation so the draws respect positivity and PSD constraints. |
+| `"sir"` | `fit$sir_resamples` (i.e. `ferx_fit(..., sir = TRUE, settings = list(sir_keep_samples = TRUE))`) | Resampling with replacement from the stored SIR resamples - importance-weighted draws that better reflect the true likelihood when the asymptotic approximation is poor. |
+
+The return value has the same column set as `ferx_simulate()`, but `DRAW` now
+ranges over 1..`n_uncertainty_draws`:
+
+```r
+sims <- ferx_simulate_with_uncertainty(
+  ex$model, ex$data, fit,
+  n_uncertainty_draws = 5L,
+  n_sim_per_draw      = 2L,
+  seed                = 1L
+)
+head(sims)
+nrow(sims)            # n_uncertainty_draws * n_sim_per_draw * n_obs
+```
+
+The row count is `n_uncertainty_draws * n_sim_per_draw * n_obs`. For an
+uncertainty-aware prediction interval, aggregate over all rows at each `TIME`:
+
+```r
+pi_unc <- aggregate(DV_SIM ~ TIME, data = sims,
+                    FUN = function(x) quantile(x, c(0.05, 0.5, 0.95)))
+head(pi_unc)
+```
+
+The asymptotic method is fast but assumes the parameter likelihood is locally
+quadratic around the ML estimate. For models with strong non-normality or
+boundary issues, prefer the SIR method - but only when the cost of running SIR
+at fit time is acceptable.
+
+---
+
+## Choosing between the three
+
+- **`ferx_predict()`** when you only need the typical-value trajectory - for a
+  PRED-vs-time overlay, or for forecasting under a new dosing schedule.
+- **`ferx_simulate()`** when you want a prediction interval that reflects
+  between-subject variability and residual error, but you are willing to treat
+  the ML estimates as fixed.
+- **`ferx_simulate_with_uncertainty()`** when the question is about uncertainty
+  in the parameter values themselves: dose-recommendation intervals, model
+  comparison via predictive performance, or any decision-relevant interval
+  that would understate spread if parameter uncertainty were ignored.
+
+See [Uncertainty (SIR)](uncertainty-sir.qmd) for the SIR workflow that feeds
+into `method = "sir"`.
