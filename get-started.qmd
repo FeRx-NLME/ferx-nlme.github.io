@@ -2,13 +2,26 @@
 title: "Get started"
 ---
 
-## Quick install
+## Two install paths
+
+ferx has two builds. They produce the **same parameter estimates** — they differ in how gradients are computed and how fast fits run.
+
+| Build | Gradients | Compile time | Fit speed | When to use |
+|-------|-----------|--------------|-----------|-------------|
+| **Simple** (default) | Finite differences | ~2 min | Baseline | Trying ferx out, Windows-native, no Rust nightly |
+| **Full** (Enzyme autodiff) | Exact via [Enzyme](https://enzyme.mit.edu/) | ~45–60 min one-time toolchain build | Faster, more accurate Hessians | Production fits, large models, SIR / uncertainty quantification |
+
+You can start with the simple build and upgrade later — the R API is identical.
+
+For a deeper walkthrough of either path, see the installation chapter of the ferx-r book.
+
+---
+
+## Simple build
+
+The simple build skips the Enzyme toolchain entirely. It works on plain stable Rust and falls back to finite-difference gradients. Estimates match the full build; fits are somewhat slower and standard errors from the FD Hessian are slightly less accurate.
 
 **Prerequisites:** R ≥ 4.2, cmake, and Rust stable (via [rustup](https://rustup.rs)).
-
-The standard build uses `FERX_NO_AUTODIFF=1`, which skips the Enzyme toolchain and
-falls back to finite-difference gradients. Estimates are identical; compile time
-is ~2 minutes. Enzyme (exact autodiff) is optional and documented below.
 
 ### macOS
 
@@ -22,20 +35,20 @@ RStudio on macOS does not inherit the Homebrew `PATH`. Add cmake explicitly befo
 ```r
 # Apple Silicon (M1/M2/M3):
 Sys.setenv(PATH = paste("/opt/homebrew/opt/cmake/bin", Sys.getenv("PATH"), sep = ":"))
-# Intel Mac — use this line instead:
+# Intel Mac:
 # Sys.setenv(PATH = paste("/usr/local/opt/cmake/bin", Sys.getenv("PATH"), sep = ":"))
 
 Sys.setenv(FERX_NO_AUTODIFF = "1")
-devtools::install_github("FeRx-NLME/ferx-r")
+pak::pak("FeRx-NLME/ferx-r")
 ```
 
 ### Windows
 
-Install [Rtools44](https://cran.r-project.org/bin/windows/Rtools/rtools44/rtools.html) and [Rust via rustup](https://rustup.rs). cmake ships with Rtools44.
+Install [Rtools44](https://cran.r-project.org/bin/windows/Rtools/rtools44/rtools.html) and [Rust via rustup](https://rustup.rs) (cmake ships with Rtools44), then in R:
 
 ```r
 Sys.setenv(FERX_NO_AUTODIFF = "1")
-devtools::install_github("FeRx-NLME/ferx-r")
+pak::pak("FeRx-NLME/ferx-r")
 ```
 
 ### Linux
@@ -47,302 +60,71 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 ```r
 Sys.setenv(FERX_NO_AUTODIFF = "1")
-devtools::install_github("FeRx-NLME/ferx-r")
+pak::pak("FeRx-NLME/ferx-r")
 ```
 
----
-
-For full autodiff accuracy, a one-time Enzyme toolchain build is required. Pick your platform:
-
-- [Linux](#linux) — fully supported, ~30 min plugin build
-- [macOS](#macos) — supported with caveats
-- [Windows](#windows) — not natively supported; use WSL2, Docker, or finite-difference fallback
-- [Docker](#docker) — Enzyme pre-installed, recommended for Windows autodiff
-- [Multi-user Linux server](#multiuser)
+The `FERX_NO_AUTODIFF=1` flag tells the package build to skip the Enzyme probe and go straight to the stable, finite-difference path.
 
 ---
 
-## Linux {#linux}
+## Full build (Enzyme autodiff)
 
-Tested on Ubuntu 22.04. Other distributions (Debian, Fedora, Arch) work with adjustments to the package manager commands.
+The full build uses [Enzyme](https://enzyme.mit.edu/) to compute exact gradients via automatic differentiation. This requires building a custom `rustc` from source with Enzyme integrated into its own LLVM — a one-time ~45–60 min setup that needs ~30 GB of free disk.
 
-### 1. Install rustup + nightly
-
-::: {.callout-warning}
-Do **not** use snap's rustup — its filesystem confinement breaks on non-standard home directories common on servers.
+::: {.callout-important}
+**Do not** build a standalone Enzyme *plugin* against a separately-installed LLVM and copy it into a prebuilt nightly's sysroot. That setup looks like it works but causes Enzyme to **hang silently** in `llvm::Constant::getNullValue` the first time it actually differentiates anything. The full toolchain must be built from a single `rust-lang/rust` source tree with `--enable-llvm-enzyme` and `--set llvm.download-ci-llvm=false`. See the warning at the top of the [ferx-core installation page](https://ferx-nlme.github.io/ferx-core/installation.html#do-not-build-a-standalone-enzyme-plugin-against-a-separately-installed-llvm).
 :::
 
-```bash
-# Remove snap rustup if present:
-sudo snap remove rustup
+### 1. Build the Enzyme toolchain
 
-# Official installer
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-source "$HOME/.cargo/env"
+Follow the platform steps in the ferx-core book:
 
-rustup toolchain install nightly
-```
+- [**Linux**](https://ferx-nlme.github.io/ferx-core/installation.html#linux)
+- [**macOS**](https://ferx-nlme.github.io/ferx-core/installation.html#macos) (Intel and Apple Silicon)
+- [**Windows**](https://ferx-nlme.github.io/ferx-core/installation.html#windows) — not supported; use WSL2 or Docker
 
-### 2. Install system dependencies + matching LLVM
+Then [verify](https://ferx-nlme.github.io/ferx-core/installation.html#4-verify-the-toolchain) the toolchain with a real `#[autodiff_forward]` test — the usual `E0601` check is **not** sufficient and passes for broken toolchains.
 
-First check which LLVM major version nightly needs:
+For shared servers, see [multi-user installs](https://ferx-nlme.github.io/ferx-core/installation.html#multi-user-servers).
 
-```bash
-rustc +nightly --version --verbose | grep LLVM
-# e.g. "LLVM version: 22.1.2" — use major = 22
-```
+### 2. Install the R package
 
-Use that `<MAJOR>` below:
-
-```bash
-sudo apt install -y cmake ninja-build clang libssl-dev pkg-config \
-                    python3 build-essential curl git libzstd-dev
-
-# Install matching LLVM from apt.llvm.org (Ubuntu's defaults often lag):
-wget https://apt.llvm.org/llvm.sh
-chmod +x llvm.sh
-sudo ./llvm.sh <MAJOR>
-
-sudo chmod 644 /etc/apt/trusted.gpg.d/apt.llvm.org.asc
-sudo apt update
-sudo apt install -y llvm-<MAJOR>-dev clang-<MAJOR>
-```
-
-For Fedora/RHEL: `sudo dnf install llvm<MAJOR>-devel clang<MAJOR>`.
-
-### 3. Build the Enzyme plugin (~15–30 min)
-
-```bash
-git clone https://github.com/EnzymeAD/Enzyme /tmp/enzyme-build
-cd /tmp/enzyme-build/enzyme
-mkdir build && cd build
-
-cmake -G Ninja .. \
-  -DLLVM_DIR=/usr/lib/llvm-<MAJOR>/lib/cmake/llvm \
-  -DENZYME_CLANG=OFF \
-  -DENZYME_FLANG=OFF
-ninja
-```
-
-### 4. Install the plugin into nightly's sysroot
-
-```bash
-SYSROOT=$(rustc +nightly --print sysroot)
-TARGET=x86_64-unknown-linux-gnu   # or aarch64-unknown-linux-gnu on ARM
-
-cp /tmp/enzyme-build/enzyme/build/Enzyme/LLVMEnzyme-<MAJOR>.so \
-   $SYSROOT/lib/rustlib/$TARGET/lib/libEnzyme-<MAJOR>.so
-```
-
-Note the filename rewrite: `LLVMEnzyme-<N>.so` → `libEnzyme-<N>.so` (the `lib` prefix is required).
-
-### 5. Register the toolchain as `enzyme`
-
-```bash
-rustup toolchain link enzyme "$(rustc +nightly --print sysroot)"
-```
-
-### 6. Verify
-
-```bash
-rustc +enzyme -Z autodiff=Enable - </dev/null 2>&1 | head
-```
-
-Expected output: `error[E0601]: 'main' function not found`. That is the success signal. If you see `autodiff backend not found in the sysroot`, the `.so` is missing or placed in the wrong directory (step 4).
-
----
-
-## macOS {#macos}
-
-Supported on both Intel and Apple Silicon.
-
-### 1. Install Xcode Command Line Tools
-
-```bash
-xcode-select --install
-```
-
-### 2. Install rustup + nightly
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-source "$HOME/.cargo/env"
-rustup toolchain install nightly
-```
-
-### 3. Install matching LLVM via Homebrew
-
-```bash
-rustc +nightly --version --verbose | grep LLVM
-# note the major version, e.g. 22
-```
-
-```bash
-brew install llvm@<MAJOR> cmake ninja
-```
-
-Homebrew ships a limited set of LLVM versions. If your version is unavailable, install a slightly older dated nightly that matches what Homebrew has:
-
-```bash
-rustup toolchain install nightly-YYYY-MM-DD
-```
-
-### 4. Build the Enzyme plugin
-
-```bash
-git clone https://github.com/EnzymeAD/Enzyme /tmp/enzyme-build
-cd /tmp/enzyme-build/enzyme
-mkdir build && cd build
-
-# Adjust prefix: /opt/homebrew (Apple Silicon) or /usr/local (Intel)
-cmake -G Ninja .. \
-  -DLLVM_DIR=$(brew --prefix)/opt/llvm@<MAJOR>/lib/cmake/llvm \
-  -DENZYME_CLANG=OFF \
-  -DENZYME_FLANG=OFF
-ninja
-```
-
-### 5. Install the plugin
-
-```bash
-SYSROOT=$(rustc +nightly --print sysroot)
-
-# Apple Silicon:
-TARGET=aarch64-apple-darwin
-# Intel: TARGET=x86_64-apple-darwin
-
-# macOS uses .dylib, not .so
-cp /tmp/enzyme-build/enzyme/build/Enzyme/LLVMEnzyme-<MAJOR>.dylib \
-   $SYSROOT/lib/rustlib/$TARGET/lib/libEnzyme-<MAJOR>.dylib
-```
-
-### 6. Register and verify
-
-```bash
-rustup toolchain link enzyme "$(rustc +nightly --print sysroot)"
-rustc +enzyme -Z autodiff=Enable - </dev/null 2>&1 | head
-# Expect: error[E0601]: `main` function not found
-```
-
-::: {.callout-note}
-**macOS caveats**
-
-- **Code-signing errors** loading the `.dylib`: run `sudo codesign --force --sign - <path-to-libEnzyme.dylib>` — rare on developer machines.
-- **Apple Silicon nightly lag**: ARM nightlies occasionally trail x86_64 by a day or two; if LLVM versions mismatch after `rustup update`, pin a specific dated nightly.
-:::
-
----
-
-## Windows {#windows}
-
-Windows is **not currently supported** for the full Enzyme autodiff backend. Two practical options are available:
-
-### Option A — WSL2 (recommended for full autodiff)
-
-Install Ubuntu under WSL2 and follow the [Linux instructions](#linux). Performance is near-native for CPU-bound workloads like model fitting.
-
-```powershell
-# From PowerShell (admin):
-wsl --install -d Ubuntu-22.04
-```
-
-Then open a WSL terminal and follow the Linux steps above.
-
-### Option B — Native Windows (without Enzyme, finite differences only)
-
-Gradients fall back to finite differences — slower and less accurate than autodiff, but the R package is otherwise fully functional.
-
-**Prerequisites:**
-
-- [R](https://cran.r-project.org/bin/windows/base/) and [Rtools44](https://cran.r-project.org/bin/windows/Rtools/) (ships MinGW gcc compatible with R's linker)
-- [rustup](https://www.rust-lang.org/tools/install) with the GNU-ABI toolchain:
-
-```powershell
-rustup toolchain install stable-x86_64-pc-windows-gnu
-```
-
-You do **not** need to make it the default — the package build pins this toolchain automatically on Windows.
-
-Then install in R:
+Once `rustc +enzyme` is verified working:
 
 ```r
-devtools::install_github("FeRx-NLME/ferx-r")
+pak::pak("FeRx-NLME/ferx-r")
 ```
 
-### Option C — Docker (full autodiff on Windows)
+The package's `src/Makevars` auto-detects the `enzyme` toolchain and builds the autodiff path. To confirm afterwards:
 
-The Docker image bundles the Enzyme toolchain, ferx CLI, the R package, and RStudio Server. See [Docker](#docker) below.
+```r
+ferx:::ferx_rust_autodiff_enabled()
+# [1] TRUE
+```
 
-::: {.callout-note}
-Full native Windows support is blocked on upstream Enzyme integration in rustup ([rust-lang/rust#124509](https://github.com/rust-lang/rust/issues/124509)). Once that lands, the plugin distribution problem disappears and Windows support becomes straightforward.
-:::
+To force one path or the other, set before installing:
+
+- `FERX_NO_AUTODIFF=1` — force the simple build even if Enzyme is installed
+- `FERX_NO_AUTODIFF=0` — force the full build, erroring out if Enzyme isn't found
 
 ---
 
-## Docker {#docker}
+## Docker (full autodiff, no local toolchain)
 
-The Docker image ships with the full Enzyme toolchain pre-built — no local Rust or Enzyme setup required. Recommended for Windows users who need autodiff, or any environment where you want a reproducible, isolated setup.
+The [ferx-r Docker image](https://github.com/FeRx-NLME/ferx-r) ships the Enzyme toolchain prebuilt — the fastest way to get a working full-autodiff setup, especially on Windows.
 
 ```bash
-# Build the image (first build ~45–60 min; subsequent builds use the cache)
 docker build -t ferx:latest https://github.com/FeRx-NLME/ferx-r.git#main
-
-# Run RStudio Server
 docker run --rm -p 8787:8787 -e PASSWORD=ferx ferx:latest
 ```
 
 Open [http://localhost:8787](http://localhost:8787) — user: `rstudio`, password: `ferx`.
 
-To mount a local data directory:
-
-```bash
-docker run --rm -p 8787:8787 -e PASSWORD=ferx \
-  -v /path/to/your/data:/home/rstudio/data \
-  ferx:latest
-```
-
 ---
 
-## Multi-user Linux server {#multiuser}
+## First fit
 
-For shared servers, build the toolchain once and stage it in `/opt/rust-nightly` so all users share a single installation.
-
-```bash
-# As root (after completing the Linux steps above):
-sudo mkdir -p /opt/rust-nightly
-sudo cp -a ~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/. /opt/rust-nightly/
-sudo chown -R root:root /opt/rust-nightly
-sudo chmod -R a+rX /opt/rust-nightly
-sudo chmod a+rx /opt/rust-nightly/bin/*
-```
-
-Each user links the shared toolchain into their own rustup:
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain none
-rustup toolchain link enzyme /opt/rust-nightly
-```
-
-Add to each user's `~/.Renviron`:
-
-```
-PATH=/opt/rust-nightly/bin:${HOME}/.cargo/bin:${PATH}
-RUSTUP_TOOLCHAIN=enzyme
-```
-
-See [`INSTALL-SYSADMIN.md`](https://github.com/FeRx-NLME/ferx-r/blob/main/INSTALL-SYSADMIN.md) for quarterly refresh procedures and troubleshooting shared installs.
-
----
-
-## After toolchain setup {#install-the-r-package}
-
-Once your Enzyme toolchain is in place, install the R package:
-
-```r
-devtools::install_github("FeRx-NLME/ferx-r")
-```
-
-Then run the warfarin example:
+After either install, run the bundled warfarin example:
 
 ```r
 library(ferx)
@@ -352,33 +134,12 @@ print(fit)
 summary(fit)
 ```
 
-To see all bundled examples:
+List all bundled examples:
 
 ```r
-ferx_example()   # returns a character vector of all available example names
-?ferx_example    # full list with descriptions in the help page
+ferx_example()   # character vector of available example names
+?ferx_example    # full list with descriptions
 ```
-
----
-
-## Troubleshooting
-
-**`"autodiff backend not found in the sysroot"`**
-The `.so`/`.dylib` is missing or in the wrong location. It must be in `<sysroot>/lib/rustlib/<target>/lib/libEnzyme-<N>.so` — not just `lib/`.
-
-**`"error: the option 'Z' is only accepted on the nightly compiler"`**
-Your shell (or R) is finding a stable rustc. Check `rustc --version`, your `PATH`, and `~/.Renviron`.
-
-**`"custom toolchain 'enzyme' is not installed"`**
-Run: `rustup toolchain link enzyme $(rustc +nightly --print sysroot)`
-
-**`"incorrect value 'X' for unstable option 'autodiff'"`**
-Valid values change between nightlies. Verify with:
-```bash
-rustc +enzyme -Z autodiff=Enable - </dev/null 2>&1 | head
-```
-
-For more troubleshooting detail see the [ferx-core installation docs](https://ferx-nlme.github.io/ferx-core/installation.html).
 
 ---
 
@@ -388,3 +149,4 @@ For more troubleshooting detail see the [ferx-core installation docs](https://fe
 - [Model workflow](learn/model-workflow.qmd) — full fitting workflow
 - [Model DSL](model-dsl/overview.qmd) — write your own `.ferx` model files
 - [Reference](reference/index.html) — function documentation
+- [ferx-core installation](https://ferx-nlme.github.io/ferx-core/installation.html) — full toolchain detail and troubleshooting
