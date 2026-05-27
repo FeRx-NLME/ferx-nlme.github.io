@@ -519,40 +519,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#quick-install" id="toc-quick-install" class="nav-link active" data-scroll-target="#quick-install">Quick install</a>
+  <li><a href="#two-install-paths" id="toc-two-install-paths" class="nav-link active" data-scroll-target="#two-install-paths">Two install paths</a></li>
+  <li><a href="#simple-build" id="toc-simple-build" class="nav-link" data-scroll-target="#simple-build">Simple build</a>
   <ul class="collapse">
   <li><a href="#macos" id="toc-macos" class="nav-link" data-scroll-target="#macos">macOS</a></li>
   <li><a href="#windows" id="toc-windows" class="nav-link" data-scroll-target="#windows">Windows</a></li>
   <li><a href="#linux" id="toc-linux" class="nav-link" data-scroll-target="#linux">Linux</a></li>
   </ul></li>
-  <li><a href="#linux" id="toc-linux" class="nav-link" data-scroll-target="#linux">Linux</a>
+  <li><a href="#full-build-enzyme-autodiff" id="toc-full-build-enzyme-autodiff" class="nav-link" data-scroll-target="#full-build-enzyme-autodiff">Full build (Enzyme autodiff)</a>
   <ul class="collapse">
-  <li><a href="#install-rustup-nightly" id="toc-install-rustup-nightly" class="nav-link" data-scroll-target="#install-rustup-nightly">1. Install rustup + nightly</a></li>
-  <li><a href="#install-system-dependencies-matching-llvm" id="toc-install-system-dependencies-matching-llvm" class="nav-link" data-scroll-target="#install-system-dependencies-matching-llvm">2. Install system dependencies + matching LLVM</a></li>
-  <li><a href="#build-the-enzyme-plugin-1530-min" id="toc-build-the-enzyme-plugin-1530-min" class="nav-link" data-scroll-target="#build-the-enzyme-plugin-1530-min">3. Build the Enzyme plugin (~15–30 min)</a></li>
-  <li><a href="#install-the-plugin-into-nightlys-sysroot" id="toc-install-the-plugin-into-nightlys-sysroot" class="nav-link" data-scroll-target="#install-the-plugin-into-nightlys-sysroot">4. Install the plugin into nightly’s sysroot</a></li>
-  <li><a href="#register-the-toolchain-as-enzyme" id="toc-register-the-toolchain-as-enzyme" class="nav-link" data-scroll-target="#register-the-toolchain-as-enzyme">5. Register the toolchain as <code>enzyme</code></a></li>
-  <li><a href="#verify" id="toc-verify" class="nav-link" data-scroll-target="#verify">6. Verify</a></li>
+  <li><a href="#build-the-enzyme-toolchain" id="toc-build-the-enzyme-toolchain" class="nav-link" data-scroll-target="#build-the-enzyme-toolchain">1. Build the Enzyme toolchain</a></li>
+  <li><a href="#install-the-r-package" id="toc-install-the-r-package" class="nav-link" data-scroll-target="#install-the-r-package">2. Install the R package</a></li>
   </ul></li>
-  <li><a href="#macos" id="toc-macos" class="nav-link" data-scroll-target="#macos">macOS</a>
-  <ul class="collapse">
-  <li><a href="#install-xcode-command-line-tools" id="toc-install-xcode-command-line-tools" class="nav-link" data-scroll-target="#install-xcode-command-line-tools">1. Install Xcode Command Line Tools</a></li>
-  <li><a href="#install-rustup-nightly-1" id="toc-install-rustup-nightly-1" class="nav-link" data-scroll-target="#install-rustup-nightly-1">2. Install rustup + nightly</a></li>
-  <li><a href="#install-matching-llvm-via-homebrew" id="toc-install-matching-llvm-via-homebrew" class="nav-link" data-scroll-target="#install-matching-llvm-via-homebrew">3. Install matching LLVM via Homebrew</a></li>
-  <li><a href="#build-the-enzyme-plugin" id="toc-build-the-enzyme-plugin" class="nav-link" data-scroll-target="#build-the-enzyme-plugin">4. Build the Enzyme plugin</a></li>
-  <li><a href="#install-the-plugin" id="toc-install-the-plugin" class="nav-link" data-scroll-target="#install-the-plugin">5. Install the plugin</a></li>
-  <li><a href="#register-and-verify" id="toc-register-and-verify" class="nav-link" data-scroll-target="#register-and-verify">6. Register and verify</a></li>
-  </ul></li>
-  <li><a href="#windows" id="toc-windows" class="nav-link" data-scroll-target="#windows">Windows</a>
-  <ul class="collapse">
-  <li><a href="#option-a-wsl2-recommended-for-full-autodiff" id="toc-option-a-wsl2-recommended-for-full-autodiff" class="nav-link" data-scroll-target="#option-a-wsl2-recommended-for-full-autodiff">Option A — WSL2 (recommended for full autodiff)</a></li>
-  <li><a href="#option-b-native-windows-without-enzyme-finite-differences-only" id="toc-option-b-native-windows-without-enzyme-finite-differences-only" class="nav-link" data-scroll-target="#option-b-native-windows-without-enzyme-finite-differences-only">Option B — Native Windows (without Enzyme, finite differences only)</a></li>
-  <li><a href="#option-c-docker-full-autodiff-on-windows" id="toc-option-c-docker-full-autodiff-on-windows" class="nav-link" data-scroll-target="#option-c-docker-full-autodiff-on-windows">Option C — Docker (full autodiff on Windows)</a></li>
-  </ul></li>
-  <li><a href="#docker" id="toc-docker" class="nav-link" data-scroll-target="#docker">Docker</a></li>
-  <li><a href="#multiuser" id="toc-multiuser" class="nav-link" data-scroll-target="#multiuser">Multi-user Linux server</a></li>
-  <li><a href="#install-the-r-package" id="toc-install-the-r-package" class="nav-link" data-scroll-target="#install-the-r-package">After toolchain setup</a></li>
-  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
+  <li><a href="#docker-full-autodiff-no-local-toolchain" id="toc-docker-full-autodiff-no-local-toolchain" class="nav-link" data-scroll-target="#docker-full-autodiff-no-local-toolchain">Docker (full autodiff, no local toolchain)</a></li>
+  <li><a href="#first-fit" id="toc-first-fit" class="nav-link" data-scroll-target="#first-fit">First fit</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -580,10 +560,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="quick-install" class="level2">
-<h2 class="anchored" data-anchor-id="quick-install">Quick install</h2>
+<section id="two-install-paths" class="level2">
+<h2 class="anchored" data-anchor-id="two-install-paths">Two install paths</h2>
+<p>ferx has two builds. They produce the <strong>same parameter estimates</strong> — they differ in how gradients are computed and how fast fits run.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Build</th>
+<th>Gradients</th>
+<th>Compile time</th>
+<th>Fit speed</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Simple</strong> (default)</td>
+<td>Finite differences</td>
+<td>~2 min</td>
+<td>Baseline</td>
+<td>Trying ferx out, Windows-native, no Rust nightly</td>
+</tr>
+<tr class="even">
+<td><strong>Full</strong> (Enzyme autodiff)</td>
+<td>Exact via <a href="https://enzyme.mit.edu/">Enzyme</a></td>
+<td>~45–60 min one-time toolchain build</td>
+<td>Faster, more accurate Hessians</td>
+<td>Production fits, large models, SIR / uncertainty quantification</td>
+</tr>
+</tbody>
+</table>
+<p>You can start with the simple build and upgrade later — the R API is identical.</p>
+<p>For a deeper walkthrough of either path, see the installation chapter of the ferx-r book.</p>
+<hr>
+</section>
+<section id="simple-build" class="level2">
+<h2 class="anchored" data-anchor-id="simple-build">Simple build</h2>
+<p>The simple build skips the Enzyme toolchain entirely. It works on plain stable Rust and falls back to finite-difference gradients. Estimates match the full build; fits are somewhat slower and standard errors from the FD Hessian are slightly less accurate.</p>
 <p><strong>Prerequisites:</strong> R ≥ 4.2, cmake, and Rust stable (via <a href="https://rustup.rs">rustup</a>).</p>
-<p>The standard build uses <code>FERX_NO_AUTODIFF=1</code>, which skips the Enzyme toolchain and falls back to finite-difference gradients. Estimates are identical; compile time is ~2 minutes. Enzyme (exact autodiff) is optional and documented below.</p>
 <section id="macos" class="level3">
 <h3 class="anchored" data-anchor-id="macos">macOS</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install cmake</span>
@@ -591,283 +605,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>RStudio on macOS does not inherit the Homebrew <code>PATH</code>. Add cmake explicitly before installing:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apple Silicon (M1/M2/M3):</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">PATH =</span> <span class="fu">paste</span>(<span class="st">"/opt/homebrew/opt/cmake/bin"</span>, <span class="fu">Sys.getenv</span>(<span class="st">"PATH"</span>), <span class="at">sep =</span> <span class="st">":"</span>))</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Intel Mac — use this line instead:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Intel Mac:</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Sys.setenv(PATH = paste("/usr/local/opt/cmake/bin", Sys.getenv("PATH"), sep = ":"))</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">FERX_NO_AUTODIFF =</span> <span class="st">"1"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="windows" class="level3">
 <h3 class="anchored" data-anchor-id="windows">Windows</h3>
-<p>Install <a href="https://cran.r-project.org/bin/windows/Rtools/rtools44/rtools.html">Rtools44</a> and <a href="https://rustup.rs">Rust via rustup</a>. cmake ships with Rtools44.</p>
+<p>Install <a href="https://cran.r-project.org/bin/windows/Rtools/rtools44/rtools.html">Rtools44</a> and <a href="https://rustup.rs">Rust via rustup</a> (cmake ships with Rtools44), then in R:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">FERX_NO_AUTODIFF =</span> <span class="st">"1"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="linux" class="level3">
 <h3 class="anchored" data-anchor-id="linux">Linux</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install cmake   <span class="co"># Debian / Ubuntu</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> https://sh.rustup.rs <span class="kw">|</span> <span class="fu">sh</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">FERX_NO_AUTODIFF =</span> <span class="st">"1"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-<p>For full autodiff accuracy, a one-time Enzyme toolchain build is required. Pick your platform:</p>
-<ul>
-<li><a href="#linux">Linux</a> — fully supported, ~30 min plugin build</li>
-<li><a href="#macos">macOS</a> — supported with caveats</li>
-<li><a href="#windows">Windows</a> — not natively supported; use WSL2, Docker, or finite-difference fallback</li>
-<li><a href="#docker">Docker</a> — Enzyme pre-installed, recommended for Windows autodiff</li>
-<li><a href="#multiuser">Multi-user Linux server</a></li>
-</ul>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>FERX_NO_AUTODIFF=1</code> flag tells the package build to skip the Enzyme probe and go straight to the stable, finite-difference path.</p>
 <hr>
 </section>
 </section>
-<section id="linux" class="level2">
-<h2 class="anchored" data-anchor-id="linux">Linux</h2>
-<p>Tested on Ubuntu 22.04. Other distributions (Debian, Fedora, Arch) work with adjustments to the package manager commands.</p>
-<section id="install-rustup-nightly" class="level3">
-<h3 class="anchored" data-anchor-id="install-rustup-nightly">1. Install rustup + nightly</h3>
-<div class="callout callout-style-default callout-warning callout-titled">
+<section id="full-build-enzyme-autodiff" class="level2">
+<h2 class="anchored" data-anchor-id="full-build-enzyme-autodiff">Full build (Enzyme autodiff)</h2>
+<p>The full build uses <a href="https://enzyme.mit.edu/">Enzyme</a> to compute exact gradients via automatic differentiation. This requires building a custom <code>rustc</code> from source with Enzyme integrated into its own LLVM — a one-time ~45–60 min setup that needs ~30 GB of free disk.</p>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Do <strong>not</strong> use snap’s rustup — its filesystem confinement breaks on non-standard home directories common on servers.</p>
+<p><strong>Do not</strong> build a standalone Enzyme <em>plugin</em> against a separately-installed LLVM and copy it into a prebuilt nightly’s sysroot. That setup looks like it works but causes Enzyme to <strong>hang silently</strong> in <code>llvm::Constant::getNullValue</code> the first time it actually differentiates anything. The full toolchain must be built from a single <code>rust-lang/rust</code> source tree with <code>--enable-llvm-enzyme</code> and <code>--set llvm.download-ci-llvm=false</code>. See the warning at the top of the <a href="https://ferx-nlme.github.io/ferx-core/installation.html#do-not-build-a-standalone-enzyme-plugin-against-a-separately-installed-llvm">ferx-core installation page</a>.</p>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove snap rustup if present:</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> snap remove rustup</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Official installer</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> https://sh.rustup.rs <span class="kw">|</span> <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> <span class="at">-y</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> <span class="st">"</span><span class="va">$HOME</span><span class="st">/.cargo/env"</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ex">rustup</span> toolchain install nightly</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="install-system-dependencies-matching-llvm" class="level3">
-<h3 class="anchored" data-anchor-id="install-system-dependencies-matching-llvm">2. Install system dependencies + matching LLVM</h3>
-<p>First check which LLVM major version nightly needs:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rustc</span> +nightly <span class="at">--version</span> <span class="at">--verbose</span> <span class="kw">|</span> <span class="fu">grep</span> LLVM</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># e.g. "LLVM version: 22.1.2" — use major = 22</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Use that <code>&lt;MAJOR&gt;</code> below:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> cmake ninja-build clang libssl-dev pkg-config <span class="dt">\</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                    python3 build-essential curl git libzstd-dev</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Install matching LLVM from apt.llvm.org (Ubuntu's defaults often lag):</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://apt.llvm.org/llvm.sh</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x llvm.sh</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ./llvm.sh <span class="op">&lt;</span>MAJOR<span class="op">&gt;</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chmod 644 /etc/apt/trusted.gpg.d/apt.llvm.org.asc</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> llvm-<span class="op">&lt;</span>MAJOR<span class="op">&gt;</span>-dev clang-<span class="op">&lt;</span>MAJOR<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>For Fedora/RHEL: <code>sudo dnf install llvm&lt;MAJOR&gt;-devel clang&lt;MAJOR&gt;</code>.</p>
-</section>
-<section id="build-the-enzyme-plugin-1530-min" class="level3">
-<h3 class="anchored" data-anchor-id="build-the-enzyme-plugin-1530-min">3. Build the Enzyme plugin (~15–30 min)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/EnzymeAD/Enzyme /tmp/enzyme-build</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/enzyme-build/enzyme</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> build <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> build</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-G</span> Ninja .. <span class="dt">\</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DLLVM_DIR</span><span class="op">=</span>/usr/lib/llvm-<span class="op">&lt;</span>MAJOR<span class="op">&gt;</span>/lib/cmake/llvm <span class="dt">\</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DENZYME_CLANG</span><span class="op">=</span>OFF <span class="dt">\</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DENZYME_FLANG</span><span class="op">=</span>OFF</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="ex">ninja</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="install-the-plugin-into-nightlys-sysroot" class="level3">
-<h3 class="anchored" data-anchor-id="install-the-plugin-into-nightlys-sysroot">4. Install the plugin into nightly’s sysroot</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="va">SYSROOT</span><span class="op">=</span><span class="va">$(</span><span class="ex">rustc</span> +nightly <span class="at">--print</span> sysroot<span class="va">)</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="va">TARGET</span><span class="op">=</span>x86_64-unknown-linux-gnu   <span class="co"># or aarch64-unknown-linux-gnu on ARM</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /tmp/enzyme-build/enzyme/build/Enzyme/LLVMEnzyme-<span class="op">&lt;</span>MAJOR<span class="op">&gt;</span>.so <span class="dt">\</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>   <span class="va">$SYSROOT</span>/lib/rustlib/<span class="va">$TARGET</span>/lib/libEnzyme-<span class="op">&lt;</span>MAJOR<span class="op">&gt;</span>.so</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Note the filename rewrite: <code>LLVMEnzyme-&lt;N&gt;.so</code> → <code>libEnzyme-&lt;N&gt;.so</code> (the <code>lib</code> prefix is required).</p>
-</section>
-<section id="register-the-toolchain-as-enzyme" class="level3">
-<h3 class="anchored" data-anchor-id="register-the-toolchain-as-enzyme">5. Register the toolchain as <code>enzyme</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rustup</span> toolchain link enzyme <span class="st">"</span><span class="va">$(</span><span class="ex">rustc</span> +nightly <span class="at">--print</span> sysroot<span class="va">)</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="verify" class="level3">
-<h3 class="anchored" data-anchor-id="verify">6. Verify</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rustc</span> +enzyme <span class="at">-Z</span> autodiff=Enable <span class="at">-</span> <span class="op">&lt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">head</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Expected output: <code>error[E0601]: 'main' function not found</code>. That is the success signal. If you see <code>autodiff backend not found in the sysroot</code>, the <code>.so</code> is missing or placed in the wrong directory (step 4).</p>
-<hr>
-</section>
-</section>
-<section id="macos" class="level2">
-<h2 class="anchored" data-anchor-id="macos">macOS</h2>
-<p>Supported on both Intel and Apple Silicon.</p>
-<section id="install-xcode-command-line-tools" class="level3">
-<h3 class="anchored" data-anchor-id="install-xcode-command-line-tools">1. Install Xcode Command Line Tools</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">xcode-select</span> <span class="at">--install</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="install-rustup-nightly-1" class="level3">
-<h3 class="anchored" data-anchor-id="install-rustup-nightly-1">2. Install rustup + nightly</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> https://sh.rustup.rs <span class="kw">|</span> <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> <span class="at">-y</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> <span class="st">"</span><span class="va">$HOME</span><span class="st">/.cargo/env"</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">rustup</span> toolchain install nightly</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="install-matching-llvm-via-homebrew" class="level3">
-<h3 class="anchored" data-anchor-id="install-matching-llvm-via-homebrew">3. Install matching LLVM via Homebrew</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rustc</span> +nightly <span class="at">--version</span> <span class="at">--verbose</span> <span class="kw">|</span> <span class="fu">grep</span> LLVM</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># note the major version, e.g. 22</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install llvm@<span class="op">&lt;</span>MAJOR<span class="op">&gt;</span> cmake ninja</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Homebrew ships a limited set of LLVM versions. If your version is unavailable, install a slightly older dated nightly that matches what Homebrew has:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rustup</span> toolchain install nightly-YYYY-MM-DD</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="build-the-enzyme-plugin" class="level3">
-<h3 class="anchored" data-anchor-id="build-the-enzyme-plugin">4. Build the Enzyme plugin</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/EnzymeAD/Enzyme /tmp/enzyme-build</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp/enzyme-build/enzyme</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> build <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> build</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjust prefix: /opt/homebrew (Apple Silicon) or /usr/local (Intel)</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-G</span> Ninja .. <span class="dt">\</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DLLVM_DIR</span><span class="op">=</span><span class="va">$(</span><span class="ex">brew</span> <span class="at">--prefix</span><span class="va">)</span>/opt/llvm@<span class="op">&lt;</span>MAJOR<span class="op">&gt;</span>/lib/cmake/llvm <span class="dt">\</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DENZYME_CLANG</span><span class="op">=</span>OFF <span class="dt">\</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DENZYME_FLANG</span><span class="op">=</span>OFF</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="ex">ninja</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="install-the-plugin" class="level3">
-<h3 class="anchored" data-anchor-id="install-the-plugin">5. Install the plugin</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="va">SYSROOT</span><span class="op">=</span><span class="va">$(</span><span class="ex">rustc</span> +nightly <span class="at">--print</span> sysroot<span class="va">)</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Apple Silicon:</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="va">TARGET</span><span class="op">=</span>aarch64-apple-darwin</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Intel: TARGET=x86_64-apple-darwin</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS uses .dylib, not .so</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /tmp/enzyme-build/enzyme/build/Enzyme/LLVMEnzyme-<span class="op">&lt;</span>MAJOR<span class="op">&gt;</span>.dylib <span class="dt">\</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>   <span class="va">$SYSROOT</span>/lib/rustlib/<span class="va">$TARGET</span>/lib/libEnzyme-<span class="op">&lt;</span>MAJOR<span class="op">&gt;</span>.dylib</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="register-and-verify" class="level3">
-<h3 class="anchored" data-anchor-id="register-and-verify">6. Register and verify</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rustup</span> toolchain link enzyme <span class="st">"</span><span class="va">$(</span><span class="ex">rustc</span> +nightly <span class="at">--print</span> sysroot<span class="va">)</span><span class="st">"</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">rustc</span> +enzyme <span class="at">-Z</span> autodiff=Enable <span class="at">-</span> <span class="op">&lt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">head</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Expect: error[E0601]: `main` function not found</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>macOS caveats</strong></p>
+<section id="build-the-enzyme-toolchain" class="level3">
+<h3 class="anchored" data-anchor-id="build-the-enzyme-toolchain">1. Build the Enzyme toolchain</h3>
+<p>Follow the platform steps in the ferx-core book:</p>
 <ul>
-<li><strong>Code-signing errors</strong> loading the <code>.dylib</code>: run <code>sudo codesign --force --sign - &lt;path-to-libEnzyme.dylib&gt;</code> — rare on developer machines.</li>
-<li><strong>Apple Silicon nightly lag</strong>: ARM nightlies occasionally trail x86_64 by a day or two; if LLVM versions mismatch after <code>rustup update</code>, pin a specific dated nightly.</li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/installation.html#linux"><strong>Linux</strong></a></li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/installation.html#macos"><strong>macOS</strong></a> (Intel and Apple Silicon)</li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/installation.html#windows"><strong>Windows</strong></a> — not supported; use WSL2 or Docker</li>
 </ul>
-</div>
-</div>
-<hr>
+<p>Then <a href="https://ferx-nlme.github.io/ferx-core/installation.html#4-verify-the-toolchain">verify</a> the toolchain with a real <code>#[autodiff_forward]</code> test — the usual <code>E0601</code> check is <strong>not</strong> sufficient and passes for broken toolchains.</p>
+<p>For shared servers, see <a href="https://ferx-nlme.github.io/ferx-core/installation.html#multi-user-servers">multi-user installs</a>.</p>
 </section>
-</section>
-<section id="windows" class="level2">
-<h2 class="anchored" data-anchor-id="windows">Windows</h2>
-<p>Windows is <strong>not currently supported</strong> for the full Enzyme autodiff backend. Two practical options are available:</p>
-<section id="option-a-wsl2-recommended-for-full-autodiff" class="level3">
-<h3 class="anchored" data-anchor-id="option-a-wsl2-recommended-for-full-autodiff">Option A — WSL2 (recommended for full autodiff)</h3>
-<p>Install Ubuntu under WSL2 and follow the <a href="#linux">Linux instructions</a>. Performance is near-native for CPU-bound workloads like model fitting.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From PowerShell (admin):</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install <span class="op">-</span>d Ubuntu-22<span class="op">.</span><span class="dv">04</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then open a WSL terminal and follow the Linux steps above.</p>
-</section>
-<section id="option-b-native-windows-without-enzyme-finite-differences-only" class="level3">
-<h3 class="anchored" data-anchor-id="option-b-native-windows-without-enzyme-finite-differences-only">Option B — Native Windows (without Enzyme, finite differences only)</h3>
-<p>Gradients fall back to finite differences — slower and less accurate than autodiff, but the R package is otherwise fully functional.</p>
-<p><strong>Prerequisites:</strong></p>
+<section id="install-the-r-package" class="level3">
+<h3 class="anchored" data-anchor-id="install-the-r-package">2. Install the R package</h3>
+<p>Once <code>rustc +enzyme</code> is verified working:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The package’s <code>src/Makevars</code> auto-detects the <code>enzyme</code> toolchain and builds the autodiff path. To confirm afterwards:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ferx<span class="sc">:::</span><span class="fu">ferx_rust_autodiff_enabled</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To force one path or the other, set before installing:</p>
 <ul>
-<li><a href="https://cran.r-project.org/bin/windows/base/">R</a> and <a href="https://cran.r-project.org/bin/windows/Rtools/">Rtools44</a> (ships MinGW gcc compatible with R’s linker)</li>
-<li><a href="https://www.rust-lang.org/tools/install">rustup</a> with the GNU-ABI toolchain:</li>
+<li><code>FERX_NO_AUTODIFF=1</code> — force the simple build even if Enzyme is installed</li>
+<li><code>FERX_NO_AUTODIFF=0</code> — force the full build, erroring out if Enzyme isn’t found</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>rustup toolchain install stable-x86_64-pc-windows-gnu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You do <strong>not</strong> need to make it the default — the package build pins this toolchain automatically on Windows.</p>
-<p>Then install in R:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="option-c-docker-full-autodiff-on-windows" class="level3">
-<h3 class="anchored" data-anchor-id="option-c-docker-full-autodiff-on-windows">Option C — Docker (full autodiff on Windows)</h3>
-<p>The Docker image bundles the Enzyme toolchain, ferx CLI, the R package, and RStudio Server. See <a href="#docker">Docker</a> below.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Full native Windows support is blocked on upstream Enzyme integration in rustup (<a href="https://github.com/rust-lang/rust/issues/124509">rust-lang/rust#124509</a>). Once that lands, the plugin distribution problem disappears and Windows support becomes straightforward.</p>
-</div>
-</div>
 <hr>
 </section>
 </section>
-<section id="docker" class="level2">
-<h2 class="anchored" data-anchor-id="docker">Docker</h2>
-<p>The Docker image ships with the full Enzyme toolchain pre-built — no local Rust or Enzyme setup required. Recommended for Windows users who need autodiff, or any environment where you want a reproducible, isolated setup.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the image (first build ~45–60 min; subsequent builds use the cache)</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> ferx:latest https://github.com/FeRx-NLME/ferx-r.git#main</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run RStudio Server</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-p</span> 8787:8787 <span class="at">-e</span> PASSWORD=ferx ferx:latest</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="docker-full-autodiff-no-local-toolchain" class="level2">
+<h2 class="anchored" data-anchor-id="docker-full-autodiff-no-local-toolchain">Docker (full autodiff, no local toolchain)</h2>
+<p>The <a href="https://github.com/FeRx-NLME/ferx-r">ferx-r Docker image</a> ships the Enzyme toolchain prebuilt — the fastest way to get a working full-autodiff setup, especially on Windows.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> ferx:latest https://github.com/FeRx-NLME/ferx-r.git#main</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-p</span> 8787:8787 <span class="at">-e</span> PASSWORD=ferx ferx:latest</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Open <a href="http://localhost:8787">http://localhost:8787</a> — user: <code>rstudio</code>, password: <code>ferx</code>.</p>
-<p>To mount a local data directory:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-p</span> 8787:8787 <span class="at">-e</span> PASSWORD=ferx <span class="dt">\</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-v</span> /path/to/your/data:/home/rstudio/data <span class="dt">\</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  ferx:latest</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
-<section id="multiuser" class="level2">
-<h2 class="anchored" data-anchor-id="multiuser">Multi-user Linux server</h2>
-<p>For shared servers, build the toolchain once and stage it in <code>/opt/rust-nightly</code> so all users share a single installation.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># As root (after completing the Linux steps above):</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir <span class="at">-p</span> /opt/rust-nightly</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp <span class="at">-a</span> ~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/. /opt/rust-nightly/</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chown <span class="at">-R</span> root:root /opt/rust-nightly</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chmod <span class="at">-R</span> a+rX /opt/rust-nightly</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> chmod a+rx /opt/rust-nightly/bin/<span class="pp">*</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Each user links the shared toolchain into their own rustup:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--proto</span> <span class="st">'=https'</span> <span class="at">--tlsv1.2</span> <span class="at">-sSf</span> https://sh.rustup.rs <span class="kw">|</span> <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> <span class="at">-y</span> <span class="at">--default-toolchain</span> none</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">rustup</span> toolchain link enzyme /opt/rust-nightly</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add to each user’s <code>~/.Renviron</code>:</p>
-<pre><code>PATH=/opt/rust-nightly/bin:${HOME}/.cargo/bin:${PATH}
-RUSTUP_TOOLCHAIN=enzyme</code></pre>
-<p>See <a href="https://github.com/FeRx-NLME/ferx-r/blob/main/INSTALL-SYSADMIN.md"><code>INSTALL-SYSADMIN.md</code></a> for quarterly refresh procedures and troubleshooting shared installs.</p>
-<hr>
-</section>
-<section id="install-the-r-package" class="level2">
-<h2 class="anchored" data-anchor-id="install-the-r-package">After toolchain setup</h2>
-<p>Once your Enzyme toolchain is in place, install the R package:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then run the warfarin example:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>To see all bundled examples:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_example</span>()   <span class="co"># returns a character vector of all available example names</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>?ferx_example    <span class="co"># full list with descriptions in the help page</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-<section id="troubleshooting" class="level2">
-<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
-<p><strong><code>"autodiff backend not found in the sysroot"</code></strong> The <code>.so</code>/<code>.dylib</code> is missing or in the wrong location. It must be in <code>&lt;sysroot&gt;/lib/rustlib/&lt;target&gt;/lib/libEnzyme-&lt;N&gt;.so</code> — not just <code>lib/</code>.</p>
-<p><strong><code>"error: the option 'Z' is only accepted on the nightly compiler"</code></strong> Your shell (or R) is finding a stable rustc. Check <code>rustc --version</code>, your <code>PATH</code>, and <code>~/.Renviron</code>.</p>
-<p><strong><code>"custom toolchain 'enzyme' is not installed"</code></strong> Run: <code>rustup toolchain link enzyme $(rustc +nightly --print sysroot)</code></p>
-<p><strong><code>"incorrect value 'X' for unstable option 'autodiff'"</code></strong> Valid values change between nightlies. Verify with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rustc</span> +enzyme <span class="at">-Z</span> autodiff=Enable <span class="at">-</span> <span class="op">&lt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">head</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>For more troubleshooting detail see the <a href="https://ferx-nlme.github.io/ferx-core/installation.html">ferx-core installation docs</a>.</p>
+<section id="first-fit" class="level2">
+<h2 class="anchored" data-anchor-id="first-fit">First fit</h2>
+<p>After either install, run the bundled warfarin example:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>List all bundled examples:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_example</span>()   <span class="co"># character vector of available example names</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>?ferx_example    <span class="co"># full list with descriptions</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="next-steps" class="level2">
@@ -877,6 +697,7 @@ RUSTUP_TOOLCHAIN=enzyme</code></pre>
 <li><a href="./learn/model-workflow.html">Model workflow</a> — full fitting workflow</li>
 <li><a href="./model-dsl/overview.html">Model DSL</a> — write your own <code>.ferx</code> model files</li>
 <li><a href="reference/index.html">Reference</a> — function documentation</li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/installation.html">ferx-core installation</a> — full toolchain detail and troubleshooting</li>
 </ul>
 
 
