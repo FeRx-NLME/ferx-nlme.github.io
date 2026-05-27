@@ -37,13 +37,31 @@ ferx fits models defined in a small, readable DSL — bracket-sectioned `.ferx` 
 :::
 :::
 
+::: {.container style="padding: 3rem 1rem 1rem;"}
+## How ferx is built
+
+**ferx-core** is the Rust engine — it parses `.ferx` model files, runs the
+estimators, computes gradients (Enzyme autodiff or finite differences), and
+produces fits. All numerical work happens here. It ships with a standalone
+command-line tool (the `ferx` CLI) that reads a `.ferx` file plus a CSV
+dataset and writes results to disk, so you can use the engine directly with
+no R involved.
+
+**ferx-r** is a thin R wrapper around ferx-core. It exposes the same engine
+through R functions, hands `data.frame`s to the core, and returns fit
+objects you can pipe into R's plotting and reporting ecosystem. Because
+ferx-core is a stable library, you (or anyone else) can build a different
+wrapper on top of it — Python, Julia, a web service — and get the exact
+same numerical results as the CLI and ferx-r.
+:::
+
 ::: {.container style="padding: 3rem 1rem 2rem;"}
 ## Learn ferx
 
 ::: {.resource-grid style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 1rem;"}
 
 ::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
-**[Book](https://ferx-nlme.github.io/ferx-book/)**\
+**[ferx-r book](https://ferx-nlme.github.io/ferx-book/)**\
 Comprehensive narrative guide — installation through ODE models, BLOQ, and IOV. All code runs on CI.
 :::
 
