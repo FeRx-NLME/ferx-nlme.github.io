@@ -533,6 +533,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#peek-at-a-section-mid-pipe" id="toc-peek-at-a-section-mid-pipe" class="nav-link" data-scroll-target="#peek-at-a-section-mid-pipe">Peek at a section mid-pipe</a></li>
   <li><a href="#override-fit-options-before-fitting" id="toc-override-fit-options-before-fitting" class="nav-link" data-scroll-target="#override-fit-options-before-fitting">Override fit options before fitting</a></li>
   <li><a href="#validate-before-a-long-run" id="toc-validate-before-a-long-run" class="nav-link" data-scroll-target="#validate-before-a-long-run">Validate before a long run</a></li>
+  <li><a href="#derive-starting-values-from-nca" id="toc-derive-starting-values-from-nca" class="nav-link" data-scroll-target="#derive-starting-values-from-nca">Derive starting values from NCA</a></li>
   <li><a href="#multi-stage-method-chain" id="toc-multi-stage-method-chain" class="nav-link" data-scroll-target="#multi-stage-method-chain">Multi-stage method chain</a></li>
   <li><a href="#simulate-and-predict-from-fitted-parameters" id="toc-simulate-and-predict-from-fitted-parameters" class="nav-link" data-scroll-target="#simulate-and-predict-from-fitted-parameters">Simulate and predict from fitted parameters</a></li>
   <li><a href="#post-fit-diagnostics" id="toc-post-fit-diagnostics" class="nav-link" data-scroll-target="#post-fit-diagnostics">Post-fit diagnostics</a></li>
@@ -714,92 +715,132 @@ Tip
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(chk<span class="sc">$</span>fit)   <span class="co"># visual check: first few iterations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If <code>ofv_drop</code> is small or negative, the initial values are likely poor — adjust them in <code>[parameters]</code> or widen the parameter bounds before proceeding.</p>
 </section>
+<section id="derive-starting-values-from-nca" class="level3">
+<h3 class="anchored" data-anchor-id="derive-starting-values-from-nca">Derive starting values from NCA</h3>
+<p><code>ferx_inits_from_nca()</code> estimates population starting values directly from the data using non-compartmental analysis, without running a fit. Use it to sanity- check the values in <code>[parameters]</code> before a long run, or to feed better starting points into a model file. Three strategies trade speed for refinement:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><code>method</code></th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>"nca"</code></td>
+<td>NCA only (fastest); leaves parameters NCA can’t estimate at the model default</td>
+</tr>
+<tr class="even">
+<td><code>"nca_sweep"</code> <em>(default)</em></td>
+<td>NCA, then a log-space rRMSE grid sweep over remaining thetas (population predictions)</td>
+</tr>
+<tr class="odd">
+<td><code>"nca_ebe"</code></td>
+<td>Like <code>nca_sweep</code> but evaluates the grid with empirical Bayes estimates; more accurate under large BSV</td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="fu">ferx_inits_from_nca</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>inits<span class="sc">$</span>theta    <span class="co"># named numeric vector of suggested thetas</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>inits<span class="sc">$</span>omega    <span class="co"># suggested omega matrix</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>inits<span class="sc">$</span>warnings <span class="co"># notes about what was / wasn't estimated</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It also unpacks a <code>ferx_model</code> so the pipe stays clean:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ex<span class="sc">$</span>data <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model</span>(ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_inits_from_nca</span>(<span class="at">method =</span> <span class="st">"nca_ebe"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To apply NCA-derived inits automatically inside the optimizer, pass the same strategy to <code>ferx_fit()</code> via <code>inits_from_nca</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">inits_from_nca =</span> <span class="st">"nca_ebe"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 <section id="multi-stage-method-chain" class="level3">
 <h3 class="anchored" data-anchor-id="multi-stage-method-chain">Multi-stage method chain</h3>
 <p>Pass a character vector to <code>method</code> to chain stages — each stage starts from the previous stage’s converged parameters:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>(<span class="at">method =</span> <span class="fu">c</span>(<span class="st">"saem"</span>, <span class="st">"focei"</span>), <span class="at">covariance =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>(<span class="at">method =</span> <span class="fu">c</span>(<span class="st">"saem"</span>, <span class="st">"focei"</span>), <span class="at">covariance =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="simulate-and-predict-from-fitted-parameters" class="level3">
 <h3 class="anchored" data-anchor-id="simulate-and-predict-from-fitted-parameters">Simulate and predict from fitted parameters</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate 100 replicates using individual parameters from the fit</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">100</span>, <span class="at">seed =</span> <span class="dv">42</span>, <span class="at">fit =</span> fit)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Population predictions using fitted theta (eta = 0)</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">ferx_predict</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">fit =</span> fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate 100 replicates using individual parameters from the fit</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">100</span>, <span class="at">seed =</span> <span class="dv">42</span>, <span class="at">fit =</span> fit)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Population predictions using fitted theta (eta = 0)</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">ferx_predict</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">fit =</span> fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>See <a href="../learn/simulation.html">Simulation</a> for a full worked example.</p>
 </section>
 <section id="post-fit-diagnostics" class="level3">
 <h3 class="anchored" data-anchor-id="post-fit-diagnostics">Post-fit diagnostics</h3>
 <p>All diagnostic outputs are fields on the <code>ferx_fit</code> object:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>sdtab)                <span class="co"># PRED, IPRED, CWRES, IWRES per observation</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>ebe_etas)             <span class="co"># empirical Bayes ETAs per subject</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>individual_estimates) <span class="co"># individual PK parameters (CL, V, KA, ...)</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>eta_normality              <span class="co"># Shapiro-Wilk normality test per ETA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>sdtab)                <span class="co"># PRED, IPRED, CWRES, IWRES per observation</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>ebe_etas)             <span class="co"># empirical Bayes ETAs per subject</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>individual_estimates) <span class="co"># individual PK parameters (CL, V, KA, ...)</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>eta_normality              <span class="co"># Shapiro-Wilk normality test per ETA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>ferx_estimates()</code> collects all estimated parameters (theta, omega diagonal, sigma, kappa diagonal if IOV is present) into a tidy data frame. Run it after any fit that used <code>covariance = TRUE</code> to populate the <code>se</code>, <code>rse_pct</code>, <code>lower_95</code>, and <code>upper_95</code> columns; without the covariance step those columns are <code>NA</code>. The <code>transform</code> column reflects how the parameter is reported by the backend - <code>"identity"</code>, <code>"log"</code>, <code>"logit"</code>, or <code>"proportional"</code>/<code>"additive"</code> for sigma rows. Omega rows always use <code>transform = "variance"</code> regardless of the ETA parameterisation (the interpretation is conveyed by <code>print.ferx_fit()</code>, not by the tidy table). The <code>init_as_sd</code> column is <code>TRUE</code> for omega/sigma/kappa rows where the initial value was annotated as a standard deviation in the <code>.ferx</code> file.</p>
 <p>The parameter labels are the bare declared names (<code>ETA_CL</code>, <code>PROP_ERR</code>); unnamed elements fall back to <code>OMEGA(i,i)</code> / <code>SIGMA(i)</code> / <code>KAPPA{i}</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     param    transform   estimate         se  rse_pct  lower_95  upper_95  init_as_sd</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#      TVCL     identity 0.13273892 0.01446172  10.8949  0.104394  0.161084       FALSE</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#       TVV     identity 7.69480857 0.29200479   3.7948  7.122479  8.267138       FALSE</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#      TVKA     identity 0.75856259 0.03505402   4.6211  0.689857  0.827268       FALSE</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_CL     variance 0.02854340 0.00637992  22.3516  0.016039  0.041048       FALSE</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     ETA_V     variance 0.00961159 0.00216463  22.5210  0.005369  0.013854       FALSE</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_KA     variance 0.34236514 0.07687305  22.4535  0.191694  0.493036       FALSE</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  PROP_ERR proportional 0.01063348 0.00078565   7.3884  0.009094  0.012173        TRUE</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate_natural / lower_95_natural / upper_95_natural columns are present</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># but only populated for log- or logit-transformed thetas.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     param    transform   estimate         se  rse_pct  lower_95  upper_95  init_as_sd</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#      TVCL     identity 0.13273892 0.01446172  10.8949  0.104394  0.161084       FALSE</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#       TVV     identity 7.69480857 0.29200479   3.7948  7.122479  8.267138       FALSE</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#      TVKA     identity 0.75856259 0.03505402   4.6211  0.689857  0.827268       FALSE</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_CL     variance 0.02854340 0.00637992  22.3516  0.016039  0.041048       FALSE</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     ETA_V     variance 0.00961159 0.00216463  22.5210  0.005369  0.013854       FALSE</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_KA     variance 0.34236514 0.07687305  22.4535  0.191694  0.493036       FALSE</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  PROP_ERR proportional 0.01063348 0.00078565   7.3884  0.009094  0.012173        TRUE</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate_natural / lower_95_natural / upper_95_natural columns are present</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co"># but only populated for log- or logit-transformed thetas.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The output above is captured from a real <code>gn</code> fit of the bundled warfarin example with <code>covariance = TRUE</code>.</p>
 <p><code>ferx_cor_matrix()</code> converts the parameter covariance matrix to correlations. A value near ±1 between two parameters signals a structural identifiability problem worth investigating:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_cor_matrix</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_cor_matrix</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Goodness-of-fit plots</strong> from <code>fit$sdtab</code> with ggplot2:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>sdtab <span class="ot">&lt;-</span> fit<span class="sc">$</span>sdtab</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs PRED</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, DV)) <span class="sc">+</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs PRED"</span>, <span class="at">x =</span> <span class="st">"Population prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs IPRED</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(IPRED, DV)) <span class="sc">+</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs IPRED"</span>, <span class="at">x =</span> <span class="st">"Individual prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs TIME</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(TIME, CWRES)) <span class="sc">+</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>), <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>),</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs TIME"</span>)</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs PRED</span></span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, CWRES)) <span class="sc">+</span></span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>), <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>),</span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs PRED"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>sdtab <span class="ot">&lt;-</span> fit<span class="sc">$</span>sdtab</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs PRED</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, DV)) <span class="sc">+</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs PRED"</span>, <span class="at">x =</span> <span class="st">"Population prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs IPRED</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(IPRED, DV)) <span class="sc">+</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs IPRED"</span>, <span class="at">x =</span> <span class="st">"Individual prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs TIME</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(TIME, CWRES)) <span class="sc">+</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>), <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>),</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs TIME"</span>)</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs PRED</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, CWRES)) <span class="sc">+</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>), <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>),</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs PRED"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>ETA-covariate correlations — identifies covariates worth testing in a formal covariate search. Pass the original data frame (not the path); any numeric column that is constant within a subject and not a standard NONMEM column (TIME, DV, AMT, EVID, MDV, CMT, RATE) is treated as a covariate:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The warfarin dataset has no covariate columns. The example below uses</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># two_cpt_oral_cov, which carries body weight (WT) and creatinine clearance</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (CRCL). Rows are sorted by descending |r|; the `flag` column is set to</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># "[!]" whenever |r| &gt;= 0.3 to highlight pairs worth formal testing.</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>ex_cov   <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_cov"</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>fit_cov  <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_cov<span class="sc">$</span>model, ex_cov<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>data_cov <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex_cov<span class="sc">$</span>data)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit_cov, data_cov)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#       eta covariate      r  p_val flag</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_KA        WT  0.144 0.4472</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_CL      CRCL -0.117 0.5386</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     ETA_Q        WT  0.105 0.5802</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_V1        WT -0.093 0.6251</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_V2      CRCL  0.081 0.6699</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co">#    ...</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co"># None reach |r| &gt;= 0.3 in this dataset, so no rows are flagged. A real</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co"># covariate signal would show up at the top of the table with [!] in `flag`.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The warfarin dataset has no covariate columns. The example below uses</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># two_cpt_oral_cov, which carries body weight (WT) and creatinine clearance</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (CRCL). Rows are sorted by descending |r|; the `flag` column is set to</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># "[!]" whenever |r| &gt;= 0.3 to highlight pairs worth formal testing.</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>ex_cov   <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_cov"</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>fit_cov  <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_cov<span class="sc">$</span>model, ex_cov<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>data_cov <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex_cov<span class="sc">$</span>data)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit_cov, data_cov)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#       eta covariate      r  p_val flag</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_KA        WT  0.144 0.4472</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_CL      CRCL -0.117 0.5386</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     ETA_Q        WT  0.105 0.5802</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_V1        WT -0.093 0.6251</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#    ETA_V2      CRCL  0.081 0.6699</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#    ...</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co"># None reach |r| &gt;= 0.3 in this dataset, so no rows are flagged. A real</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co"># covariate signal would show up at the top of the table with [!] in `flag`.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>See <a href="../learn/diagnostics.html">Diagnostics</a> for the full diagnostics reference.</p>
 <hr>
 </section>
@@ -807,59 +848,59 @@ Tip
 <section id="parameter-transforms" class="level2">
 <h2 class="anchored" data-anchor-id="parameter-transforms">Parameter transforms</h2>
 <p>ferx supports log and logit transforms for both thetas and ETAs directly in the model DSL. When a transform is in use, <code>print()</code> and <code>ferx_estimates()</code> display results on the natural scale alongside the estimation-scale values.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-normal CL (typical in PK — ETA_CL is additive on the log scale)</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>CL <span class="ot">=</span> TVCL <span class="sc">*</span> <span class="fu">exp</span>(ETA_CL)  <span class="co"># TVCL is on the natural scale; BSV is log-normal</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Logit-transformed bioavailability (constrained to (0, 1))</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>F <span class="ot">=</span> <span class="fu">inv_logit</span>(<span class="fu">logit</span>(THETA_F) <span class="sc">+</span> ETA_F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-normal CL (typical in PK — ETA_CL is additive on the log scale)</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>CL <span class="ot">=</span> TVCL <span class="sc">*</span> <span class="fu">exp</span>(ETA_CL)  <span class="co"># TVCL is on the natural scale; BSV is log-normal</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Logit-transformed bioavailability (constrained to (0, 1))</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>F <span class="ot">=</span> <span class="fu">inv_logit</span>(<span class="fu">logit</span>(THETA_F) <span class="sc">+</span> ETA_F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>See <a href="../learn/parameter-transforms.html">parameter transforms</a> for worked examples with bundled models.</p>
 <hr>
 </section>
 <section id="saving-and-reloading-fits" class="level2">
 <h2 class="anchored" data-anchor-id="saving-and-reloading-fits">Saving and reloading fits</h2>
 <p>Long estimation runs can be saved to disk and reloaded in a later session with <code>ferx_save_fit()</code> / <code>ferx_load_fit()</code>. The saved file is a compressed RDS and preserves the full <code>ferx_fit</code> object including <code>sdtab</code>, <code>ebe_etas</code>, trace path, and all metadata.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save after a long run</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>, <span class="at">covariance =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_save_fit</span>(fit, <span class="st">"warfarin_focei.rds"</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Later — restore and continue working</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">ferx_load_fit</span>(<span class="st">"warfarin_focei.rds"</span>)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(fit<span class="sc">$</span>theta, fit2<span class="sc">$</span>theta)   <span class="co"># TRUE</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save after a long run</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>, <span class="at">covariance =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_save_fit</span>(fit, <span class="st">"warfarin_focei.rds"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Later — restore and continue working</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">ferx_load_fit</span>(<span class="st">"warfarin_focei.rds"</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(fit<span class="sc">$</span>theta, fit2<span class="sc">$</span>theta)   <span class="co"># TRUE</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The loaded object is indistinguishable from the original: all downstream functions (<code>ferx_estimates()</code>, <code>ferx_cor_matrix()</code>, <code>ferx_plot_trace()</code>, <code>ferx_simulate()</code>, etc.) work without modification.</p>
 <p><strong>Tip:</strong> save immediately after fitting so a crash or session restart does not lose results. Use a naming convention that records the run number, method, and date:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_save_fit</span>(fit, <span class="fu">sprintf</span>(<span class="st">"run%02d_focei_%s.rds"</span>, run_number, <span class="fu">Sys.Date</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_save_fit</span>(fit, <span class="fu">sprintf</span>(<span class="st">"run%02d_focei_%s.rds"</span>, run_number, <span class="fu">Sys.Date</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
 <section id="path-based" class="level3">
 <h3 class="anchored" data-anchor-id="path-based">Path-based</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex<span class="sc">$</span>model)          <span class="co"># verify structure before fitting</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(fit)               <span class="co"># re-inspect post-fit (no path needed)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex<span class="sc">$</span>model)          <span class="co"># verify structure before fitting</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(fit)               <span class="co"># re-inspect post-fit (no path needed)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="pipe-based" class="level3">
 <h3 class="anchored" data-anchor-id="pipe-based">Pipe-based</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect, fit, summarise in one chain</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_get_section</span>(<span class="st">"parameters"</span>) <span class="sc">|&gt;</span>  <span class="co"># optional: peek before fitting</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>(<span class="at">method =</span> <span class="st">"focei"</span>, <span class="at">covariance =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Edit options then fit. ferx_set_section() auto-copies bundled examples to</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co"># tempdir() before editing, so the package file stays pristine.</span></span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_set_section</span>(<span class="st">"fit_options"</span>, <span class="fu">c</span>(</span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  method     = focei"</span>,</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  maxiter    = 500"</span>,</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  covariance = true"</span></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>() <span class="sc">|&gt;</span></span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect, fit, summarise in one chain</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_get_section</span>(<span class="st">"parameters"</span>) <span class="sc">|&gt;</span>  <span class="co"># optional: peek before fitting</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>(<span class="at">method =</span> <span class="st">"focei"</span>, <span class="at">covariance =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Edit options then fit. ferx_set_section() auto-copies bundled examples to</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># tempdir() before editing, so the package file stays pristine.</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_set_section</span>(<span class="st">"fit_options"</span>, <span class="fu">c</span>(</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  method     = focei"</span>,</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  maxiter    = 500"</span>,</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  covariance = true"</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
