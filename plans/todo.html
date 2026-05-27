@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Architecture – ferx</title>
+<title>todo – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,41 +22,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -441,50 +406,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="https://ferx-nlme.github.io/ferx-book/"> 
 <span class="menu-text">ferx-r</span></a>
   </li>  
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-ferx-core" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">ferx-core</span>
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-ferx-core">    
-        <li>
-    <a class="dropdown-item" href="https://ferx-nlme.github.io/ferx-core/">
- <span class="dropdown-text">ferx-core book (mdBook) ↗</span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="https://ferx-nlme.github.io/ferx-core/"> 
+<span class="menu-text">ferx-core</span></a>
   </li>  
-        <li><hr class="dropdown-divider"></li>
-        <li>
-    <a class="dropdown-item" href="../ferx-core/overview.html">
- <span class="dropdown-text">Overview</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../ferx-core/architecture.html">
- <span class="dropdown-text">Architecture</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../ferx-core/data-format.html">
- <span class="dropdown-text">Data format</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../ferx-core/estimation.html">
- <span class="dropdown-text">Estimation (FOCE/FOCEI)</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../ferx-core/autodiff.html">
- <span class="dropdown-text">Autodiff (Enzyme)</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../ferx-core/pk-models.html">
- <span class="dropdown-text">Analytical PK models</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../ferx-core/ode-solver.html">
- <span class="dropdown-text">ODE solver</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../ferx-core/output.html">
- <span class="dropdown-text">Output reference</span></a>
-  </li>  
-    </ul>
-  </li>
   <li class="nav-item">
     <a class="nav-link" href="../reference/index.html"> 
 <span class="menu-text">Reference</span></a>
@@ -519,198 +444,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#data-flow" id="toc-data-flow" class="nav-link active" data-scroll-target="#data-flow">Data flow</a></li>
-  <li><a href="#ffi-boundary" id="toc-ffi-boundary" class="nav-link" data-scroll-target="#ffi-boundary">FFI boundary</a></li>
-  <li><a href="#key-types" id="toc-key-types" class="nav-link" data-scroll-target="#key-types">Key types</a>
+  <li><a href="#ferx-site-documentation-todo" id="toc-ferx-site-documentation-todo" class="nav-link active" data-scroll-target="#ferx-site-documentation-todo">ferx-site documentation TODO</a>
   <ul class="collapse">
-  <li><a href="#subject" id="toc-subject" class="nav-link" data-scroll-target="#subject"><code>Subject</code></a></li>
-  <li><a href="#doseevent" id="toc-doseevent" class="nav-link" data-scroll-target="#doseevent"><code>DoseEvent</code></a></li>
-  <li><a href="#pkparams" id="toc-pkparams" class="nav-link" data-scroll-target="#pkparams"><code>PkParams</code></a></li>
-  <li><a href="#modelparameters" id="toc-modelparameters" class="nav-link" data-scroll-target="#modelparameters"><code>ModelParameters</code></a></li>
+  <li><a href="#model-dsl" id="toc-model-dsl" class="nav-link" data-scroll-target="#model-dsl">Model DSL</a>
+  <ul class="collapse">
+  <li><a href="#mu-referencing-best-practice" id="toc-mu-referencing-best-practice" class="nav-link" data-scroll-target="#mu-referencing-best-practice">Mu-referencing best practice</a></li>
+  <li><a href="#derived-intermediates-as-eta-base-show-custom-instead-of-log-normal" id="toc-derived-intermediates-as-eta-base-show-custom-instead-of-log-normal" class="nav-link" data-scroll-target="#derived-intermediates-as-eta-base-show-custom-instead-of-log-normal">Derived intermediates as ETA base show [custom] instead of [log-normal]</a></li>
   </ul></li>
-  <li><a href="#internal-parameterisation" id="toc-internal-parameterisation" class="nav-link" data-scroll-target="#internal-parameterisation">Internal parameterisation</a></li>
-  <li><a href="#parallelism" id="toc-parallelism" class="nav-link" data-scroll-target="#parallelism">Parallelism</a></li>
-  <li><a href="#source-tree" id="toc-source-tree" class="nav-link" data-scroll-target="#source-tree">Source tree</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Architecture</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
 
 
-</header>
-
-
-<section id="data-flow" class="level2">
-<h2 class="anchored" data-anchor-id="data-flow">Data flow</h2>
-<pre><code>.ferx model file  ──► parser/model_parser.rs  ──► CompiledModel
-NONMEM CSV        ──► io/datareader.rs         ──► Population
-                                                        │
-                                               api::fit()
-                                                        │
-                              ┌─────────────────────────┤
-                              │                         │
-                    outer_optimizer            inner_optimizer
-                    (population θ, Ω, σ)     (per-subject EBE η)
-                              │                         │
-                         pk/  or  ode/           stats/likelihood
-                    (predictions)              (NLL evaluation)
-                              │
-                         FitResult  ──► R via extendr FFI</code></pre>
-<p>The outer optimizer iterates over population parameters (theta, omega, sigma). For each candidate parameter set it calls the inner optimizer once per subject to find the empirical Bayes estimate (EBE) of that subject’s random effects. Predictions are routed to the analytical PK models in <code>pk/</code> or the RK45 ODE solver in <code>ode/</code>, depending on whether the model file has an <code>[odes]</code> block.</p>
+<section id="ferx-site-documentation-todo" class="level1">
+<h1>ferx-site documentation TODO</h1>
+<section id="model-dsl" class="level2">
+<h2 class="anchored" data-anchor-id="model-dsl">Model DSL</h2>
+<section id="mu-referencing-best-practice" class="level3">
+<h3 class="anchored" data-anchor-id="mu-referencing-best-practice">Mu-referencing best practice</h3>
+<p>Document the canonical mu-reference form for individual parameters that include covariate effects. The recommended pattern is:</p>
+<pre><code>CL = TVCL * exp(ETA_CL) * (WT / 70)^0.75</code></pre>
+<p>NOT:</p>
+<pre><code>CL = TVCL * (WT / 70)^0.75 * exp(ETA_CL)</code></pre>
+<p><strong>Why it matters:</strong> - <code>TVCL * exp(ETA_CL)</code> is the unambiguous mu-reference pair: in log-space, <code>ln(CL_i) = ln(TVCL) + ETA_CL_i + 0.75 * ln(WT/70)</code>. - When the covariate sits between the theta and <code>exp(ETA)</code>, ferx’s parser may not confidently detect the mu-reference and will emit a warning. - Mathematically both forms are identical; the difference is whether the engine can exploit the explicit mu-reference for faster/more stable gradient computation (better linearisation expansion point in FOCEI). - Rule of thumb: <strong>theta * exp(eta) first, covariates as trailing multipliers.</strong></p>
+<p>Suggested location: model-dsl page (individual_parameters section) and/or a “Performance tips” article.</p>
+<hr>
 </section>
-<section id="ffi-boundary" class="level2">
-<h2 class="anchored" data-anchor-id="ffi-boundary">FFI boundary</h2>
-<p>ferx-r wraps ferx-core via <a href="https://extendr.github.io/">extendr</a>. The glue layer in <code>src/rust/src/lib.rs</code> (ferx-r repo) exposes three <code>#[extendr]</code> functions:</p>
-<ul>
-<li><code>ferx_rust_fit</code> — calls <code>api::run_model_with_data</code>, returns a named R list</li>
-<li><code>ferx_rust_simulate</code> — calls <code>api::simulate</code>, returns an R data frame</li>
-<li><code>ferx_rust_predict</code> — calls <code>api::predict</code>, returns an R data frame</li>
-</ul>
-<p>Conversion helpers:</p>
-<ul>
-<li><code>fit_result_to_list()</code> — unpacks <code>FitResult</code> into an R list (theta, omega, sigma, SEs, OFV/AIC/BIC, diagnostics, model structure, warnings)</li>
-<li><code>sdtab_to_dataframe()</code> — converts <code>Vec&lt;SdtabRow&gt;</code> into a data frame with columns PRED, IPRED, CWRES, IWRES, and one column per ETA</li>
-</ul>
-</section>
-<section id="key-types" class="level2">
-<h2 class="anchored" data-anchor-id="key-types">Key types</h2>
-<section id="subject" class="level3">
-<h3 class="anchored" data-anchor-id="subject"><code>Subject</code></h3>
-<p>Holds all per-subject data after the NONMEM CSV is parsed.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> Subject <span class="op">{</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> id<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> doses<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span>DoseEvent<span class="op">&gt;,</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> obs_times<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> observations<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> obs_cmts<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">usize</span><span class="op">&gt;,</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> covariates<span class="op">:</span> HashMap<span class="op">&lt;</span><span class="dt">String</span><span class="op">,</span> <span class="dt">f64</span><span class="op">&gt;,</span>           <span class="co">// static (first non-missing)</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> dose_covariates<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span>HashMap<span class="op">&lt;</span><span class="dt">String</span><span class="op">,</span> <span class="dt">f64</span><span class="op">&gt;&gt;,</span> <span class="co">// LOCF snapshot per dose event</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> obs_covariates<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span>HashMap<span class="op">&lt;</span><span class="dt">String</span><span class="op">,</span> <span class="dt">f64</span><span class="op">&gt;&gt;,</span>  <span class="co">// LOCF snapshot per observation</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> cens<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;,</span>       <span class="co">// 0 = observed, 1 = BLOQ (LLOQ stored in observations)</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> occasions<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">u32</span><span class="op">&gt;,</span> <span class="co">// IOV occasion index per observation; empty if no IOV</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>When a subject has no time-varying covariates, <code>dose_covariates</code> and <code>obs_covariates</code> are empty and callers fall through to the static <code>covariates</code> map. Methods <code>obs_cov(j)</code> / <code>dose_cov(k)</code> encapsulate this fallback.</p>
-</section>
-<section id="doseevent" class="level3">
-<h3 class="anchored" data-anchor-id="doseevent"><code>DoseEvent</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> DoseEvent <span class="op">{</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> time<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> amt<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> cmt<span class="op">:</span> <span class="dt">usize</span><span class="op">,</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> rate<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> duration<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span>  <span class="co">// derived: amt / rate when rate &gt; 0, else 0</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> ss<span class="op">:</span> <span class="dt">bool</span><span class="op">,</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> ii<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="pkparams" class="level3">
-<h3 class="anchored" data-anchor-id="pkparams"><code>PkParams</code></h3>
-<p>Fixed-size array instead of <code>HashMap&lt;String, f64&gt;</code> — required for Enzyme AD.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> PkParams <span class="op">{</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> values<span class="op">:</span> [<span class="dt">f64</span><span class="op">;</span> <span class="dv">8</span>]<span class="op">,</span>  <span class="co">// MAX_PK_PARAMS = 8</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Index:  0=CL  1=V  2=Q  3=V2  4=KA  5=F  6=Q3  7=V3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>F</code> defaults to 1.0. Unused slots default to 0.0.</p>
-</section>
-<section id="modelparameters" class="level3">
-<h3 class="anchored" data-anchor-id="modelparameters"><code>ModelParameters</code></h3>
-<p>The full set of population parameters under estimation.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> ModelParameters <span class="op">{</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> theta<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> theta_names<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;,</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> theta_lower<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> theta_upper<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> theta_fixed<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">bool</span><span class="op">&gt;,</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> omega<span class="op">:</span> OmegaMatrix<span class="op">,</span>  <span class="co">// caches Cholesky factor + free_mask</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> sigma<span class="op">:</span> SigmaVector<span class="op">,</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>OmegaMatrix</code> caches the Cholesky factor alongside the full matrix and carries a <code>free_mask</code> (<code>DMatrix&lt;bool&gt;</code>) that records which off-diagonal entries are free parameters versus structural zeros from <code>block_omega</code> declarations.</p>
+<section id="derived-intermediates-as-eta-base-show-custom-instead-of-log-normal" class="level3">
+<h3 class="anchored" data-anchor-id="derived-intermediates-as-eta-base-show-custom-instead-of-log-normal">Derived intermediates as ETA base show [custom] instead of [log-normal]</h3>
+<p>When a rate constant is derived from another parameter and then used as the base of a log-normal ETA, <code>print()</code> shows <code>[custom]</code> and suppresses CV%:</p>
+<pre><code>KTR = 4.0 / TVMTT          # derived intermediate
+KA  = KTR * exp(ETA_KA)    # parser does not recognise as log-normal</code></pre>
+<p><strong>Workaround to document:</strong> use a dedicated theta for any parameter that carries IIV:</p>
+<pre><code>theta TVKA(4.0, 0.1, 20.0)
+...
+KA = TVKA * exp(ETA_KA)    # unambiguously log-normal</code></pre>
+<p>Document in the <code>[individual_parameters]</code> section: ETAs should always be applied directly to a declared theta, not to a derived intermediate. This also avoids tightly coupling two structural parameters (e.g.&nbsp;forcing KA = KTR at the typical level, which is a strong assumption in transit absorption models).</p>
+<p>Tracked in ferx-r issue #55. Fix on the engine side: resolve intermediates one level deeper before classifying the ETA transform.</p>
+<p>Suggested location: model-dsl page (individual_parameters section), with a callout box warning.</p>
+
+
 </section>
 </section>
-<section id="internal-parameterisation" class="level2">
-<h2 class="anchored" data-anchor-id="internal-parameterisation">Internal parameterisation</h2>
-<p>The outer optimizer works on an unconstrained packed vector <code>x</code>:</p>
-<pre><code>x = [log(theta_free), chol(Omega_BSV), log(sigma), chol(Omega_IOV)]</code></pre>
-<ul>
-<li><strong>Theta</strong>: log-transformed to enforce positivity; unpacked with <code>exp()</code></li>
-<li><strong>Omega</strong>: lower Cholesky factor; diagonal elements log-transformed; unpacked with <code>L * L'</code></li>
-<li><strong>Sigma</strong>: log-transformed, same as theta</li>
-</ul>
-<p>This ensures the optimizer never visits invalid parameter regions (negative variances, non-positive-definite omega). Parameter scaling (<code>scale_params = true</code>) additionally normalizes the packed vector to O(1) before each optimizer call to improve conditioning when parameters span several orders of magnitude.</p>
-</section>
-<section id="parallelism" class="level2">
-<h2 class="anchored" data-anchor-id="parallelism">Parallelism</h2>
-<p>The outer optimizer evaluates subjects in parallel via <a href="https://docs.rs/rayon">rayon</a>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> subject_nlls<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span> <span class="op">=</span> population</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>subjects</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>par_iter()</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>map(<span class="op">|</span>subject<span class="op">|</span> foce_subject_nll(subject<span class="op">,</span> <span class="op">&amp;</span>params<span class="op">,</span> <span class="op">&amp;</span>model))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>collect()<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The inner optimizer (EBE search) is per-subject and single-threaded; no nested parallelism is used. Thread count is controlled by <code>FitOptions::n_threads</code>, forwarded to rayon’s global thread pool at the start of each fit call.</p>
-</section>
-<section id="source-tree" class="level2">
-<h2 class="anchored" data-anchor-id="source-tree">Source tree</h2>
-<pre><code>src/
-├── api.rs                     public entry points
-├── types.rs                   Subject, DoseEvent, PkParams, ModelParameters, FitResult
-├── lib.rs                     crate root
-├── build_info.rs              compile-time build metadata
-├── cancel.rs                  cooperative cancellation token
-├── parser/
-│   └── model_parser.rs        .ferx DSL → CompiledModel
-├── io/
-│   ├── datareader.rs          read_nonmem_csv → Population
-│   └── output.rs              sdtab / YAML writer
-├── estimation/
-│   ├── outer_optimizer.rs     population-level loop, NLopt/BFGS dispatch
-│   ├── inner_optimizer.rs     per-subject EBE, gradient resolution (AD/FD)
-│   ├── saem.rs                SAEM with MH sampling, two-phase schedule
-│   ├── gauss_newton.rs        Gauss-Newton / BHHH with LM damping
-│   ├── trust_region.rs        Newton trust-region (Steihaug CG subproblem)
-│   ├── parameterization.rs    mu-referencing, log/logit transforms, pack/unpack
-│   ├── sir.rs                 SIR importance resampling
-│   └── trace.rs               iteration trace CSV writer
-├── pk/
-│   ├── one_compartment.rs     1-cpt IV bolus/infusion/oral analytical solutions
-│   ├── two_compartment.rs     2-cpt analytical solutions, Vieta macro-rate constants
-│   ├── three_compartment.rs   3-cpt IV bolus/infusion, Cardano characteristic roots
-│   └── event_driven.rs        multi-dose superposition, TV-covariate dispatch
-├── ode/
-│   ├── solver.rs              RK45 Dormand-Prince adaptive integrator
-│   └── predictions.rs         event handling, break-time construction
-├── stats/
-│   ├── likelihood.rs          FOCE/FOCEI NLL, CWRES, population objective
-│   ├── residual_error.rs      IWRES, residual variance by error model type
-│   └── special.rs             log-gamma, logit, log-normal CDF
-├── ad/
-│   ├── dual.rs                Dual&lt;f64&gt; forward-mode number type
-│   ├── ad_gradients.rs        Enzyme reverse-mode gradient entry points
-│   ├── event_driven_ad.rs     AD-compatible event-driven propagator
-│   └── event_driven_ad_jac.rs Jacobian accumulation for Enzyme reverse mode
-└── bin/
-    ├── run_model.rs           CLI entry point
-    └── generate_data.rs       synthetic data generator</code></pre>
-
-
 </section>
 
 </main> <!-- /main -->
