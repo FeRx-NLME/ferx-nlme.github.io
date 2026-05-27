@@ -145,7 +145,8 @@ ferx_example()   # character vector of available example names
 
 ## Next steps
 
-- [Book](https://ferx-nlme.github.io/ferx-book/) — comprehensive narrative guide with runnable examples
+- [ferx-r](https://ferx-nlme.github.io/ferx-book/) — narrative guide to the R package with runnable examples
+- [ferx-core](https://ferx-nlme.github.io/ferx-core/) — mdBook for the Rust engine, CLI, and `.ferx` DSL spec
 - [Model workflow](learn/model-workflow.qmd) — full fitting workflow
 - [Model DSL](model-dsl/overview.qmd) — write your own `.ferx` model files
 - [Reference](reference/index.html) — function documentation
