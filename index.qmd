@@ -18,62 +18,19 @@ page-layout: full
 Fe[·]{.dot}[R[*x*]{style="font-style:italic"}]{.rx}
 :::
 
-### A nonlinear mixed-effects engine for *population PK*, written in Rust. {.headline}
+### A nonlinear mixed-effects engine for *pharmacometrics*, written in Rust. {.headline}
 
 ::: {.lede}
-ferx fits models defined in a small, readable DSL — bracket-sectioned `.ferx` files — powered by a Rust backend with [Enzyme](https://enzyme.mit.edu/) automatic differentiation for exact gradients. FOCE/FOCEI estimation. MIT-licensed.
+ferx fits models defined in a small, readable DSL — bracket-sectioned `.ferx` files — powered by a Rust backend with [Enzyme](https://enzyme.mit.edu/) automatic differentiation for exact gradients. MIT-licensed.
 :::
 
 ::: {.meta}
 [**26** — iron, the element]{} &emsp; [**2026** — launch year]{} &emsp; [**MIT** — license]{}
 :::
 
-::: {.install}
-::: {.install-row}
-[R]{.lang} `devtools::install_github("FeRx-NLME/ferx-r")`
-:::
-::: {.install-row}
-[sh]{.lang} `docker build -t ferx:latest .`
-:::
-:::
-
 :::
 
 ::: {.hero-right}
-::: {.code-panel}
-::: {.panel-head}
-::: {.dots}
-<i></i><i></i><i></i>
-:::
-[[**\[**warfarin_pk.ferx**\]**]{.file}]{} [model]{.pill}
-:::
-
-```default
-# one-compartment oral PK — warfarin
-
-[parameters]
-  theta TVCL(0.2, 0.001, 10.0)
-  theta TVV(10.0, 0.1, 500.0)
-  theta TVKA(1.5, 0.01, 50.0)
-  omega ETA_CL ~ 0.09
-  omega ETA_V  ~ 0.04
-  omega ETA_KA ~ 0.30
-  sigma PROP_ERR ~ 0.02
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V  = TVV  * exp(ETA_V)
-  KA = TVKA * exp(ETA_KA)
-
-[structural_model]
-  pk one_cpt_oral(cl=CL, v=V, ka=KA)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-```
-
-:::
-
 ::: {.sticker-stage-inline}
 ![](assets/ferx-hex-palette-c.svg){.sticker-sm}
 :::
