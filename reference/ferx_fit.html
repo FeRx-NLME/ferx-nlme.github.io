@@ -18,7 +18,7 @@ powered by automatic differentiation (Enzyme)."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ferx</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.4</span>
       </span>
     </div>
 
@@ -52,15 +52,9 @@ powered by automatic differentiation (Enzyme).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferx_fit</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'ferx_model'</span></span>
-<span><span class="fu">ferx_fit</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="va">model</span><span class="op">$</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Default S3 method</span></span>
-<span><span class="fu">ferx_fit</span><span class="op">(</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferx_fit</span><span class="op">(</span></span>
 <span>  <span class="va">model</span>,</span>
-<span>  <span class="va">data</span>,</span>
+<span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"focei"</span>,</span>
 <span>  covariance <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -70,12 +64,12 @@ powered by automatic differentiation (Enzyme).</p>
 <span>  sir <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  gradient <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"ad"</span>, <span class="st">"fd"</span><span class="op">)</span>,</span>
 <span>  optimizer_trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  scale_params <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  max_unconverged_frac <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  min_obs_for_convergence_check <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scale_params <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  inits_from_nca <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  settings <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  include_data <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  include_data <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -88,12 +82,13 @@ powered by automatic differentiation (Enzyme).</p>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>Path to a NONMEM-format CSV file (ID, TIME, DV, EVID, AMT, CMT, ...)</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed to <code>ferx_fit.default</code> (e.g.
-<code>method</code>, <code>covariance</code>, <code>verbose</code>, <code>settings</code>).</p></dd>
+<dd><p>Path to a NONMEM-format CSV file. Required columns: ID, TIME,
+DV, EVID, AMT, CMT. Optional columns recognised by the engine: RATE
+(infusion rate), MDV (missing-DV flag), II (dosing interval, required when
+SS &gt; 0), SS (steady-state flag: 1 = pre-dose at steady state, 2 = add SS
+concentration to current state), CENS (BLOQ flag for M3 method), OCC
+(occasion index for IOV), and any covariate columns referenced in the
+model. See the steady-state section below for SS/II details.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
@@ -101,9 +96,15 @@ powered by automatic differentiation (Enzyme).</p>
 vector of methods to run in sequence. Each stage is seeded with the
 previous stage's converged parameters, and only the final stage produces
 the reported covariance/diagnostics. Supported methods: <code>"foce"</code>,
-<code>"focei"</code>, <code>"saem"</code>, <code>"gn"</code> (Gauss-Newton / BHHH), or
-<code>"gn_hybrid"</code> (Gauss-Newton followed by a FOCEI polish step).
-Example chain: <code>c("saem", "focei")</code>.</p></dd>
+<code>"focei"</code>, <code>"saem"</code>, <code>"gn"</code> (Gauss-Newton / BHHH),
+<code>"gn_hybrid"</code> (Gauss-Newton followed by a FOCEI polish step), or
+<code>"imp"</code> (also accepted as <code>"importance_sampling"</code> or
+<code>"importance-sampling"</code>; importance-sampling marginal
+log-likelihood). The <code>"imp"</code> stage is a diagnostic terminal
+stage that does not update parameters and must be the <em>last</em> entry
+of the chain, e.g. <code>c("focei", "imp")</code> or
+<code>c("saem", "imp")</code>. Example chain: <code>c("saem", "focei")</code>.
+SAEM fully supports inter-occasion variability (IOV / kappa) models.</p></dd>
 
 
 <dt id="arg-covariance">covariance<a class="anchor" aria-label="anchor" href="#arg-covariance"></a></dt>
@@ -198,47 +199,42 @@ Pass the result to <code><a href="ferx_trace.html">ferx_trace</a></code> or
 
 
 <dt id="arg-scale-params">scale_params<a class="anchor" aria-label="anchor" href="#arg-scale-params"></a></dt>
-<dd><p>Logical. If <code>TRUE</code> (default), apply a per-coordinate
-scaling layer on top of the existing log/Cholesky parameterization so
-that every transformed parameter the outer optimizer sees is O(1).</p>
-<p><strong>Why it helps.</strong> Population PK parameters often differ by orders
-of magnitude on the natural scale (e.g. <code>CL = 0.0015</code>, <code>V =
-  200</code>, <code>Ka = 0.8</code>). Even after the log transform, the packed
-optimizer vector mixes large negatives (<code>log(0.0015) ? -6.5</code>) with
-large positives (<code>log(200) ? 5.3</code>), which leaves the Hessian
-poorly conditioned and slows down NLopt / BFGS / Gauss-Newton. With
-<code>scale_params = TRUE</code> each coordinate is divided by
-<code>|x0[i]|</code> (when <code>|x0[i]| &gt; 0.1</code>, otherwise by <code>1.0</code>), so
-the optimizer works in a near-unit-magnitude space. The scale is
-computed once from the initial point and held fixed for the entire run.</p>
-<p><strong>When to set <code>FALSE</code>.</strong> Mathematically the scaling is
-transparent - the OFV, estimates, standard errors, and diagnostics
-should match the unscaled fit to numerical tolerance. Set
-<code>scale_params = FALSE</code> to:</p><ul><li><p>reproduce the bit-exact iteration trajectory of a pre-scaling
-fit (e.g. when comparing against a baseline produced by an older
-<code>ferx</code> build),</p></li>
-<li><p>debug suspected scaling-related issues by toggling the layer
-off without changing anything else,</p></li>
-<li><p>validate that scaled and unscaled fits land on the same
-optimum on a new model.</p></li>
-</ul><p>Applies to all outer optimizers: NLopt FOCE/FOCEI (BOBYQA, SLSQP,
-L-BFGS, MMA), the hand-rolled BFGS, Gauss-Newton / BHHH, and the SAEM
-M-step.</p></dd>
+<dd><p>Logical. If <code>TRUE</code>, apply a per-coordinate scaling
+layer on top of the existing log/Cholesky parameterization, dividing each
+transformed coordinate by <code>|x0[i]|</code> (when <code>|x0[i]| &gt; 0.1</code>,
+otherwise by <code>1.0</code>) so the outer optimizer works in a
+near-unit-magnitude space. Default <code>FALSE</code>.</p>
+<p><strong>Why it defaults to <code>FALSE</code>.</strong> The scaling is <em>not</em>
+trajectory-transparent. Although it leaves the OFV value unchanged at any
+fixed point, it rescales the gradient the optimizer sees, and that
+gradient feeds the SLSQP overshoot cap, the quasi-Newton Hessian estimate,
+and the xtol/ftol termination - all of which act in the scaled coordinate
+system. The scaling layer only ever runs on log/Cholesky-packed
+coordinates (it auto-disables when any identity-packed theta is present),
+and for those, dividing by <code>|log value|</code> is counterproductive: a
+coordinate like <code>log(V) = log(20) ~ 3</code> gets scale 3, so the
+optimizer's unit step becomes a 3-unit move in log space - an
+<code>e^3 ~ 20x</code> multiplicative jump in V. That large step both overshoots
+and, through the uniform gradient cap, starves the step in every other
+dimension (notably OMEGA), so the fit can halt well short of the minimum.
+See ferx-core issue #99. The <code>FALSE</code> default reproduces the
+well-tested pre-scaling-layer behaviour.</p>
+<p><strong>When to set <code>TRUE</code>.</strong> Left as an opt-in for experimentation -
+e.g. to A/B the scaled vs unscaled trajectory on a specific model. When
+enabled it applies to all outer optimizers: NLopt FOCE/FOCEI (BOBYQA,
+SLSQP, L-BFGS, MMA), the hand-rolled BFGS, Gauss-Newton / BHHH, and the
+SAEM M-step.</p></dd>
 
 
-<dt id="arg-max-unconverged-frac">max_unconverged_frac<a class="anchor" aria-label="anchor" href="#arg-max-unconverged-frac"></a></dt>
-<dd><p>Numeric scalar in [0, 1] or <code>NULL</code>
-(default). When non-<code>NULL</code>, the fit is flagged as converged even if
-up to this fraction of subjects failed their inner EBE loop, instead of
-raising an error. Useful for large datasets with a handful of difficult
-subjects.</p></dd>
-
-
-<dt id="arg-min-obs-for-convergence-check">min_obs_for_convergence_check<a class="anchor" aria-label="anchor" href="#arg-min-obs-for-convergence-check"></a></dt>
-<dd><p>Integer or <code>NULL</code> (default).
-Minimum number of observations a subject must have before its inner-loop
-convergence is included in the <code>max_unconverged_frac</code> check. Subjects
-with fewer observations are excluded from the check.</p></dd>
+<dt id="arg-inits-from-nca">inits_from_nca<a class="anchor" aria-label="anchor" href="#arg-inits-from-nca"></a></dt>
+<dd><p>Derive NCA-based starting values from the data before
+the optimizer runs, overriding the model file's defaults. Either a logical
+(<code>FALSE</code>, the default, disables it; <code>TRUE</code> is an alias for
+<code>"nca_sweep"</code>) or one of <code>"nca"</code>, <code>"nca_sweep"</code>,
+<code>"nca_ebe"</code> to pick a strategy explicitly. Most useful with
+<code>settings = list(optimizer = "trust_region")</code> or <code>method = "gn"</code>,
+where bad starting values can stall the optimizer. See
+<code><a href="ferx_inits_from_nca.html">ferx_inits_from_nca</a></code> to inspect the values without fitting.</p></dd>
 
 
 <dt id="arg-settings">settings<a class="anchor" aria-label="anchor" href="#arg-settings"></a></dt>
@@ -247,8 +243,15 @@ forwarded to the Rust <code>FitOptions</code>. Use this to tune knobs that do
 not have a dedicated <code>ferx_fit()</code> argument, without needing a new
 wrapper release for each option. Recognized keys include SAEM
 (<code>n_exploration</code>, <code>n_convergence</code>, <code>n_mh_steps</code>,
-<code>adapt_interval</code>, <code>seed</code>), SIR tuning (<code>sir_samples</code>,
-<code>sir_resamples</code>, <code>sir_seed</code>), Gauss-Newton (<code>gn_lambda</code>),
+<code>adapt_interval</code>, <code>seed</code>; and <code>n_leapfrog</code> /
+<code>saem_n_leapfrog</code>: integer leapfrog steps for HMC proposals,
+default 0 = Metropolis-Hastings; positive value uses one HMC proposal
+per subject per iteration, requires AD build, see examples below),
+SIR tuning (<code>sir_samples</code>,
+<code>sir_resamples</code>, <code>sir_seed</code>), Importance Sampling
+(<code>is_samples</code>, <code>is_proposal_df</code>, <code>is_seed</code>,
+<code>is_low_ess_threshold</code>; used only when an <code>"imp"</code> stage is
+in the method chain), Gauss-Newton (<code>gn_lambda</code>),
 optimizer selection (<code>optimizer</code> - one of <code>"bobyqa"</code> (default),
 <code>"slsqp"</code>, <code>"lbfgs"</code>, <code>"nlopt_lbfgs"</code>, <code>"mma"</code>,
 <code>"bfgs"</code>, <code>"trust_region"</code>; also <code>global_search</code>,
@@ -256,6 +259,11 @@ optimizer selection (<code>optimizer</code> - one of <code>"bobyqa"</code> (defa
 (<code>maxiter</code>), the inner (per-subject EBE) loop
 (<code>inner_maxiter</code>, <code>inner_tol</code>), the Steihaug CG budget
 for <code>optimizer = "trust_region"</code> (<code>steihaug_max_iters</code>),
+the NLopt outer-loop stagnation guard
+(<code>stagnation_guard</code> - logical, default <code>TRUE</code>; set
+<code>FALSE</code> to let SLSQP / L-BFGS run to their own xtol/ftol or to
+<code>maxiter</code> instead of short-circuiting on a numerically-flat
+OFV plateau; only consumed by FOCE / FOCEI / GN-hybrid),
 and multi-start optimization (<code>n_starts</code>, <code>start_sigma</code>,
 <code>multi_start_seed</code>).
 Values that duplicate a dedicated argument
@@ -285,6 +293,10 @@ reference in the ferx-core docs for the on-disk schema.</p></dd>
 <code>TRUE</code>, embeds the input <code>data</code> CSV verbatim inside the
 <code>.fitrx</code> bundle so the file is self-contained. Default
 <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Reserved for future use. Unrecognised arguments raise an error.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -374,6 +386,22 @@ under the model's covariate effects. For inter-occasion variation see
 <dt>sir_ci_theta, sir_ci_omega, sir_ci_sigma</dt>
 <dd><p>SIR 95\<!-- % CI matrices -->
 with columns <code>lower</code> and <code>upper</code> (NULL if SIR not run)</p></dd>
+
+<dt>importance_sampling</dt>
+<dd><p>Importance-sampling marginal log-likelihood
+diagnostics, populated only when the method chain ends with an
+<code>"imp"</code> stage (<code>NULL</code> otherwise). A list with
+<code>minus2_log_likelihood</code> (the IS estimate of \(-2 \log L\),
+comparable across models in the same nesting family),
+<code>mc_standard_error</code> (Monte-Carlo SE; scales as
+\(1/\sqrt{is\_samples}\)), <code>n_samples</code>,
+<code>proposal_df</code>, <code>ess_min</code> and <code>ess_median</code>
+(per-subject effective sample size as a fraction of
+<code>is_samples</code>), <code>kappa_treatment</code>
+(<code>"not_applicable"</code>, <code>"fixed_at_mode"</code> for partial-marginal
+IOV fits, or <code>"marginalized"</code>), and parallel vectors
+<code>low_ess_subject_ids</code> / <code>low_ess_subject_frac</code> flagging
+subjects whose ESS fraction fell below <code>is_low_ess_threshold</code>.</p></dd>
 
 <dt>trace_path</dt>
 <dd><p>Path to the optimizer trace CSV, or <code>NULL</code> when
@@ -577,6 +605,13 @@ Same semantics as <code>omega_init_as_sd</code> for residual-error parameters.</
 <dd><p>Logical vector, one entry per IOV kappa parameter.
 Same semantics as <code>omega_init_as_sd</code> for inter-occasion variability.</p></dd>
 
+<dt>saem_n_subjects_hmc</dt>
+<dd><p>Integer count of subjects whose SAEM E-step
+proposals were generated by HMC (i.e. <code>n_leapfrog &gt; 0</code> and the AD
+build is active). Subjects that fell back to MH (e.g. ODE models) are
+not counted. <code>NA_integer_</code> when the method is not SAEM, when
+<code>n_leapfrog = 0</code> (MH only), or when AD is unavailable.</p></dd>
+
 <dt>neural_networks</dt>
 <dd><p>Named list of sub-lists, one per <code>[covariate_nn]</code>
 block declared in the model file. Empty list when the <code>nn</code> cargo
@@ -617,6 +652,72 @@ finite differences and emits a warning.</p></li>
 <li><p><code>fit$uses_sde</code> is <code>TRUE</code> whenever a <code>[diffusion]</code>
 block was present.</p></li>
 </ul></div>
+    <div id="unit-conversion-and-scaling-scaling-block-">
+    <h2>Unit conversion and scaling (<code>[scaling]</code> block)</h2>
+
+
+
+<p>Add an optional <code>[scaling]</code> block to the <code>.ferx</code> model file to
+convert model predictions before comparing them to the observations in DV.
+This is useful when the model is parameterised in one unit (e.g. amounts in
+mg) but DV is recorded in another (e.g. concentrations in ng/mL).</p>
+<p>The engine divides each prediction by the scale factor before computing
+residuals, so the fitted sigma is on the DV scale.</p>
+<p><strong>Form A – scalar divisor (safe with AD):</strong></p><div class="sourceCode"><pre><code>
+[scaling]
+  obs_scale = 1000   # divide every predicted value by 1000
+</code></pre></div>
+
+<p><strong>Form B – expression divisor (forces <code>gradient = fd</code>):</strong></p><div class="sourceCode"><pre><code>
+[scaling]
+  obs_scale = V      # divide by the individual volume (theta/eta expression)
+</code></pre></div><p>Expressions may reference thetas, etas, and <code>[individual_parameters]</code>
+variables. AD gradients are not supported for Form B; add
+<code>gradient = fd</code> to <code>[fit_options]</code> or the engine will error.</p>
+<p><strong>Per-CMT scaling (Form A or B per compartment):</strong></p><div class="sourceCode"><pre><code>
+[scaling]
+  obs_scale[CMT=1] = 1000   # CMT 1 in ng/mL, dose in ug
+  obs_scale[CMT=2] = 1      # CMT 2 already in correct units
+</code></pre></div>
+
+<p><strong>Form C – ODE readout expression (forces <code>gradient = fd</code>):</strong></p>
+<p>For ODE models, <code>y = &lt;expr&gt;</code> defines the observation as a function of
+ODE state variables, thetas, etas, and individual parameters. This replaces
+the <code>obs_cmt=</code> argument in <code>[structural_model]</code> and is required
+when the observation is not a raw compartment amount:</p><div class="sourceCode"><pre><code>
+[structural_model]
+  ode(states = [depot, central], ...)   # no obs_cmt= here
+
+[scaling]
+  y = central / V   # observation = central compartment / volume
+</code></pre></div><p>Per-CMT Form C: <code>y[CMT=1] = central / V1</code>, <code>y[CMT=2] = central2 / V2</code>.</p>
+<p><strong>Constraints:</strong></p><ul><li><p><code>[scaling]</code> is not yet supported on SDE (<code>[diffusion]</code>) models.</p></li>
+<li><p>Forms B, per-CMT, and Form C force finite-difference gradients; add
+<code>gradient = fd</code> to <code>[fit_options]</code> explicitly, or the
+engine raises an informative error.</p></li>
+</ul></div>
+    <div id="steady-state-dosing-ss-and-ii-columns-">
+    <h2>Steady-state dosing (<code>SS</code> and <code>II</code> columns)</h2>
+
+
+
+<p>Mark a dosing row as a steady-state dose by setting <code>SS = 1</code> (or
+<code>SS = 2</code>) in the NONMEM CSV and providing the dosing interval
+<code>II</code> (in the same time units as TIME).</p>
+<ul><li><p><strong><code>SS = 1</code></strong>: the subject is assumed to be at steady
+state before this dose. The engine computes the steady-state
+initial conditions analytically (for 1/2/3-cpt models) or via
+pulse expansion (for ODE models) and uses them as the starting
+compartment state.</p></li>
+<li><p><strong><code>SS = 2</code></strong>: the steady-state concentration is added
+to the current compartment state (superposition).</p></li>
+<li><p><strong><code>II</code></strong>: dosing interval (required when <code>SS &gt; 0</code>).
+Must match the units of TIME. Rows with <code>SS = 0</code> or missing
+<code>SS</code> ignore <code>II</code>.</p></li>
+</ul><p>No changes to the <code>.ferx</code> model file are needed. Steady-state
+handling is purely data-driven and works for all PK model families
+(1-cpt, 2-cpt, 3-cpt oral/IV/infusion, ODE-based).</p>
+    </div>
     <div id="specifying-model-and-data">
     <h2>Specifying model and data</h2>
 
@@ -699,7 +800,10 @@ duplicated in <code>settings</code> - pass them via the named argument.</p>
 <span>  n_convergence <span class="op">=</span> <span class="fl">400</span>,</span>
 <span>  n_mh_steps    <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  seed          <span class="op">=</span> <span class="fl">42L</span></span>
-<span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># HMC proposals (requires AD build; falls back to MH otherwise):</span></span>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, method <span class="op">=</span> <span class="st">"saem"</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n_leapfrog <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 
 <p><strong>SIR uncertainty (requires <code>sir = TRUE, covariance = TRUE</code>):</strong></p><div class="sourceCode"><pre><code><span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, sir <span class="op">=</span> <span class="cn">TRUE</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -719,6 +823,28 @@ duplicated in <code>settings</code> - pass them via the named argument.</p>
 <span>  optimizer          <span class="op">=</span> <span class="st">"trust_region"</span>,</span>
 <span>  steihaug_max_iters <span class="op">=</span> <span class="fl">100L</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+
+<p><strong>Convergence tolerance for difficult subjects:</strong></p>
+<p><code>max_unconverged_frac</code> (numeric in [0, 1]) flags the fit as converged
+even if up to this fraction of subjects failed their inner EBE loop, instead
+of raising an error - useful for large datasets with a handful of difficult
+subjects. <code>min_obs_for_convergence_check</code> (non-negative integer) is the
+minimum number of observations a subject must have before its inner-loop
+convergence counts toward that fraction; sparser subjects are excluded.</p><div class="sourceCode"><pre><code><span></span>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  max_unconverged_frac          <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  min_obs_for_convergence_check <span class="op">=</span> <span class="fl">2L</span></span>
+<span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+
+<p><strong>Stagnation guard (NLopt-based optimizers):</strong></p>
+<p>NLopt-based outer optimizers (BOBYQA, SLSQP, L-BFGS, MMA) short-circuit by
+default once recent evaluations show no OFV improvement above 1e-3 over a
+rolling window, letting them terminate quickly instead of burning through
+<code>maxiter</code> at full inner-loop cost. Set <code>stagnation_guard = FALSE</code>
+to disable this and let the optimizer run to its natural termination
+criterion - useful when debugging or for problems with genuinely
+slow-but-real OFV improvements.</p><div class="sourceCode"><pre><code><span></span>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stagnation_guard <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 
 <p><strong>Multi-start optimization:</strong></p>
 <p>Runs <code>n_starts</code> independent fits from perturbed initial values in
@@ -763,6 +889,13 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span><span class="va">fit</span><span class="op">$</span><span class="va">individual_estimates</span></span></code></pre></div>
 
     </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p>Other fitting:
+<code><a href="ferx_check_init.html">ferx_check_init()</a></code>,
+<code><a href="ferx_inits_from_nca.html">ferx_inits_from_nca()</a></code>,
+<code><a href="ferx_sir.html">ferx_sir()</a></code></p></div>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -775,9 +908,9 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Possible over-parameterisation or misspecified residual error model.</span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">theta</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      TVCL       TVV      TVKA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1327382 7.6906298 0.7571771 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1327389 7.6948086 0.7585626 </span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">ofv</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -280.1829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -280.1835</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
@@ -797,7 +930,7 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-in"><span>  threads     <span class="op">=</span> <span class="fl">4L</span>,</span></span>
 <span class="r-in"><span>  gradient    <span class="op">=</span> <span class="st">"auto"</span>,</span></span>
 <span class="r-in"><span>  verbose     <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  scale_params <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span>  scale_params <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># SAEM warm-start, then FOCEI polish</span></span></span>
@@ -895,6 +1028,53 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit_ms</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n_starts <span class="op">=</span> <span class="fl">4L</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit_ms</span><span class="op">$</span><span class="va">ofv</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># -- NCA-based starting values (inits_from_nca) ------------------------------</span></span></span>
+<span class="r-in"><span><span class="co"># `inits_from_nca` is designed to mitigate stalling and local-minimum traps</span></span></span>
+<span class="r-in"><span><span class="co"># in **gradient-based estimation methods**, which navigate the likelihood</span></span></span>
+<span class="r-in"><span><span class="co"># surface using a local Jacobian / Hessian and so are sensitive to where the</span></span></span>
+<span class="r-in"><span><span class="co"># starting thetas sit. In ferx those are:</span></span></span>
+<span class="r-in"><span><span class="co">#   - method = "gn"         (FOCE Gauss-Newton)</span></span></span>
+<span class="r-in"><span><span class="co">#   - method = "gn_hybrid"  (FOCE-GN with SLSQP polish)</span></span></span>
+<span class="r-in"><span><span class="co">#   - method = "foce" / "focei" run with settings = list(optimizer =</span></span></span>
+<span class="r-in"><span><span class="co">#     "trust_region") (the default optimizer "slsqp" is also gradient-based</span></span></span>
+<span class="r-in"><span><span class="co">#     but tolerates poor starts better)</span></span></span>
+<span class="r-in"><span><span class="co"># For these, NCA-derived starts often turn a non-converging or stagnating</span></span></span>
+<span class="r-in"><span><span class="co"># fit into a clean convergence.</span></span></span>
+<span class="r-in"><span><span class="co">#</span></span></span>
+<span class="r-in"><span><span class="co"># Stochastic / sampling-based methods ("saem", "imp") explore the space</span></span></span>
+<span class="r-in"><span><span class="co"># globally and are far less sensitive to starting values, so `inits_from_nca`</span></span></span>
+<span class="r-in"><span><span class="co"># gives a smaller benefit. The better tool for them is multi-start (run</span></span></span>
+<span class="r-in"><span><span class="co"># several fits from perturbed starts and keep the lowest OFV) - see the</span></span></span>
+<span class="r-in"><span><span class="co"># Multi-start section above (`settings = list(n_starts = 4L)`), or chain</span></span></span>
+<span class="r-in"><span><span class="co"># SAEM into FOCEI: `method = c("saem", "focei")`.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># TRUE = default strategy ("nca_sweep"); rescues a trust_region fit that</span></span></span>
+<span class="r-in"><span><span class="co"># would otherwise stall on poor defaults.</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>,</span></span>
+<span class="r-in"><span>  settings       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>optimizer <span class="op">=</span> <span class="st">"trust_region"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  inits_from_nca <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Pick a strategy explicitly. "nca_ebe" handles large between-subject</span></span></span>
+<span class="r-in"><span><span class="co"># variability better than "nca_sweep" but falls back to it for ODE models.</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, method <span class="op">=</span> <span class="st">"gn"</span>,</span></span>
+<span class="r-in"><span>                inits_from_nca <span class="op">=</span> <span class="st">"nca_ebe"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fastest variant: NCA arithmetic only, no grid sweep.</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, inits_from_nca <span class="op">=</span> <span class="st">"nca"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Same flag from the model file's [fit_options] (the call-time arg wins</span></span></span>
+<span class="r-in"><span><span class="co"># and warns on conflict). Inspect what NCA produces without fitting via</span></span></span>
+<span class="r-in"><span><span class="co"># `ferx_inits_from_nca()` -- see ?ferx_inits_from_nca.</span></span></span>
+<span class="r-in"><span><span class="co">#</span></span></span>
+<span class="r-in"><span><span class="co"># Combine with multi-start when even good inits aren't enough - good starts</span></span></span>
+<span class="r-in"><span><span class="co"># PLUS a small perturbed ensemble is often the most robust setup.</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">ferx_fit</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>,</span></span>
+<span class="r-in"><span>  method         <span class="op">=</span> <span class="st">"gn"</span>,</span></span>
+<span class="r-in"><span>  inits_from_nca <span class="op">=</span> <span class="st">"nca_sweep"</span>,</span></span>
+<span class="r-in"><span>  settings       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n_starts <span class="op">=</span> <span class="fl">4L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># -- Deep Compartment Model (covariate neural network) -----------------------</span></span></span>
 <span class="r-in"><span><span class="co"># Requires ferx-r built with the `nn` cargo feature.</span></span></span>

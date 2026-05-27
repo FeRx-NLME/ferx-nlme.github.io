@@ -20,7 +20,7 @@ identifiability problem in the model."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ferx</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.4</span>
       </span>
     </div>
 
@@ -73,7 +73,14 @@ identifiability problem in the model.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="ferx_estimates.html">ferx_estimates</a></code> for SEs and \<!-- %RSE. --></p></div>
+    <div class="dont-index"><p><code><a href="ferx_estimates.html">ferx_estimates</a></code> for SEs and \<!-- %RSE. --></p>
+<p>Other diagnostics:
+<code><a href="check_diagnostics.html">check_diagnostics()</a></code>,
+<code><a href="ferx_estimates.html">ferx_estimates()</a></code>,
+<code><a href="ferx_eta_cov.html">ferx_eta_cov()</a></code>,
+<code><a href="ferx_plot_trace.html">ferx_plot_trace()</a></code>,
+<code><a href="ferx_trace.html">ferx_trace()</a></code>,
+<code><a href="summary.ferx_fit.html">summary.ferx_fit()</a></code></p></div>
     </div>
 
     <div id="ref-examples">
@@ -86,13 +93,13 @@ identifiability problem in the model.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Possible over-parameterisation or misspecified residual error model.</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">cov_matrix</span><span class="op">)</span><span class="op">)</span> <span class="fu">ferx_cor_matrix</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            TVCL    TVV   TVKA ETA_CL  ETA_V ETA_KA PROP_ERR</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVCL      1.000 -0.746 -0.155  0.002  0.084  0.006    0.629</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVV      -0.746  1.000  0.139 -0.001 -0.110 -0.006   -0.355</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVKA     -0.155  0.139  1.000  0.000 -0.016 -0.041   -0.157</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVCL      1.000 -0.744 -0.154  0.002  0.076  0.006    0.628</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVV      -0.744  1.000  0.138 -0.001 -0.101 -0.005   -0.352</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVKA     -0.154  0.138  1.000  0.000 -0.015 -0.040   -0.156</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ETA_CL    0.002 -0.001  0.000  1.000  0.000  0.000    0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_V     0.084 -0.110 -0.016  0.000  1.000  0.001    0.040</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_KA    0.006 -0.006 -0.041  0.000  0.001  1.000    0.006</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PROP_ERR  0.629 -0.355 -0.157  0.001  0.040  0.006    1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_V     0.076 -0.101 -0.015  0.000  1.000  0.001    0.036</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_KA    0.006 -0.005 -0.040  0.000  0.001  1.000    0.006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PROP_ERR  0.628 -0.352 -0.156  0.001  0.036  0.006    1.000</span>
 </code></pre></div>
     </div>
   </div>
