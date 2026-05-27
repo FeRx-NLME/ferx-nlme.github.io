@@ -242,6 +242,42 @@ parameter-level correlation for each off-diagonal pair:
 The lognormal formula reflects the correlation between the actual PK parameters
 (CL, V) rather than their underlying normal variates.
 
+## Writing individual parameters: mu-referencing
+
+When an individual parameter combines IIV with covariate effects, **write the
+`THETA * exp(ETA)` pair first and append covariates as trailing multipliers**:
+
+```
+CL = TVCL * exp(ETA_CL) * (WT/70)^0.75      # recommended
+CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)      # triggers mu-ref warning
+```
+
+Both forms are mathematically identical in log-space. ferx detects
+mu-referencing by spotting an adjacent `theta * exp(eta)` pair; when a
+covariate term sits between them, the parser falls back to a generic
+expansion and emits a warning. With the canonical ordering the engine uses
+the explicit mu-reference as the FOCEI linearisation expansion point.
+
+This will likely be relaxed in a future release — see
+[ferx-r#54](https://github.com/FeRx-NLME/ferx-r/issues/54). See the
+[covariates example](../examples/covariates.qmd) for a worked model.
+
+### Log-normal detection with derived intermediates
+
+The same `theta * exp(eta)` pattern detection only fires when the base is a
+**declared theta**. If the base is a derived intermediate, e.g.
+
+```
+KTR = 4.0 / TVMTT
+KA  = KTR * exp(ETA_KA)        # base is intermediate, not a theta
+```
+
+then ferx currently labels the omega `[custom]` and reports `CV% = N/A`
+even though the transform is genuinely log-normal. Workaround: declare a
+dedicated theta for the parameter (`theta TVKA(...)`, then
+`KA = TVKA * exp(ETA_KA)`). Tracked in
+[ferx-r#55](https://github.com/FeRx-NLME/ferx-r/issues/55).
+
 ## Complete examples
 
 Diagonal omega (no correlations):

@@ -32,7 +32,7 @@ For background on covariate parameterisation, see [Chapter 3 (Model DSL)](https:
   sigma PROP_ERR ~ 0.04
 
 [individual_parameters]
-  CL = TVCL * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL * exp(ETA_CL)
+  CL = TVCL * exp(ETA_CL) * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL
   V1 = TVV1 * exp(ETA_V1)
   Q  = TVQ  * exp(ETA_Q)
   V2 = TVV2 * exp(ETA_V2)
@@ -55,7 +55,7 @@ For background on covariate parameterisation, see [Chapter 3 (Model DSL)](https:
 The clearance equation includes two covariate effects:
 
 ```
-CL = TVCL * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL * exp(ETA_CL)
+CL = TVCL * exp(ETA_CL) * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL
 ```
 
 - `(WT/70)^THETA_WT` — allometric scaling with body weight, centred at 70 kg.
@@ -66,6 +66,24 @@ CL = TVCL * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL * exp(ETA_CL)
 Both effects are **centred**: when WT = 70 kg and CRCL = 100 mL/min, both
 terms equal 1.0, so TVCL is interpretable as the clearance of a 70 kg patient
 with normal renal function.
+
+::: {.callout-tip title="Mu-referencing: write `theta * exp(eta)` first"}
+Put the `THETA * exp(ETA)` pair at the front of each individual-parameter
+expression and append covariate multipliers afterward. The two forms are
+mathematically identical in log-space, but ferx's parser detects
+mu-referencing by spotting an adjacent `theta * exp(eta)` pair. With the
+canonical order the engine uses the explicit mu-reference as the FOCEI
+linearisation expansion point; with covariates wedged in between, the
+pairing is ambiguous and ferx emits a warning and falls back to a generic
+expansion.
+
+- **Recommended:** `CL = TVCL * exp(ETA_CL) * (WT/70)^0.75`
+- **Triggers warning:** `CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)`
+
+This will likely be relaxed in a future release once the parser detects
+mu-references regardless of term order — see
+[ferx-r#54](https://github.com/FeRx-NLME/ferx-r/issues/54).
+:::
 
 ## Data requirements
 

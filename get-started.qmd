@@ -15,6 +15,21 @@ You can start with the simple build and upgrade later — the R API is identical
 
 For a deeper walkthrough of either path, see the installation chapter of the ferx-r book.
 
+### What you give up with the simple build
+
+Almost nothing is *disabled* — the simple build falls back to finite-difference (FD) gradients everywhere autodiff would be used:
+
+| Feature | Simple build |
+|---|---|
+| `ferx_simulate()`, `ferx_predict()` | Identical — no gradients used |
+| ODE / SDE / EKF models | Identical — these always use FD, even in the full build |
+| SAEM | Identical — derivative-free E-step |
+| Population (outer-loop) optimizer | Identical — always FD in both builds |
+| FOCE / FOCEI inner loop with analytical 1-/2-cpt PK | **Slower** — FD instead of Enzyme reverse-mode AD (≈ 2 × n_eta extra gradient calls per iteration); results match |
+| Hessian-based standard errors | Slightly less accurate (FD Hessian) |
+
+If you mostly fit ODE models or use SAEM, the full build buys you nothing. The full build's main win is faster FOCEI on analytical-PK models and crisper SEs for SIR / uncertainty quantification work. Tracked in [ferx-r#46](https://github.com/FeRx-NLME/ferx-r/issues/46).
+
 ---
 
 ## Simple build

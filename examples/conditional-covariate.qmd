@@ -57,11 +57,11 @@ covariates). Time-varying covariates are not supported with analytical PK solver
 
 [individual_parameters]
   if (WT > 70) {
-    CL = TVCL * (WT / 70)^0.75 * exp(ETA_CL)
+    CL = TVCL * exp(ETA_CL) * (WT / 70)^0.75
   } else {
     CL = TVCL * exp(ETA_CL)
   }
-  V1 = TVV1 * (WT / 70) * exp(ETA_V1)
+  V1 = TVV1 * exp(ETA_V1) * (WT / 70)
   Q  = TVQ  * exp(ETA_Q)
   V2 = TVV2 * exp(ETA_V2)
   KA = TVKA * exp(ETA_KA)
@@ -82,6 +82,11 @@ covariates). Time-varying covariates are not supported with analytical PK solver
 Subjects with WT > 70 kg receive an allometric clearance boost
 `(WT / 70)^0.75`; lighter subjects use the typical CL directly. V1 uses a
 linear WT effect regardless of the CL branch.
+
+Note the `TVCL * exp(ETA_CL) * (WT/70)^0.75` ordering in the heavy-weight
+branch — `theta * exp(eta)` first, covariate as a trailing multiplier. See
+the [mu-referencing callout in the covariates example](covariates.qmd) for
+why this matters.
 
 ## Syntax rules
 
