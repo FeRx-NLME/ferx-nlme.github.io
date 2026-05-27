@@ -20,8 +20,6 @@ website:
     logo-dark: assets/ferx-dsl-brackets-dark.svg
     logo-alt: "ferx"
     left:
-      - text: "Book"
-        href: https://ferx-nlme.github.io/ferx-book/
       - text: "Get started"
         href: get-started.qmd
       - text: "Learn"
@@ -82,8 +80,14 @@ website:
             href: examples/multistart.qmd
           - text: "Oral bioavailability (logit-normal F)"
             href: examples/bioavailability.qmd
+    right:
+      - text: "Book"
+        href: https://ferx-nlme.github.io/ferx-book/
       - text: "ferx-core"
         menu:
+          - text: "ferx-core book (mdBook) ↗"
+            href: https://ferx-nlme.github.io/ferx-core/
+          - text: "---"
           - text: "Overview"
             href: ferx-core/overview.qmd
           - text: "Architecture"
@@ -100,11 +104,10 @@ website:
             href: ferx-core/ode-solver.qmd
           - text: "Output reference"
             href: ferx-core/output.qmd
-    right:
-      - text: "FAQ"
-        href: faq.qmd
       - text: "Reference"
         href: reference/index.html
+      - text: "FAQ"
+        href: faq.qmd
       - text: "Changelog"
         href: changelog.qmd
       - icon: github
