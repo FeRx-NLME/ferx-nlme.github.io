@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Model DSL Overview – ferx</title>
+<title>SIR uncertainty quantification – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -484,12 +519,18 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#section-reference" id="toc-section-reference" class="nav-link active" data-scroll-target="#section-reference">Section reference</a></li>
-  <li><a href="#minimal-example" id="toc-minimal-example" class="nav-link" data-scroll-target="#minimal-example">Minimal example</a></li>
-  <li><a href="#model-naming" id="toc-model-naming" class="nav-link" data-scroll-target="#model-naming">Model naming</a></li>
-  <li><a href="#comments" id="toc-comments" class="nav-link" data-scroll-target="#comments">Comments</a></li>
-  <li><a href="#data-and-covariates" id="toc-data-and-covariates" class="nav-link" data-scroll-target="#data-and-covariates">Data and covariates</a></li>
-  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further reading</a></li>
+  <li><a href="#running-sir-post-hoc" id="toc-running-sir-post-hoc" class="nav-link active" data-scroll-target="#running-sir-post-hoc">Running SIR post-hoc</a>
+  <ul class="collapse">
+  <li><a href="#tuning-knobs" id="toc-tuning-knobs" class="nav-link" data-scroll-target="#tuning-knobs">Tuning knobs</a></li>
+  </ul></li>
+  <li><a href="#reading-the-output" id="toc-reading-the-output" class="nav-link" data-scroll-target="#reading-the-output">Reading the output</a>
+  <ul class="collapse">
+  <li><a href="#worked-output" id="toc-worked-output" class="nav-link" data-scroll-target="#worked-output">Worked output</a></li>
+  <li><a href="#interpreting-ess" id="toc-interpreting-ess" class="nav-link" data-scroll-target="#interpreting-ess">Interpreting ESS</a></li>
+  </ul></li>
+  <li><a href="#inline-sir-at-fit-time" id="toc-inline-sir-at-fit-time" class="nav-link" data-scroll-target="#inline-sir-at-fit-time">Inline SIR at fit time</a></li>
+  <li><a href="#feeding-sir-into-uncertainty-aware-simulation" id="toc-feeding-sir-into-uncertainty-aware-simulation" class="nav-link" data-scroll-target="#feeding-sir-into-uncertainty-aware-simulation">Feeding SIR into uncertainty-aware simulation</a></li>
+  <li><a href="#when-to-prefer-sir-over-asymptotic" id="toc-when-to-prefer-sir-over-asymptotic" class="nav-link" data-scroll-target="#when-to-prefer-sir-over-asymptotic">When to prefer SIR over asymptotic</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -499,7 +540,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Model DSL Overview</h1>
+<h1 class="title">SIR uncertainty quantification</h1>
 </div>
 
 
@@ -516,9 +557,49 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>A ferx model is a plain-text <code>.ferx</code> file divided into labelled sections. The sections are parsed top-to-bottom; their order within the file does not matter.</p>
-<section id="section-reference" class="level2">
-<h2 class="anchored" data-anchor-id="section-reference">Section reference</h2>
+<p>Sampling Importance Resampling (SIR) refines the uncertainty estimate from a fitted model without requiring a new optimisation run. It draws candidate parameter vectors from the asymptotic proposal (the fit’s covariance matrix), re-weights each candidate by the likelihood ratio against the proposal, and keeps a resample drawn in proportion to those weights.</p>
+<p>In ferx, SIR is the alternative to the asymptotic (Wald) confidence intervals. Use it when:</p>
+<ul>
+<li>the asymptotic CI may be a poor approximation (skewed likelihood, parameter near a boundary, small sample size);</li>
+<li>you want to propagate parameter uncertainty into downstream simulation via <code>ferx_simulate_with_uncertainty(method = "sir")</code>.</li>
+</ul>
+<p>Two entry points produce the same output structure:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Entry point</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ferx_fit(..., sir = TRUE)</code></td>
+<td>Inline at fit time. Convenient when SIR is part of the routine workflow.</td>
+</tr>
+<tr class="even">
+<td><code>ferx_sir(fit, ...)</code></td>
+<td>Post-hoc against an existing fit (including one loaded via <code>ferx_load_fit()</code>). The fit must have been computed with <code>covariance = TRUE</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><code>ferx_sir()</code> re-reads the model and data files recorded on the fit, hashes them, and <strong>hard-errors</strong> if either has changed since fitting - SIR against a modified model or dataset is meaningless. The integrity check is documented in <code>?ferx_sir</code>.</p>
+<hr>
+<section id="running-sir-post-hoc" class="level2">
+<h2 class="anchored" data-anchor-id="running-sir-post-hoc">Running SIR post-hoc</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_sir</span>(fit,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">sir_samples   =</span> <span class="dv">1000</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">sir_resamples =</span> <span class="dv">250</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">sir_seed      =</span> <span class="dv">42</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The function returns the same <code>fit</code> object augmented with SIR fields. No new optimisation occurs; only proposal draws, importance weighting, and resampling.</p>
+<section id="tuning-knobs" class="level3">
+<h3 class="anchored" data-anchor-id="tuning-knobs">Tuning knobs</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -527,104 +608,155 @@ ul.task-list li input[type="checkbox"] {
 </colgroup>
 <thead>
 <tr class="header">
-<th>Section</th>
-<th>Required</th>
-<th>Purpose</th>
+<th>Argument</th>
+<th>Default</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>[parameters]</code></td>
-<td>Yes</td>
-<td>Fixed effects (theta), BSV (omega), residual error (sigma), IOV (kappa)</td>
+<td><code>sir_samples</code></td>
+<td>1000</td>
+<td>Number of candidate draws from the asymptotic proposal. Higher = tighter weights at proportional cost.</td>
 </tr>
 <tr class="even">
-<td><code>[individual_parameters]</code></td>
-<td>Yes</td>
-<td>Expressions mapping thetas + ETAs + covariates → PK parameters</td>
+<td><code>sir_resamples</code></td>
+<td>250</td>
+<td>Number of resampled vectors retained. Must be <code>&lt;= sir_samples</code>.</td>
 </tr>
 <tr class="odd">
-<td><code>[structural_model]</code></td>
-<td>Yes</td>
-<td>Selects an analytical PK model or declares an ODE system</td>
+<td><code>sir_seed</code></td>
+<td><code>NULL</code></td>
+<td>Integer seed for reproducibility. <code>NULL</code> uses the engine’s default seeding behaviour.</td>
 </tr>
 <tr class="even">
-<td><code>[error_model]</code></td>
-<td>Yes</td>
-<td>Residual error structure (<code>additive</code>, <code>proportional</code>, <code>combined</code>)</td>
-</tr>
-<tr class="odd">
-<td><code>[odes]</code></td>
-<td>ODE models only</td>
-<td>Right-hand side of the ODE system</td>
-</tr>
-<tr class="even">
-<td><code>[fit_options]</code></td>
-<td>No</td>
-<td>Estimation method, optimizer, convergence settings</td>
-</tr>
-<tr class="odd">
-<td><code>[simulation]</code></td>
-<td>No</td>
-<td>Virtual trial design for <code>--simulate</code> runs</td>
+<td><code>sir_keep_samples</code></td>
+<td><code>FALSE</code></td>
+<td>Retain the resampled packed parameter vectors on the fit. Required for downstream <code>ferx_simulate_with_uncertainty(method = "sir")</code>.</td>
 </tr>
 </tbody>
 </table>
+<hr>
 </section>
-<section id="minimal-example" class="level2">
-<h2 class="anchored" data-anchor-id="minimal-example">Minimal example</h2>
-<pre><code>[parameters]
-  theta TVCL(0.134, 0.001, 10.0)
-  theta TVV(8.1, 0.1, 500.0)
-  theta TVKA(1.0, 0.01, 50.0)
-
-  omega ETA_CL ~ 0.07
-  omega ETA_V  ~ 0.02
-  omega ETA_KA ~ 0.40
-
-  sigma PROP_ERR ~ 0.01
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V  = TVV  * exp(ETA_V)
-  KA = TVKA * exp(ETA_KA)
-
-[structural_model]
-  pk one_cpt_oral(cl=CL, v=V, ka=KA)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)</code></pre>
 </section>
-<section id="model-naming" class="level2">
-<h2 class="anchored" data-anchor-id="model-naming">Model naming</h2>
-<p>An optional name can be placed before the first section:</p>
-<pre><code>model warfarin_1cpt
-
-[parameters]
-  ...</code></pre>
-<p>The name is stored in <code>FitResult::model_name</code> and appears in the <code>.fitrx</code> manifest. If omitted, the name defaults to the file stem (e.g.&nbsp;a model loaded from <code>warfarin_1cpt.ferx</code> gets the name <code>warfarin_1cpt</code>).</p>
+<section id="reading-the-output" class="level2">
+<h2 class="anchored" data-anchor-id="reading-the-output">Reading the output</h2>
+<p><code>ferx_sir()</code> (or <code>ferx_fit(..., sir = TRUE)</code>) populates five fields:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ess          <span class="co"># effective sample size</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ci_theta     <span class="co"># 95% CI for each theta</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ci_omega     <span class="co"># 95% CI for the omega diagonal</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ci_sigma     <span class="co"># 95% CI for sigma</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># When sir_keep_samples = TRUE:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_resamples      <span class="co"># flat numeric vector of resampled packed parameters</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_resamples_n    <span class="co"># number of resamples</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_resamples_dim  <span class="co"># length of each packed parameter vector</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>sir_ci_*</code> matrices have <code>lower</code> and <code>upper</code> columns and use the bare declared parameter names as row labels (<code>ETA_CL</code>, <code>PROP_ERR</code>, etc.), falling back to <code>OMEGA(i,i)</code> / <code>SIGMA(i)</code> for unnamed elements - the same convention as the rest of the package output.</p>
+<section id="worked-output" class="level3">
+<h3 class="anchored" data-anchor-id="worked-output">Worked output</h3>
+<p>Captured from a real <code>gn</code> fit of the bundled warfarin example with <code>sir_samples = 1000, sir_resamples = 250, sir_seed = 42</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ess</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4.71</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ci_theta</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           lower     upper</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TVCL  0.1201408 0.1476027</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TVV   7.3308524 8.1238270</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TVKA  0.5709285 0.8822086</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ci_omega</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;              lower      upper</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ETA_CL 0.015943626 0.07997176</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ETA_V  0.005861108 0.02324717</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ETA_KA 0.191731831 0.75244194</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ci_sigma</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                lower     upper</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PROP_ERR 0.009124243 0.0123905</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="comments" class="level2">
-<h2 class="anchored" data-anchor-id="comments">Comments</h2>
-<p>Lines starting with <code>#</code> are comments and are ignored by the parser:</p>
-<pre><code># This is a comment
-theta TVCL(0.134, 0.001, 10.0)   # inline comment</code></pre>
-</section>
-<section id="data-and-covariates" class="level2">
-<h2 class="anchored" data-anchor-id="data-and-covariates">Data and covariates</h2>
-<p>Data is supplied as a separate NONMEM-format CSV — not embedded in the model file. Any column in the CSV not in the standard NONMEM set (ID, TIME, DV, EVID, AMT, CMT, RATE, MDV, CENS, II, SS) is automatically treated as a covariate and can be referenced by name in <code>[individual_parameters]</code>.</p>
-<p>See <a href="../ferx-core/data-format.html">Data Format</a> for the full column reference.</p>
-</section>
-<section id="further-reading" class="level2">
-<h2 class="anchored" data-anchor-id="further-reading">Further reading</h2>
+<section id="interpreting-ess" class="level3">
+<h3 class="anchored" data-anchor-id="interpreting-ess">Interpreting ESS</h3>
+<p>The effective sample size is the most important diagnostic to look at first. It summarises how well the asymptotic proposal matches the true likelihood surface. A high ESS relative to <code>sir_resamples</code> indicates good coverage; a low one indicates the proposal does not match the target.</p>
 <ul>
-<li><a href="../model-dsl/parameters.html">Parameters</a> — theta, omega, sigma, kappa, block_omega</li>
-<li><a href="../model-dsl/individual-parameters.html">Individual Parameters</a> — expressions, covariates, conditionals, mu-referencing</li>
-<li><a href="../model-dsl/structural-model.html">Structural Model</a> — analytical PK model functions</li>
-<li><a href="../model-dsl/odes.html">ODE Models</a> — ODE syntax, solver settings, dose handling</li>
-<li><a href="../model-dsl/error-model.html">Error Model</a> — additive, proportional, combined; sigma scale</li>
-<li><a href="../model-dsl/fit-options.html">Fit Options</a> — complete settings reference</li>
+<li><strong>ESS in the same order of magnitude as <code>sir_resamples</code></strong> - the asymptotic proposal is a good match; the SIR CIs will be close to the asymptotic CIs and most of the resamples are distinct.</li>
+<li><strong>ESS much smaller than <code>sir_resamples</code></strong> - the proposal is a poor match. A few high-weight proposals dominate the resample, the SIR CIs are based on relatively few effective draws, and the resamples are heavily duplicated.</li>
 </ul>
+<p>In the captured output above, <code>sir_ess = 4.71</code> against <code>sir_resamples = 250</code> is extremely low - a sign that the warfarin asymptotic covariance does not faithfully represent the true uncertainty (the dataset is small and at least one parameter is poorly constrained). For real analyses, increase <code>sir_samples</code>, refit with better initial values, or treat the SIR CI with caution if ESS stays low.</p>
+<hr>
+</section>
+</section>
+<section id="inline-sir-at-fit-time" class="level2">
+<h2 class="anchored" data-anchor-id="inline-sir-at-fit-time">Inline SIR at fit time</h2>
+<p>When SIR is part of the standard workflow, set <code>sir = TRUE</code> in <code>ferx_fit()</code> directly. The SIR tuning knobs flow through <code>settings</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  ex<span class="sc">$</span>model, ex<span class="sc">$</span>data,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">method      =</span> <span class="st">"focei"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">covariance  =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sir         =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">settings    =</span> <span class="fu">list</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sir_samples       =</span> <span class="dv">2000</span>L,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sir_resamples     =</span> <span class="dv">500</span>L,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">sir_keep_samples  =</span> <span class="cn">TRUE</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ess</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sir_ci_theta</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The output structure is identical to the <code>ferx_sir()</code> flow above.</p>
+<hr>
+</section>
+<section id="feeding-sir-into-uncertainty-aware-simulation" class="level2">
+<h2 class="anchored" data-anchor-id="feeding-sir-into-uncertainty-aware-simulation">Feeding SIR into uncertainty-aware simulation</h2>
+<p>To propagate the SIR resamples into a simulation, retain them with <code>sir_keep_samples = TRUE</code> and pass the fit to <code>ferx_simulate_with_uncertainty()</code> with <code>method = "sir"</code>. Calling <code>ferx_sir()</code> a second time overwrites the previous SIR fields with fresh resampling - it does not accumulate across calls:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_sir</span>(fit,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">sir_samples      =</span> <span class="dv">2000</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">sir_resamples    =</span> <span class="dv">500</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">sir_keep_samples =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">ferx_simulate_with_uncertainty</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, fit,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_uncertainty_draws =</span> <span class="dv">200</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_sim_per_draw      =</span> <span class="dv">5</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">method              =</span> <span class="st">"sir"</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sims)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   DRAW SIM ID TIME IPRED DV_SIM</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    1   1  1  0.5  ...   ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each parameter draw is now a resample from the SIR posterior rather than an MVN draw around the ML estimate. The downstream aggregation patterns (quantile per <code>TIME</code>, ribbon plots, etc.) from <a href="../learn/simulation.html">Simulation</a> apply unchanged - replace <code>aggregate(DV_SIM ~ TIME, ...)</code> with the SIR-based simulation output.</p>
+<hr>
+</section>
+<section id="when-to-prefer-sir-over-asymptotic" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-prefer-sir-over-asymptotic">When to prefer SIR over asymptotic</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Recommended method</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Quick uncertainty for a well-behaved fit</td>
+<td>asymptotic (<code>covariance = TRUE</code> only)</td>
+</tr>
+<tr class="even">
+<td>Parameters near a boundary, skewed likelihood, small N</td>
+<td>SIR</td>
+</tr>
+<tr class="odd">
+<td>Reporting CIs for decision-relevant quantities</td>
+<td>SIR (or both, and compare)</td>
+</tr>
+<tr class="even">
+<td>Need uncertainty-aware simulation</td>
+<td>both work; SIR via <code>sir_keep_samples = TRUE</code>, asymptotic via the covariance matrix</td>
+</tr>
+</tbody>
+</table>
+<p>The cost is SIR draws plus likelihood evaluations - typically cheaper than a full refit but not free. Start with <code>sir_samples = 1000</code> and increase if ESS is low.</p>
 
 
 </section>

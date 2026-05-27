@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Simulation and prediction – ferx</title>
+<title>Simulation, prediction, and uncertainty propagation – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -111,35 +111,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -356,6 +327,14 @@ window.Quarto = {
     <a class="dropdown-item" href="../learn/simulation.html">
  <span class="dropdown-text">Simulation</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../learn/special-features.html">
+ <span class="dropdown-text">Special features</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../learn/uncertainty-sir.html">
+ <span class="dropdown-text">Uncertainty (SIR)</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -540,14 +519,14 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#ferx_simulate-stochastic-simulation" id="toc-ferx_simulate-stochastic-simulation" class="nav-link active" data-scroll-target="#ferx_simulate-stochastic-simulation"><code>ferx_simulate()</code> — stochastic simulation</a>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#population-prediction" id="toc-population-prediction" class="nav-link" data-scroll-target="#population-prediction">Population prediction</a></li>
+  <li><a href="#individual-simulation" id="toc-individual-simulation" class="nav-link" data-scroll-target="#individual-simulation">Individual simulation</a>
   <ul class="collapse">
-  <li><a href="#visual-predictive-check-vpc" id="toc-visual-predictive-check-vpc" class="nav-link" data-scroll-target="#visual-predictive-check-vpc">Visual predictive check (VPC)</a></li>
+  <li><a href="#quick-visual-prediction-interval" id="toc-quick-visual-prediction-interval" class="nav-link" data-scroll-target="#quick-visual-prediction-interval">Quick visual prediction interval</a></li>
   </ul></li>
-  <li><a href="#ferx_predict-population-predictions" id="toc-ferx_predict-population-predictions" class="nav-link" data-scroll-target="#ferx_predict-population-predictions"><code>ferx_predict()</code> — population predictions</a></li>
-  <li><a href="#simulation-block-built-in-virtual-trial" id="toc-simulation-block-built-in-virtual-trial" class="nav-link" data-scroll-target="#simulation-block-built-in-virtual-trial"><code>[simulation]</code> block — built-in virtual trial</a></li>
-  <li><a href="#simulation-process-r-and-cli" id="toc-simulation-process-r-and-cli" class="nav-link" data-scroll-target="#simulation-process-r-and-cli">Simulation process (R and CLI)</a></li>
-  <li><a href="#pipe-based-simulation" id="toc-pipe-based-simulation" class="nav-link" data-scroll-target="#pipe-based-simulation">Pipe-based simulation</a></li>
+  <li><a href="#propagating-parameter-uncertainty" id="toc-propagating-parameter-uncertainty" class="nav-link" data-scroll-target="#propagating-parameter-uncertainty">Propagating parameter uncertainty</a></li>
+  <li><a href="#choosing-between-the-three" id="toc-choosing-between-the-three" class="nav-link" data-scroll-target="#choosing-between-the-three">Choosing between the three</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -557,7 +536,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Simulation and prediction</h1>
+<h1 class="title">Simulation, prediction, and uncertainty propagation</h1>
 </div>
 
 
@@ -574,7 +553,39 @@ window.Quarto = {
 </header>
 
 
-<p>ferx provides two post-fit prediction functions and a built-in simulation mode for model validation.</p>
+<p>After a model has been fit, three functions cover the standard post-estimation workflow:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Returns</th>
+<th>Captures</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ferx_predict()</code></td>
+<td>population predictions (<code>PRED</code>)</td>
+<td>typical-value trajectory (eta = 0)</td>
+</tr>
+<tr class="even">
+<td><code>ferx_simulate()</code></td>
+<td>replicates of <code>IPRED</code> and <code>DV_SIM</code></td>
+<td>between-subject variability + residual error</td>
+</tr>
+<tr class="odd">
+<td><code>ferx_simulate_with_uncertainty()</code></td>
+<td>same + parameter draws</td>
+<td>also propagates parameter uncertainty</td>
+</tr>
+</tbody>
+</table>
+<p>All three take the same <code>(model, data)</code> pair as <code>ferx_fit()</code> and accept an optional <code>fit =</code> argument that substitutes the fitted parameter values for the model file’s initial estimates. When <code>fit</code> is omitted, the initial values from the <code>.ferx</code> file are used - which is occasionally useful for sanity-checking a model before fitting, but the post-fit case is the common one.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -589,23 +600,26 @@ Tip
 </div>
 </div>
 <hr>
-<section id="ferx_simulate-stochastic-simulation" class="level2">
-<h2 class="anchored" data-anchor-id="ferx_simulate-stochastic-simulation"><code>ferx_simulate()</code> — stochastic simulation</h2>
-<p><code>ferx_simulate()</code> draws random effects from the estimated omega and generates simulated observations, including residual error:</p>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)   <span class="co"># fit first</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 100 simulated replicates</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">n_sim =</span> <span class="dv">100</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">seed  =</span> <span class="dv">42</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">fit   =</span> fit)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   SIM  ID  TIME  IPRED  DV_SIM</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     1   1   0.5  9.81   10.2</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     1   1   1.0  14.3   13.6</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Key arguments:</p>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">TRUE</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The examples below run live against this fit, so the numeric outputs stay in sync with the package and the bundled warfarin dataset.</p>
+<p>This chunk uses <code>message = FALSE, warning = FALSE</code> to keep the rendered output tidy. The same fit run interactively prints a model-file method-override warning (the bundled model file specifies <code>method = foce</code> while the call overrides to <code>gn</code>) and a few diagnostic notes; both are expected.</p>
+<hr>
+</section>
+<section id="population-prediction" class="level2">
+<h2 class="anchored" data-anchor-id="population-prediction">Population prediction</h2>
+<p><code>ferx_predict()</code> returns one row per observation in the data, with the typical-value prediction (eta = 0) for each subject’s covariates and dosing record:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">ferx_predict</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">fit =</span> fit)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Without <code>fit =</code>, the <code>[parameters]</code> block’s initial estimates are used. The columns are always <code>ID, TIME, PRED</code>.</p>
+<hr>
+</section>
+<section id="individual-simulation" class="level2">
+<h2 class="anchored" data-anchor-id="individual-simulation">Individual simulation</h2>
+<p><code>ferx_simulate()</code> draws fresh etas and epsilons and returns simulated observations for each replicate. Each row carries:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -613,140 +627,130 @@ Tip
 </colgroup>
 <thead>
 <tr class="header">
-<th>Argument</th>
-<th>Description</th>
+<th>Column</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>model</code></td>
-<td>Path to a <code>.ferx</code> model file, or a <code>ferx_model</code> object</td>
+<td><code>DRAW</code></td>
+<td>Always <code>1</code> for <code>ferx_simulate()</code>; present so downstream code can share aggregation logic with <code>ferx_simulate_with_uncertainty()</code></td>
 </tr>
 <tr class="even">
-<td><code>data</code></td>
-<td>Path to a NONMEM CSV, or a <code>ferx_model</code> that carries a data path</td>
+<td><code>SIM</code></td>
+<td>Replicate index, 1..<code>n_sim</code></td>
 </tr>
 <tr class="odd">
-<td><code>n_sim</code></td>
-<td>Number of simulation replicates (default: 1)</td>
+<td><code>ID</code></td>
+<td>Subject ID from the data file</td>
 </tr>
 <tr class="even">
-<td><code>seed</code></td>
-<td>RNG seed for reproducibility</td>
+<td><code>TIME</code></td>
+<td>Observation time from the data file</td>
 </tr>
 <tr class="odd">
-<td><code>fit</code></td>
-<td>A <code>ferx_fit</code> object to use fitted parameters; if <code>NULL</code>, uses the initial values from the model file</td>
+<td><code>IPRED</code></td>
+<td>Individual prediction (using the drawn eta)</td>
+</tr>
+<tr class="even">
+<td><code>DV_SIM</code></td>
+<td>Simulated observation (IPRED plus residual error)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Output columns:</strong> <code>SIM</code>, <code>ID</code>, <code>TIME</code>, <code>IPRED</code> (individual prediction without residual error), <code>DV_SIM</code> (simulated observation including residual error).</p>
-<section id="visual-predictive-check-vpc" class="level3">
-<h3 class="anchored" data-anchor-id="visual-predictive-check-vpc">Visual predictive check (VPC)</h3>
-<p>A VPC overlays observed data with simulation percentiles to assess model fit:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>obs  <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>obs  <span class="ot">&lt;-</span> obs[obs<span class="sc">$</span>EVID <span class="sc">==</span> <span class="dv">0</span>, ]   <span class="co"># observations only</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute 5th / 50th / 95th percentiles of simulated DV at each time</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>vpc <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(DV_SIM <span class="sc">~</span> TIME, sim, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>))</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> vpc,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x =</span> TIME, <span class="at">ymin =</span> DV_SIM[, <span class="st">"5%"</span>], <span class="at">ymax =</span> DV_SIM[, <span class="st">"95%"</span>]),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> vpc, <span class="fu">aes</span>(<span class="at">x =</span> TIME, <span class="at">y =</span> DV_SIM[, <span class="st">"50%"</span>]),</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> obs, <span class="fu">aes</span>(<span class="at">x =</span> TIME, <span class="at">y =</span> DV), <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Visual Predictive Check"</span>,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Time (h)"</span>, <span class="at">y =</span> <span class="st">"Concentration"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">3</span>L, <span class="at">seed =</span> <span class="dv">1</span>L, <span class="at">fit =</span> fit)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(sim)            <span class="co"># n_sim * n_obs</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(sim<span class="sc">$</span>SIM)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>seed</code> makes the draws reproducible across runs.</p>
+<section id="quick-visual-prediction-interval" class="level3">
+<h3 class="anchored" data-anchor-id="quick-visual-prediction-interval">Quick visual prediction interval</h3>
+<p>A common diagnostic is a per-time prediction interval over the simulated replicates. With <code>n_sim = 100</code> and base aggregation:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">100</span>L, <span class="at">seed =</span> <span class="dv">1</span>L, <span class="at">fit =</span> fit)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(DV_SIM <span class="sc">~</span> TIME, <span class="at">data =</span> sim,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>)))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To draw a visual predictive check with ggplot2 you would unpack the matrix column produced by <code>quantile()</code> into named columns and layer the ribbon over the observed <code>DV</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>q <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(pi<span class="sc">$</span>DV_SIM)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(q) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"lo"</span>, <span class="st">"med"</span>, <span class="st">"hi"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>pi_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">TIME =</span> pi<span class="sc">$</span>TIME, q)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> obs[obs<span class="sc">$</span>EVID <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> obs<span class="sc">$</span>MDV <span class="sc">==</span> <span class="dv">0</span>, ]</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># DV is character in read.csv because dose rows use "." as a placeholder.</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Coerce after filtering observation rows so the ribbon plot gets a numeric axis.</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>obs<span class="sc">$</span>DV <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(obs<span class="sc">$</span>DV)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> pi_df, <span class="fu">aes</span>(TIME, <span class="at">ymin =</span> lo, <span class="at">ymax =</span> hi),</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data   =</span> pi_df, <span class="fu">aes</span>(TIME, med),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data  =</span> obs, <span class="fu">aes</span>(TIME, DV),</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Simulation-based 90% prediction interval"</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">y     =</span> <span class="st">"DV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The simple aggregation above stratifies only by <code>TIME</code>. For a “real” VPC you would also stratify by dose or covariate group, and bin times for sparse designs - both are downstream data-frame manipulations and are not built into ferx.</p>
 <hr>
 </section>
 </section>
-<section id="ferx_predict-population-predictions" class="level2">
-<h2 class="anchored" data-anchor-id="ferx_predict-population-predictions"><code>ferx_predict()</code> — population predictions</h2>
-<p><code>ferx_predict()</code> computes population predictions using fitted theta values with all ETAs set to zero (i.e.&nbsp;the typical individual):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">ferx_predict</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">fit =</span> fit)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ID  TIME  PRED</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    1   0.5  10.12</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#    1   1.0  14.87</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This is equivalent to <code>fit$sdtab$PRED</code> but can be used without a full fit object (e.g.&nbsp;to evaluate predictions from externally specified parameters).</p>
-<hr>
-</section>
-<section id="simulation-block-built-in-virtual-trial" class="level2">
-<h2 class="anchored" data-anchor-id="simulation-block-built-in-virtual-trial"><code>[simulation]</code> block — built-in virtual trial</h2>
-<p>For standalone simulations without real data, add a <code>[simulation]</code> block to the <code>.ferx</code> file:</p>
-<pre><code>[simulation]
-  subjects = 100
-  dose     = 100
-  cmt      = 1
-  seed     = 12345
-  times    = [0.5, 1, 2, 4, 8, 12, 24]</code></pre>
+<section id="propagating-parameter-uncertainty" class="level2">
+<h2 class="anchored" data-anchor-id="propagating-parameter-uncertainty">Propagating parameter uncertainty</h2>
+<p><code>ferx_simulate_with_uncertainty()</code> adds an outer loop: for each of <code>n_uncertainty_draws</code> parameter sets drawn from the fit’s uncertainty distribution, <code>n_sim_per_draw</code> eta/eps replicates are simulated. The result includes both the within-replicate variability and the parameter uncertainty itself.</p>
+<p>Two uncertainty sources are supported:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>Key</th>
-<th>Description</th>
+<th><code>method</code></th>
+<th>Requires</th>
+<th>Sampling</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>subjects</code></td>
-<td>Number of virtual subjects</td>
+<td><code>"asymptotic"</code> (default)</td>
+<td><code>fit$cov_matrix</code> (i.e.&nbsp;<code>ferx_fit(..., covariance = TRUE)</code>)</td>
+<td>Multivariate-normal draws around the ML estimate, using the fit’s covariance matrix as the proposal. Internally the engine works in a packed (log-theta, Cholesky-omega, log-sigma) parameterisation so the draws respect positivity and PSD constraints.</td>
 </tr>
 <tr class="even">
-<td><code>dose</code></td>
-<td>Dose amount administered to each subject</td>
-</tr>
-<tr class="odd">
-<td><code>cmt</code></td>
-<td>Dosing compartment (1-indexed)</td>
-</tr>
-<tr class="even">
-<td><code>seed</code></td>
-<td>Random seed for reproducibility</td>
-</tr>
-<tr class="odd">
-<td><code>times</code></td>
-<td>Observation time points</td>
+<td><code>"sir"</code></td>
+<td><code>fit$sir_resamples</code> (i.e.&nbsp;<code>ferx_fit(..., sir = TRUE, settings = list(sir_keep_samples = TRUE))</code>)</td>
+<td>Resampling with replacement from the stored SIR resamples - importance-weighted draws that better reflect the true likelihood when the asymptotic approximation is poor.</td>
 </tr>
 </tbody>
 </table>
-<p>Run from the CLI:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ferx</span> model.ferx <span class="at">--simulate</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This will:</p>
-<ol type="1">
-<li>Parse the model and <code>[simulation]</code> block</li>
-<li>Sample random effects: <span class="math inline">\(\eta_i \sim N(0, \Omega)\)</span></li>
-<li>Compute individual parameters via <code>[individual_parameters]</code></li>
-<li>Generate predictions with the structural model</li>
-<li>Add residual error: <span class="math inline">\(DV = IPRED + \varepsilon\)</span>, <span class="math inline">\(\varepsilon \sim N(0, V)\)</span></li>
-<li>Report parameter estimates and diagnostics</li>
-</ol>
+<p>The return value has the same column set as <code>ferx_simulate()</code>, but <code>DRAW</code> now ranges over 1..<code>n_uncertainty_draws</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">ferx_simulate_with_uncertainty</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, fit,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_uncertainty_draws =</span> <span class="dv">5</span>L,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_sim_per_draw      =</span> <span class="dv">2</span>L,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed                =</span> <span class="dv">1</span>L</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sims)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(sims)            <span class="co"># n_uncertainty_draws * n_sim_per_draw * n_obs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The row count is <code>n_uncertainty_draws * n_sim_per_draw * n_obs</code>. For an uncertainty-aware prediction interval, aggregate over all rows at each <code>TIME</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pi_unc <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(DV_SIM <span class="sc">~</span> TIME, <span class="at">data =</span> sims,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>)))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pi_unc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The asymptotic method is fast but assumes the parameter likelihood is locally quadratic around the ML estimate. For models with strong non-normality or boundary issues, prefer the SIR method - but only when the cost of running SIR at fit time is acceptable.</p>
 <hr>
 </section>
-<section id="simulation-process-r-and-cli" class="level2">
-<h2 class="anchored" data-anchor-id="simulation-process-r-and-cli">Simulation process (R and CLI)</h2>
-<p>For each simulated subject:</p>
-<ol type="1">
-<li>Sample <span class="math inline">\(\eta_i \sim N(0, \hat{\Omega})\)</span> (from fitted or specified omega)</li>
-<li>Compute individual PK parameters via the <code>[individual_parameters]</code> expressions</li>
-<li>Generate IPRED with the structural model at the dose and observation times</li>
-<li>Sample residual error: <span class="math inline">\(\varepsilon_{ij} \sim N(0, V_{ij})\)</span> where <span class="math inline">\(V_{ij}\)</span> is evaluated at IPRED</li>
-<li><span class="math inline">\(DV_{ij} = IPRED_{ij} + \varepsilon_{ij}\)</span></li>
-</ol>
-<hr>
-</section>
-<section id="pipe-based-simulation" class="level2">
-<h2 class="anchored" data-anchor-id="pipe-based-simulation">Pipe-based simulation</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> ex<span class="sc">$</span>data <span class="sc">|&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model</span>(ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>(<span class="at">method =</span> <span class="st">"focei"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  (\(fit) <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">200</span>, <span class="at">seed =</span> <span class="dv">1</span>, <span class="at">fit =</span> fit))()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="choosing-between-the-three" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-between-the-three">Choosing between the three</h2>
+<ul>
+<li><strong><code>ferx_predict()</code></strong> when you only need the typical-value trajectory - for a PRED-vs-time overlay, or for forecasting under a new dosing schedule.</li>
+<li><strong><code>ferx_simulate()</code></strong> when you want a prediction interval that reflects between-subject variability and residual error, but you are willing to treat the ML estimates as fixed.</li>
+<li><strong><code>ferx_simulate_with_uncertainty()</code></strong> when the question is about uncertainty in the parameter values themselves: dose-recommendation intervals, model comparison via predictive performance, or any decision-relevant interval that would understate spread if parameter uncertainty were ignored.</li>
+</ul>
+<p>See <a href="../learn/uncertainty-sir.html">Uncertainty (SIR)</a> for the SIR workflow that feeds into <code>method = "sir"</code>.</p>
 
 
 </section>

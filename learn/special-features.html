@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Model DSL Overview – ferx</title>
+<title>Special features: IOV, BLOQ, steady state, and unit scaling – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -484,12 +519,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#section-reference" id="toc-section-reference" class="nav-link active" data-scroll-target="#section-reference">Section reference</a></li>
-  <li><a href="#minimal-example" id="toc-minimal-example" class="nav-link" data-scroll-target="#minimal-example">Minimal example</a></li>
-  <li><a href="#model-naming" id="toc-model-naming" class="nav-link" data-scroll-target="#model-naming">Model naming</a></li>
-  <li><a href="#comments" id="toc-comments" class="nav-link" data-scroll-target="#comments">Comments</a></li>
-  <li><a href="#data-and-covariates" id="toc-data-and-covariates" class="nav-link" data-scroll-target="#data-and-covariates">Data and covariates</a></li>
-  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further reading</a></li>
+  <li><a href="#inter-occasion-variability" id="toc-inter-occasion-variability" class="nav-link active" data-scroll-target="#inter-occasion-variability">Inter-occasion variability</a></li>
+  <li><a href="#below-lower-limit-of-quantification-bloq" id="toc-below-lower-limit-of-quantification-bloq" class="nav-link" data-scroll-target="#below-lower-limit-of-quantification-bloq">Below lower limit of quantification (BLOQ)</a></li>
+  <li><a href="#steady-state-dosing" id="toc-steady-state-dosing" class="nav-link" data-scroll-target="#steady-state-dosing">Steady-state dosing</a></li>
+  <li><a href="#unit-conversion-and-observation-scaling" id="toc-unit-conversion-and-observation-scaling" class="nav-link" data-scroll-target="#unit-conversion-and-observation-scaling">Unit conversion and observation scaling</a></li>
+  <li><a href="#combining-features" id="toc-combining-features" class="nav-link" data-scroll-target="#combining-features">Combining features</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -499,7 +533,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Model DSL Overview</h1>
+<h1 class="title">Special features: IOV, BLOQ, steady state, and unit scaling</h1>
 </div>
 
 
@@ -516,9 +550,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>A ferx model is a plain-text <code>.ferx</code> file divided into labelled sections. The sections are parsed top-to-bottom; their order within the file does not matter.</p>
-<section id="section-reference" class="level2">
-<h2 class="anchored" data-anchor-id="section-reference">Section reference</h2>
+<p>This article is a tour of four <code>.ferx</code> features that go beyond the standard single-dose oral PK example. Each section uses a bundled example model so you can reproduce it without writing a model file from scratch.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -527,104 +559,189 @@ ul.task-list li input[type="checkbox"] {
 </colgroup>
 <thead>
 <tr class="header">
-<th>Section</th>
-<th>Required</th>
-<th>Purpose</th>
+<th>Feature</th>
+<th>Bundled example</th>
+<th>Key DSL/data element</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>[parameters]</code></td>
-<td>Yes</td>
-<td>Fixed effects (theta), BSV (omega), residual error (sigma), IOV (kappa)</td>
+<td>Inter-occasion variability (IOV)</td>
+<td><code>warfarin_iov</code></td>
+<td><code>kappa</code> declaration + <code>iov_column = OCC</code></td>
 </tr>
 <tr class="even">
-<td><code>[individual_parameters]</code></td>
-<td>Yes</td>
-<td>Expressions mapping thetas + ETAs + covariates → PK parameters</td>
+<td>Below lower limit of quantification (BLOQ)</td>
+<td><code>warfarin_bloq</code></td>
+<td><code>CENS</code> data column + <code>bloq_method = "m3"</code></td>
 </tr>
 <tr class="odd">
-<td><code>[structural_model]</code></td>
-<td>Yes</td>
-<td>Selects an analytical PK model or declares an ODE system</td>
+<td>Steady-state dosing</td>
+<td><code>warfarin_ss</code></td>
+<td><code>SS</code> and <code>II</code> data columns</td>
 </tr>
 <tr class="even">
-<td><code>[error_model]</code></td>
-<td>Yes</td>
-<td>Residual error structure (<code>additive</code>, <code>proportional</code>, <code>combined</code>)</td>
-</tr>
-<tr class="odd">
-<td><code>[odes]</code></td>
-<td>ODE models only</td>
-<td>Right-hand side of the ODE system</td>
-</tr>
-<tr class="even">
-<td><code>[fit_options]</code></td>
-<td>No</td>
-<td>Estimation method, optimizer, convergence settings</td>
-</tr>
-<tr class="odd">
-<td><code>[simulation]</code></td>
-<td>No</td>
-<td>Virtual trial design for <code>--simulate</code> runs</td>
+<td>Unit conversion / observation scaling</td>
+<td><code>warfarin_scaled</code></td>
+<td><code>[scaling]</code> block with <code>obs_scale</code></td>
 </tr>
 </tbody>
 </table>
+<p>All four are independent of one another - mix and match as needed.</p>
+<hr>
+<section id="inter-occasion-variability" class="level2">
+<h2 class="anchored" data-anchor-id="inter-occasion-variability">Inter-occasion variability</h2>
+<p>IOV captures variability that recurs within a single subject across distinct occasions (visits, treatment cycles, …). The bundled <code>warfarin_iov</code> model declares an IOV term on clearance using the <code>kappa</code> keyword:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ex_iov <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_iov"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex_iov<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Three pieces have to line up:</p>
+<ol type="1">
+<li><p><strong><code>[parameters]</code></strong> declares one or more <code>kappa</code> parameters with their omega-IOV variance, e.g.&nbsp;<code>kappa KAPPA_CL ~ 0.04</code>.</p></li>
+<li><p><strong><code>[individual_parameters]</code></strong> uses the kappa additively on the log scale, alongside the usual IIV ETA:</p>
+<pre><code>CL = TVCL * exp(ETA_CL + KAPPA_CL)</code></pre></li>
+<li><p><strong><code>[fit_options]</code></strong> points the engine at the occasion column:</p>
+<pre><code>iov_column = OCC</code></pre></li>
+<li><p><strong>The data</strong> carries an integer <code>OCC</code> column. Each value within a subject identifies an occasion; the engine draws one kappa per occasion per subject.</p></li>
+</ol>
+<p>After fitting, <code>fit$omega_iov</code> is a square matrix on the kappa diagonal, and <code>ferx_estimates()</code> reports each kappa as a row with <code>transform = "variance"</code> (same convention as omega rows):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit_iov <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_iov<span class="sc">$</span>model, ex_iov<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fit_iov<span class="sc">$</span>omega_iov</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            KAPPA_CL</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; KAPPA_CL 0.04679037</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit_iov)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     param    transform   estimate se rse_pct lower_95 upper_95 estimate_natural lower_95_natural upper_95_natural init_as_sd</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      TVCL     identity 0.17003443 NA      NA       NA       NA               NA               NA               NA      FALSE</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       TVV     identity 8.62276910 NA      NA       NA       NA               NA               NA               NA      FALSE</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      TVKA     identity 1.16618408 NA      NA       NA       NA               NA               NA               NA      FALSE</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    ETA_CL     variance 0.03849065 NA      NA       NA       NA               NA               NA               NA      FALSE</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     ETA_V     variance 0.01227511 NA      NA       NA       NA               NA               NA               NA      FALSE</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    ETA_KA     variance 0.06600358 NA      NA       NA       NA               NA               NA               NA      FALSE</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  PROP_ERR proportional 0.17643369 NA      NA       NA       NA               NA               NA               NA       TRUE</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  KAPPA_CL     variance 0.04679037 NA      NA       NA       NA               NA               NA               NA      FALSE</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Output captured from a real focei fit with covariance = FALSE, hence</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># the NA SE/CI columns. KAPPA_CL appears as the last row, alongside</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># the other variance-scale entries.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The IOV print labels follow the bare-name convention: <code>KAPPA_CL</code> is the declared name; an unnamed declaration would fall back to <code>KAPPA1</code>, <code>KAPPA2</code>, etc.</p>
+<hr>
 </section>
-<section id="minimal-example" class="level2">
-<h2 class="anchored" data-anchor-id="minimal-example">Minimal example</h2>
-<pre><code>[parameters]
-  theta TVCL(0.134, 0.001, 10.0)
-  theta TVV(8.1, 0.1, 500.0)
-  theta TVKA(1.0, 0.01, 50.0)
-
-  omega ETA_CL ~ 0.07
-  omega ETA_V  ~ 0.02
-  omega ETA_KA ~ 0.40
-
-  sigma PROP_ERR ~ 0.01
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V  = TVV  * exp(ETA_V)
-  KA = TVKA * exp(ETA_KA)
-
-[structural_model]
-  pk one_cpt_oral(cl=CL, v=V, ka=KA)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)</code></pre>
+<section id="below-lower-limit-of-quantification-bloq" class="level2">
+<h2 class="anchored" data-anchor-id="below-lower-limit-of-quantification-bloq">Below lower limit of quantification (BLOQ)</h2>
+<p>When some observations sit below the assay’s lower limit, the standard Gaussian likelihood is biased. ferx implements Beal’s M3 likelihood, which treats each BLOQ observation as a left-censored draw and integrates over the unobserved range.</p>
+<p>Two pieces are needed:</p>
+<ol type="1">
+<li><strong>A <code>CENS</code> column in the data</strong>: <code>1</code> for BLOQ rows, <code>0</code> otherwise. The <code>DV</code> cell on a BLOQ row should carry the LLOQ value itself.</li>
+<li><strong>Tell the engine to use M3</strong>: either pass <code>bloq_method = "m3"</code> to <code>ferx_fit()</code>, or set <code>bloq_method = m3</code> in <code>[fit_options]</code>. The other choice is <code>bloq_method = "drop"</code>, which discards BLOQ rows entirely (rarely what you want).</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ex_bloq <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_bloq"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex_bloq<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The bundled <code>warfarin_bloq</code> model already sets <code>bloq_method = m3</code> in <code>[fit_options]</code>. Inspect the data to see the <code>CENS</code> column:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data_bloq <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex_bloq<span class="sc">$</span>data)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_bloq[data_bloq<span class="sc">$</span>CENS <span class="sc">==</span> <span class="dv">1</span>, ], <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Running the fit produces the standard <code>ferx_fit</code> result; the M3 likelihood contribution from BLOQ rows is folded into the OFV:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit_bloq <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_bloq<span class="sc">$</span>model, ex_bloq<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The call-time argument overrides the model-file setting if both are present. Pass <code>bloq_method = "m3"</code> explicitly when you want the choice to be visible in the script.</p>
+<hr>
 </section>
-<section id="model-naming" class="level2">
-<h2 class="anchored" data-anchor-id="model-naming">Model naming</h2>
-<p>An optional name can be placed before the first section:</p>
-<pre><code>model warfarin_1cpt
-
-[parameters]
-  ...</code></pre>
-<p>The name is stored in <code>FitResult::model_name</code> and appears in the <code>.fitrx</code> manifest. If omitted, the name defaults to the file stem (e.g.&nbsp;a model loaded from <code>warfarin_1cpt.ferx</code> gets the name <code>warfarin_1cpt</code>).</p>
+<section id="steady-state-dosing" class="level2">
+<h2 class="anchored" data-anchor-id="steady-state-dosing">Steady-state dosing</h2>
+<p>Steady state lets you specify a maintenance dosing regimen without listing every single dose in the data. The engine analytically computes the steady-state initial condition for the dosing compartment given the dose, the interval, and the current individual parameters - no model changes are required.</p>
+<p>The bundled <code>warfarin_ss</code> example dosing record carries:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ex_ss <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_ss"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>data_ss <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex_ss<span class="sc">$</span>data)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_ss[data_ss<span class="sc">$</span>EVID <span class="sc">==</span> <span class="dv">1</span>, ], <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Two extra columns make the row a steady-state dose:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>SS = 1</code></td>
+<td>Treat this row as a steady-state dose record</td>
+</tr>
+<tr class="even">
+<td><code>II = 24</code></td>
+<td>Inter-dose interval (here 24 h, i.e.&nbsp;once-daily dosing)</td>
+</tr>
+</tbody>
+</table>
+<p>Subsequent observations are evaluated against the steady-state initial condition. The model file itself is unchanged from the single-dose warfarin example - steady state is entirely a data-side feature:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex_ss<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl>
+<dt>For the bundled steady-state warfarin example (tau = 24 h, half-life</dt>
+<dd>
+42 h - i.e.&nbsp;ke = CL/V ~ 0.0165/h), accumulation is about three-fold, so the <code>DV</code> values sit in the 20-35 mg/L range vs.&nbsp;5-14 mg/L for the single-dose version.
+</dd>
+</dl>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit_ss <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_ss<span class="sc">$</span>model, ex_ss<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>SS</code> and <code>II</code> interact correctly with covariates and IIV: each subject’s steady-state initial condition is computed from their own individual parameters.</p>
+<hr>
 </section>
-<section id="comments" class="level2">
-<h2 class="anchored" data-anchor-id="comments">Comments</h2>
-<p>Lines starting with <code>#</code> are comments and are ignored by the parser:</p>
-<pre><code># This is a comment
-theta TVCL(0.134, 0.001, 10.0)   # inline comment</code></pre>
+<section id="unit-conversion-and-observation-scaling" class="level2">
+<h2 class="anchored" data-anchor-id="unit-conversion-and-observation-scaling">Unit conversion and observation scaling</h2>
+<p>The <code>[scaling]</code> block converts model predictions before they are compared to <code>DV</code>. Use it when the model is parameterised in one unit but the data are recorded in another - for example, dose in micrograms but observations in mg/L, or a central-compartment ODE in amounts but observations in concentrations.</p>
+<p>The bundled <code>warfarin_scaled</code> example records dose in micrograms (<code>AMT = 100000</code> ug vs the usual <code>100</code> mg) and observations in mg/L. The model adds a single line:</p>
+<pre><code>[scaling]
+  obs_scale = 1000</code></pre>
+<p>This divides every prediction by 1000 before the residual is computed, so the sigma is expressed on the mg/L scale.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ex_scaled <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_scaled"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex_scaled<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Three forms of <code>obs_scale</code> are supported (see <code>?ferx_fit</code> for the full section on the <code>[scaling]</code> block):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Form</th>
+<th>Syntax</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Constant divisor</td>
+<td><code>obs_scale = 1000</code></td>
+<td>Pure unit conversion</td>
+</tr>
+<tr class="even">
+<td>Expression</td>
+<td><code>obs_scale = V</code></td>
+<td>Volume-of-distribution scaling (concentration = amount / V), referencing thetas / etas / individual parameters</td>
+</tr>
+<tr class="odd">
+<td>Per-compartment</td>
+<td><code>obs_scale[CMT=1] = 1000</code></td>
+<td>Multi-endpoint models with different units per observation compartment</td>
+</tr>
+</tbody>
+</table>
+<p>A more general Form C lets you write the readout expression directly (<code>y = central / V</code>), useful for non-trivial transformations.</p>
+<p>Because forms B (expressions) and Form C are evaluated through the ODE machinery, they force finite-difference gradients. Add <code>gradient = fd</code> explicitly in <code>[fit_options]</code> to make that choice visible (or <code>gradient = ad</code> to opt back into autodiff for Form A, which is compatible).</p>
+<p><code>[scaling]</code> is not yet supported on SDE (<code>[diffusion]</code>) models.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fit_scaled <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_scaled<span class="sc">$</span>model, ex_scaled<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fit_scaled<span class="sc">$</span>theta</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Should converge to the same parameter values as the standard warfarin</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fit because only the units differ.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
 </section>
-<section id="data-and-covariates" class="level2">
-<h2 class="anchored" data-anchor-id="data-and-covariates">Data and covariates</h2>
-<p>Data is supplied as a separate NONMEM-format CSV — not embedded in the model file. Any column in the CSV not in the standard NONMEM set (ID, TIME, DV, EVID, AMT, CMT, RATE, MDV, CENS, II, SS) is automatically treated as a covariate and can be referenced by name in <code>[individual_parameters]</code>.</p>
-<p>See <a href="../ferx-core/data-format.html">Data Format</a> for the full column reference.</p>
-</section>
-<section id="further-reading" class="level2">
-<h2 class="anchored" data-anchor-id="further-reading">Further reading</h2>
+<section id="combining-features" class="level2">
+<h2 class="anchored" data-anchor-id="combining-features">Combining features</h2>
+<p>These four features are independent and can be combined in the same model. A study with once-daily steady-state dosing, BLOQ observations, occasion-level CL variability, and concentration units derived via a volume-scaled readout would carry all of:</p>
 <ul>
-<li><a href="../model-dsl/parameters.html">Parameters</a> — theta, omega, sigma, kappa, block_omega</li>
-<li><a href="../model-dsl/individual-parameters.html">Individual Parameters</a> — expressions, covariates, conditionals, mu-referencing</li>
-<li><a href="../model-dsl/structural-model.html">Structural Model</a> — analytical PK model functions</li>
-<li><a href="../model-dsl/odes.html">ODE Models</a> — ODE syntax, solver settings, dose handling</li>
-<li><a href="../model-dsl/error-model.html">Error Model</a> — additive, proportional, combined; sigma scale</li>
-<li><a href="../model-dsl/fit-options.html">Fit Options</a> — complete settings reference</li>
+<li>a <code>kappa KAPPA_CL ~ 0.04</code> declaration and an <code>iov_column = OCC</code> setting,</li>
+<li>a <code>CENS</code> column and <code>bloq_method = m3</code> setting,</li>
+<li><code>SS = 1</code> and <code>II = 24</code> columns on the dosing rows,</li>
+<li>a <code>[scaling]</code> block with <code>obs_scale = V</code> (Form B) and an explicit <code>gradient = fd</code> in <code>[fit_options]</code>.</li>
 </ul>
+<p>No bundled <code>.ferx</code> exercises all four at once; build one by concatenating the relevant sections from the per-feature examples above. Validate the result with <code>ferx_model_validate()</code> before fitting.</p>
+<p>Each feature is documented in <code>?ferx_fit</code> along with its data-side requirements; this article is the narrative tour.</p>
 
 
 </section>
