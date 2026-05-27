@@ -1061,7 +1061,7 @@
     "href": "index.html#learn-ferx",
     "title": "ferx",
     "section": "Learn ferx",
-    "text": "Learn ferx\n\n\nferx-r book\nComprehensive narrative guide — installation through ODE models, BLOQ, and IOV. All code runs on CI.\n\n\nGet started\nInstall ferx and run the warfarin quickstart in under five minutes.\n\n\nReference\nFunction-level documentation for every exported function in ferx-r.\n\n\nModel DSL\nComplete syntax reference for .ferx model files."
+    "text": "Learn ferx\n\n\nferx-r\nComprehensive narrative guide — installation through ODE models, BLOQ, and IOV. All code runs on CI.\n\n\nGet started\nInstall ferx and run the warfarin quickstart in under five minutes.\n\n\nReference\nFunction-level documentation for every exported function in ferx-r.\n\n\nModel DSL\nComplete syntax reference for .ferx model files."
   },
   {
     "objectID": "learn/diagnostics.html",
