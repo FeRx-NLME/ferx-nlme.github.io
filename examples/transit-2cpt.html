@@ -691,10 +691,23 @@ V2 = TVV2 * (WT / 70)^1.00</code></pre>
 </section>
 <section id="dataset-requirements" class="level2">
 <h2 class="anchored" data-anchor-id="dataset-requirements">Dataset requirements</h2>
-<p>The data file must include a <code>WT</code> covariate column (body weight in kg); it is referenced directly in <code>[individual_parameters]</code>. Dose rows target <code>CMT=1</code> (transit1). The <code>lagtime=LAGTIME</code> argument in <code>ode(...)</code> is not used here — the lag time is instead applied via the first transit compartment’s initial condition being delayed, which is equivalent for modest lag times.</p>
-<blockquote class="blockquote">
-<p><strong>Note:</strong> <code>LAGTIME</code> is declared in <code>[individual_parameters]</code> but is not wired into a <code>lagtime=</code> argument in <code>[structural_model]</code> in this model. The transit chain itself provides the absorption delay; <code>TVLAG</code> acts as an extra fixed offset if needed. To activate the lag time mechanistically, pass <code>lagtime=LAGTIME</code> inside <code>ode(...)</code>.</p>
-</blockquote>
+<p>The data file must include a <code>WT</code> covariate column (body weight in kg); it is referenced directly in <code>[individual_parameters]</code>. Dose rows target <code>CMT=1</code> (transit1).</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Known issue in the bundled example:</strong> <code>TVLAG</code> / <code>LAGTIME</code> are declared and estimated but <code>lagtime=LAGTIME</code> is not passed to <code>ode(...)</code>, so the parameter has no effect on predictions. The transit chain alone provides the absorption delay via <code>MTT</code>. ferx-core will emit an unused-parameter warning for <code>TVLAG</code>. To add a true pre-transit lag time, wire it in:</p>
+<pre><code>[structural_model]
+  ode(obs_cmt=central, states=[transit1, ...], lagtime=LAGTIME)</code></pre>
+<p>Or drop <code>theta TVLAG</code> and <code>LAGTIME = TVLAG</code> entirely if no extra lag is needed.</p>
+</div>
+</div>
 </section>
 <section id="tips" class="level2">
 <h2 class="anchored" data-anchor-id="tips">Tips</h2>
