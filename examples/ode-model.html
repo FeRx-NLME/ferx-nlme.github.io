@@ -736,7 +736,7 @@ Tip
 <ul>
 <li>ODE models are slower than analytical models because each prediction requires numerical integration. For standard first-order kinetics, always prefer <code>one_cpt_oral</code> (or other analytical models).</li>
 <li>The ODE solver uses adaptive step-size control — the default tolerances (rtol = 1e-4, atol = 1e-6) work for most PK models; loosen if the fit is very slow or tighten if you observe discontinuities in predictions.</li>
-<li>Steady-state (<code>SS=1</code>) is not supported for ODE models.</li>
+<li>Steady-state (<code>SS=1</code>) is supported for ODE models via iterative pre-simulation (ferx simulates repeated doses until the state converges). SS doses are slower than for analytical models — roughly 50× the cost of a regular dose due to the RK45 integration segments.</li>
 <li>There is no Enzyme autodiff path for ODE models — <code>gradient_used</code> will always be <code>"finite_differences"</code>.</li>
 </ul>
 </section>

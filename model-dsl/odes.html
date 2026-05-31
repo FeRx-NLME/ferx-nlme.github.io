@@ -671,7 +671,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="limitations" class="level2">
 <h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
 <ul>
-<li>Steady-state (<code>SS=1</code>) is <strong>not supported</strong> for ODE models</li>
+<li>Steady-state (<code>SS=1</code>) is supported for ODE models via iterative pre-simulation: ferx repeats the dose at interval <code>II</code> until the state converges, then uses that state as the initial condition</li>
 <li>ODE models do not have an Enzyme autodiff gradient path — the inner-loop gradient always uses finite differences (<code>Fd</code>)</li>
 <li>ODE models are slower than analytical models; use analytical solutions (1/2/3-cpt) when the kinetics are standard first-order</li>
 </ul>

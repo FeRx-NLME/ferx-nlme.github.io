@@ -655,7 +655,7 @@ kappa KAPPA_KA ~ 0.10</code></pre>
 <section id="estimation-notes" class="level2">
 <h2 class="anchored" data-anchor-id="estimation-notes">Estimation notes</h2>
 <ul>
-<li><strong><code>foce</code> / <code>focei</code> are recommended.</strong> SAEM currently does not support IOV.</li>
+<li><strong>SAEM fully supports IOV.</strong> A <code>c("saem", "focei")</code> chain is the most robust workflow: SAEM finds the basin, FOCEI polishes to the marginal minimum.</li>
 <li>The inner optimizer jointly solves all BSV etas and all per-occasion kappas simultaneously (no separate kappa solve step).</li>
 <li>The outer gradient for IOV models uses reconverged finite differences to correctly identify the IOV variance parameters. This costs more per outer iteration than the fixed-EBE gradient used for BSV-only models.</li>
 <li>The most robust workflow for IOV models is a SAEM → FOCEI chain: SAEM finds the basin, FOCEI polishes to the marginal minimum.</li>
