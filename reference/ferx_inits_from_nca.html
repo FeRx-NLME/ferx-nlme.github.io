@@ -23,7 +23,7 @@ back into a model file before fitting."><!-- mathjax --><script src="https://cdn
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ferx</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
       </span>
     </div>
 
@@ -156,7 +156,9 @@ predictions.</p>
 these values automatically before the optimizer runs.</p>
 <p>Other fitting:
 <code><a href="ferx_check_init.html">ferx_check_init()</a></code>,
+<code><a href="ferx_collect.html">ferx_collect()</a></code>,
 <code><a href="ferx_fit.html">ferx_fit()</a></code>,
+<code><a href="ferx_fit_async.html">ferx_fit_async()</a></code>,
 <code><a href="ferx_sir.html">ferx_sir()</a></code></p></div>
     </div>
 
@@ -252,74 +254,62 @@ these values automatically before the optimizer runs.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, inits_from_nca <span class="op">=</span> <span class="st">"nca_ebe"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Negative IWRES autocorrelation detected (Durbin-Watson = 2.61, lag-1 r = -0.36).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Possible over-parameterisation or misspecified residual error model.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NONLINEAR MIXED EFFECTS MODEL ESTIMATION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  NONLINEAR MIXED EFFECTS MODEL ESTIMATION</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model: warfarin                 Dataset: warfarin</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 110</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model:     warfarin</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dataset:   warfarin</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  STATUS: <span style="color: #00BB00; font-weight: bold;">CONVERGED</span>   74 iterations   0.0s</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  OFV: -285.9969    AIC: -271.9969    BIC: -253.0936</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- Model Structure (auto-derived) ---</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">MODEL STRUCTURE (auto-derived)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Structural:  1-cpt oral  (TVCL, TVV, TVKA)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   IIV:         ETA_CL, ETA_V, ETA_KA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   IOV:         none</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Residual:    proportional</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Converged: YES</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Estimation method: FOCEI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iterations: 55</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- Objective Function ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> OFV:  -276.4287</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AIC:  -262.4287</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BIC:  -243.5254</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Subjects: 10  Observations: 110  Parameters: 7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- THETA Estimates ---</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">THETA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter            Estimate           SE       %RSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVCL                 0.133720          N/A        N/A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVV                  7.695222          N/A        N/A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVKA                 0.508454          N/A        N/A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVCL                 0.132853     0.000116        0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVV                  7.736804     0.009654        0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVKA                 0.807982     0.002248        0.3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- OMEGA Estimates ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_CL                   [log-normal]  = 0.016924  CV% = 13.1  SE = N/A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_V                    [log-normal]  = 0.019949  CV% = 14.2  SE = N/A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_KA                   [log-normal]  = 0.406079  CV% = 70.8  SE = N/A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">OMEGA  (between-subject variability)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_CL                   [log-normal]  = 0.027618  CV% = 16.7  SE = 0.006070</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_V                    [log-normal]  = 0.009613  CV% = 9.8  SE = 0.002154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_KA                   [log-normal]  = 0.334427  CV% = 63.0  SE = 0.074645</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- SIGMA Estimates ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PROP_ERR         [proportional] = 0.010168  (var = 0.000103, CV% = 1.0)  SE = N/A  [initial specified as SD]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">SIGMA  (residual error)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   PROP_ERR         [proportional] = 0.010578  (var = 0.000112, CV% = 1.1)  SE = 0.000607  [initial specified as SD]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- Shrinkage ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_CL shrinkage: -30.0%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_V shrinkage: 30.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_KA shrinkage: -16.7%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   EPS shrinkage:  11.4%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">SHRINKAGE</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ETA_CL: -1.7%   ETA_V: 0.3%   ETA_KA: -0.2%   EPS: 14.8%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- Diagnostics ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Durbin-Watson:  2.61  [negative autocorrelation]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   IWRES lag-1 r:  -0.365</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">DIAGNOSTICS</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Covariance: computed   Cond: 6.7   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- Run Info ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Covariance: FAILED</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Gradient (requested): auto</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Gradient (used):      fd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Wall time:  0.1s</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ferx v0.1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">RUN INFO</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Gradient (requested): auto   (used: fd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ferx v0.1.5 (core v0.1.0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- Settings (model file / call-time override) ---</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">SETTINGS  (model file / call-time override)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   method                       foce  [model only]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   maxiter                      300  [model only]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   covariance                   true  [model only]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   inits_from_nca               nca_ebe</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --- Warnings ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   * inits_from_nca: 7/10 subjects had a valid AUC estimate; others excluded from NCA pooling </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   * Covariance step failed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   * mu-ref: ETA_CL, ETA_KA, ETA_V </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   * Negative IWRES autocorrelation detected (Durbin-Watson = 2.61). Possible over-parameterization or misspecified error model. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #BBBB00;">2 warning</span>   <span style="color: #555555;">1 info</span>  --  call <span style="font-weight: bold;">ferx_warnings(fit)</span> for details</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Peek at the suggested CL/V before committing to a fit.</span></span></span>

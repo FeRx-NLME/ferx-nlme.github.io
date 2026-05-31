@@ -18,7 +18,7 @@ powered by automatic differentiation (Enzyme)."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ferx</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
       </span>
     </div>
 
@@ -238,45 +238,169 @@ where bad starting values can stall the optimizer. See
 
 
 <dt id="arg-settings">settings<a class="anchor" aria-label="anchor" href="#arg-settings"></a></dt>
-<dd><p>Optional named list of estimation-method-specific options
-forwarded to the Rust <code>FitOptions</code>. Use this to tune knobs that do
-not have a dedicated <code>ferx_fit()</code> argument, without needing a new
-wrapper release for each option. Recognized keys include SAEM
-(<code>n_exploration</code>, <code>n_convergence</code>, <code>n_mh_steps</code>,
-<code>adapt_interval</code>, <code>seed</code>; and <code>n_leapfrog</code> /
-<code>saem_n_leapfrog</code>: integer leapfrog steps for HMC proposals,
-default 0 = Metropolis-Hastings; positive value uses one HMC proposal
-per subject per iteration, requires AD build, see examples below),
-SIR tuning (<code>sir_samples</code>,
-<code>sir_resamples</code>, <code>sir_seed</code>), Importance Sampling
-(<code>is_samples</code>, <code>is_proposal_df</code>, <code>is_seed</code>,
-<code>is_low_ess_threshold</code>; used only when an <code>"imp"</code> stage is
-in the method chain), Gauss-Newton (<code>gn_lambda</code>),
-optimizer selection (<code>optimizer</code> - one of <code>"bobyqa"</code> (default),
-<code>"slsqp"</code>, <code>"lbfgs"</code>, <code>"nlopt_lbfgs"</code>, <code>"mma"</code>,
-<code>"bfgs"</code>, <code>"trust_region"</code>; also <code>global_search</code>,
-<code>global_maxeval</code>), the outer optimizer iteration cap
-(<code>maxiter</code>), the inner (per-subject EBE) loop
-(<code>inner_maxiter</code>, <code>inner_tol</code>), the Steihaug CG budget
-for <code>optimizer = "trust_region"</code> (<code>steihaug_max_iters</code>),
-the NLopt outer-loop stagnation guard
-(<code>stagnation_guard</code> - logical, default <code>TRUE</code>; set
-<code>FALSE</code> to let SLSQP / L-BFGS run to their own xtol/ftol or to
-<code>maxiter</code> instead of short-circuiting on a numerically-flat
-OFV plateau; only consumed by FOCE / FOCEI / GN-hybrid),
-and multi-start optimization (<code>n_starts</code>, <code>start_sigma</code>,
-<code>multi_start_seed</code>).
-Values that duplicate a dedicated argument
-(<code>method</code>, <code>covariance</code>, <code>verbose</code>,
-<code>bloq_method</code>, <code>threads</code>, <code>sir</code>) are rejected - pass
-them via the dedicated argument. Unknown keys and malformed values
-also raise an error.
-<strong>Precedence</strong>: dedicated <code>ferx_fit()</code> arguments win over
+<dd><p>Optional named list of fine-grained options forwarded to the
+Rust <code>FitOptions</code>. Use this to tune knobs that do not have a
+dedicated <code>ferx_fit()</code> argument. Keys are validated: values that
+duplicate a dedicated argument (<code>method</code>, <code>covariance</code>,
+<code>verbose</code>, <code>bloq_method</code>, <code>threads</code>, <code>sir</code>) are
+rejected – pass them via the dedicated argument. Unknown keys and
+malformed values also raise an error.</p>
+<p><strong>Precedence</strong>: dedicated <code>ferx_fit()</code> arguments win over
 <code>settings</code>, which in turn win over the model file's
 <code>[fit_options]</code> block. A <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning()</a></code> is issued whenever a
 call-time value overrides a different value from <code>[fit_options]</code>.
 Inspect <code>fit$model_file_settings</code> and <code>fit$call_settings</code> to
-audit the full picture.</p></dd>
+audit the full picture.</p>
+<p><strong>Shared options (FOCE / FOCEI / GN / GN-hybrid / SAEM)</strong></p><dl><dt><code>inner_maxiter</code></dt>
+<dd><p>Per-subject EBE iteration cap (default 200).</p></dd>
+
+<dt><code>inner_tol</code></dt>
+<dd><p>Convergence tolerance for the inner EBE loop
+(default <code>1e-4</code>).</p></dd>
+
+
+</dl><p><strong>FOCE / FOCEI / GN / GN-hybrid: iteration cap</strong></p><dl><dt><code>maxiter</code></dt>
+<dd><p>Maximum outer-optimizer iterations (default 500).
+Not applicable to SAEM, which controls iterations via
+<code>n_exploration</code> and <code>n_convergence</code>.</p></dd>
+
+
+</dl><p><strong>FOCE / FOCEI / GN-hybrid: outer optimizer</strong></p><dl><dt><code>optimizer</code></dt>
+<dd><p>Population-level optimizer. One of
+<code>"bobyqa"</code> (default, derivative-free, robust),
+<code>"slsqp"</code> (sequential quadratic programming, gradient-based),
+<code>"lbfgs"</code> / <code>"nlopt_lbfgs"</code> (limited-memory BFGS via
+NLopt, gradient-based),
+<code>"mma"</code> (method of moving asymptotes, gradient-based),
+<code>"bfgs"</code> (hand-rolled BFGS, gradient-based), or
+<code>"trust_region"</code> (trust-region Newton, gradient-based).
+Gradient-based optimizers use the inner gradient method set by the
+<code>gradient</code> argument; <code>"bobyqa"</code> does not.
+Not accepted by pure <code>"gn"</code>.</p></dd>
+
+<dt><code>global_search</code></dt>
+<dd><p>Logical. When <code>TRUE</code>, run a global
+search phase before local refinement (default <code>FALSE</code>).
+Not accepted by pure <code>"gn"</code>.</p></dd>
+
+<dt><code>global_maxeval</code></dt>
+<dd><p>Function evaluations budget for the global
+search phase (default <code>0</code>, i.e. disabled when
+<code>global_search = FALSE</code>). Not accepted by pure <code>"gn"</code>.</p></dd>
+
+<dt><code>stagnation_guard</code></dt>
+<dd><p>Logical (default <code>TRUE</code>). Terminates
+the NLopt outer loop early when the OFV plateau is numerically flat.
+Set <code>FALSE</code> to let SLSQP / L-BFGS run to their own xtol/ftol or
+<code>maxiter</code>. Not accepted by pure <code>"gn"</code>.</p></dd>
+
+<dt><code>reconverge_gradient_interval</code></dt>
+<dd><p>Integer (default <code>0</code>).
+How often to re-solve each subject's inner EBE during the population
+gradient, instead of holding it fixed. <code>0</code> = never (cheap
+fixed-EBE gradient); <code>1</code> = every gradient evaluation; <code>N</code>
+= every <code>N</code>-th. Reconverging recovers the full gradient surface
+at roughly 5-6x the per-call cost and can help gradient-based
+optimizers (e.g. <code>slsqp</code>) past ill-conditioned non-IOV plateaus.
+IOV models always reconverge and ignore this setting. Not accepted by
+pure <code>"gn"</code>.</p></dd>
+
+
+</dl><p><strong>Trust-region optimizer (<code>optimizer = "trust_region"</code>)</strong></p><dl><dt><code>steihaug_max_iters</code></dt>
+<dd><p>Conjugate-gradient iteration budget for
+the trust-region subproblem (default chosen by the engine). Only
+consumed when <code>optimizer = "trust_region"</code> is set under FOCE /
+FOCEI / GN-hybrid. Increase if the subproblem solver exits too early
+on ill-conditioned problems.</p></dd>
+
+
+</dl><p><strong>SAEM</strong></p><dl><dt><code>n_exploration</code></dt>
+<dd><p>Stochastic exploration phase iterations
+(default 150).</p></dd>
+
+<dt><code>n_convergence</code></dt>
+<dd><p>Averaging / convergence phase iterations
+(default 250).</p></dd>
+
+<dt><code>n_mh_steps</code></dt>
+<dd><p>Metropolis-Hastings steps per subject per
+iteration (default 10).</p></dd>
+
+<dt><code>adapt_interval</code></dt>
+<dd><p>How often (in iterations) the MH proposal
+covariance is adapted (default 50).</p></dd>
+
+<dt><code>omega_burnin</code></dt>
+<dd><p>Initial iterations during which Omega is held
+fixed while the sampler warms up (default 20). Guards against Omega
+collapse on sparse data. Set to <code>0</code> to disable.</p></dd>
+
+<dt><code>seed</code> / <code>saem_seed</code></dt>
+<dd><p>RNG seed for the SAEM
+Metropolis-Hastings sampler (default 12345). Independent of
+<code>multi_start_seed</code>.</p></dd>
+
+<dt><code>n_leapfrog</code> / <code>saem_n_leapfrog</code></dt>
+<dd><p>Leapfrog steps for
+HMC proposals (default <code>0</code> = Metropolis-Hastings). A positive
+value replaces MH with one HMC proposal per subject per iteration.
+Requires an AD build; see examples below.</p></dd>
+
+
+</dl><p><strong>Gauss-Newton (<code>"gn"</code> / <code>"gn_hybrid"</code>)</strong></p><dl><dt><code>gn_lambda</code></dt>
+<dd><p>Levenberg-Marquardt damping factor (default
+<code>0.01</code>). Larger values make steps more conservative. Accepted
+by both <code>"gn"</code> and <code>"gn_hybrid"</code>.</p></dd>
+
+
+</dl><p><strong>Importance Sampling (<code>"imp"</code> stage)</strong></p><dl><dt><code>is_samples</code></dt>
+<dd><p>Importance samples drawn per subject (default
+1000). Halving the Monte-Carlo SE requires quadrupling this value.</p></dd>
+
+<dt><code>is_proposal_df</code></dt>
+<dd><p>Degrees of freedom for the Student-t
+proposal distribution (default <code>5</code>).</p></dd>
+
+<dt><code>is_seed</code></dt>
+<dd><p>RNG seed for the IS step (default chosen by the
+engine).</p></dd>
+
+<dt><code>is_low_ess_threshold</code></dt>
+<dd><p>ESS fraction below which a subject is
+flagged in <code>fit$importance_sampling$low_ess_subject_ids</code> (default
+<code>0.1</code>, i.e. <code>10%</code> of <code>is_samples</code>).</p></dd>
+
+
+</dl><p><strong>SIR (Sampling Importance Resampling)</strong></p><dl><dt><code>sir_samples</code></dt>
+<dd><p>Candidate draws for SIR (default 1000).</p></dd>
+
+<dt><code>sir_resamples</code></dt>
+<dd><p>Resampled draws retained for CI computation
+(default 250).</p></dd>
+
+<dt><code>sir_seed</code></dt>
+<dd><p>RNG seed for the SIR step (default chosen by the
+engine). Independent of <code>seed</code> / <code>saem_seed</code>.</p></dd>
+
+
+</dl><p><strong>Multi-start optimization</strong></p><dl><dt><code>n_starts</code></dt>
+<dd><p>Number of optimizer starts (default <code>1</code>,
+i.e. single start). When <code>&gt; 1</code>, starts 2..n are initialized from
+log-space perturbations of the model's initial values; the best OFV
+wins.</p></dd>
+
+<dt><code>start_sigma</code></dt>
+<dd><p>Perturbation spread in log-space (default
+<code>0.3</code>, approx. <code>30%</code> CV). Log-packed thetas are multiplied by
+<code>exp(N(0, start_sigma))</code>; identity-packed thetas are shifted by
+<code>start_sigma * N(0,1)</code>.</p></dd>
+
+<dt><code>multi_start_seed</code></dt>
+<dd><p>RNG seed for the start-point perturbation
+(default <code>42</code>). Independent of <code>seed</code> / <code>saem_seed</code>.</p></dd>
+
+
+</dl></dd>
 
 
 <dt id="arg-output">output<a class="anchor" aria-label="anchor" href="#arg-output"></a></dt>
@@ -380,11 +504,22 @@ under the model's covariate effects. For inter-occasion variation see
 <dt>warnings</dt>
 <dd><p>Character vector of warnings</p></dd>
 
+<dt>warnings_structured</dt>
+<dd><p>Data frame with columns <code>severity</code>
+(<code>"critical"</code>, <code>"warning"</code>, or <code>"info"</code>),
+<code>category</code> (a fixed vocabulary such as <code>"convergence"</code>,
+<code>"covariance_step"</code>, <code>"dw_autocorrelation"</code>),
+<code>message</code>, and <code>source_method</code> (the estimation stage that
+emitted the warning, e.g. <code>"FOCEI"</code>; empty string when not
+applicable). Severity/category are assigned by the engine for its
+own warnings and by the R diagnostics layer for the condition-number
+and ETA-normality checks. Inspect with <code><a href="ferx_warnings.html">ferx_warnings</a></code>.</p></dd>
+
 <dt>sir_ess</dt>
 <dd><p>SIR effective sample size (NULL if SIR not run)</p></dd>
 
 <dt>sir_ci_theta, sir_ci_omega, sir_ci_sigma</dt>
-<dd><p>SIR 95\<!-- % CI matrices -->
+<dd><p>SIR <code>95%</code> CI matrices
 with columns <code>lower</code> and <code>upper</code> (NULL if SIR not run)</p></dd>
 
 <dt>importance_sampling</dt>
@@ -536,7 +671,15 @@ string). Use <code><a href="ferx_model_inspect.html">ferx_model_inspect</a></cod
 after fitting.</p></dd>
 
 <dt>shrinkage_kappa</dt>
-<dd><p>Shrinkage values for kappa EBEs (<code>NULL</code> if no IOV).</p></dd>
+<dd><p>Named numeric vector of pooled shrinkage values for
+kappa EBEs (one entry per kappa parameter). <code>NULL</code> when the model
+has no IOV.</p></dd>
+
+<dt>shrinkage_kappa_by_occ</dt>
+<dd><p>Data frame with column <code>occ</code> (1-based
+occasion index) and one numeric column per kappa parameter giving the
+shrinkage at each occasion. Use this for per-occasion IOV diagnostics.
+<code>NULL</code> when the model has no IOV.</p></dd>
 
 <dt>ebe_kappas</dt>
 <dd><p>Data frame with columns <code>ID</code>, <code>OCC</code>, and one
@@ -611,6 +754,28 @@ proposals were generated by HMC (i.e. <code>n_leapfrog &gt; 0</code> and the AD
 build is active). Subjects that fell back to MH (e.g. ODE models) are
 not counted. <code>NA_integer_</code> when the method is not SAEM, when
 <code>n_leapfrog = 0</code> (MH only), or when AD is unavailable.</p></dd>
+
+<dt>saem_mu_ref_m_step_evals_saved</dt>
+<dd><p>Number of OFV evaluations saved by
+mu-referencing in the SAEM M-step. Only populated for SAEM fits with
+<code>mu_referencing = TRUE</code>; <code>NULL</code> otherwise. A diagnostic for
+understanding SAEM efficiency.</p></dd>
+
+<dt>covariance_n_evals_estimated</dt>
+<dd><p>Estimated number of OFV calls required
+for the covariance step, computed before the step runs on large models.
+<code>NULL</code> when the model is small (exact count used instead) or when
+<code>covariance = FALSE</code>.</p></dd>
+
+<dt>n_threads_used</dt>
+<dd><p>Integer. Actual number of parallel threads used by
+the engine during fitting. May be lower than the requested <code>threads</code>
+argument when fewer subjects are available.</p></dd>
+
+<dt>nlopt_missing_algorithms</dt>
+<dd><p>Character vector of NLopt algorithm names
+that are not available in the current build (empty on most platforms).
+Informational; the engine falls back automatically.</p></dd>
 
 <dt>neural_networks</dt>
 <dd><p>Named list of sub-lists, one per <code>[covariate_nn]</code>
@@ -696,6 +861,34 @@ when the observation is not a raw compartment amount:</p><div class="sourceCode"
 <code>gradient = fd</code> to <code>[fit_options]</code> explicitly, or the
 engine raises an informative error.</p></li>
 </ul></div>
+    <div id="parameter-declaration-syntax-parameters-block-">
+    <h2>Parameter declaration syntax (<code>[parameters]</code> block)</h2>
+
+
+
+<p><strong>Theta (fixed effects):</strong></p><div class="sourceCode"><pre><code>
+  theta CL(0.134, 0.001, 10.0)          # (initial, lower, upper)
+  theta CL(0.1, 0.001)                  # lower-bound only (no upper bound)
+  theta CL(0.134, 0.001, 10.0) (FIX)    # FIX at end (traditional)
+  theta CL (FIX) (0.134, 0.001, 10.0)   # FIX anywhere (flexible placement)
+</code></pre></div>
+
+<p><strong>Omega (inter-individual variability):</strong></p><div class="sourceCode"><pre><code>
+  omega ETA_CL ~ 0.07           # variance parameterisation (default)
+  omega ETA_CL ~ 0.07 (FIX)    # fixed omega, FIX at end
+  omega ETA_CL (FIX) ~ 0.07    # fixed omega, FIX before the tilde
+</code></pre></div>
+
+<p>The same flexible <code>(FIX)</code> placement applies to <code>sigma</code> and
+<code>kappa</code> (IOV) declarations.</p>
+<p><strong>Unused-parameter warning:</strong> a <code>warning</code> severity message with
+category <code>"unused_parameter"</code> is emitted by the parser when a
+parameter is declared in <code>[parameters]</code> but never referenced in
+<code>[individual_parameters]</code> or <code>[error_model]</code>. This usually
+indicates a commented-out expression or a typo in the parameter name.
+Inspect <code>ferx_warnings(fit)</code> or check <code><a href="ferx_model_validate.html">ferx_model_validate()</a></code>
+before fitting.</p>
+    </div>
     <div id="steady-state-dosing-ss-and-ii-columns-">
     <h2>Steady-state dosing (<code>SS</code> and <code>II</code> columns)</h2>
 
@@ -799,6 +992,7 @@ duplicated in <code>settings</code> - pass them via the named argument.</p>
 <span>  n_exploration <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  n_convergence <span class="op">=</span> <span class="fl">400</span>,</span>
 <span>  n_mh_steps    <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  omega_burnin  <span class="op">=</span> <span class="fl">20L</span>,</span>
 <span>  seed          <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -893,6 +1087,8 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
     <h2>See also</h2>
     <div class="dont-index"><p>Other fitting:
 <code><a href="ferx_check_init.html">ferx_check_init()</a></code>,
+<code><a href="ferx_collect.html">ferx_collect()</a></code>,
+<code><a href="ferx_fit_async.html">ferx_fit_async()</a></code>,
 <code><a href="ferx_inits_from_nca.html">ferx_inits_from_nca()</a></code>,
 <code><a href="ferx_sir.html">ferx_sir()</a></code></p></div>
     </div>
@@ -904,8 +1100,6 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model file [fit_options] sets `method = foce` but ferx_fit() argument overrides it with `gn`. The call-time value will be used.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model file [fit_options] sets `covariance = true` but ferx_fit() argument overrides it with `false`. The call-time value will be used.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Negative IWRES autocorrelation detected (Durbin-Watson = 2.61, lag-1 r = -0.37).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Possible over-parameterisation or misspecified residual error model.</span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">theta</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      TVCL       TVV      TVKA </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.1327389 7.6948086 0.7585626 </span>
@@ -1037,8 +1231,10 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
 <span class="r-in"><span><span class="co">#   - method = "gn"         (FOCE Gauss-Newton)</span></span></span>
 <span class="r-in"><span><span class="co">#   - method = "gn_hybrid"  (FOCE-GN with SLSQP polish)</span></span></span>
 <span class="r-in"><span><span class="co">#   - method = "foce" / "focei" run with settings = list(optimizer =</span></span></span>
-<span class="r-in"><span><span class="co">#     "trust_region") (the default optimizer "slsqp" is also gradient-based</span></span></span>
-<span class="r-in"><span><span class="co">#     but tolerates poor starts better)</span></span></span>
+<span class="r-in"><span><span class="co">#     "trust_region") or settings = list(optimizer = "slsqp") (the</span></span></span>
+<span class="r-in"><span><span class="co">#     default optimizer "bobyqa" is derivative-free and tolerates poor</span></span></span>
+<span class="r-in"><span><span class="co">#     starts the best of the three; switch to slsqp / trust_region for</span></span></span>
+<span class="r-in"><span><span class="co">#     gradient-based behaviour, then NCA-derived starts help most)</span></span></span>
 <span class="r-in"><span><span class="co"># For these, NCA-derived starts often turn a non-converging or stagnating</span></span></span>
 <span class="r-in"><span><span class="co"># fit into a clean convergence.</span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>

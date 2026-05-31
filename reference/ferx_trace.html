@@ -19,7 +19,7 @@ per optimizer iteration (or per OFV evaluation for NLopt-based methods)."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ferx</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
       </span>
     </div>
 
@@ -132,6 +132,7 @@ rather than <code><a href="https://rdrr.io/r/base/trace.html" class="external-li
 <code><a href="ferx_estimates.html">ferx_estimates()</a></code>,
 <code><a href="ferx_eta_cov.html">ferx_eta_cov()</a></code>,
 <code><a href="ferx_plot_trace.html">ferx_plot_trace()</a></code>,
+<code><a href="ferx_warnings.html">ferx_warnings()</a></code>,
 <code><a href="summary.ferx_fit.html">summary.ferx_fit()</a></code></p></div>
     </div>
 
@@ -143,17 +144,15 @@ rather than <code><a href="https://rdrr.io/r/base/trace.html" class="external-li
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model file [fit_options] sets `method = foce` but ferx_fit() argument overrides it with `gn`. The call-time value will be used.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model file [fit_options] sets `covariance = true` but ferx_fit() argument overrides it with `false`. The call-time value will be used.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Negative IWRES autocorrelation detected (Durbin-Watson = 2.61, lag-1 r = -0.37).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Possible over-parameterisation or misspecified residual error model.</span>
 <span class="r-in"><span><span class="va">tr</span>  <span class="op">&lt;-</span> <span class="fu">ferx_trace</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   iter method phase       ofv wall_ms grad_norm step_norm inner_iter_count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1    1     gn    NA -272.3136       1        NA        NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2     gn    NA -276.5305       1        NA        NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2     gn    NA -276.5305       2        NA        NA               NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3    3     gn    NA -278.9250       2        NA        NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4     gn    NA -279.4244       2        NA        NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4     gn    NA -279.4244       3        NA        NA               NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5    5     gn    NA -279.5786       3        NA        NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6     gn    NA -279.9263       3        NA        NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6     gn    NA -279.9263       4        NA        NA               NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   optimizer lm_lambda ofv_delta step_accepted cond_nll gamma mh_accept_rate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1        NA         2 -2.389587             1       NA    NA             NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2        NA         4 -4.216840             1       NA    NA             NA</span>

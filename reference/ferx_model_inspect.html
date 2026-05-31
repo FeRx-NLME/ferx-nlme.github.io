@@ -21,7 +21,7 @@ to a potentially long estimation run."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ferx</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
       </span>
     </div>
 
@@ -76,10 +76,13 @@ to a potentially long estimation run.</p>
 (character vector of population parameter names), <code>model_type</code>
 (short label such as <code>"1-cpt oral"</code> or <code>NULL</code> when not
 unambiguously detectable), <code>iiv</code> (omega names), <code>iov</code>
-(kappa names), and <code>residual</code> (error type). For multi-endpoint
-(per-CMT) error models, <code>residual</code> is reported as a string of
-the form <code>"per-CMT (CMT2=proportional, CMT3=additive)"</code>; for
-combined error models it is <code>c("proportional", "additive")</code>.</p>
+(kappa names), and <code>residual</code> (error type — one of
+<code>"proportional"</code>, <code>"additive"</code>, <code>"combined"</code>, or
+<code>"additive (log-transformed)"</code> for log-transform-both-sides
+models written as <code>log(DV) ~ additive(...)</code> or
+<code>DV ~ log_additive(...)</code>). For multi-endpoint (per-CMT) error
+models, <code>residual</code> is reported as a string of the form
+<code>"per-CMT (CMT2=proportional, CMT3=additive)"</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>

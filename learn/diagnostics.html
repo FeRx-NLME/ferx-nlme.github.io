@@ -80,9 +80,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-68b8ee346e63b628fb741183f00ad06a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -364,6 +364,14 @@ window.Quarto = {
     <a class="dropdown-item" href="../learn/uncertainty-sir.html">
  <span class="dropdown-text">Uncertainty (SIR)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../learn/method-chaining.html">
+ <span class="dropdown-text">Method chaining &amp; optimizers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../learn/robust-fitting.html">
+ <span class="dropdown-text">Robust fitting</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -408,6 +416,14 @@ window.Quarto = {
  <span class="dropdown-text">Scaling</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../model-dsl/bloq.html">
+ <span class="dropdown-text">BLOQ (M3 method)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../model-dsl/iov.html">
+ <span class="dropdown-text">IOV (inter-occasion variability)</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../model-dsl/diffusion.html">
  <span class="dropdown-text">Diffusion (SDE)</span></a>
   </li>  
@@ -430,6 +446,10 @@ window.Quarto = {
  <span class="menu-text">Examples</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin.html">
+ <span class="dropdown-text">One-compartment oral (warfarin)</span></a>
+  </li>  
         <li>
     <a class="dropdown-item" href="../examples/covariates.html">
  <span class="dropdown-text">Covariate model</span></a>
@@ -455,16 +475,44 @@ window.Quarto = {
  <span class="dropdown-text">Three-compartment IV</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../examples/transit-2cpt.html">
+ <span class="dropdown-text">Transit absorption + 2-cpt ODE</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/emax-pkpd.html">
+ <span class="dropdown-text">Simultaneous PK/PD (Emax)</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../examples/lag-time.html">
  <span class="dropdown-text">Absorption lag time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-ss.html">
+ <span class="dropdown-text">Steady-state dosing (SS=1)</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../examples/block-omega.html">
  <span class="dropdown-text">Block omega (correlated ETAs)</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../examples/warfarin-additive-eta.html">
+ <span class="dropdown-text">Additive ETA parameterization</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-ltbs.html">
+ <span class="dropdown-text">Log-transform-both-sides (LTBS)</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../examples/conditional-covariate.html">
  <span class="dropdown-text">Conditional covariate (if/else)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/bioavailability.html">
+ <span class="dropdown-text">Oral bioavailability (logit-normal F)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-scaled.html">
+ <span class="dropdown-text">Observation scaling (unit conversion)</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../examples/dcm.html">
@@ -479,12 +527,12 @@ window.Quarto = {
  <span class="dropdown-text">SDE process noise</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../examples/multistart.html">
- <span class="dropdown-text">Multi-start fitting</span></a>
+    <a class="dropdown-item" href="../examples/warfarin-iov-saem.html">
+ <span class="dropdown-text">IOV with SAEM</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../examples/bioavailability.html">
- <span class="dropdown-text">Oral bioavailability (logit-normal F)</span></a>
+    <a class="dropdown-item" href="../examples/multistart.html">
+ <span class="dropdown-text">Multi-start fitting</span></a>
   </li>  
     </ul>
   </li>
@@ -537,6 +585,7 @@ window.Quarto = {
   <li><a href="#eta-covariate-correlations-ferx_eta_cov" id="toc-eta-covariate-correlations-ferx_eta_cov" class="nav-link" data-scroll-target="#eta-covariate-correlations-ferx_eta_cov">ETA-covariate correlations — <code>ferx_eta_cov()</code></a></li>
   <li><a href="#iwres-autocorrelation-check_diagnostics" id="toc-iwres-autocorrelation-check_diagnostics" class="nav-link" data-scroll-target="#iwres-autocorrelation-check_diagnostics">IWRES autocorrelation — <code>check_diagnostics()</code></a></li>
   <li><a href="#goodness-of-fit-plots-from-fitsdtab" id="toc-goodness-of-fit-plots-from-fitsdtab" class="nav-link" data-scroll-target="#goodness-of-fit-plots-from-fitsdtab">Goodness-of-fit plots from <code>fit$sdtab</code></a></li>
+  <li><a href="#structured-warnings-ferx_warnings" id="toc-structured-warnings-ferx_warnings" class="nav-link" data-scroll-target="#structured-warnings-ferx_warnings">Structured warnings — <code>ferx_warnings()</code></a></li>
   <li><a href="#other-ferx_fit-fields" id="toc-other-ferx_fit-fields" class="nav-link" data-scroll-target="#other-ferx_fit-fields">Other <code>ferx_fit</code> fields</a></li>
   <li><a href="#convergence-diagnostics-ferx_check_init" id="toc-convergence-diagnostics-ferx_check_init" class="nav-link" data-scroll-target="#convergence-diagnostics-ferx_check_init">Convergence diagnostics — <code>ferx_check_init()</code></a></li>
   <li><a href="#optimizer-trace-ferx_trace-ferx_plot_trace" id="toc-optimizer-trace-ferx_trace-ferx_plot_trace" class="nav-link" data-scroll-target="#optimizer-trace-ferx_trace-ferx_plot_trace">Optimizer trace — <code>ferx_trace()</code> / <code>ferx_plot_trace()</code></a></li>
@@ -756,24 +805,99 @@ Tip
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs PRED"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
+<section id="structured-warnings-ferx_warnings" class="level2">
+<h2 class="anchored" data-anchor-id="structured-warnings-ferx_warnings">Structured warnings — <code>ferx_warnings()</code></h2>
+<p>ferx classifies non-fatal issues from a run into severity levels and categories and makes them available via <code>ferx_warnings()</code>. Critical issues are also surfaced inline in the <code>STATUS</code> line of <code>print(fit)</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_warnings</span>(fit)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   severity  category              message</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   warning   shrinkage             ETA_KA shrinkage = 0.58 (&gt; 0.40): EBEs</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   unreliable for this parameter</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   info      mu_referencing        ETA_CL detected as log-normal mu-referenced</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   info      mu_referencing        ETA_V detected as log-normal mu-referenced</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Severity levels:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Severity</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>critical</code></td>
+<td>Likely convergence failure or data issue; inspect before using results</td>
+</tr>
+<tr class="even">
+<td><code>warning</code></td>
+<td>Non-fatal issue worth investigating (high shrinkage, near-boundary estimate)</td>
+</tr>
+<tr class="odd">
+<td><code>info</code></td>
+<td>Informational (mu-referencing detection, unused parameter notice)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Common categories:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Category</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>shrinkage</code></td>
+<td>ETA shrinkage &gt; 40%; EPS shrinkage &gt; 30%</td>
+</tr>
+<tr class="even">
+<td><code>convergence</code></td>
+<td>Outer optimizer hit maxiter; OFV gradient not converged</td>
+</tr>
+<tr class="odd">
+<td><code>mu_referencing</code></td>
+<td>Which ETAs were detected as mu-referenced</td>
+</tr>
+<tr class="even">
+<td><code>unused_parameter</code></td>
+<td>Theta/omega declared in <code>[parameters]</code> but not used in the model</td>
+</tr>
+<tr class="odd">
+<td><code>boundary</code></td>
+<td>Estimated parameter is at or near its declared bound</td>
+</tr>
+</tbody>
+</table>
+<p>The raw warning strings are also available on the fit object:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings             <span class="co"># character vector of all warning messages</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings_structured  <span class="co"># data frame: severity, category, message</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 <section id="other-ferx_fit-fields" class="level2">
 <h2 class="anchored" data-anchor-id="other-ferx_fit-fields">Other <code>ferx_fit</code> fields</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ofv                  <span class="co"># objective function value (-2 log-likelihood)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>aic                  <span class="co"># AIC = OFV + 2p</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>bic                  <span class="co"># BIC = OFV + p*ln(N)</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>converged            <span class="co"># TRUE if the outer optimizer converged</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>method               <span class="co"># estimation method used</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>gradient_used        <span class="co"># "enzyme", "dual", or "finite_differences"</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings             <span class="co"># non-fatal warnings from the run</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ebe_etas             <span class="co"># empirical Bayes ETAs per subject (data frame)</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>individual_estimates <span class="co"># individual PK parameters (CL, V, KA, ...) per subject</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>eta_normality        <span class="co"># Shapiro-Wilk normality test p-value per ETA</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eta        <span class="co"># ETA shrinkage per random effect</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eps        <span class="co"># EPS shrinkage (scalar or vector for multi-sigma models)</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>dw_statistic         <span class="co"># pooled Durbin-Watson statistic for IWRES</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>iwres_lag1_r         <span class="co"># pooled lag-1 Pearson r for IWRES</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ofv                  <span class="co"># objective function value (-2 log-likelihood)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>aic                  <span class="co"># AIC = OFV + 2p</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>bic                  <span class="co"># BIC = OFV + p*ln(N)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>converged            <span class="co"># TRUE if the outer optimizer converged</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>method               <span class="co"># estimation method used</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>gradient_used        <span class="co"># "enzyme", "dual", or "finite_differences"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings             <span class="co"># non-fatal warnings from the run</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ebe_etas             <span class="co"># empirical Bayes ETAs per subject (data frame)</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>individual_estimates <span class="co"># individual PK parameters (CL, V, KA, ...) per subject</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>eta_normality        <span class="co"># Shapiro-Wilk normality test p-value per ETA</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eta        <span class="co"># ETA shrinkage per random effect</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eps        <span class="co"># EPS shrinkage (scalar or vector for multi-sigma models)</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>dw_statistic         <span class="co"># pooled Durbin-Watson statistic for IWRES</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>iwres_lag1_r         <span class="co"># pooled lag-1 Pearson r for IWRES</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Shrinkage</strong> — values near 1 indicate that the data are not informative about a random effect:</p>
 <p><span class="math display">\[\text{ETA shrinkage}_k = 1 - \frac{\text{SD}(\hat{\eta}_k)}{\sqrt{\omega_{kk}}} \qquad \text{EPS shrinkage} = 1 - \text{SD}(\text{IWRES})\]</span></p>
 <hr>
@@ -781,24 +905,24 @@ Tip
 <section id="convergence-diagnostics-ferx_check_init" class="level2">
 <h2 class="anchored" data-anchor-id="convergence-diagnostics-ferx_check_init">Convergence diagnostics — <code>ferx_check_init()</code></h2>
 <p>Before committing to a long fit, run a 5-iteration pilot to confirm the OFV is decreasing from the initial values:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>chk <span class="ot">&lt;-</span> <span class="fu">ferx_check_init</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>chk<span class="sc">$</span>summary</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   n_iter  ofv_start  ofv_end  ofv_drop  converged</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#        5     -180.2   -186.3      6.1      FALSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>chk <span class="ot">&lt;-</span> <span class="fu">ferx_check_init</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>chk<span class="sc">$</span>summary</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   n_iter  ofv_start  ofv_end  ofv_drop  converged</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#        5     -180.2   -186.3      6.1      FALSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="optimizer-trace-ferx_trace-ferx_plot_trace" class="level2">
 <h2 class="anchored" data-anchor-id="optimizer-trace-ferx_trace-ferx_plot_trace">Optimizer trace — <code>ferx_trace()</code> / <code>ferx_plot_trace()</code></h2>
 <p>When <code>optimizer_trace = TRUE</code> is passed to <code>ferx_fit()</code>, ferx writes a per-iteration CSV. Read and plot it:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>tr <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)          <span class="co"># data frame with one row per outer iteration</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tr[, <span class="fu">c</span>(<span class="st">"iter"</span>, <span class="st">"ofv"</span>, <span class="st">"grad_norm"</span>)])</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit)           <span class="co"># two-panel plot: OFV + method-specific metric</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit, <span class="at">log_ofv =</span> <span class="cn">TRUE</span>)  <span class="co"># OFV on log scale (OFV - min(OFV))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tr <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)          <span class="co"># data frame with one row per outer iteration</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tr[, <span class="fu">c</span>(<span class="st">"iter"</span>, <span class="st">"ofv"</span>, <span class="st">"grad_norm"</span>)])</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit)           <span class="co"># two-panel plot: OFV + method-specific metric</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit, <span class="at">log_ofv =</span> <span class="cn">TRUE</span>)  <span class="co"># OFV on log scale (OFV - min(OFV))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>ferx_trace()</code> with no argument recalls the trace from the last <code>ferx_fit()</code> call in the current session:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>()    <span class="co"># same as ferx_trace(fit) after the above</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>()    <span class="co"># same as ferx_trace(fit) after the above</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>See <a href="https://ferx-nlme.github.io/ferx-core/output.html#optimizer-trace-csv">Output Files — Optimizer trace CSV (ferx-core book)</a> for the full column reference.</p>
 
 

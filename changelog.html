@@ -76,9 +76,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-68b8ee346e63b628fb741183f00ad06a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-13769cd48158e8abfc583f7700512d7b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -322,6 +322,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="./learn/uncertainty-sir.html">
  <span class="dropdown-text">Uncertainty (SIR)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./learn/method-chaining.html">
+ <span class="dropdown-text">Method chaining &amp; optimizers</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./learn/robust-fitting.html">
+ <span class="dropdown-text">Robust fitting</span></a>
+  </li>  
     </ul>
 </li>
   <li class="nav-item dropdown ">
@@ -366,6 +374,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Scaling</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./model-dsl/bloq.html">
+ <span class="dropdown-text">BLOQ (M3 method)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./model-dsl/iov.html">
+ <span class="dropdown-text">IOV (inter-occasion variability)</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./model-dsl/diffusion.html">
  <span class="dropdown-text">Diffusion (SDE)</span></a>
   </li>  
@@ -389,6 +405,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">
 <li>
+    <a class="dropdown-item" href="./examples/warfarin.html">
+ <span class="dropdown-text">One-compartment oral (warfarin)</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./examples/covariates.html">
  <span class="dropdown-text">Covariate model</span></a>
   </li>  
@@ -413,16 +433,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Three-compartment IV</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./examples/transit-2cpt.html">
+ <span class="dropdown-text">Transit absorption + 2-cpt ODE</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/emax-pkpd.html">
+ <span class="dropdown-text">Simultaneous PK/PD (Emax)</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./examples/lag-time.html">
  <span class="dropdown-text">Absorption lag time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/warfarin-ss.html">
+ <span class="dropdown-text">Steady-state dosing (SS=1)</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./examples/block-omega.html">
  <span class="dropdown-text">Block omega (correlated ETAs)</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./examples/warfarin-additive-eta.html">
+ <span class="dropdown-text">Additive ETA parameterization</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/warfarin-ltbs.html">
+ <span class="dropdown-text">Log-transform-both-sides (LTBS)</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./examples/conditional-covariate.html">
  <span class="dropdown-text">Conditional covariate (if/else)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/bioavailability.html">
+ <span class="dropdown-text">Oral bioavailability (logit-normal F)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/warfarin-scaled.html">
+ <span class="dropdown-text">Observation scaling (unit conversion)</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./examples/dcm.html">
@@ -437,12 +485,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">SDE process noise</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./examples/multistart.html">
- <span class="dropdown-text">Multi-start fitting</span></a>
+    <a class="dropdown-item" href="./examples/warfarin-iov-saem.html">
+ <span class="dropdown-text">IOV with SAEM</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./examples/bioavailability.html">
- <span class="dropdown-text">Oral bioavailability (logit-normal F)</span></a>
+    <a class="dropdown-item" href="./examples/multistart.html">
+ <span class="dropdown-text">Multi-start fitting</span></a>
   </li>  
     </ul>
 </li>
@@ -489,19 +537,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>
 <a href="#ferx-development" id="toc-ferx-development" class="nav-link active" data-scroll-target="#ferx-development">ferx (development)</a>
   <ul class="collapse">
-<li><a href="#new-features" id="toc-new-features" class="nav-link" data-scroll-target="#new-features">New features</a></li>
+<li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
+  <li><a href="#new-features" id="toc-new-features" class="nav-link" data-scroll-target="#new-features">New features</a></li>
   <li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug fixes</a></li>
   <li><a href="#new-features-1" id="toc-new-features-1" class="nav-link" data-scroll-target="#new-features-1">New features</a></li>
   <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking changes</a></li>
   <li><a href="#bug-fixes-1" id="toc-bug-fixes-1" class="nav-link" data-scroll-target="#bug-fixes-1">Bug fixes</a></li>
-  <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
+  <li><a href="#documentation-1" id="toc-documentation-1" class="nav-link" data-scroll-target="#documentation-1">Documentation</a></li>
   </ul>
 </li>
   <li>
 <a href="#ferx-0.1.2" id="toc-ferx-0.1.2" class="nav-link" data-scroll-target="#ferx-0.1.2">ferx 0.1.2</a>
   <ul class="collapse">
 <li><a href="#new-features-2" id="toc-new-features-2" class="nav-link" data-scroll-target="#new-features-2">New features</a></li>
-  <li><a href="#documentation-1" id="toc-documentation-1" class="nav-link" data-scroll-target="#documentation-1">Documentation</a></li>
+  <li><a href="#documentation-2" id="toc-documentation-2" class="nav-link" data-scroll-target="#documentation-2">Documentation</a></li>
   <li><a href="#changes-to-existing-functions" id="toc-changes-to-existing-functions" class="nav-link" data-scroll-target="#changes-to-existing-functions">Changes to existing functions</a></li>
   <li><a href="#bug-fixes-2" id="toc-bug-fixes-2" class="nav-link" data-scroll-target="#bug-fixes-2">Bug fixes</a></li>
   </ul>
@@ -525,8 +574,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 </header><section id="ferx-development" class="level1"><h1>ferx (development)</h1>
-<section id="new-features" class="level2"><h2 class="anchored" data-anchor-id="new-features">New features</h2>
+<section id="documentation" class="level2"><h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
 <ul>
+<li>
+<code>?ferx_fit</code>: the <code>settings</code> parameter block is restructured into labelled sections, one per estimation method (Shared, FOCE/FOCEI/GN-hybrid, Trust-region, SAEM, Gauss-Newton, Importance Sampling, SIR, Multi-start). Each key now lists its default value and which methods accept it.</li>
+</ul></section><section id="new-features" class="level2"><h2 class="anchored" data-anchor-id="new-features">New features</h2>
+<ul>
+<li><p><code>ferx_fit_async(model, data, ...)</code> now returns a <code>ferx_job</code> handle immediately so the R session stays free. Call <code>ferx_collect(handle)</code> to block-wait with live optimizer-trace progress; pass <code>verbose = FALSE</code> to suppress the display and just block until the result is ready. In RStudio the fit appears in the Jobs pane; elsewhere a <code><a href="https://callr.r-lib.org/reference/r_bg.html">callr::r_bg()</a></code> background process is used. The returned <code>ferx_fit</code> object is identical to what <code>ferx_fit()</code> produces. <strong>Breaking change from #91</strong>: <code>ferx_fit_async()</code> previously blocked and returned the fit directly; it now returns a handle that must be passed to <code>ferx_collect()</code>.</p></li>
+<li><p><code>print(fit)</code> has a new compact layout: a prominent <code>STATUS: CONVERGED</code> / <code>NOT CONVERGED</code> line with iteration count and wall time immediately after the header; OFV / AIC / BIC on one line; bold section headers with thin rules instead of <code>--- THETA Estimates ---</code> banners; shrinkage as a single line with inline <code>[!]</code> for values &gt; 30%; a diagnostics line consolidating covariance status, condition number, and Durbin-Watson; and a colour-coded warning-count footer pointing at <code>ferx_warnings(fit)</code>. Programmatic access (<code>fit$theta</code>, <code>ferx_estimates()</code>, <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>) is unchanged.</p></li>
+<li><p><code>ferx_warnings(fit)</code> pretty-prints fit warnings grouped by severity (critical / warning / info) with per-category remediation guidance. <code>ferx_warnings(fit, as_df = TRUE)</code> returns the underlying <code>fit$warnings_structured</code> data frame (columns: <code>severity</code>, <code>category</code>, <code>message</code>, <code>source_method</code>). Durbin-Watson autocorrelation guidance is direction-aware (positive vs negative DW) and suppresses the SDE hint when the model already uses a <code>[diffusion]</code> block.</p></li>
+<li><p>Default outer optimizer for FOCE / FOCEI changed from <code>slsqp</code> to <code>bobyqa</code>. BOBYQA is derivative-free (a quadratic trust-region) and re-evaluates the per-subject EBEs at every trial point, so it avoids the fixed-EBE FD gradient bias that drives SLSQP to local minima hundreds of OFV units above the true optimum on ODE / PD models, sparse data, and Emax-Hill identifiability problems. The default also flows to the FOCEI polish stage of <code>method = "gn_hybrid"</code> and to the polish stage of any <code>method = c(..., "focei")</code> chain. Pure SAEM and pure <code>gn</code> continue to ignore the optimizer setting. To restore the previous behaviour, pass <code>settings = list(optimizer = "slsqp")</code>. Requires a ferx-core build that includes the change.</p></li>
+<li>
+<p>Log-transform-both-sides (LTBS) residual error: fit on the log scale with additive error, the equivalent of NONMEM’s <code>Y = LOG(F) + EPS(1)</code>. Write the <code>[error_model]</code> block as either form:</p>
+<pre><code>log(DV) ~ additive(ADD_LOG)   # DV on the natural scale; engine logs it
+DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></pre>
+<p>Under LTBS the fit output (<code>IPRED</code>, <code>PRED</code>, <code>CWRES</code>, <code>IWRES</code> in <code>sdtab</code>, and <code>DV_SIM</code> from <code>ferx_simulate()</code>) is on the log scale. <code>ferx_model_inspect()</code> reports the residual type as <code>additive (log-transformed)</code>. Requires a ferx-core build that includes the feature.</p>
+</li>
+<li><p><code>settings = list(reconverge_gradient_interval = N)</code> controls how often the FOCE/FOCEI population gradient re-solves each subject’s inner EBE loop instead of holding it fixed. <code>0</code> (default) keeps the cheap fixed-EBE gradient; <code>1</code> reconverges every gradient evaluation; <code>N</code> reconverges every <code>N</code>-th. The fixed-EBE gradient can stall <code>slsqp</code> above the derivative-free (<code>bobyqa</code>) optimum on ill-conditioned non-IOV fits; reconverging recovers the full surface at ~5-6x the per-gradient cost. IOV models always reconverge and ignore the setting. Requires a ferx-core build that includes the option.</p></li>
 <li>
 <p>Multi-endpoint (per-CMT) residual error models for simultaneous PK/PD fitting. A single <code>[error_model]</code> block can now assign a distinct error model to each observed compartment, dispatched by the dataset <code>CMT</code> column:</p>
 <pre><code>[error_model]
@@ -543,6 +607,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>New <code>stagnation_guard</code> key recognized by <code>ferx_fit(settings = ...)</code>. Pass <code>settings = list(stagnation_guard = FALSE)</code> to disable the NLopt outer-loop stagnation guard so SLSQP / L-BFGS run to their own xtol / ftol or to <code>maxiter</code> instead of short-circuiting on a numerically-flat OFV plateau. Useful for debugging or for problems with very slow but real OFV improvements below the guard’s 1e-3 threshold. Consumed by FOCE / FOCEI / GN-hybrid only. Requires ferx-core with PR FeRx-NLME/ferx-core#62 merged.</p></li>
 </ul></section><section id="bug-fixes" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes">Bug fixes</h2>
 <ul>
+<li><p>SAEM no longer collapses the random-effect variances (Omega) on sparsely sampled data. Previously, with few observations per subject, the between-subject variability could shrink toward zero during the first iterations while the residual error absorbed it (tiny <code>omega</code>, inflated additive <code>sigma</code>). A burn-in now holds Omega fixed while the MH sampler warms up, tunable via <code>settings = list(omega_burnin = &lt;int&gt;)</code> (default 20; <code>0</code> restores the previous behaviour). Requires the matching ferx-core update that adds the SAEM Omega burn-in.</p></li>
 <li><p>SIR confidence intervals now work correctly for models with <code>FIX</code>-ed parameters. Previously, any fixed parameter caused the proposal covariance to be singular, and SIR returned “All SIR samples had invalid weights”. Sampling is now restricted to the free-parameter subspace and fixed parameters are held at their estimated values throughout. Requires ferx-core &gt;= 0.1.0 (commit 47b48b5, ferx-core#64).</p></li>
 <li><p>All output functions now display the declared variable name (<code>ETA_CL</code>, <code>EPS_PROP</code>) rather than wrapping it in <code>OMEGA()</code>/<code>SIGMA()</code>. Affected surfaces: <code>print(fit)</code> OMEGA section and shrinkage, <code>ferx_estimates()</code>, <code>ferx_cor_matrix()</code> (via <code>fit$cov_matrix</code> dimnames), <code>fit$omega</code> row/column names, <code>fit$sir_ci_omega</code>, <code>fit$sir_ci_sigma</code>, and <code>summary(fit)</code> shrinkage. When names are absent the fallback remains the conventional numbered form: <code>OMEGA(1,1)</code>, <code>SIGMA(1)</code>. (#19)</p></li>
 </ul></section><section id="new-features-1" class="level2"><h2 class="anchored" data-anchor-id="new-features-1">New features</h2>
@@ -558,7 +623,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>
 <p><code>ferx_fit()</code> no longer has dedicated <code>max_unconverged_frac</code> and <code>min_obs_for_convergence_check</code> arguments. These are estimation knobs and now flow through <code>settings</code>, like the other low-level fit options (#51):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># before</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># before</span></span>
 <span><span class="fu">ferx_fit</span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, max_unconverged_frac <span class="op">=</span> <span class="fl">0.1</span>, min_obs_for_convergence_check <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
 <span><span class="co"># after</span></span>
 <span><span class="fu">ferx_fit</span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
@@ -575,7 +640,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><code>ferx_model_validate()</code> no longer flags <code>[initial_values]</code> as a missing required section. The block was removed from the engine in <a href="https://github.com/FeRx-NLME/ferx-core/commit/e5e934d">ferx-core e5e934d</a> — theta / omega / sigma initial values are read from <code>[parameters]</code> and the parser silently ignores any leftover <code>[initial_values]</code> block. The R-side validator and <code>ferx_model_new()</code> templates hadn’t been updated. Now: validator’s <code>required_sections</code> drops <code>initial_values</code>, all five <code>ferx_model_new()</code> templates and every bundled <code>.ferx</code> example file emit the trimmed shape, and a regression test guards against the block creeping back into templates (#16).</p></li>
 <li><p><code>ferx_set_section()</code> now applies copy-on-write when the underlying <code>ferx_model</code> points at a file inside the installed <code>ferx</code> package directory (e.g.&nbsp;a model returned by <code>ferx_example()</code>). The file is copied to <code><a href="https://rdrr.io/r/base/tempfile.html">tempdir()</a></code> before editing and the returned <code>ferx_model</code>’s <code>$model</code> field is updated to the copy, preventing accidental modification of bundled examples. Plain-path callers are unaffected — passing a path string still edits in place (#80).</p></li>
 <li><p><code>ferx_check_init()</code> now accepts a <code>ferx_model</code> as its first argument (in addition to a plain path), so it can be placed directly in a pipe: <code>ex$data |&gt; ferx_model(ex$model) |&gt; ferx_check_init()</code>. When a <code>ferx_model</code> is supplied and <code>data</code> is not, the data path on the object is used (#79).</p></li>
-</ul></section><section id="documentation" class="level2"><h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
+</ul></section><section id="documentation-1" class="level2"><h2 class="anchored" data-anchor-id="documentation-1">Documentation</h2>
 <ul>
 <li>New vignette <em>“Editing ferx model files programmatically”</em> covering <code>ferx_model_new()</code>, <code>ferx_model_section()</code>, and <code>ferx_model_set_section()</code>: skeleton creation, section inspection, read-modify-write patterns, a console-only fit workflow, and overwrite-guard behaviour.</li>
 </ul></section></section><section id="ferx-0.1.2" class="level1"><h1>ferx 0.1.2</h1>
@@ -587,7 +652,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><code>ferx_fit()</code> now attaches <code>$model_structure</code> to every result: a named list with fields <code>theta_names</code>, <code>model_type</code>, <code>iiv</code>, <code>iov</code>, and <code>residual</code>. The same summary is shown in <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> output.</p></li>
 <li><p><code>ferx_model_section(path, section)</code> — extract and print the body of a named section from a <code>.ferx</code> model file; returns lines invisibly for scripted use.</p></li>
 <li><p><code>ferx_model_set_section(path, section, lines)</code> — replace the body of a named section in-place; the write complement to <code>ferx_model_section()</code>.</p></li>
-</ul></section><section id="documentation-1" class="level2"><h2 class="anchored" data-anchor-id="documentation-1">Documentation</h2>
+</ul></section><section id="documentation-2" class="level2"><h2 class="anchored" data-anchor-id="documentation-2">Documentation</h2>
 <ul>
 <li>New vignette <strong>“Model workflow: inspect, edit, fit”</strong> (<code>vignette("model-workflow", package = "ferx")</code>) demonstrates the pre-fit inspection workflow: <code>ferx_model_inspect()</code> before <code>ferx_fit()</code> to catch structural mistakes cheaply, and re-inspecting the fitted result via <code>ferx_model_inspect(fit)</code> (closes #57).</li>
 </ul></section><section id="changes-to-existing-functions" class="level2"><h2 class="anchored" data-anchor-id="changes-to-existing-functions">Changes to existing functions</h2>
