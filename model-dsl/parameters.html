@@ -763,11 +763,10 @@ sigma PROP_ERR ~ 0.02 (sd)       # same thing, SD coding</code></pre>
 </section>
 <section id="writing-individual-parameters-mu-referencing" class="level2">
 <h2 class="anchored" data-anchor-id="writing-individual-parameters-mu-referencing">Writing individual parameters: mu-referencing</h2>
-<p>When an individual parameter combines IIV with covariate effects, <strong>write the <code>THETA * exp(ETA)</code> pair first and append covariates as trailing multipliers</strong>:</p>
-<pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^0.75      # recommended
-CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)      # triggers mu-ref warning</code></pre>
-<p>Both forms are mathematically identical in log-space. ferx detects mu-referencing by spotting an adjacent <code>theta * exp(eta)</code> pair; when a covariate term sits between them, the parser falls back to a generic expansion and emits a warning. With the canonical ordering the engine uses the explicit mu-reference as the FOCEI linearisation expansion point.</p>
-<p>This will likely be relaxed in a future release — see <a href="https://github.com/FeRx-NLME/ferx-r/issues/54">ferx-r#54</a>. See the <a href="../examples/covariates.html">covariates example</a> for a worked model.</p>
+<p>When an individual parameter combines IIV with covariate effects, both term orderings are detected correctly:</p>
+<pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^0.75      # fine
+CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)      # also fine</code></pre>
+<p>Both forms are mathematically identical in log-space. ferx detects the <code>theta * exp(eta)</code> mu-reference pattern regardless of where covariate multipliers appear in the expression. See the <a href="../examples/covariates.html">covariates example</a> for a worked model.</p>
 <section id="log-normal-detection-with-derived-intermediates" class="level3">
 <h3 class="anchored" data-anchor-id="log-normal-detection-with-derived-intermediates">Log-normal detection with derived intermediates</h3>
 <p>The same <code>theta * exp(eta)</code> pattern detection only fires when the base is a <strong>declared theta</strong>. If the base is a derived intermediate, e.g.</p>

@@ -646,7 +646,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   covariance = false   # disabled here because the example dataset is small;
                        # set covariance = true for real analyses</code></pre>
 <p>Subjects with WT &gt; 70 kg receive an allometric clearance boost <code>(WT / 70)^0.75</code>; lighter subjects use the typical CL directly. V1 uses a linear WT effect regardless of the CL branch.</p>
-<p>Note the <code>TVCL * exp(ETA_CL) * (WT/70)^0.75</code> ordering in the heavy-weight branch — <code>theta * exp(eta)</code> first, covariate as a trailing multiplier. See the <a href="../examples/covariates.html">mu-referencing callout in the covariates example</a> for why this matters.</p>
+<p>Both <code>TVCL * exp(ETA_CL) * (WT/70)^0.75</code> and <code>TVCL * (WT/70)^0.75 * exp(ETA_CL)</code> are detected correctly as mu-referenced — term order no longer matters.</p>
 </section>
 <section id="syntax-rules" class="level2">
 <h2 class="anchored" data-anchor-id="syntax-rules">Syntax rules</h2>

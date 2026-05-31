@@ -644,22 +644,19 @@ Tip
 <li><code>(CRCL/100)^THETA_CRCL</code> — renal function effect, centred at 100 mL/min. THETA_CRCL is estimated.</li>
 </ul>
 <p>Both effects are <strong>centred</strong>: when WT = 70 kg and CRCL = 100 mL/min, both terms equal 1.0, so TVCL is interpretable as the clearance of a 70 kg patient with normal renal function.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Mu-referencing: write `theta * exp(eta)` first">
+<div class="callout callout-style-default callout-tip callout-titled" title="Mu-referencing with covariates">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Mu-referencing: write <code>theta * exp(eta)</code> first
+<span class="screen-reader-only">Tip</span>Mu-referencing with covariates
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Put the <code>THETA * exp(ETA)</code> pair at the front of each individual-parameter expression and append covariate multipliers afterward. The two forms are mathematically identical in log-space, but ferx’s parser detects mu-referencing by spotting an adjacent <code>theta * exp(eta)</code> pair. With the canonical order the engine uses the explicit mu-reference as the FOCEI linearisation expansion point; with covariates wedged in between, the pairing is ambiguous and ferx emits a warning and falls back to a generic expansion.</p>
-<ul>
-<li><strong>Recommended:</strong> <code>CL = TVCL * exp(ETA_CL) * (WT/70)^0.75</code></li>
-<li><strong>Triggers warning:</strong> <code>CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)</code></li>
-</ul>
-<p>This will likely be relaxed in a future release once the parser detects mu-references regardless of term order — see <a href="https://github.com/FeRx-NLME/ferx-r/issues/54">ferx-r#54</a>.</p>
+<p>Both term orderings are detected correctly — ferx recognises the <code>theta * exp(eta)</code> mu-reference regardless of where covariate multipliers appear:</p>
+<pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^0.75   # fine
+CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)   # also fine</code></pre>
 </div>
 </div>
 </section>
@@ -674,15 +671,15 @@ Tip
 </section>
 <section id="in-r" class="level2">
 <h2 class="anchored" data-anchor-id="in-r">In R</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_cov"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA-covariate correlations: check if covariates were absorbed</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit, data)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA_CL correlations with WT and CRCL should be near zero after fitting</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_cov"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA-covariate correlations: check if covariates were absorbed</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit, data)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA_CL correlations with WT and CRCL should be near zero after fitting</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="notes" class="level2">
 <h2 class="anchored" data-anchor-id="notes">Notes</h2>

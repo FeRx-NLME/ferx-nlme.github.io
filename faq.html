@@ -593,12 +593,12 @@ CL = if (SEX == 1) TVCL * 1.5 else TVCL</code></pre>
 <section id="optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="optimizer">Optimizer selection</h2>
 <p><strong>Which outer optimizer should I pick?</strong></p>
-<p><code>slsqp</code> (the default) is the right choice for most models — it is fast, handles box constraints cleanly, and behaves well on the log-transformed parameter scale.</p>
-<p>Reach for a different optimizer when SLSQP misbehaves:</p>
+<p><code>bobyqa</code> (the default) is the right choice for most models — derivative-free, robust on rough OFV surfaces, and requires no gradient from the outer loop.</p>
+<p>Reach for a different optimizer when BOBYQA is too slow or stalls:</p>
 <ul>
-<li><strong><code>bobyqa</code></strong> — derivative-free, robust when FOCE’s FD gradients are noisy and SLSQP stalls or oscillates. Slower per iteration on smooth problems.</li>
-<li><strong><code>trust_region</code></strong> — second-order Newton trust-region with BHHH Hessian and AD gradient. Can be faster near convergence. The Steihaug CG budget is adaptive by default (<code>ceil(sqrt(n_params))</code>); override with <code>steihaug_max_iters</code> if needed.</li>
-<li><strong><code>lbfgs</code> / <code>bfgs</code></strong> — fall back to these only when NLopt is unavailable.</li>
+<li><strong><code>slsqp</code></strong> — gradient-based NLopt SLSQP; faster per iteration on smooth, well-conditioned problems. Use with <code>reconverge_gradient_interval = 1</code> on difficult surfaces.</li>
+<li><strong><code>trust_region</code></strong> — second-order Newton trust-region with BHHH Hessian. Can be faster near convergence. Override the CG budget with <code>steihaug_max_iters</code> if needed.</li>
+<li><strong><code>lbfgs</code> / <code>bfgs</code></strong> — quasi-Newton; useful for moderate-sized parameter spaces.</li>
 </ul>
 <p>See <a href="./model-dsl/fit-options.html#optimizer-choices">Fit Options — Optimizer choices</a>.</p>
 <hr>

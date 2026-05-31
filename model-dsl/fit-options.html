@@ -765,39 +765,39 @@ method = gn_hybrid</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>slsqp</code></td>
-<td>NLopt SLSQP (default)</td>
-<td>General use</td>
-</tr>
-<tr class="even">
-<td><code>bfgs</code></td>
-<td>Built-in BFGS quasi-Newton</td>
-<td>When NLopt is unavailable</td>
-</tr>
-<tr class="odd">
-<td><code>lbfgs</code></td>
-<td>Built-in L-BFGS</td>
-<td>Large parameter spaces</td>
-</tr>
-<tr class="even">
-<td><code>nlopt_lbfgs</code></td>
-<td>NLopt L-BFGS</td>
-<td>Alternative L-BFGS</td>
-</tr>
-<tr class="odd">
-<td><code>mma</code></td>
-<td>NLopt Method of Moving Asymptotes</td>
-<td>Constrained problems</td>
-</tr>
-<tr class="even">
 <td><code>bobyqa</code></td>
-<td>NLopt BOBYQA — derivative-free</td>
-<td>Noisy/non-smooth objectives where FD gradients are unreliable</td>
+<td>NLopt BOBYQA — derivative-free <strong>(default)</strong></td>
+<td>General use; robust on rough surfaces</td>
+</tr>
+<tr class="even">
+<td><code>slsqp</code></td>
+<td>NLopt SLSQP</td>
+<td>Smooth, well-conditioned problems; faster per iteration</td>
 </tr>
 <tr class="odd">
 <td><code>trust_region</code></td>
 <td>Newton trust-region with Steihaug CG</td>
-<td>Well-conditioned problems with small parameter count</td>
+<td>Ill-conditioned problems; guaranteed descent</td>
+</tr>
+<tr class="even">
+<td><code>lbfgs</code></td>
+<td>Built-in L-BFGS</td>
+<td>Large parameter spaces</td>
+</tr>
+<tr class="odd">
+<td><code>nlopt_lbfgs</code></td>
+<td>NLopt L-BFGS</td>
+<td>Alternative L-BFGS</td>
+</tr>
+<tr class="even">
+<td><code>mma</code></td>
+<td>NLopt Method of Moving Asymptotes</td>
+<td>When SLSQP stalls</td>
+</tr>
+<tr class="odd">
+<td><code>bfgs</code></td>
+<td>Built-in BFGS quasi-Newton</td>
+<td>Small parameter spaces</td>
 </tr>
 </tbody>
 </table>
