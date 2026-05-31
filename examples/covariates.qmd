@@ -67,22 +67,15 @@ Both effects are **centred**: when WT = 70 kg and CRCL = 100 mL/min, both
 terms equal 1.0, so TVCL is interpretable as the clearance of a 70 kg patient
 with normal renal function.
 
-::: {.callout-tip title="Mu-referencing: write `theta * exp(eta)` first"}
-Put the `THETA * exp(ETA)` pair at the front of each individual-parameter
-expression and append covariate multipliers afterward. The two forms are
-mathematically identical in log-space, but ferx's parser detects
-mu-referencing by spotting an adjacent `theta * exp(eta)` pair. With the
-canonical order the engine uses the explicit mu-reference as the FOCEI
-linearisation expansion point; with covariates wedged in between, the
-pairing is ambiguous and ferx emits a warning and falls back to a generic
-expansion.
+::: {.callout-tip title="Mu-referencing with covariates"}
+Both term orderings are detected correctly — ferx recognises the
+`theta * exp(eta)` mu-reference regardless of where covariate multipliers
+appear:
 
-- **Recommended:** `CL = TVCL * exp(ETA_CL) * (WT/70)^0.75`
-- **Triggers warning:** `CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)`
-
-This will likely be relaxed in a future release once the parser detects
-mu-references regardless of term order — see
-[ferx-r#54](https://github.com/FeRx-NLME/ferx-r/issues/54).
+```
+CL = TVCL * exp(ETA_CL) * (WT/70)^0.75   # fine
+CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)   # also fine
+```
 :::
 
 ## Data requirements

@@ -94,13 +94,13 @@ robustly, FOCEI polishes to the MLE and produces a valid covariance matrix.
 
 | Optimizer | Algorithm | Recommended for |
 |---|---|---|
-| `slsqp` | NLopt SLSQP (default) | General use |
-| `bfgs` | Built-in BFGS quasi-Newton | When NLopt is unavailable |
+| `bobyqa` | NLopt BOBYQA — derivative-free **(default)** | General use; robust on rough surfaces |
+| `slsqp` | NLopt SLSQP | Smooth, well-conditioned problems; faster per iteration |
+| `trust_region` | Newton trust-region with Steihaug CG | Ill-conditioned problems; guaranteed descent |
 | `lbfgs` | Built-in L-BFGS | Large parameter spaces |
 | `nlopt_lbfgs` | NLopt L-BFGS | Alternative L-BFGS |
-| `mma` | NLopt Method of Moving Asymptotes | Constrained problems |
-| `bobyqa` | NLopt BOBYQA — derivative-free | Noisy/non-smooth objectives where FD gradients are unreliable |
-| `trust_region` | Newton trust-region with Steihaug CG | Well-conditioned problems with small parameter count |
+| `mma` | NLopt Method of Moving Asymptotes | When SLSQP stalls |
+| `bfgs` | Built-in BFGS quasi-Newton | Small parameter spaces |
 
 **`bobyqa`** does not use gradients — robust to small discontinuities in the
 FOCE surface caused by EBE re-estimation, but converges more slowly on smooth

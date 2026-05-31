@@ -83,10 +83,8 @@ Subjects with WT > 70 kg receive an allometric clearance boost
 `(WT / 70)^0.75`; lighter subjects use the typical CL directly. V1 uses a
 linear WT effect regardless of the CL branch.
 
-Note the `TVCL * exp(ETA_CL) * (WT/70)^0.75` ordering in the heavy-weight
-branch — `theta * exp(eta)` first, covariate as a trailing multiplier. See
-the [mu-referencing callout in the covariates example](covariates.qmd) for
-why this matters.
+Both `TVCL * exp(ETA_CL) * (WT/70)^0.75` and `TVCL * (WT/70)^0.75 * exp(ETA_CL)`
+are detected correctly as mu-referenced — term order no longer matters.
 
 ## Syntax rules
 

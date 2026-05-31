@@ -75,18 +75,19 @@ detection is skipped for that parameter. See
 
 **Which outer optimizer should I pick?**
 
-`slsqp` (the default) is the right choice for most models — it is fast, handles
-box constraints cleanly, and behaves well on the log-transformed parameter scale.
+`bobyqa` (the default) is the right choice for most models — derivative-free,
+robust on rough OFV surfaces, and requires no gradient from the outer loop.
 
-Reach for a different optimizer when SLSQP misbehaves:
+Reach for a different optimizer when BOBYQA is too slow or stalls:
 
-- **`bobyqa`** — derivative-free, robust when FOCE's FD gradients are noisy
-  and SLSQP stalls or oscillates. Slower per iteration on smooth problems.
-- **`trust_region`** — second-order Newton trust-region with BHHH Hessian and
-  AD gradient. Can be faster near convergence. The Steihaug CG budget is
-  adaptive by default (`ceil(sqrt(n_params))`); override with
+- **`slsqp`** — gradient-based NLopt SLSQP; faster per iteration on smooth,
+  well-conditioned problems. Use with `reconverge_gradient_interval = 1` on
+  difficult surfaces.
+- **`trust_region`** — second-order Newton trust-region with BHHH Hessian.
+  Can be faster near convergence. Override the CG budget with
   `steihaug_max_iters` if needed.
-- **`lbfgs` / `bfgs`** — fall back to these only when NLopt is unavailable.
+- **`lbfgs` / `bfgs`** — quasi-Newton; useful for moderate-sized parameter
+  spaces.
 
 See [Fit Options — Optimizer choices](model-dsl/fit-options.qmd#optimizer-choices).
 
