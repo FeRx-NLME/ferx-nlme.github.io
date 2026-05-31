@@ -1,0 +1,159 @@
+---
+title: "Robust fitting strategies"
+---
+
+This page covers techniques for fitting models that are difficult to converge:
+poor starting values, sparse data, near-boundary parameters, and large
+heterogeneous populations.
+
+## NCA-derived starting values
+
+`ferx_inits_from_nca()` estimates population starting values directly from
+the data using non-compartmental analysis, without running the optimizer.
+This is the most reliable way to get starting values for a new model.
+
+Three strategies trade speed for accuracy:
+
+| `method` | What it does |
+|---|---|
+| `"nca"` | NCA only — fastest; leaves thetas NCA cannot estimate at model defaults |
+| `"nca_sweep"` | NCA + log-space grid sweep over remaining thetas *(default)* |
+| `"nca_ebe"` | NCA + brief EBE pass for datasets with large BSV |
+
+```r
+library(ferx)
+ex <- ferx_example("warfarin")
+
+# Inspect NCA-derived inits without fitting
+inits <- ferx_inits_from_nca(ex$model, ex$data, method = "nca_sweep")
+inits$theta    # named vector of suggested starting values
+inits$omega    # suggested omega diagonal
+inits$warnings # notes on what was / was not estimated
+```
+
+To apply NCA-derived inits automatically inside `ferx_fit()`, pass the
+strategy via `inits_from_nca`:
+
+```r
+fit <- ferx_fit(ex$model, ex$data, inits_from_nca = "nca_sweep")
+```
+
+Use `"nca_ebe"` for datasets with large between-subject variability (>50% CV)
+where the population mean from NCA can be far from the true typical value.
+
+## Tolerating sparse or outlier subjects
+
+By default, ferx stops the outer loop if any subject's EBE inner solver fails
+to converge. For large real-world datasets with a handful of sparse or
+outlier subjects, relax this with:
+
+```r
+fit <- ferx_fit(
+  ex$model, ex$data,
+  settings = list(
+    max_unconverged_frac          = 0.10,   # allow up to 10% EBE failures
+    min_obs_for_convergence_check = 2L      # ignore subjects with < 2 obs
+  )
+)
+```
+
+`max_unconverged_frac = 0.10` means the optimizer proceeds as long as ≤ 10%
+of subjects have unconverged EBEs. Subjects with fewer than
+`min_obs_for_convergence_check` observations are excluded from the failure
+count entirely (a subject with only a single observation cannot uniquely
+determine an EBE).
+
+## Multi-start optimization
+
+When starting values are uncertain, `n_starts` runs independent fits from
+perturbed initial values in parallel and returns the best result:
+
+```r
+fit <- ferx_fit(
+  ex$model, ex$data,
+  settings = list(
+    n_starts          = 8L,
+    start_sigma       = 0.3,    # log-scale perturbation (~30% CV)
+    multi_start_seed  = 42L
+  )
+)
+fit$ofv   # OFV of the best run
+```
+
+A larger `start_sigma` explores a wider region; typical values are 0.2–0.5.
+See [Example: Multi-start fitting](../examples/multistart.qmd) for a detailed
+walkthrough.
+
+## Global pre-search
+
+For models where local optimizers get trapped, a derivative-free global search
+(NLopt CRS2-LM) can find the basin before local refinement:
+
+```r
+fit <- ferx_fit(
+  ex$model, ex$data,
+  settings = list(global_search = TRUE, global_maxeval = 2000L)
+)
+```
+
+`global_maxeval` is the budget for the global stage. Higher values explore
+more of the parameter space but take proportionally longer.
+
+## Method chaining for robust convergence
+
+SAEM is more robust to poor starting values than gradient-based methods
+because it explores the posterior via sampling rather than following the
+gradient downhill. Use SAEM → FOCEI to combine robustness with efficiency:
+
+```r
+fit <- ferx_fit(ex$model, ex$data, method = c("saem", "focei"))
+```
+
+See [Method chaining & optimizers](method-chaining.qmd) for details.
+
+## Tight inner-loop convergence
+
+If residuals show systematic bias or the outer optimizer stalls, tightening
+the EBE inner loop can help:
+
+```r
+fit <- ferx_fit(
+  ex$model, ex$data,
+  settings = list(
+    inner_maxiter = 100L,
+    inner_tol     = 1e-7
+  )
+)
+```
+
+The default `inner_tol` is 1e-6. Tightening to 1e-7 or lower is rarely
+needed but can resolve OFV differences of < 0.1 unit on well-conditioned
+problems.
+
+## Diagnosing convergence issues
+
+```r
+# Check STATUS line — green = converged, red = failed
+fit
+
+# Warnings: boundary parameters, high shrinkage, unconverged subjects
+ferx_warnings(fit)
+
+# Optimizer trace: is OFV still decreasing at maxiter?
+fit <- ferx_fit(ex$model, ex$data, optimizer_trace = TRUE)
+ferx_plot_trace(fit)  # if OFV is still falling, increase maxiter
+
+# Pilot fit: confirm OFV drops at all from the starting values
+chk <- ferx_check_init(ex$model, ex$data)
+chk$summary   # ofv_start, ofv_end, ofv_drop
+```
+
+If `ofv_drop` is near zero or negative after `ferx_check_init()`, the
+starting values are poor — fix them before a full run.
+
+## See also
+
+- [Method chaining & optimizers](method-chaining.qmd)
+- [Post-fit diagnostics](diagnostics.qmd)
+- [Example: Multi-start fitting](../examples/multistart.qmd)
+- [Fit options — DSL reference](../model-dsl/fit-options.qmd)

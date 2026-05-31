@@ -1,0 +1,170 @@
+---
+title: "Method chaining, optimizers, and advanced fit options"
+---
+
+ferx supports running multiple estimation methods in sequence (method chains),
+switching outer optimizers, and fine-tuning convergence settings via the
+`settings` argument. This page covers these options with working code.
+
+## Method chains
+
+Pass a character vector to `method` to run stages in sequence. Each stage
+is seeded with the previous stage's converged parameters; only the final stage
+produces the reported covariance and diagnostics.
+
+```r
+library(ferx)
+ex <- ferx_example("warfarin")
+
+# SAEM warm-up followed by FOCEI refinement
+fit <- ferx_fit(ex$model, ex$data, method = c("saem", "focei"))
+fit$method_chain
+#> [1] "saem"   "focei"
+```
+
+### Common chains
+
+| Chain | Use case |
+|---|---|
+| `c("saem", "focei")` | SAEM provides robust starting values; FOCEI refines the likelihood |
+| `c("gn", "focei")` | Fast Gauss-Newton warm-up then FOCEI |
+| `c("focei", "imp")` | FOCEI then importance sampling for a more accurate marginal log-likelihood |
+| `c("saem", "imp")` | SAEM then importance sampling |
+
+### Importance sampling stage
+
+The `"imp"` stage is a terminal diagnostic: it computes the marginal
+log-likelihood via Monte Carlo importance sampling without updating the
+parameters. It must always be last in the chain.
+
+```r
+fit_imp <- ferx_fit(
+  ex$model, ex$data,
+  method   = c("focei", "imp"),
+  settings = list(
+    is_samples           = 2000L,
+    is_proposal_df       = 4,        # t-distribution; smaller = heavier tails
+    is_seed              = 1L,
+    is_low_ess_threshold = 0.10
+  )
+)
+
+# Marginal -2LL and Monte Carlo SE
+fit_imp$importance_sampling$minus2_log_likelihood
+fit_imp$importance_sampling$mc_standard_error
+
+# Per-subject ESS diagnostics (fraction of is_samples)
+fit_imp$importance_sampling$ess_min
+fit_imp$importance_sampling$ess_median
+fit_imp$importance_sampling$low_ess_subject_ids
+```
+
+The marginal log-likelihood from IMP is comparable across models in the same
+nesting family and does not depend on the Laplace approximation used by FOCE/FOCEI.
+
+## Outer optimizers
+
+ferx supports several outer optimizers for the population parameter loop.
+The default since ferx-core v0.1+ is **BOBYQA** (derivative-free).
+
+```r
+# BOBYQA (default, derivative-free)
+fit_bobyqa <- ferx_fit(ex$model, ex$data, settings = list(optimizer = "bobyqa"))
+
+# SLSQP (gradient-based NLopt)
+fit_slsqp  <- ferx_fit(ex$model, ex$data, settings = list(optimizer = "slsqp"))
+
+# L-BFGS
+fit_lbfgs  <- ferx_fit(ex$model, ex$data, settings = list(optimizer = "lbfgs"))
+
+# MMA (NLopt Method of Moving Asymptotes)
+fit_mma    <- ferx_fit(ex$model, ex$data, settings = list(optimizer = "mma"))
+
+# Trust-region (Steihaug CG)
+fit_tr <- ferx_fit(
+  ex$model, ex$data,
+  settings = list(optimizer = "trust_region", steihaug_max_iters = 100L)
+)
+
+# Compare OFV — all should land at the same minimum
+sapply(
+  list(bobyqa = fit_bobyqa, slsqp = fit_slsqp, lbfgs = fit_lbfgs,
+       mma = fit_mma, trust_region = fit_tr),
+  function(f) f$ofv
+)
+```
+
+### Optimizer guidance
+
+| Optimizer | Best for |
+|---|---|
+| `bobyqa` | General use; robust on rough surfaces; default |
+| `slsqp` | Well-conditioned analytical PK; fastest when gradients are accurate |
+| `lbfgs` / `nlopt_lbfgs` | Moderate-sized parameter spaces |
+| `mma` | Problems where SLSQP stalls |
+| `trust_region` | Ill-conditioned problems; guarantees descent each step |
+| `bfgs` | Small parameter spaces |
+
+If gradient-based optimizers stall above the BOBYQA optimum, enable the
+reconverged gradient (see below).
+
+## Convergence tuning
+
+```r
+# Tighter inner (EBE) loop — useful for ill-conditioned problems
+fit_tight <- ferx_fit(
+  ex$model, ex$data,
+  settings = list(
+    maxiter       = 500L,
+    inner_maxiter = 100L,
+    inner_tol     = 1e-6
+  )
+)
+
+# Reconverged gradient: re-solve EBEs at every outer gradient evaluation
+# Costs ~5–6x more per outer iteration but can recover the full OFV surface
+# when SLSQP stalls.  0 = fixed-EBE gradient (default); 1 = always reconverge;
+# N = every N-th evaluation.
+fit_reconv <- ferx_fit(
+  ex$model, ex$data,
+  settings = list(optimizer = "slsqp", reconverge_gradient_interval = 1L)
+)
+
+# Global pre-search: runs a derivative-free global optimizer before local
+# refinement. Useful when starting values are far from the optimum.
+fit_global <- ferx_fit(
+  ex$model, ex$data,
+  settings = list(global_search = TRUE, global_maxeval = 1000L)
+)
+```
+
+## Optimizer trace
+
+Pass `optimizer_trace = TRUE` to record per-iteration OFV and parameter values.
+Use `ferx_plot_trace()` to visualise convergence:
+
+```r
+fit_trace <- ferx_fit(ex$model, ex$data, optimizer_trace = TRUE)
+ferx_plot_trace(fit_trace)   # two-panel: OFV and convergence metric vs iteration
+ferx_trace(fit_trace)        # returns the raw data frame
+```
+
+## Gauss-Newton with damping
+
+For `method = "gn"`, the Levenberg-Marquardt damping parameter `gn_lambda`
+controls the step size. Increase it when GN steps are too aggressive:
+
+```r
+fit_gn <- ferx_fit(
+  ex$model, ex$data,
+  method   = "gn",
+  settings = list(gn_lambda = 1e-3)
+)
+```
+
+## See also
+
+- [Example: SAEM estimation](../examples/saem.qmd)
+- [Example: Multi-start fitting](../examples/multistart.qmd)
+- [Fit options — DSL reference](../model-dsl/fit-options.qmd)
+- [Learn: Uncertainty (SIR)](uncertainty-sir.qmd)

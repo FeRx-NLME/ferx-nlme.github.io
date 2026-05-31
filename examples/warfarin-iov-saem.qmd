@@ -1,0 +1,108 @@
+---
+title: "Example: IOV estimated with SAEM"
+---
+
+This example fits an IOV model using SAEM instead of FOCE/FOCEI. It is
+identical to the [standard IOV example](iov.qmd) in model structure but
+demonstrates that SAEM fully supports inter-occasion variability (`kappa`
+parameters).
+
+SAEM can be preferable for IOV models because the IOV variance surface is
+often ill-conditioned for gradient-based methods. SAEM's stochastic sampling
+explores the posterior of all random effects — BSV etas and per-occasion kappas
+together — and is more robust to poor starting values.
+
+## Model file
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  kappa KAPPA_CL ~ 0.04
+
+  sigma PROP_ERR ~ 0.01 (sd)
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL + KAPPA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method         = saem
+  iov_column     = OCC
+  n_exploration  = 150
+  n_convergence  = 250
+  n_mh_steps     = 3
+  omega_burnin   = 20
+  adapt_interval = 10
+  seed           = 12345
+  covariance     = false
+```
+
+The SAEM-specific options:
+
+| Option | Meaning |
+|---|---|
+| `n_exploration` | Phase 1 (stochastic) iterations — sampler explores the posterior |
+| `n_convergence` | Phase 2 (convergence) iterations — step-size anneals to 0 |
+| `n_mh_steps` | Metropolis-Hastings proposals per subject per iteration |
+| `omega_burnin` | Hold Ω fixed for this many iterations while the sampler warms up |
+| `adapt_interval` | Cadence (iterations) for MH proposal-scale adaptation |
+
+## Running
+
+```r
+library(ferx)
+
+ex  <- ferx_example("warfarin_iov_saem")
+fit <- ferx_fit(ex$model, ex$data)
+fit
+
+# IOV output
+fit$omega_iov     # estimated KAPPA_CL variance
+fit$ebe_kappas    # per-subject, per-occasion kappa EBEs
+```
+
+## SAEM → FOCEI chain
+
+For the most accurate results, use SAEM as a warm-up and refine with FOCEI.
+SAEM finds the basin of attraction; FOCEI polishes to the marginal minimum:
+
+```r
+fit_chain <- ferx_fit(
+  ex$model, ex$data,
+  method = c("saem", "focei"),
+  covariance = TRUE
+)
+fit_chain
+```
+
+## Tips
+
+- SAEM is generally more robust for IOV than pure FOCEI when the IOV variance
+  is small relative to BSV (the surface is weakly identified and flat).
+- `covariance = false` in the model file is sensible for SAEM-only runs because
+  the FOCE covariance step is more reliable; use SAEM → FOCEI with
+  `covariance = TRUE` when standard errors are needed.
+- `n_exploration = 150` and `n_convergence = 250` are conservative defaults.
+  For fast exploratory fits, try 50 + 100; for final runs with many occasions,
+  increase to 300 + 500.
+
+## See also
+
+- [Example: IOV (FOCE/FOCEI)](iov.qmd)
+- [Example: SAEM estimation](saem.qmd)
+- [Learn: Method chaining & optimizers](../learn/method-chaining.qmd)
+- [IOV DSL reference](../model-dsl/iov.qmd)

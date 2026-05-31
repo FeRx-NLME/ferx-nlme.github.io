@@ -1,0 +1,170 @@
+---
+title: "Inter-Occasion Variability (IOV)"
+---
+
+Inter-Occasion Variability (IOV) models the fact that a subject's PK
+parameters may shift between occasions (study periods, visits, dosing
+intervals). Unlike between-subject variability (BSV), which is fixed for a
+subject across the whole study, IOV is a random effect that is re-drawn
+independently for each occasion.
+
+## Concepts
+
+An **occasion** is a distinct time window during which the same random effect
+applies. Occasions are identified by an integer `OCC` column in the dataset
+(any column name may be used; configure it via `iov_column`).
+
+A **kappa** (κ) is the IOV random effect, analogous to eta (η) for BSV. Each
+kappa is drawn independently per occasion:
+
+$$\kappa_{ik} \sim \mathcal{N}(0, \Omega_\text{IOV})$$
+
+where $i$ indexes subjects and $k$ indexes occasions.
+
+## DSL syntax
+
+### Diagonal IOV (independent kappas)
+
+```
+kappa NAME ~ value              # value is a variance (default)
+kappa NAME ~ value (sd)         # value is a standard deviation
+kappa NAME ~ value FIX          # hold fixed during estimation
+```
+
+Each `kappa` line adds one diagonal element to $\Omega_\text{IOV}$. Occasions
+are independent across kappas.
+
+```
+kappa KAPPA_CL ~ 0.05
+kappa KAPPA_V  ~ 0.03
+```
+
+### Block IOV (correlated kappas)
+
+When occasion effects on different parameters are expected to covary, use
+`block_kappa`:
+
+```
+block_kappa (NAME1, NAME2, ...) = [lower_triangle_values]
+block_kappa (NAME1, NAME2, ...) = [lower_triangle_values] FIX
+```
+
+For a 2×2 block:
+
+```
+block_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]
+```
+
+Values are the lower triangle of $\Omega_\text{IOV}$:
+`0.05` = Var(KAPPA_CL), `0.01` = Cov(KAPPA_CL, KAPPA_V), `0.03` = Var(KAPPA_V).
+
+### Mixing diagonal and block
+
+`kappa` and `block_kappa` can be freely combined:
+
+```
+block_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]
+kappa KAPPA_KA ~ 0.10
+```
+
+A name may not appear in both `kappa` and `block_kappa` — this is a parse error.
+
+## Wiring kappas into individual parameters
+
+Reference kappa names exactly like BSV etas:
+
+```
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL + KAPPA_CL)
+  V  = TVV  * exp(ETA_V  + KAPPA_V)
+  KA = TVKA * exp(ETA_KA)           # no IOV on absorption
+```
+
+At each occasion $k$, the effective individual CL is
+$\text{TVCL} \cdot \exp(\eta_\text{CL} + \kappa_{\text{CL},ik})$. The BSV
+eta captures stable between-subject differences; the kappa captures
+occasion-to-occasion fluctuation within a subject.
+
+## Fit options
+
+Set `iov_column` to the name of the occasion column in the dataset:
+
+```
+[fit_options]
+  method     = focei
+  iov_column = OCC
+  covariance = true
+```
+
+## Dataset format
+
+```csv
+ID,TIME,DV,EVID,AMT,CMT,MDV,OCC
+1,0,.,1,100,1,1,1
+1,1,9.49,0,.,.,0,1
+1,24,.,1,100,1,1,2
+1,25,10.1,0,.,.,0,2
+```
+
+Dose and observation rows in the same period share the same `OCC` value.
+Occasion indices can be any positive integers and do not need to be consecutive.
+
+## Interpreting output
+
+`print(fit)` gains an `OMEGA_IOV (inter-occasion variability)` section after
+the standard omega block. For a `block_kappa` with off-diagonal correlations,
+a correlations sub-block follows.
+
+Shrinkage for kappa parameters is reported per-kappa alongside the BSV eta
+shrinkage. Per-occasion kappa EBEs are available in `fit$ebe_kappas` (a
+nested list: `fit$ebe_kappas[[subject_id]][[occasion]]`).
+
+## Estimation notes
+
+- **`foce` / `focei` are recommended.** SAEM currently does not support IOV.
+- The inner optimizer jointly solves all BSV etas and all per-occasion kappas
+  simultaneously (no separate kappa solve step).
+- The outer gradient for IOV models uses reconverged finite differences to
+  correctly identify the IOV variance parameters. This costs more per outer
+  iteration than the fixed-EBE gradient used for BSV-only models.
+- The most robust workflow for IOV models is a SAEM → FOCEI chain:
+  SAEM finds the basin, FOCEI polishes to the marginal minimum.
+
+## Complete example
+
+```
+[parameters]
+  theta TVCL(0.2, 0.001, 10.0)
+  theta TVV(10.0, 0.1, 500.0)
+  theta TVKA(1.5, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.09
+  omega ETA_V  ~ 0.04
+  omega ETA_KA ~ 0.30
+
+  kappa KAPPA_CL ~ 0.05
+
+  sigma PROP_ERR ~ 0.02
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL + KAPPA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = focei
+  iov_column = OCC
+  covariance = true
+```
+
+## See also
+
+- [Example: IOV](../examples/iov.qmd) — worked example with R code
+- [Parameters — Kappa](parameters.qmd#kappa-inter-occasion-variability)
+- [IOV (ferx-core book)](https://ferx-nlme.github.io/ferx-core/model-file/iov.html)

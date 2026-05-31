@@ -175,6 +175,46 @@ ggplot(sdtab, aes(PRED, CWRES)) +
 
 ---
 
+## Structured warnings — `ferx_warnings()`
+
+ferx classifies non-fatal issues from a run into severity levels and categories
+and makes them available via `ferx_warnings()`. Critical issues are also surfaced
+inline in the `STATUS` line of `print(fit)`.
+
+```r
+ferx_warnings(fit)
+#   severity  category              message
+#   warning   shrinkage             ETA_KA shrinkage = 0.58 (> 0.40): EBEs
+#                                   unreliable for this parameter
+#   info      mu_referencing        ETA_CL detected as log-normal mu-referenced
+#   info      mu_referencing        ETA_V detected as log-normal mu-referenced
+```
+
+**Severity levels:**
+
+| Severity | Meaning |
+|---|---|
+| `critical` | Likely convergence failure or data issue; inspect before using results |
+| `warning` | Non-fatal issue worth investigating (high shrinkage, near-boundary estimate) |
+| `info` | Informational (mu-referencing detection, unused parameter notice) |
+
+**Common categories:**
+
+| Category | Examples |
+|---|---|
+| `shrinkage` | ETA shrinkage > 40%; EPS shrinkage > 30% |
+| `convergence` | Outer optimizer hit maxiter; OFV gradient not converged |
+| `mu_referencing` | Which ETAs were detected as mu-referenced |
+| `unused_parameter` | Theta/omega declared in `[parameters]` but not used in the model |
+| `boundary` | Estimated parameter is at or near its declared bound |
+
+The raw warning strings are also available on the fit object:
+
+```r
+fit$warnings             # character vector of all warning messages
+fit$warnings_structured  # data frame: severity, category, message
+```
+
 ## Other `ferx_fit` fields
 
 ```r

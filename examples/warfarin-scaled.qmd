@@ -1,0 +1,90 @@
+---
+title: "Example: Observation scaling (unit conversion)"
+---
+
+The `[scaling]` block converts model predictions before the residual is
+computed. The most common use is **unit conversion**: the dose is recorded in
+one unit (e.g. micrograms) while observed concentrations are in another
+(e.g. mg/L). Without scaling, predictions and observations are on different
+scales and the fit is meaningless.
+
+This example uses Form A — a scalar `obs_scale` — the simplest scaling form.
+
+## The problem
+
+The `warfarin_scaled` dataset records `AMT` in micrograms (100 mg → 100,000 µg)
+while `DV` is in mg/L. Without scaling, the model predicts concentrations in
+µg/L — a factor-1000 mismatch. `obs_scale = 1000` divides every prediction by
+1000 before computing the residual, bringing predictions back to the mg/L scale.
+
+## Model file
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01 (sd)
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[scaling]
+  obs_scale = 1000
+
+[fit_options]
+  method     = foce
+  maxiter    = 300
+  covariance = true
+```
+
+The PK model and parameters are identical to the standard warfarin example.
+The only addition is the `[scaling]` block. Because `obs_scale` divides
+predictions, the sigma estimate is expressed on the `DV` scale (mg/L), not
+the raw prediction scale (µg/L).
+
+## Running
+
+```r
+library(ferx)
+
+ex  <- ferx_example("warfarin_scaled")
+fit <- ferx_fit(ex$model, ex$data)
+fit
+
+# Parameter estimates should agree with the unscaled reference fit
+ref <- ferx_fit(ferx_example("warfarin")$model, ferx_example("warfarin")$data)
+rbind(scaled = fit$theta, reference = ref$theta)
+```
+
+Both fits should converge to numerically identical parameter estimates —
+scaling only affects the units of sigma.
+
+## The three scaling forms
+
+| Form | Syntax | Use case |
+|---|---|---|
+| **A** | `obs_scale = constant` | Scalar unit conversion (this example) |
+| **B** | `y = expression` | Arbitrary expression (e.g. `central / V / MW * 1000`) |
+| **C** | `y[CMT=N] = expression` | Per-endpoint readout for multi-analyte / PK+PD |
+
+Form B and Form C are covered in the [Scaling DSL reference](../model-dsl/scaling.qmd)
+and demonstrated in the [PK/PD example](emax-pkpd.qmd).
+
+## See also
+
+- [Scaling — DSL reference](../model-dsl/scaling.qmd)
+- [Example: Simultaneous PK/PD (Emax)](emax-pkpd.qmd) — Form C per-CMT scaling

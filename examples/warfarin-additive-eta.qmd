@@ -1,0 +1,99 @@
+---
+title: "Example: Additive ETA parameterization"
+---
+
+Most PK parameters are log-normally distributed — modelled as
+`PARAM = TV * exp(ETA)` — because they are strictly positive and their
+variability is multiplicative. Some parameters, however, have a natural
+additive variability structure: an **additive ETA** writes the individual
+value as `PARAM = TV + ETA` (normal distribution, not log-normal).
+
+This example applies an additive ETA to the absorption lag time, where the
+parameter is bounded away from zero by physiology but additive shifts around
+the typical value are a sensible model.
+
+## When to use additive ETA
+
+| Parameter | Typical model | Why |
+|---|---|---|
+| CL, V, KA | `TV * exp(ETA)` | Strictly positive; multiplicative variability |
+| Lag time (TLAG) | `TV + ETA` | Small absolute shifts; can be constrained ≥ 0 |
+| Baseline effect (E0) | `TV + ETA` | Additive shifts around population baseline |
+| Fraction (F) | Logit-normal | Must stay in (0, 1) |
+
+The omega for an additive ETA is a **variance in the parameter's original
+units** (e.g., h² for a lag time in hours), not a CV². Interpret it by taking
+the square root: `sqrt(omega)` is the between-subject SD in the parameter's
+units.
+
+## Model file
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+  theta TVTLAG(0.5, 0.0, 5.0)
+
+  omega ETA_CL   ~ 0.07
+  omega ETA_V    ~ 0.02
+  omega ETA_TLAG ~ 0.04
+
+  sigma PROP_ERR ~ 0.01 (sd)
+
+[individual_parameters]
+  CL   = TVCL  * exp(ETA_CL)
+  V    = TVV   * exp(ETA_V)
+  KA   = TVKA
+  TLAG = TVTLAG + ETA_TLAG
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA, lagtime=TLAG)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = focei
+  maxiter    = 300
+  covariance = true
+```
+
+`ETA_TLAG` is additive: its variance (`0.04`) is in hours², giving a typical
+between-subject SD of √0.04 = 0.2 h = 12 minutes.
+
+## Running
+
+```r
+library(ferx)
+
+ex  <- ferx_example("warfarin_additive_eta")
+fit <- ferx_fit(ex$model, ex$data)
+fit
+```
+
+Inspect the per-subject EBEs to verify the additive shifts around `TVTLAG`:
+
+```r
+# EBE_TLAG values are shifts in hours around TVTLAG
+fit$ebe_etas
+```
+
+## Mu-referencing and additive ETAs
+
+ferx auto-detects mu-referencing for both log-normal (`TV * exp(ETA)`) and
+additive (`TV + ETA`) parameterizations. The additive case uses `TV` directly
+as the mu-reference. You can verify detection via `fit$warnings`:
+
+```r
+fit$warnings
+```
+
+If mu-referencing was detected for `ETA_TLAG`, the warning section will report
+it as mu-referenced with an additive shift structure.
+
+## See also
+
+- [Individual parameters](../model-dsl/individual-parameters.qmd)
+- [Absorption lag time](../model-dsl/lag-time.qmd)
+- [Example: Oral bioavailability (logit-normal F)](bioavailability.qmd)

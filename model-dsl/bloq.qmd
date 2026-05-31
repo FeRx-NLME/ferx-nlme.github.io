@@ -1,0 +1,125 @@
+---
+title: "BLOQ (Below Limit of Quantification)"
+---
+
+Observations below the lower limit of quantification (LLOQ) cannot be treated
+as ordinary data. They carry only the information that the true concentration
+is *somewhere below* the detection threshold. Dropping them biases parameter
+estimates; using a substituted value (e.g. LLOQ/2) is equally biased. The
+correct approach is to integrate the likelihood over the censored region.
+
+ferx supports two strategies via `bloq_method` in `[fit_options]`.
+
+## Dataset format
+
+Mark a BLOQ observation with `CENS = 1`. Set `DV` to the LLOQ value on
+`CENS = 1` rows — the M3 method uses this as the upper integration bound:
+
+```csv
+ID,TIME,DV,CENS,EVID,AMT,CMT,MDV
+1,0,.,0,1,100,1,1
+1,1,2.45,0,0,.,.,0
+1,6,0.02,1,0,.,.,0
+1,12,0.52,0,0,.,.,0
+```
+
+Row 3: `CENS=1`, `DV=0.02` means "the true value is somewhere below 0.02".
+
+Rows with both `CENS=1` and `MDV=1` are excluded by `MDV` before any BLOQ
+logic applies. Rows with `CENS=0` are always treated as ordinary observations.
+
+## Methods
+
+### `bloq_method = drop` (default)
+
+BLOQ rows are excluded from the likelihood. Fast, but biases parameter
+estimates — particularly terminal half-life and residual error — when the
+BLOQ fraction is substantial (> 10–15% of observations).
+
+```
+[fit_options]
+  bloq_method = drop
+```
+
+### `bloq_method = m3`
+
+Implements Beal's M3 method (2001). The likelihood contribution of a BLOQ
+observation is the probability that the model-predicted value falls below
+the LLOQ:
+
+$$
+L_i^\text{BLOQ} = \Phi\!\left(\frac{\text{LLOQ} - f_{ij}}{\sqrt{V_{ij}}}\right)
+$$
+
+where $f_{ij}$ is the population/individual prediction and $V_{ij}$ is the
+residual variance. $\Phi$ is the standard normal CDF. This is the exact
+maximum-likelihood treatment of left-censored normal data.
+
+```
+[fit_options]
+  bloq_method = m3
+```
+
+`bloq` is accepted as an alias for `bloq_method`.
+
+## When to use M3
+
+Use M3 whenever more than ~5–10% of observations are BLOQ. Common situations:
+
+- Sparse PK sampling with a long terminal phase
+- Studies where the LLOQ is relatively high compared to trough concentrations
+- Pediatric or renally impaired populations with lower drug exposure
+
+The cost is a small run-time increase (one CDF evaluation per BLOQ row). The
+OFV from M3 is **not comparable** to the drop-method OFV; compare M3 models
+only against other M3 models.
+
+## Example model file
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.0, 0.1, 100.0)
+  theta TVKA(1.0, 0.01, 10.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01 (sd)
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method      = focei
+  bloq_method = m3
+```
+
+## Running in R
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_bloq")
+fit <- ferx_fit(ex$model, ex$data)
+fit
+```
+
+## See also
+
+- [Example: BLOQ (M3 method)](../examples/bloq.qmd) — worked example
+- [Data format (ferx-core book)](https://ferx-nlme.github.io/ferx-core/data-format.html)
+
+## Reference
+
+Beal, S.L. (2001). Ways to fit a PK model with some data below the
+quantification limit. *Journal of Pharmacokinetics and Pharmacodynamics*,
+28(5), 481–504.

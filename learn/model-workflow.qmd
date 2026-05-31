@@ -407,6 +407,36 @@ ferx_save_fit(fit, sprintf("run%02d_focei_%s.rds", run_number, Sys.Date()))
 
 ---
 
+## Non-blocking (async) fitting
+
+For long runs or interactive use, `ferx_fit_async()` starts the optimizer in a
+background thread and returns a handle immediately. Call `ferx_collect()` to
+block and retrieve the result:
+
+```r
+# Start the fit in the background
+handle <- ferx_fit_async(ex$model, ex$data, method = "saem")
+
+# Do other work here — the fit is running in the background
+# ...
+
+# Block and collect the result (waits until convergence)
+fit <- ferx_collect(handle)
+fit
+```
+
+The handle prints a live status line so you can check progress:
+
+```r
+handle   # prints: [ferx] SAEM running — iteration 42 / 200 ...
+```
+
+`ferx_fit_async()` accepts all the same arguments as `ferx_fit()`. It is
+especially useful in RStudio when you want the R session to remain responsive
+during a long SAEM or multi-start run.
+
+---
+
 ## Summary
 
 ### Path-based

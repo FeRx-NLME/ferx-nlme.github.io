@@ -1,0 +1,145 @@
+---
+title: "Example: Simultaneous PK/PD (Emax)"
+---
+
+This example fits a simultaneous PK/PD model in one joint FOCEI likelihood:
+a one-compartment oral PK model linked to an effect-compartment Emax response.
+Both endpoints (plasma concentration and PD effect) contribute observations in
+the same dataset, distinguished by the `CMT` column.
+
+The key feature demonstrated is the **per-CMT error model**: plasma
+observations (`CMT=2`) use a proportional residual; PD observations (`CMT=3`)
+use an additive residual. This is the recommended alternative to the sequential
+(two-step) PK-then-PD approach.
+
+## Model structure
+
+| Compartment | State | CMT | Readout |
+|---|---|---|---|
+| Depot | `depot` | 1 | (dosing only) |
+| Central | `central` | 2 | `central / V` (mg/L) |
+| Effect | `effect` | 3 | Emax equation |
+
+ODEs:
+
+```
+d/dt(depot)   = -KA * depot
+d/dt(central) =  KA * depot - CL/V * central
+d/dt(effect)  =  KE0 * (central/V - effect)
+```
+
+The biophase compartment equilibrates with plasma via `KE0`. The Emax response
+at the biophase concentration is:
+
+```
+E = E0 + EMAX * effect^GAMMA / (EC50^GAMMA + effect^GAMMA)
+```
+
+## Model file
+
+```
+[parameters]
+  theta TVCL(5.0,  0.1,  50.0)
+  theta TVV(50.0,  5.0, 500.0)
+  theta TVKA(1.0,  0.05, 20.0)
+  theta TVKE0(0.3, 0.01,  5.0)
+  theta TVE0(2.0,    0.0,  50.0)
+  theta TVEMAX(40.0, 1.0, 200.0)
+  theta TVEC50(5.0,  0.1, 100.0)
+  theta TVGAMMA(1.0, 0.1,   5.0)
+
+  omega ETA_CL ~ 0.09
+  omega ETA_V  ~ 0.09
+
+  sigma PROP_ERR_PK ~ 0.10 (sd)
+  sigma ADD_ERR_PD  ~ 1.00 (sd)
+
+[individual_parameters]
+  CL    = TVCL * exp(ETA_CL)
+  V     = TVV  * exp(ETA_V)
+  KA    = TVKA
+  KE0   = TVKE0
+  E0    = TVE0
+  EMAX  = TVEMAX
+  EC50  = TVEC50
+  GAMMA = TVGAMMA
+
+[structural_model]
+  ode(states=[depot, central, effect])
+
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) =  KA * depot - CL/V * central
+  d/dt(effect)  =  KE0 * (central/V - effect)
+
+[scaling]
+  y[CMT=2] = central / V
+  y[CMT=3] = E0 + EMAX * effect^GAMMA / (EC50^GAMMA + effect^GAMMA)
+
+[error_model]
+  CMT=2: DV ~ proportional(PROP_ERR_PK)
+  CMT=3: DV ~ additive(ADD_ERR_PD)
+
+[fit_options]
+  method     = focei
+  maxiter    = 500
+  covariance = true
+  gradient   = fd
+```
+
+Two points worth noting:
+
+- **No `obs_cmt`** in `ode(...)` — with a per-CMT scaling block (`y[CMT=N] = ...`) there is no single observation compartment; the dispatch is handled by the data `CMT` column.
+- **`gradient = fd`** is required when using Form C (`y[CMT=N] = ...`) per-CMT readouts; automatic differentiation is not yet implemented for this path.
+
+## Running
+
+```r
+library(ferx)
+
+ex  <- ferx_example("emax_pkpd")
+fit <- ferx_fit(ex$model, ex$data)
+fit
+```
+
+Inspect how ferx classified the residual structure:
+
+```r
+fit$sigma           # two residual variance estimates
+fit$sigma_types     # c("proportional", "additive")
+ferx_model_inspect(fit)$residual
+#> [1] "per-CMT (CMT2=proportional, CMT3=additive)"
+```
+
+## Dataset format
+
+The data file interleaves PK and PD observations. Dose rows (EVID=1) target
+`CMT=1` (depot); observations carry `CMT=2` (PK) or `CMT=3` (PD):
+
+```csv
+ID,TIME,DV,EVID,AMT,CMT,MDV
+1,0,.,1,100,1,1
+1,1,8.2,0,.,2,0
+1,1,3.5,0,.,3,0
+1,4,5.1,0,.,2,0
+1,4,12.1,0,.,3,0
+```
+
+## Tips
+
+- **PD ETAs**: no between-subject variability is placed on PD parameters in
+  this model. If subjects show heterogeneous responses, add `omega ETA_E0 ~
+  0.1` and set `E0 = TVE0 * exp(ETA_E0)` (or additive `E0 = TVE0 + ETA_E0`
+  for parameters with an additive variability structure).
+- **GAMMA identifiability**: the Hill coefficient is often weakly identified
+  unless the concentration range covers both the sub-saturating and
+  saturating Emax zones.
+- **Sequential vs. simultaneous**: a sequential fit (fix PK parameters from a
+  separate run, then fit PD) is faster but underestimates PD uncertainty.
+  The simultaneous approach here propagates PK uncertainty into the PD estimates.
+
+## See also
+
+- [ODE models](../model-dsl/odes.qmd)
+- [Scaling](../model-dsl/scaling.qmd) — Form C per-CMT readouts
+- [Error model](../model-dsl/error-model.qmd) — per-CMT dispatch

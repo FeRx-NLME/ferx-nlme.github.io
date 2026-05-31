@@ -115,7 +115,8 @@ block after the standard omega section. For Option B with off-diagonal
 correlations, a correlations sub-block follows the diagonal entries.
 
 **EBE kappas** are returned in `fit$ebe_kappas` but are not yet emitted as
-columns in the sdtab CSV. Per-kappa shrinkage is not yet computed.
+columns in the sdtab CSV. Per-kappa shrinkage is computed and reported in the
+`OMEGA_IOV` section of `print(fit)` alongside the BSV shrinkage values.
 
 ## Tips
 
@@ -125,7 +126,7 @@ columns in the sdtab CSV. Per-kappa shrinkage is not yet computed.
   likelihood-ratio test for the added IOV variance. For a variance parameter at
   the boundary (H₀: σ² = 0), the asymptotic null is a 50:50 mixture of a
   point mass at 0 and χ²₁.
-- **SAEM is not supported** with IOV — use `foce` or `focei`.
+- **SAEM supports IOV** — use `method = "saem"` or a `c("saem", "focei")` chain for robust convergence on ill-conditioned datasets.
 
 ## See also
 

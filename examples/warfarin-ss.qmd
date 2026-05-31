@@ -1,0 +1,114 @@
+---
+title: "Example: Steady-state dosing (SS=1)"
+---
+
+This example demonstrates fitting a model to data collected at steady state.
+When subjects have been dosed repeatedly before the observation window, the
+pharmacokinetic system is at (or near) steady state and the single-dose initial
+conditions are no longer valid. ferx handles this via the `SS` and `II` columns
+in the dataset — no changes to the model file are needed.
+
+## Dataset columns
+
+| Column | Purpose |
+|---|---|
+| `SS` | 1 = pre-dose steady-state condition; 0 (or absent) = normal |
+| `II` | Dosing interval (h) for the preceding repeated-dose regimen |
+
+A dose row with `SS=1` and `II=24` tells ferx: compute the steady-state
+initial conditions for a 24-hour repeated dosing regimen, then add the
+current dose on top before integrating forward.
+
+Example CSV layout:
+
+```csv
+ID,TIME,DV,EVID,AMT,CMT,SS,II,MDV
+1,0,.,1,10,1,1,24,1
+1,1,18.2,0,.,1,0,0,0
+1,4,25.8,0,.,1,0,0,0
+1,8,22.1,0,.,1,0,0,0
+```
+
+## Model file
+
+The model file is identical to the single-dose warfarin example. No `SS` or
+`II` handling is needed in the `.ferx` file itself:
+
+```
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01 (sd)
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = foce
+  maxiter    = 300
+  covariance = true
+```
+
+## Running
+
+```r
+library(ferx)
+
+ex  <- ferx_example("warfarin_ss")
+fit <- ferx_fit(ex$model, ex$data, method = "foce")
+fit
+
+# Compare parameter estimates with the single-dose example
+fit$theta
+```
+
+At steady state with τ = 24 h and the warfarin half-life of ~42 h
+(`ke = CL/V ≈ 0.0165 /h`) there is roughly 3-fold accumulation. Observed DV
+values are therefore substantially higher than in the single-dose dataset,
+but the underlying PK parameters should be consistent.
+
+## How ferx computes steady-state conditions
+
+For **analytical PK models** (one_cpt_oral, two_cpt_iv_bolus, etc.), ferx
+derives the closed-form steady-state concentrations from the current individual
+parameters and dosing interval. No iterative pre-simulation is required.
+
+For **ODE models** with `SS=1`, ferx runs an iterative pre-dose simulation:
+it simulates repeated doses at interval `II` until the state vector converges
+(relative tolerance 1e-6), then uses that state as the initial condition for
+the observation period.
+
+## SS=2 (additive steady-state)
+
+Setting `SS=2` on a dose row adds the computed steady-state concentration
+to the current state rather than replacing it. This is useful for modelling
+drugs given at steady state where there is also a residual concentration from
+a prior non-SS period.
+
+## Tips
+
+- If `II` is absent or zero on an `SS=1` row, ferx will emit a warning and
+  fall back to zero initial conditions.
+- For ODE models, convergence of the iterative SS computation can be slow for
+  drugs with very long half-lives. Consider increasing `inner_maxiter` via
+  `settings` if the fit reports unconverged steady-state computations.
+
+## See also
+
+- [Steady-state doses (SS=1) — DSL reference](../model-dsl/steady-state.qmd)
+- [Example: One-compartment oral (warfarin)](warfarin.qmd)
+- [Data format](https://ferx-nlme.github.io/ferx-core/data-format.html)

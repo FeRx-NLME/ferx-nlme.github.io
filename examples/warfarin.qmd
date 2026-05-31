@@ -1,0 +1,127 @@
+---
+title: "Example: One-compartment oral (warfarin)"
+---
+
+The warfarin example is the canonical starting point for ferx. It fits a
+one-compartment oral PK model to single-dose warfarin plasma concentration data
+using FOCE/FOCEI, Gauss-Newton, or SAEM — all with the same model file.
+
+## Dataset
+
+The `warfarin` bundled dataset contains sparse concentration-time data from
+multiple subjects after a single oral dose. Format follows the NONMEM CSV
+convention: dose rows have `EVID=1` and a non-zero `AMT`; observation rows have
+`EVID=0` and a numeric `DV`.
+
+## Model file
+
+```
+# One-compartment oral PK model (warfarin)
+
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  theta TVV(8.1, 0.1, 500.0)
+  theta TVKA(1.0, 0.01, 50.0)
+
+  omega ETA_CL ~ 0.07
+  omega ETA_V  ~ 0.02
+  omega ETA_KA ~ 0.40
+
+  sigma PROP_ERR ~ 0.01 (sd)
+
+[individual_parameters]
+  CL = TVCL * exp(ETA_CL)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
+
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+[error_model]
+  DV ~ proportional(PROP_ERR)
+
+[fit_options]
+  method     = foce
+  maxiter    = 300
+  covariance = true
+```
+
+All three PK parameters (`CL`, `V`, `KA`) carry log-normal between-subject
+variability via `exp(ETA_*)`. The residual is proportional, parameterized on
+the SD scale (`(sd)` suffix means the initial value 0.01 is the SD, not the
+variance).
+
+## Running
+
+```r
+library(ferx)
+
+ex  <- ferx_example("warfarin")
+fit <- ferx_fit(ex$model, ex$data)
+fit
+```
+
+## Switching estimation method
+
+The same model file supports FOCE, Gauss-Newton, and SAEM without modification.
+Pass the `method` argument to `ferx_fit()`:
+
+```r
+# Gauss-Newton (fastest for well-conditioned problems)
+fit_gn <- ferx_fit(ex$model, ex$data, method = "gn")
+
+# SAEM (robust warm-up, useful for complex models)
+fit_saem <- ferx_fit(ex$model, ex$data, method = "saem")
+
+# Method chain: SAEM warm-up then FOCEI refinement
+fit_chain <- ferx_fit(ex$model, ex$data, method = c("saem", "focei"))
+```
+
+## Goodness-of-fit plots
+
+The fitted object carries an `sdtab` data frame with `PRED`, `IPRED`, `CWRES`,
+and all covariates. Use it directly with ggplot2:
+
+```r
+library(ggplot2)
+library(tidyr)
+
+# PRED/IPRED vs DV
+fit$sdtab |>
+  pivot_longer(cols = c("PRED", "IPRED")) |>
+  ggplot(aes(x = value, y = DV)) +
+  geom_point() +
+  facet_wrap(~name)
+
+# CWRES vs PRED
+fit$sdtab |>
+  ggplot(aes(x = PRED, y = CWRES)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed")
+```
+
+## Visual predictive check
+
+Simulate 200 replicates from the fitted model and pass to the `vpc` package:
+
+```r
+library(vpc)
+library(dplyr)
+
+sim <- ferx_simulate(ex$model, ex$data, n_sim = 200, seed = 42, fit = fit)
+obs <- read.csv(ex$data) |> mutate(DV = as.numeric(DV))
+
+vpc(
+  obs = obs,
+  sim = sim,
+  obs_cols = list(),
+  sim_cols = list(dv = "DV_SIM")
+)
+```
+
+## See also
+
+- [Example: Covariate model](covariates.qmd) — adds WT and CRCL to this base model
+- [Example: IOV](iov.qmd) — inter-occasion variability with kappa
+- [Example: SAEM estimation](saem.qmd)
+- [Learn: Model workflow](../learn/model-workflow.qmd)

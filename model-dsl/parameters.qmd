@@ -278,6 +278,42 @@ dedicated theta for the parameter (`theta TVKA(...)`, then
 `KA = TVKA * exp(ETA_KA)`). Tracked in
 [ferx-r#55](https://github.com/FeRx-NLME/ferx-r/issues/55).
 
+## Fixing parameters (FIX)
+
+Append `FIX` to any `theta`, `omega`, `sigma`, or `kappa` declaration to hold
+the parameter at its initial value during estimation:
+
+```
+theta TVLAG(0.25, 0.0, 2.0) FIX       # theta fixed at 0.25
+omega ETA_KA ~ 0.40 FIX               # omega fixed at 0.40
+sigma PROP_ERR ~ 0.01 (sd) FIX        # sigma fixed at SD = 0.01
+kappa KAPPA_CL ~ 0.05 FIX             # kappa fixed at 0.05
+block_omega (ETA_CL, ETA_V) = [0.09, 0.0, 0.04] FIX   # entire block fixed
+```
+
+`FIX` can also appear as part of the initial-value triple for `theta`:
+
+```
+theta TVLAG(0.25, FIX)   # two-element form: value + FIX, no bounds
+```
+
+**Placement**: `FIX` may appear at the end of the line (after the closing
+parenthesis or value) or inside the parentheses for the two-element theta form.
+Both are accepted:
+
+```
+theta TVLAG(0.25, 0.0, 2.0) FIX   # after closing paren
+theta TVLAG(0.25, FIX)             # inside parens (no bounds)
+```
+
+Fixed parameters are shown in `print(fit)` and `ferx_estimates()` with `SE =
+fixed` and `%RSE = fixed`; they are excluded from the covariance matrix.
+
+**Typical uses:**
+- Fix a lag time or Hill coefficient to a literature value
+- Fix omega to zero to temporarily remove BSV from a parameter
+- Fix sigma during a two-stage estimation (fix PK error while fitting PD)
+
 ## Complete examples
 
 Diagonal omega (no correlations):

@@ -6,10 +6,6 @@ SAEM (Stochastic Approximation EM) uses Metropolis-Hastings sampling instead
 of MAP optimisation for random effects. It is more robust to local minima and
 complex posterior shapes than FOCE/FOCEI, at the cost of longer run times.
 
-::: {.callout-note}
-SAEM is **not** supported with IOV models. Use `foce` or `focei` for those.
-:::
-
 ## When to use SAEM
 
 - Models with many correlated random effects where FOCEI has convergence issues
@@ -89,7 +85,40 @@ The chained fit runs SAEM first, then starts FOCEI from the SAEM-converged
 parameters. The final result is a FOCEI fit with SAEM-warm-started initial
 values.
 
+## HMC proposals (AD build only)
+
+SAEM normally uses Metropolis-Hastings (MH) proposals for the E-step. When
+ferx is built with Enzyme autodiff support, Hamiltonian Monte Carlo (HMC)
+proposals can be used instead via `n_leapfrog`. HMC takes gradient-informed
+steps so it explores the ETA posterior more efficiently, particularly for
+models with correlated random effects.
+
+```r
+fit_hmc <- ferx_fit(
+  ex$model, ex$data,
+  method   = "saem",
+  settings = list(
+    n_leapfrog     = 3L,   # leapfrog steps per HMC proposal
+    omega_burnin   = 30L,  # hold Ω fixed while the sampler warms up
+    adapt_interval = 10L   # adapt proposal scale every 10 iterations
+  )
+)
+
+# Number of subjects whose E-step used HMC (NULL if MH was used)
+fit_hmc$saem_n_subjects_hmc
+```
+
+If ferx was not compiled with autodiff (`FERX_NO_AUTODIFF=1` build),
+`n_leapfrog` is silently ignored and standard MH proposals are used. Check
+`ferx::ferx_rust_autodiff_enabled()` to confirm the build type.
+
+## IOV with SAEM
+
+SAEM fully supports IOV (`kappa`) models. See
+[Example: IOV with SAEM](warfarin-iov-saem.qmd) for a worked example.
+
 ## See also
 
+- [Example: IOV with SAEM](warfarin-iov-saem.qmd)
 - [Fit Options — SAEM](../model-dsl/fit-options.qmd#saem)
-- [Fit Options — chained methods](../model-dsl/fit-options.qmd#chained-methods)
+- [Learn: Method chaining & optimizers](../learn/method-chaining.qmd)
