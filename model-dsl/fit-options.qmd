@@ -1,253 +1,376 @@
 ---
-title: "Fit Options"
+title: "Fit options"
 ---
 
-The optional `[fit_options]` block configures the estimation method and
-optimizer settings. All keys have defaults, so this block can be omitted
-entirely for a simple FOCE fit.
+The `[fit_options]` block in a `.ferx` file, and the arguments to `ferx_fit()`,
+control the estimation method, optimizer, convergence settings, and diagnostics.
+All keys have defaults — the block can be omitted entirely for a standard FOCEI
+fit.
 
-## Syntax
+## Which method should I use?
 
-```
-[fit_options]
-  key = value
-```
+| Situation | Recommended |
+|---|---|
+| Starting out / standard PK | `focei` (default) |
+| Fast feedback during model building | `gn` or `gn_hybrid` |
+| Complex model, many ETAs, convergence issues | `c("saem", "focei")` chain |
+| Need the most accurate marginal log-likelihood | `c("focei", "imp")` |
+| Compare models on marginal likelihood | `imp` as final chain stage |
 
-## General options
+The [method chaining guide](../learn/method-chaining.qmd) covers these in depth
+with worked R code.
 
-| Key | Values | Default | Description |
-|---|---|---|---|
-| `method` | `foce`, `focei`, `saem`, `gn`, `gn_hybrid`, or list e.g. `[saem, focei]` | `focei` | Estimation method |
-| `maxiter` | integer | `500` | Maximum outer loop iterations |
-| `covariance` | `true`, `false` | `true` | Compute covariance matrix and standard errors |
-| `optimizer` | see table below | `slsqp` | Outer-loop optimization algorithm |
-| `inner_maxiter` | integer | `200` | Max inner (EBE) optimizer iterations per subject |
-| `inner_tol` | float | `1e-4` | Gradient-norm convergence tolerance for inner EBE optimizer |
-| `mu_referencing` | `true`, `false` | `true` | Auto-detect and apply mu-referencing from `[individual_parameters]` |
-| `bloq_method` | `drop`, `m3` | `drop` | BLOQ handling: `drop` ignores censored rows; `m3` uses Beal's M3 likelihood |
-| `iov_column` | string | — | Name of the occasion column in the dataset (required for IOV models) |
-| `optimizer_trace` | `true`, `false` | `false` | Write per-iteration CSV to `/tmp/ferx_trace_<pid>_<ts>.csv` |
-| `gradient_method` | `auto`, `enzyme`, `fd` | `auto` | Gradient computation method. `auto` uses Enzyme if available, otherwise finite differences. `fd` forces finite differences (required for SDE/diffusion models). |
-| `n_starts` | integer | `1` | Number of independent fits from perturbed initial values; the run with the lowest OFV is returned. `1` disables multi-start. |
-| `start_sigma` | float | `0.3` | Log-space perturbation size applied to theta for all starts. |
-| `multi_start_seed` | integer | — | RNG seed for reproducible multi-start perturbations |
-| `max_unconverged_frac` | float (0–1) | `0.1` | Fraction of subjects allowed to have unconverged inner loops without triggering a warning. Raise when fitting complex models with sparse data. |
-| `min_obs_for_convergence_check` | integer | `2` | Minimum number of observations a subject must have before its inner convergence is counted toward `max_unconverged_frac`. |
+---
 
 ## Estimation methods
 
-### FOCE
+### `focei` — FOCE with Interaction *(default)*
 
-```
-method = foce
-```
-
-First-Order Conditional Estimation. Linearises the model around the EBE η̂
-and evaluates residual variance at η = 0. Fast and reliable for additive-error
-models.
-
-### FOCEI (default)
-
-```
-method = focei
-```
-
-FOCE with Interaction. Evaluates residual variance at η̂ rather than η = 0,
-capturing the dependence of residual error on individual predictions. More
-accurate than FOCE when the error model is proportional or combined.
-
-### SAEM
-
-```
-method = saem
-```
-
-Stochastic Approximation EM. Uses Metropolis-Hastings sampling instead of MAP
-optimisation for random effects. More robust to local minima; recommended for
-complex models with many random effects. **Not supported with IOV.**
-
-### Gauss-Newton
-
-```
-method = gn
-method = gn_hybrid
-```
-
-Gauss-Newton with BHHH Hessian approximation and Levenberg-Marquardt damping.
-`gn` typically converges in 10–30 iterations; `gn_hybrid` uses GN to find
-the basin and then polishes with FOCEI. Use `gn` for fast feedback during
-model development.
-
-### Chained methods
-
-Pass a list to run stages sequentially, each starting from the previous
-converged parameters:
-
-```
-method = [saem, focei]
-```
-
-A SAEM→FOCEI chain is recommended for complex models: SAEM finds the basin
-robustly, FOCEI polishes to the MLE and produces a valid covariance matrix.
-
-## Optimizer choices
-
-| Optimizer | Algorithm | Recommended for |
-|---|---|---|
-| `bobyqa` | NLopt BOBYQA — derivative-free **(default)** | General use; robust on rough surfaces |
-| `slsqp` | NLopt SLSQP | Smooth, well-conditioned problems; faster per iteration |
-| `trust_region` | Newton trust-region with Steihaug CG | Ill-conditioned problems; guaranteed descent |
-| `lbfgs` | Built-in L-BFGS | Large parameter spaces |
-| `nlopt_lbfgs` | NLopt L-BFGS | Alternative L-BFGS |
-| `mma` | NLopt Method of Moving Asymptotes | When SLSQP stalls |
-| `bfgs` | Built-in BFGS quasi-Newton | Small parameter spaces |
-
-**`bobyqa`** does not use gradients — robust to small discontinuities in the
-FOCE surface caused by EBE re-estimation, but converges more slowly on smooth
-problems.
-
-**`trust_region`** uses an AD-based gradient and a BHHH approximate Hessian
-(`H ≈ 4 Σ gᵢgᵢᵀ`), which is always positive semi-definite and costs no extra
-OFV evaluations beyond the gradient. The Steihaug CG budget defaults to
-`ceil(sqrt(n_params))` (typically 5 for standard NLME models); override with
-`steihaug_max_iters` if needed.
-
-## SAEM-specific options
-
-| Key | Default | Description |
-|---|---|---|
-| `n_exploration` | `150` | Phase 1 iterations (step size γ = 1) |
-| `n_convergence` | `250` | Phase 2 iterations (step size γ = 1/k) |
-| `n_mh_steps` | `3` | Metropolis-Hastings steps per subject per iteration |
-| `adapt_interval` | `50` | Iterations between MH step-size adaptation |
-| `seed` | `12345` | RNG seed for reproducibility |
-
-## Global search
-
-```
-global_search = true
-```
-
-Runs NLopt CRS2-LM (Controlled Random Search with Local Mutation) as a
-gradient-free pre-search before the local optimizer. Samples within parameter
-bounds; the local optimizer starts from the best point found. Useful for
-poorly-identified models or when the local optimizer lands in degenerate basins.
-
-| Key | Default | Description |
-|---|---|---|
-| `global_search` | `false` | Enable CRS2-LM pre-search |
-| `global_maxeval` | `200 * (n_params + 1)` | Max OFV evaluations during global search |
-
-Requires a full NLopt build — a warning is emitted if CRS2-LM is unavailable.
-
-## SIR (Sampling Importance Resampling)
-
-SIR provides non-parametric parameter uncertainty estimates as an optional
-post-estimation step. Requires `covariance = true`.
-
-| Key | Default | Description |
-|---|---|---|
-| `sir` | `false` | Enable SIR |
-| `sir_samples` | `1000` | Number of proposal samples (M) |
-| `sir_resamples` | `250` | Number of resampled vectors (m) |
-| `sir_seed` | `12345` | RNG seed |
-
-See [Estimation — SIR (ferx-core book)](https://ferx-nlme.github.io/ferx-core/estimation/sir.html) for details.
-
-## Parameter scaling and EBE convergence guard
-
-| Key | Default | Description |
-|---|---|---|
-| `scale_params` | `true` | Scale packed parameters to O(1) before optimizer. Improves conditioning when log-transformed parameters span orders of magnitude. |
-| `max_unconverged_frac` | `0.1` | Fraction of subjects (with ≥ `min_obs_for_convergence_check` observations) allowed to have unconverged EBEs before the step is rejected (OFV = ∞). Set to `1.0` to disable. |
-| `min_obs_for_convergence_check` | `2` | Subjects with fewer observations are excluded from the convergence-guard check. |
-| `steihaug_max_iters` | adaptive | Max CG iterations for the trust-region Steihaug subproblem (`optimizer = trust_region` only). Default uses `ceil(sqrt(n_params))` clamped to at least 5 — typically 5 for standard NLME models. Set explicitly to pin the budget (e.g. `steihaug_max_iters = 20`). |
-
-## Options that don't apply to the selected method
-
-If you set an option the chosen method doesn't consume (e.g. `n_convergence`
-with `method = focei`), ferx emits a warning listing the option and the keys
-that *are* available. The option is ignored — the fit still proceeds.
-
-For a chained fit (`method = [saem, focei]`), an option is kept if it applies
-to *any* stage in the chain, so SAEM and FOCEI keys can be mixed without warnings.
-
-## Examples
-
-Standard FOCE with defaults:
+Linearises around the EBE η̂; evaluates residual variance at η̂ (not η = 0).
+Correct for proportional and combined error models. The right choice for most
+NLME fits.
 
 ```
 [fit_options]
-  method     = foce
-  maxiter    = 300
+  method     = focei
   covariance = true
 ```
 
-Multi-start FOCEI (8 parallel starts, reproducible):
+**Works with:** all outer optimizers · BLOQ M3 · IOV · SAEM/GN chains · SIR
+
+---
+
+### `foce` — FOCE (no interaction)
+
+Evaluates residual variance at η = 0. Equivalent to FOCEI for additive error;
+slightly less accurate for proportional or combined. Use when reproducing a
+NONMEM FOCE result.
+
+**Works with:** same as FOCEI.
+
+---
+
+### `gn` — Gauss-Newton
+
+BHHH Hessian approximation with Levenberg-Marquardt damping. Converges in
+10–30 iterations on well-conditioned problems — the fastest method for feedback
+during model building. Does **not** accept an outer `optimizer` key.
 
 ```
 [fit_options]
-  method           = focei
-  covariance       = true
-  n_starts         = 8
-  start_sigma      = 0.3
-  multi_start_seed = 42
+  method     = gn
+  covariance = false   # skip covariance step for fast iterations
 ```
 
-FOCEI with global search:
+**GN-specific option:**
+
+| Key | Default | Description |
+|---|---|---|
+| `gn_lambda` | `0.01` | Levenberg-Marquardt damping. Increase (e.g. `0.1`) when GN steps are too aggressive on a rough surface. |
+
+**Works with:** IOV · BLOQ M3 · multi-start · NCA inits
+
+**Does not accept:** `optimizer`, `global_search`, `stagnation_guard`, `reconverge_gradient_interval`
+
+---
+
+### `gn_hybrid` — Gauss-Newton then FOCEI polish
+
+GN finds the basin; FOCEI refines to the MLE. Useful when GN is fast but
+its approximate Hessian gives slightly suboptimal final parameter estimates.
 
 ```
 [fit_options]
-  method        = focei
-  maxiter       = 500
-  covariance    = true
-  global_search = true
+  method     = gn_hybrid
+  covariance = true
 ```
 
-SAEM with custom settings:
+**Works with:** all outer optimizers (applied to the FOCEI polish stage) ·
+everything GN accepts.
+
+---
+
+### `saem` — Stochastic Approximation EM
+
+Replaces MAP optimization with Metropolis-Hastings sampling for the E-step.
+More robust to multi-modal ETA posteriors and high-shrinkage scenarios. Run
+time is controlled by iteration counts, not `maxiter`.
 
 ```
 [fit_options]
   method        = saem
-  n_exploration = 200
-  n_convergence = 300
-  n_mh_steps    = 5
-  seed          = 42
+  n_exploration = 150
+  n_convergence = 250
   covariance    = true
 ```
 
-SAEM → FOCEI chain:
+**SAEM-specific options:**
+
+| Key | Default | Description |
+|---|---|---|
+| `n_exploration` | `150` | Phase 1 iterations — stochastic, step size γ = 1. Sampler explores the posterior. |
+| `n_convergence` | `250` | Phase 2 iterations — step size anneals to 0. Running average converges. |
+| `n_mh_steps` | `10` | Metropolis-Hastings proposals per subject per iteration. More = better mixing, slower per iteration. |
+| `adapt_interval` | `50` | How often (iterations) to adapt the MH proposal scale. |
+| `omega_burnin` | `20` | Hold Ω fixed for this many iterations while the sampler warms up. Guards against Ω collapse on sparse data. Set `0` to disable. |
+| `seed` / `saem_seed` | `12345` | RNG seed for the MH sampler. Independent of `multi_start_seed`. |
+| `n_leapfrog` / `saem_n_leapfrog` | `0` | Leapfrog steps for HMC proposals. `0` = Metropolis-Hastings. A positive value replaces MH with HMC — better mixing for correlated ETAs. **Requires an AD (Enzyme) build.** |
+
+**Works with:** IOV · BLOQ M3 · method chains
+
+**Does not accept:** `optimizer`, `maxiter`, `global_search`, `reconverge_gradient_interval`
+
+---
+
+### `imp` — Importance Sampling *(chain-terminal stage)*
+
+Computes the marginal log-likelihood by Monte Carlo importance sampling around
+the FOCEI/SAEM solution. Does **not** update parameters — purely diagnostic.
+Must be the **last** stage of a chain.
 
 ```
 [fit_options]
-  method     = [saem, focei]
+  method = [focei, imp]
+```
+
+or in R: `ferx_fit(model, data, method = c("focei", "imp"))`.
+
+The marginal -2LL is more accurate than the FOCEI Laplace approximation and
+is comparable across non-nested models in the same family.
+
+**IMP-specific options** (pass via `settings = list(...)` in R):
+
+| Key | Default | Description |
+|---|---|---|
+| `is_samples` | `1000` | Monte Carlo draws per subject. Halving the MC SE requires 4× more samples. |
+| `is_proposal_df` | `5` | Student-t proposal degrees of freedom. Smaller = heavier tails = more robust to misspecified covariance, but less efficient. |
+| `is_seed` | *(engine)* | RNG seed for IS step. |
+| `is_low_ess_threshold` | `0.1` | ESS fraction below which a subject is flagged in `fit$importance_sampling$low_ess_subject_ids`. |
+
+**Works with:** any method as the preceding stage · IOV (kappa is fixed at EBE
+mode; a note appears in `print(fit)`)
+
+---
+
+## Method chains
+
+Pass a list to run stages in sequence. Each stage is seeded from the previous
+converged parameters; only the final stage produces covariance/diagnostics.
+
+```
+[fit_options]
+  method = [saem, focei]
+```
+
+In R: `ferx_fit(model, data, method = c("saem", "focei"))`.
+
+**Common chains and their purpose:**
+
+| Chain | Why |
+|---|---|
+| `[saem, focei]` | SAEM finds the basin robustly; FOCEI polishes to the MLE |
+| `[gn, focei]` | Fast GN warm-up then accurate FOCEI |
+| `[focei, imp]` | FOCEI fit + exact marginal log-likelihood |
+| `[saem, imp]` | Most robust: SAEM basin + exact marginal LL |
+| `[saem, focei, imp]` | Full pipeline: robust start → MLE → exact marginal LL |
+
+Options that apply to *any* stage in the chain are accepted without a warning
+(e.g. both `n_exploration` and `maxiter` are valid in a `[saem, focei]` chain).
+
+---
+
+## Outer optimizer
+
+Applies to **FOCE / FOCEI / GN-hybrid** (not pure GN, not SAEM).
+
+```
+[fit_options]
+  optimizer = bobyqa    # default
+```
+
+| Optimizer | Algorithm | When to use |
+|---|---|---|
+| `bobyqa` | NLopt BOBYQA — derivative-free **(default)** | General use. Robust to small surface discontinuities. |
+| `slsqp` | NLopt SLSQP — gradient-based | Smooth, well-conditioned problems. Faster per iteration. Pair with `reconverge_gradient_interval = 1` on IOV or difficult models. |
+| `trust_region` | Newton trust-region with Steihaug CG | Ill-conditioned problems; guaranteed descent each step. |
+| `lbfgs` / `nlopt_lbfgs` | L-BFGS | Moderate-sized parameter spaces. |
+| `mma` | NLopt Method of Moving Asymptotes | When SLSQP stalls. |
+| `bfgs` | Hand-rolled BFGS | Small parameter spaces. |
+
+**Trust-region tuning:**
+
+| Key | Default | Description |
+|---|---|---|
+| `steihaug_max_iters` | `ceil(sqrt(n_params))` ≥ 5 | CG subproblem budget. Increase for ill-conditioned models. Only consumed with `optimizer = trust_region`. |
+
+**Gradient-based optimizer tuning:**
+
+| Key | Default | Description |
+|---|---|---|
+| `stagnation_guard` | `true` | Terminate NLopt early when OFV plateau is numerically flat. Set `false` to let SLSQP/L-BFGS run to their own xtol/ftol or `maxiter`. |
+| `reconverge_gradient_interval` | `0` | Re-solve EBEs during the population gradient every N evaluations. `0` = fixed-EBE gradient (cheap). `1` = reconverge every evaluation (~5–6× cost, recovers the full surface). Helps gradient-based optimizers past ill-conditioned plateaus. IOV models always reconverge regardless of this setting. |
+
+**Global pre-search** (before local optimizer):
+
+| Key | Default | Description |
+|---|---|---|
+| `global_search` | `false` | Run NLopt CRS2-LM global search before local refinement. |
+| `global_maxeval` | `200 * (n_params + 1)` | OFV evaluation budget for the global stage. |
+
+---
+
+## Convergence and iteration control
+
+| Key | Methods | Default | Description |
+|---|---|---|---|
+| `maxiter` | FOCE/FOCEI/GN/GN-hybrid | `500` | Maximum outer iterations. Not used by SAEM (use `n_exploration`/`n_convergence`). |
+| `inner_maxiter` | all | `200` | Per-subject EBE iteration cap. |
+| `inner_tol` | all | `1e-4` | Gradient-norm convergence tolerance for the inner EBE loop. |
+| `max_unconverged_frac` | all | `0.1` | Fraction of subjects (with ≥ `min_obs_for_convergence_check` obs) allowed unconverged EBEs before the step is rejected. Raise for sparse populations. |
+| `min_obs_for_convergence_check` | all | `2` | Subjects with fewer observations are excluded from the convergence-guard count. |
+
+---
+
+## Special data features
+
+| Key | Methods | Default | Description |
+|---|---|---|---|
+| `iov_column` | all | — | Name of the occasion column (e.g. `OCC`). Required for IOV / kappa models. |
+| `bloq_method` | all | `drop` | BLOQ handling: `drop` excludes CENS=1 rows; `m3` uses Beal's M3 likelihood (requires `CENS` column, DV = LLOQ on censored rows). |
+
+---
+
+## Gradient method
+
+Controls how the **inner-loop** (per-subject EBE) gradient is computed.
+Set in the model file with `gradient = ...` or in R with the `gradient` argument.
+
+| Value | Description |
+|---|---|
+| `auto` *(default)* | Use Enzyme AD when available and model has an analytical PK path; otherwise finite differences. Right choice for almost all uses. |
+| `ad` | Force Enzyme reverse-mode AD. ~5× faster per gradient call on 1-cpt oral (3 ETAs); advantage grows with more ETAs. Requires AD build. ODE models silently fall back to FD. |
+| `fd` | Force finite differences. Always available. Required for SDE (`[diffusion]`) models and Form-C per-CMT scaling. |
+
+Set `FERX_TIME_GRADIENTS=1` to print per-call timings at the end of a fit.
+
+---
+
+## Starting values and robustness
+
+| Key / argument | Methods | Default | Description |
+|---|---|---|---|
+| `inits_from_nca` | all | `false` | Derive starting values from NCA before the optimizer. `true` = `"nca_sweep"`. Options: `"nca"`, `"nca_sweep"`, `"nca_ebe"`. Most useful with `gn` or `trust_region`. |
+| `n_starts` | FOCE/FOCEI/GN | `1` | Independent fits from perturbed initial values (multi-start). Best OFV wins. |
+| `start_sigma` | FOCE/FOCEI/GN | `0.3` | Log-space perturbation for multi-start (≈ 30% CV). |
+| `multi_start_seed` | FOCE/FOCEI/GN | `42` | RNG seed for start-point perturbations. |
+| `scale_params` | all | `false` | Apply per-coordinate scaling to the outer optimizer. Leave `false` (default) — see note. |
+| `mu_referencing` | all | `true` | Auto-detect mu-referencing from `[individual_parameters]`. Disable only for debugging. |
+
+::: {.callout-note collapse="true"}
+## Why `scale_params` defaults to `false`
+
+Scaling divides each log/Cholesky-packed coordinate by its initial absolute
+value, so the optimizer works in a near-unit-magnitude space. This sounds
+helpful but is counterproductive for standard NLME: a coordinate like
+`log(V) = log(20) ≈ 3` gets a scale factor of 3, so the optimizer's unit
+step becomes a 3-unit move in log-space — a 20× multiplicative jump in V.
+That overshoots and, through the uniform gradient cap, starves the step in
+Ω dimensions. Leave at `false` unless you have a specific reason (e.g. A/B
+testing the scaled trajectory on an unusual model).
+:::
+
+---
+
+## Uncertainty quantification
+
+### SIR (post-fit, requires `covariance = true`)
+
+| Key | Default | Description |
+|---|---|---|
+| `sir` | `false` | Enable Sampling Importance Resampling after the fit. |
+| `sir_samples` | `1000` | Candidate draws (M). More → smoother CI, slower. |
+| `sir_resamples` | `250` | Retained draws (m). Rule of thumb: m ≈ M/4. |
+| `sir_seed` | *(engine)* | RNG seed, independent of `saem_seed`. |
+
+### IMP (chain stage — see above)
+
+IMP is the more accurate alternative when you need the marginal log-likelihood.
+SIR gives you non-parametric parameter uncertainty intervals. They serve
+different purposes and can be combined:
+
+```
+[fit_options]
+  method        = [focei, imp]
+  sir           = true
+  sir_samples   = 2000
+  sir_resamples = 500
+  covariance    = true
+```
+
+---
+
+## Diagnostics and output
+
+| Key / argument | Default | Description |
+|---|---|---|
+| `optimizer_trace` | `false` | Write per-iteration CSV to a temp file. Read with `ferx_trace(fit)`; plot with `ferx_plot_trace(fit)`. |
+| `threads` | *(all CPUs)* | Thread count for the Rust backend. Cap on shared machines or to avoid SMT contention: `parallel::detectCores(logical = FALSE)`. |
+| `covariance` | `true` | Compute covariance matrix and SEs. Set `false` during exploratory iterations to save time. |
+
+---
+
+## Settings precedence
+
+Three layers can set the same option. The order of precedence (highest first):
+
+1. **Dedicated `ferx_fit()` arguments** (`method`, `covariance`, `bloq_method`, `gradient`, `threads`, `sir`, `optimizer_trace`, `scale_params`, `inits_from_nca`)
+2. **`settings = list(...)`** — fine-grained overrides in R
+3. **`[fit_options]` in the `.ferx` file** — model-file defaults
+
+A `warning()` is emitted when a call-time value overrides the model file.
+Inspect `fit$model_file_settings` and `fit$call_settings` to audit.
+
+---
+
+## Complete worked examples
+
+**Standard FOCEI (default):**
+
+```
+[fit_options]
+  method     = focei
   covariance = true
 ```
 
-FOCEI with SIR uncertainty:
+**Fast exploratory GN:**
 
 ```
 [fit_options]
-  method        = focei
+  method     = gn
+  covariance = false
+```
+
+**SAEM → FOCEI chain (complex model):**
+
+```
+[fit_options]
+  method        = [saem, focei]
+  n_exploration = 200
+  n_convergence = 300
+  omega_burnin  = 30
   covariance    = true
-  sir           = true
-  sir_samples   = 1000
-  sir_resamples = 250
-  sir_seed      = 42
 ```
 
-Derivative-free BOBYQA fit:
+**FOCEI + exact marginal log-likelihood:**
 
 ```
 [fit_options]
-  method        = foce
-  optimizer     = bobyqa
-  maxiter       = 300
-  inner_maxiter = 100
-  inner_tol     = 1e-6
+  method   = [focei, imp]
+  is_samples = 2000
+  covariance = true
 ```
 
-IOV model:
+**IOV model:**
 
 ```
 [fit_options]
@@ -256,17 +379,19 @@ IOV model:
   covariance = true
 ```
 
-Enable optimizer trace with EBE guard:
+**IOV with SAEM (robust):**
 
 ```
 [fit_options]
-  method                        = focei
-  optimizer_trace               = true
-  max_unconverged_frac          = 0.5
-  min_obs_for_convergence_check = 3
+  method        = [saem, focei]
+  iov_column    = OCC
+  n_exploration = 150
+  n_convergence = 250
+  omega_burnin  = 20
+  covariance    = true
 ```
 
-M3 BLOQ handling:
+**BLOQ M3:**
 
 ```
 [fit_options]
@@ -275,17 +400,84 @@ M3 BLOQ handling:
   covariance  = true
 ```
 
-## Optimizer trace
+**Multi-start (8 parallel starts):**
 
-When `optimizer_trace = true`, a CSV is written to `/tmp/ferx_trace_<pid>_<ts>.csv`
-and the path is stored in `FitResult::trace_path`. Each row is one outer iteration.
-See [Output Files — Optimizer trace CSV (ferx-core book)](https://ferx-nlme.github.io/ferx-core/output.html#optimizer-trace-csv)
-for the full column reference.
-
-In R:
-
-```r
-fit <- ferx_fit(model, data, optimizer_trace = TRUE)
-tr  <- ferx_trace(fit)       # read the CSV
-ferx_plot_trace(fit)         # two-panel OFV + convergence plot
 ```
+[fit_options]
+  method           = focei
+  n_starts         = 8
+  start_sigma      = 0.3
+  multi_start_seed = 42
+  covariance       = true
+```
+
+**Tight convergence + optimizer trace:**
+
+```
+[fit_options]
+  method          = focei
+  optimizer       = slsqp
+  maxiter         = 500
+  inner_maxiter   = 100
+  inner_tol       = 1e-6
+  optimizer_trace = true
+  covariance      = true
+```
+
+**FOCEI + SIR uncertainty:**
+
+```
+[fit_options]
+  method        = focei
+  covariance    = true
+  sir           = true
+  sir_samples   = 2000
+  sir_resamples = 500
+```
+
+**SAEM with HMC proposals (AD build only):**
+
+```
+[fit_options]
+  method       = saem
+  n_leapfrog   = 3
+  omega_burnin = 30
+  covariance   = false
+```
+
+---
+
+## Options by method — quick reference
+
+| Option | foce | focei | gn | gn_hybrid | saem | imp |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| `maxiter` | ✓ | ✓ | ✓ | ✓ | — | — |
+| `optimizer` | ✓ | ✓ | — | ✓ | — | — |
+| `global_search` | ✓ | ✓ | — | ✓ | — | — |
+| `reconverge_gradient_interval` | ✓ | ✓ | — | ✓ | — | — |
+| `stagnation_guard` | ✓ | ✓ | — | ✓ | — | — |
+| `gn_lambda` | — | — | ✓ | ✓ | — | — |
+| `n_exploration` / `n_convergence` | — | — | — | — | ✓ | — |
+| `n_mh_steps` / `omega_burnin` | — | — | — | — | ✓ | — |
+| `n_leapfrog` | — | — | — | — | ✓ | — |
+| `is_samples` / `is_proposal_df` | — | — | — | — | — | ✓ |
+| `inner_maxiter` / `inner_tol` | ✓ | ✓ | ✓ | ✓ | ✓ | — |
+| `iov_column` | ✓ | ✓ | ✓ | ✓ | ✓ | — |
+| `bloq_method` | ✓ | ✓ | ✓ | ✓ | ✓ | — |
+| `n_starts` / `start_sigma` | ✓ | ✓ | ✓ | ✓ | — | — |
+| `sir` / `sir_samples` | ✓ | ✓ | ✓ | ✓ | ✓ | — |
+| `covariance` | ✓ | ✓ | ✓ | ✓ | ✓ | — |
+
+*(Chains: an option is accepted if it applies to any stage.)*
+
+---
+
+## See also
+
+- [Learn: Method chaining & optimizers](../learn/method-chaining.qmd)
+- [Learn: Robust fitting](../learn/robust-fitting.qmd)
+- [Example: SAEM estimation](../examples/saem.qmd)
+- [Example: IOV](../examples/iov.qmd)
+- [BLOQ DSL reference](bloq.qmd)
+- [IOV DSL reference](iov.qmd)
+- [ferx-core fit options (full engine reference)](https://ferx-nlme.github.io/ferx-core/model-file/fit-options.html)
