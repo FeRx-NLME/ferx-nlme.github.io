@@ -644,7 +644,14 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>The implied correlation is <span class="math inline">\(\rho = \text{cov}_{AB} / \sqrt{\text{var}_A \cdot \text{var}_B}\)</span>.</p>
+<p>The <strong>ETA correlation</strong> (correlation of the random effects) is</p>
+<p><span class="math display">\[\rho_\text{ETA} = \frac{\text{cov}_{AB}}{\sqrt{\text{var}_A \cdot \text{var}_B}}\]</span></p>
+<blockquote class="blockquote">
+<p><strong>Log-normal vs additive ETAs.</strong> The values in <code>block_omega</code> are always the variance–covariance matrix of the <em>ETAs</em> — the random effects on the log scale for log-normal parameters, or directly on the parameter scale for additive ETAs. Therefore <span class="math inline">\(\rho_\text{ETA}\)</span> above is always the correct ETA correlation regardless of distribution type.</p>
+<p>For <strong>log-normal</strong> parameters (e.g.&nbsp;<code>CL = TVCL * exp(ETA_CL)</code>), <span class="math inline">\(\rho_\text{ETA}\)</span> equals the <em>Spearman</em> (rank) correlation between individual parameters, because the log transform is monotone. The Pearson correlation between individual parameters on the <strong>original</strong> scale follows the bivariate log-normal formula:</p>
+<p><span class="math display">\[\rho_\text{param} = \frac{e^{\,\text{cov}_{AB}} - 1}{\sqrt{(e^{\,\text{var}_A} - 1)(e^{\,\text{var}_B} - 1)}}\]</span></p>
+<p><code>ferx_cor_matrix()</code> returns the ETA correlation matrix (<span class="math inline">\(\rho_\text{ETA}\)</span>), which is the standard quantity reported in NLME output.</p>
+</blockquote>
 <p>For a block of size 3, provide 6 values (lower triangle): <code>[var_A, cov_AB, var_B, cov_AC, cov_BC, var_C]</code>.</p>
 </section>
 <section id="model-file" class="level2">
