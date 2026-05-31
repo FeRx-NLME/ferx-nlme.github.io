@@ -104,15 +104,22 @@ ferx_model_inspect(fit)
 
 The data file must include a `WT` covariate column (body weight in kg); it is
 referenced directly in `[individual_parameters]`. Dose rows target `CMT=1`
-(transit1). The `lagtime=LAGTIME` argument in `ode(...)` is not used here —
-the lag time is instead applied via the first transit compartment's initial
-condition being delayed, which is equivalent for modest lag times.
+(transit1).
 
-> **Note:** `LAGTIME` is declared in `[individual_parameters]` but is not
-> wired into a `lagtime=` argument in `[structural_model]` in this model. The
-> transit chain itself provides the absorption delay; `TVLAG` acts as an extra
-> fixed offset if needed. To activate the lag time mechanistically, pass
-> `lagtime=LAGTIME` inside `ode(...)`.
+::: {.callout-warning}
+**Known issue in the bundled example:** `TVLAG` / `LAGTIME` are declared and
+estimated but `lagtime=LAGTIME` is not passed to `ode(...)`, so the parameter
+has no effect on predictions. The transit chain alone provides the absorption
+delay via `MTT`. ferx-core will emit an unused-parameter warning for `TVLAG`.
+To add a true pre-transit lag time, wire it in:
+
+```
+[structural_model]
+  ode(obs_cmt=central, states=[transit1, ...], lagtime=LAGTIME)
+```
+
+Or drop `theta TVLAG` and `LAGTIME = TVLAG` entirely if no extra lag is needed.
+:::
 
 ## Tips
 
