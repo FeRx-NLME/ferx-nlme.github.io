@@ -29,7 +29,17 @@ The three values are the **lower triangle of Ω**, row-major:
 | `cov_AB` | Covariance between ETA_A and ETA_B |
 | `var_B` | Variance of ETA_B |
 
-The implied correlation is $\rho = \text{cov}_{AB} / \sqrt{\text{var}_A \cdot \text{var}_B}$.
+The **ETA correlation** (correlation of the random effects) is
+
+$$\rho_\text{ETA} = \frac{\text{cov}_{AB}}{\sqrt{\text{var}_A \cdot \text{var}_B}}$$
+
+> **Log-normal vs additive ETAs.** The values in `block_omega` are always the variance–covariance matrix of the *ETAs* — the random effects on the log scale for log-normal parameters, or directly on the parameter scale for additive ETAs. Therefore $\rho_\text{ETA}$ above is always the correct ETA correlation regardless of distribution type.
+>
+> For **log-normal** parameters (e.g. `CL = TVCL * exp(ETA_CL)`), $\rho_\text{ETA}$ equals the *Spearman* (rank) correlation between individual parameters, because the log transform is monotone. The Pearson correlation between individual parameters on the **original** scale follows the bivariate log-normal formula:
+>
+> $$\rho_\text{param} = \frac{e^{\,\text{cov}_{AB}} - 1}{\sqrt{(e^{\,\text{var}_A} - 1)(e^{\,\text{var}_B} - 1)}}$$
+>
+> `ferx_cor_matrix()` returns the ETA correlation matrix ($\rho_\text{ETA}$), which is the standard quantity reported in NLME output.
 
 For a block of size 3, provide 6 values (lower triangle):
 `[var_A, cov_AB, var_B, cov_AC, cov_BC, var_C]`.
