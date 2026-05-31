@@ -642,7 +642,6 @@ V2 = TVV2 * (WT / 70)^1.00</code></pre>
   theta TVQ(10.0,    0.1,  200.0)
   theta TVV2(100.0,  5.0, 1000.0)
   theta TVMTT(1.0,   0.1,   10.0)
-  theta TVLAG(0.25,  0.01,   2.0)
 
   omega ETA_CL ~ 0.09
   omega ETA_V1 ~ 0.09
@@ -657,7 +656,6 @@ V2 = TVV2 * (WT / 70)^1.00</code></pre>
   V2      = TVV2 * (WT / 70)^1.00
   KTR     = 4.0 / TVMTT
   KA      = KTR * exp(ETA_KA)
-  LAGTIME = TVLAG
 
 [structural_model]
   ode(obs_cmt=central, states=[transit1, transit2, transit3, central, peripheral])
@@ -692,22 +690,11 @@ V2 = TVV2 * (WT / 70)^1.00</code></pre>
 <section id="dataset-requirements" class="level2">
 <h2 class="anchored" data-anchor-id="dataset-requirements">Dataset requirements</h2>
 <p>The data file must include a <code>WT</code> covariate column (body weight in kg); it is referenced directly in <code>[individual_parameters]</code>. Dose rows target <code>CMT=1</code> (transit1).</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Known issue in the bundled example:</strong> <code>TVLAG</code> / <code>LAGTIME</code> are declared and estimated but <code>lagtime=LAGTIME</code> is not passed to <code>ode(...)</code>, so the parameter has no effect on predictions. The transit chain alone provides the absorption delay via <code>MTT</code>. ferx-core will emit an unused-parameter warning for <code>TVLAG</code>. To add a true pre-transit lag time, wire it in:</p>
-<pre><code>[structural_model]
+<p>The transit chain provides the absorption delay via <code>MTT</code> — no separate lag time parameter is needed in this model. To add a true pre-transit lag on top of the transit delay, declare a <code>theta TVLAG</code> and wire it in:</p>
+<pre><code>LAGTIME = TVLAG
+
+[structural_model]
   ode(obs_cmt=central, states=[transit1, ...], lagtime=LAGTIME)</code></pre>
-<p>Or drop <code>theta TVLAG</code> and <code>LAGTIME = TVLAG</code> entirely if no extra lag is needed.</p>
-</div>
-</div>
 </section>
 <section id="tips" class="level2">
 <h2 class="anchored" data-anchor-id="tips">Tips</h2>
