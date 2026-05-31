@@ -259,19 +259,16 @@ multipliers appear in the expression. See the
 
 ### Log-normal detection with derived intermediates
 
-The same `theta * exp(eta)` pattern detection only fires when the base is a
-**declared theta**. If the base is a derived intermediate, e.g.
+The `theta * exp(eta)` pattern is detected even when the base is a derived
+intermediate rather than a directly declared theta:
 
 ```
 KTR = 4.0 / TVMTT
-KA  = KTR * exp(ETA_KA)        # base is intermediate, not a theta
+KA  = KTR * exp(ETA_KA)        # detected as log-normal; CV% reported correctly
 ```
 
-then ferx currently labels the omega `[custom]` and reports `CV% = N/A`
-even though the transform is genuinely log-normal. Workaround: declare a
-dedicated theta for the parameter (`theta TVKA(...)`, then
-`KA = TVKA * exp(ETA_KA)`). Tracked in
-[ferx-r#55](https://github.com/FeRx-NLME/ferx-r/issues/55).
+ferx traces through the intermediate assignment to identify the underlying
+log-normal structure.
 
 ## Fixing parameters (FIX)
 
