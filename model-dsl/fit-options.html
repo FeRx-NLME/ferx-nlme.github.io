@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Fit Options – ferx</title>
+<title>Fit options – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,41 +22,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -551,24 +516,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#syntax" id="toc-syntax" class="nav-link active" data-scroll-target="#syntax">Syntax</a></li>
-  <li><a href="#general-options" id="toc-general-options" class="nav-link" data-scroll-target="#general-options">General options</a></li>
+  <li><a href="#which-method-should-i-use" id="toc-which-method-should-i-use" class="nav-link active" data-scroll-target="#which-method-should-i-use">Which method should I use?</a></li>
   <li><a href="#estimation-methods" id="toc-estimation-methods" class="nav-link" data-scroll-target="#estimation-methods">Estimation methods</a>
   <ul class="collapse">
-  <li><a href="#foce" id="toc-foce" class="nav-link" data-scroll-target="#foce">FOCE</a></li>
-  <li><a href="#focei-default" id="toc-focei-default" class="nav-link" data-scroll-target="#focei-default">FOCEI (default)</a></li>
-  <li><a href="#saem" id="toc-saem" class="nav-link" data-scroll-target="#saem">SAEM</a></li>
-  <li><a href="#gauss-newton" id="toc-gauss-newton" class="nav-link" data-scroll-target="#gauss-newton">Gauss-Newton</a></li>
-  <li><a href="#chained-methods" id="toc-chained-methods" class="nav-link" data-scroll-target="#chained-methods">Chained methods</a></li>
+  <li><a href="#focei-foce-with-interaction-default" id="toc-focei-foce-with-interaction-default" class="nav-link" data-scroll-target="#focei-foce-with-interaction-default"><code>focei</code> — FOCE with Interaction <em>(default)</em></a></li>
+  <li><a href="#foce-foce-no-interaction" id="toc-foce-foce-no-interaction" class="nav-link" data-scroll-target="#foce-foce-no-interaction"><code>foce</code> — FOCE (no interaction)</a></li>
+  <li><a href="#gn-gauss-newton" id="toc-gn-gauss-newton" class="nav-link" data-scroll-target="#gn-gauss-newton"><code>gn</code> — Gauss-Newton</a></li>
+  <li><a href="#gn_hybrid-gauss-newton-then-focei-polish" id="toc-gn_hybrid-gauss-newton-then-focei-polish" class="nav-link" data-scroll-target="#gn_hybrid-gauss-newton-then-focei-polish"><code>gn_hybrid</code> — Gauss-Newton then FOCEI polish</a></li>
+  <li><a href="#saem-stochastic-approximation-em" id="toc-saem-stochastic-approximation-em" class="nav-link" data-scroll-target="#saem-stochastic-approximation-em"><code>saem</code> — Stochastic Approximation EM</a></li>
+  <li><a href="#imp-importance-sampling-chain-terminal-stage" id="toc-imp-importance-sampling-chain-terminal-stage" class="nav-link" data-scroll-target="#imp-importance-sampling-chain-terminal-stage"><code>imp</code> — Importance Sampling <em>(chain-terminal stage)</em></a></li>
   </ul></li>
-  <li><a href="#optimizer-choices" id="toc-optimizer-choices" class="nav-link" data-scroll-target="#optimizer-choices">Optimizer choices</a></li>
-  <li><a href="#saem-specific-options" id="toc-saem-specific-options" class="nav-link" data-scroll-target="#saem-specific-options">SAEM-specific options</a></li>
-  <li><a href="#global-search" id="toc-global-search" class="nav-link" data-scroll-target="#global-search">Global search</a></li>
-  <li><a href="#sir-sampling-importance-resampling" id="toc-sir-sampling-importance-resampling" class="nav-link" data-scroll-target="#sir-sampling-importance-resampling">SIR (Sampling Importance Resampling)</a></li>
-  <li><a href="#parameter-scaling-and-ebe-convergence-guard" id="toc-parameter-scaling-and-ebe-convergence-guard" class="nav-link" data-scroll-target="#parameter-scaling-and-ebe-convergence-guard">Parameter scaling and EBE convergence guard</a></li>
-  <li><a href="#options-that-dont-apply-to-the-selected-method" id="toc-options-that-dont-apply-to-the-selected-method" class="nav-link" data-scroll-target="#options-that-dont-apply-to-the-selected-method">Options that don’t apply to the selected method</a></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
-  <li><a href="#optimizer-trace" id="toc-optimizer-trace" class="nav-link" data-scroll-target="#optimizer-trace">Optimizer trace</a></li>
+  <li><a href="#method-chains" id="toc-method-chains" class="nav-link" data-scroll-target="#method-chains">Method chains</a></li>
+  <li><a href="#outer-optimizer" id="toc-outer-optimizer" class="nav-link" data-scroll-target="#outer-optimizer">Outer optimizer</a></li>
+  <li><a href="#convergence-and-iteration-control" id="toc-convergence-and-iteration-control" class="nav-link" data-scroll-target="#convergence-and-iteration-control">Convergence and iteration control</a></li>
+  <li><a href="#special-data-features" id="toc-special-data-features" class="nav-link" data-scroll-target="#special-data-features">Special data features</a></li>
+  <li><a href="#gradient-method" id="toc-gradient-method" class="nav-link" data-scroll-target="#gradient-method">Gradient method</a></li>
+  <li><a href="#starting-values-and-robustness" id="toc-starting-values-and-robustness" class="nav-link" data-scroll-target="#starting-values-and-robustness">Starting values and robustness</a></li>
+  <li><a href="#uncertainty-quantification" id="toc-uncertainty-quantification" class="nav-link" data-scroll-target="#uncertainty-quantification">Uncertainty quantification</a>
+  <ul class="collapse">
+  <li><a href="#sir-post-fit-requires-covariance-true" id="toc-sir-post-fit-requires-covariance-true" class="nav-link" data-scroll-target="#sir-post-fit-requires-covariance-true">SIR (post-fit, requires <code>covariance = true</code>)</a></li>
+  <li><a href="#imp-chain-stage-see-above" id="toc-imp-chain-stage-see-above" class="nav-link" data-scroll-target="#imp-chain-stage-see-above">IMP (chain stage — see above)</a></li>
+  </ul></li>
+  <li><a href="#diagnostics-and-output" id="toc-diagnostics-and-output" class="nav-link" data-scroll-target="#diagnostics-and-output">Diagnostics and output</a></li>
+  <li><a href="#settings-precedence" id="toc-settings-precedence" class="nav-link" data-scroll-target="#settings-precedence">Settings precedence</a></li>
+  <li><a href="#complete-worked-examples" id="toc-complete-worked-examples" class="nav-link" data-scroll-target="#complete-worked-examples">Complete worked examples</a></li>
+  <li><a href="#options-by-method-quick-reference" id="toc-options-by-method-quick-reference" class="nav-link" data-scroll-target="#options-by-method-quick-reference">Options by method — quick reference</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -578,7 +551,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Fit Options</h1>
+<h1 class="title">Fit options</h1>
 </div>
 
 
@@ -595,217 +568,113 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The optional <code>[fit_options]</code> block configures the estimation method and optimizer settings. All keys have defaults, so this block can be omitted entirely for a simple FOCE fit.</p>
-<section id="syntax" class="level2">
-<h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
-<pre><code>[fit_options]
-  key = value</code></pre>
-</section>
-<section id="general-options" class="level2">
-<h2 class="anchored" data-anchor-id="general-options">General options</h2>
+<p>The <code>[fit_options]</code> block in a <code>.ferx</code> file, and the arguments to <code>ferx_fit()</code>, control the estimation method, optimizer, convergence settings, and diagnostics. All keys have defaults — the block can be omitted entirely for a standard FOCEI fit.</p>
+<section id="which-method-should-i-use" class="level2">
+<h2 class="anchored" data-anchor-id="which-method-should-i-use">Which method should I use?</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Recommended</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Starting out / standard PK</td>
+<td><code>focei</code> (default)</td>
+</tr>
+<tr class="even">
+<td>Fast feedback during model building</td>
+<td><code>gn</code> or <code>gn_hybrid</code></td>
+</tr>
+<tr class="odd">
+<td>Complex model, many ETAs, convergence issues</td>
+<td><code>c("saem", "focei")</code> chain</td>
+</tr>
+<tr class="even">
+<td>Need the most accurate marginal log-likelihood</td>
+<td><code>c("focei", "imp")</code></td>
+</tr>
+<tr class="odd">
+<td>Compare models on marginal likelihood</td>
+<td><code>imp</code> as final chain stage</td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="../learn/method-chaining.html">method chaining guide</a> covers these in depth with worked R code.</p>
+<hr>
+</section>
+<section id="estimation-methods" class="level2">
+<h2 class="anchored" data-anchor-id="estimation-methods">Estimation methods</h2>
+<section id="focei-foce-with-interaction-default" class="level3">
+<h3 class="anchored" data-anchor-id="focei-foce-with-interaction-default"><code>focei</code> — FOCE with Interaction <em>(default)</em></h3>
+<p>Linearises around the EBE η̂; evaluates residual variance at η̂ (not η = 0). Correct for proportional and combined error models. The right choice for most NLME fits.</p>
+<pre><code>[fit_options]
+  method     = focei
+  covariance = true</code></pre>
+<p><strong>Works with:</strong> all outer optimizers · BLOQ M3 · IOV · SAEM/GN chains · SIR</p>
+<hr>
+</section>
+<section id="foce-foce-no-interaction" class="level3">
+<h3 class="anchored" data-anchor-id="foce-foce-no-interaction"><code>foce</code> — FOCE (no interaction)</h3>
+<p>Evaluates residual variance at η = 0. Equivalent to FOCEI for additive error; slightly less accurate for proportional or combined. Use when reproducing a NONMEM FOCE result.</p>
+<p><strong>Works with:</strong> same as FOCEI.</p>
+<hr>
+</section>
+<section id="gn-gauss-newton" class="level3">
+<h3 class="anchored" data-anchor-id="gn-gauss-newton"><code>gn</code> — Gauss-Newton</h3>
+<p>BHHH Hessian approximation with Levenberg-Marquardt damping. Converges in 10–30 iterations on well-conditioned problems — the fastest method for feedback during model building. Does <strong>not</strong> accept an outer <code>optimizer</code> key.</p>
+<pre><code>[fit_options]
+  method     = gn
+  covariance = false   # skip covariance step for fast iterations</code></pre>
+<p><strong>GN-specific option:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Key</th>
-<th>Values</th>
 <th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>method</code></td>
-<td><code>foce</code>, <code>focei</code>, <code>saem</code>, <code>gn</code>, <code>gn_hybrid</code>, or list e.g.&nbsp;<code>[saem, focei]</code></td>
-<td><code>focei</code></td>
-<td>Estimation method</td>
-</tr>
-<tr class="even">
-<td><code>maxiter</code></td>
-<td>integer</td>
-<td><code>500</code></td>
-<td>Maximum outer loop iterations</td>
-</tr>
-<tr class="odd">
-<td><code>covariance</code></td>
-<td><code>true</code>, <code>false</code></td>
-<td><code>true</code></td>
-<td>Compute covariance matrix and standard errors</td>
-</tr>
-<tr class="even">
-<td><code>optimizer</code></td>
-<td>see table below</td>
-<td><code>slsqp</code></td>
-<td>Outer-loop optimization algorithm</td>
-</tr>
-<tr class="odd">
-<td><code>inner_maxiter</code></td>
-<td>integer</td>
-<td><code>200</code></td>
-<td>Max inner (EBE) optimizer iterations per subject</td>
-</tr>
-<tr class="even">
-<td><code>inner_tol</code></td>
-<td>float</td>
-<td><code>1e-4</code></td>
-<td>Gradient-norm convergence tolerance for inner EBE optimizer</td>
-</tr>
-<tr class="odd">
-<td><code>mu_referencing</code></td>
-<td><code>true</code>, <code>false</code></td>
-<td><code>true</code></td>
-<td>Auto-detect and apply mu-referencing from <code>[individual_parameters]</code></td>
-</tr>
-<tr class="even">
-<td><code>bloq_method</code></td>
-<td><code>drop</code>, <code>m3</code></td>
-<td><code>drop</code></td>
-<td>BLOQ handling: <code>drop</code> ignores censored rows; <code>m3</code> uses Beal’s M3 likelihood</td>
-</tr>
-<tr class="odd">
-<td><code>iov_column</code></td>
-<td>string</td>
-<td>—</td>
-<td>Name of the occasion column in the dataset (required for IOV models)</td>
-</tr>
-<tr class="even">
-<td><code>optimizer_trace</code></td>
-<td><code>true</code>, <code>false</code></td>
-<td><code>false</code></td>
-<td>Write per-iteration CSV to <code>/tmp/ferx_trace_&lt;pid&gt;_&lt;ts&gt;.csv</code></td>
-</tr>
-<tr class="odd">
-<td><code>gradient_method</code></td>
-<td><code>auto</code>, <code>enzyme</code>, <code>fd</code></td>
-<td><code>auto</code></td>
-<td>Gradient computation method. <code>auto</code> uses Enzyme if available, otherwise finite differences. <code>fd</code> forces finite differences (required for SDE/diffusion models).</td>
-</tr>
-<tr class="even">
-<td><code>n_starts</code></td>
-<td>integer</td>
-<td><code>1</code></td>
-<td>Number of independent fits from perturbed initial values; the run with the lowest OFV is returned. <code>1</code> disables multi-start.</td>
-</tr>
-<tr class="odd">
-<td><code>start_sigma</code></td>
-<td>float</td>
-<td><code>0.3</code></td>
-<td>Log-space perturbation size applied to theta for all starts.</td>
-</tr>
-<tr class="even">
-<td><code>multi_start_seed</code></td>
-<td>integer</td>
-<td>—</td>
-<td>RNG seed for reproducible multi-start perturbations</td>
-</tr>
-<tr class="odd">
-<td><code>max_unconverged_frac</code></td>
-<td>float (0–1)</td>
-<td><code>0.1</code></td>
-<td>Fraction of subjects allowed to have unconverged inner loops without triggering a warning. Raise when fitting complex models with sparse data.</td>
-</tr>
-<tr class="even">
-<td><code>min_obs_for_convergence_check</code></td>
-<td>integer</td>
-<td><code>2</code></td>
-<td>Minimum number of observations a subject must have before its inner convergence is counted toward <code>max_unconverged_frac</code>.</td>
+<td><code>gn_lambda</code></td>
+<td><code>0.01</code></td>
+<td>Levenberg-Marquardt damping. Increase (e.g.&nbsp;<code>0.1</code>) when GN steps are too aggressive on a rough surface.</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Works with:</strong> IOV · BLOQ M3 · multi-start · NCA inits</p>
+<p><strong>Does not accept:</strong> <code>optimizer</code>, <code>global_search</code>, <code>stagnation_guard</code>, <code>reconverge_gradient_interval</code></p>
+<hr>
 </section>
-<section id="estimation-methods" class="level2">
-<h2 class="anchored" data-anchor-id="estimation-methods">Estimation methods</h2>
-<section id="foce" class="level3">
-<h3 class="anchored" data-anchor-id="foce">FOCE</h3>
-<pre><code>method = foce</code></pre>
-<p>First-Order Conditional Estimation. Linearises the model around the EBE η̂ and evaluates residual variance at η = 0. Fast and reliable for additive-error models.</p>
+<section id="gn_hybrid-gauss-newton-then-focei-polish" class="level3">
+<h3 class="anchored" data-anchor-id="gn_hybrid-gauss-newton-then-focei-polish"><code>gn_hybrid</code> — Gauss-Newton then FOCEI polish</h3>
+<p>GN finds the basin; FOCEI refines to the MLE. Useful when GN is fast but its approximate Hessian gives slightly suboptimal final parameter estimates.</p>
+<pre><code>[fit_options]
+  method     = gn_hybrid
+  covariance = true</code></pre>
+<p><strong>Works with:</strong> all outer optimizers (applied to the FOCEI polish stage) · everything GN accepts.</p>
+<hr>
 </section>
-<section id="focei-default" class="level3">
-<h3 class="anchored" data-anchor-id="focei-default">FOCEI (default)</h3>
-<pre><code>method = focei</code></pre>
-<p>FOCE with Interaction. Evaluates residual variance at η̂ rather than η = 0, capturing the dependence of residual error on individual predictions. More accurate than FOCE when the error model is proportional or combined.</p>
-</section>
-<section id="saem" class="level3">
-<h3 class="anchored" data-anchor-id="saem">SAEM</h3>
-<pre><code>method = saem</code></pre>
-<p>Stochastic Approximation EM. Uses Metropolis-Hastings sampling instead of MAP optimisation for random effects. More robust to local minima; recommended for complex models with many random effects. <strong>Not supported with IOV.</strong></p>
-</section>
-<section id="gauss-newton" class="level3">
-<h3 class="anchored" data-anchor-id="gauss-newton">Gauss-Newton</h3>
-<pre><code>method = gn
-method = gn_hybrid</code></pre>
-<p>Gauss-Newton with BHHH Hessian approximation and Levenberg-Marquardt damping. <code>gn</code> typically converges in 10–30 iterations; <code>gn_hybrid</code> uses GN to find the basin and then polishes with FOCEI. Use <code>gn</code> for fast feedback during model development.</p>
-</section>
-<section id="chained-methods" class="level3">
-<h3 class="anchored" data-anchor-id="chained-methods">Chained methods</h3>
-<p>Pass a list to run stages sequentially, each starting from the previous converged parameters:</p>
-<pre><code>method = [saem, focei]</code></pre>
-<p>A SAEM→FOCEI chain is recommended for complex models: SAEM finds the basin robustly, FOCEI polishes to the MLE and produces a valid covariance matrix.</p>
-</section>
-</section>
-<section id="optimizer-choices" class="level2">
-<h2 class="anchored" data-anchor-id="optimizer-choices">Optimizer choices</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Optimizer</th>
-<th>Algorithm</th>
-<th>Recommended for</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>bobyqa</code></td>
-<td>NLopt BOBYQA — derivative-free <strong>(default)</strong></td>
-<td>General use; robust on rough surfaces</td>
-</tr>
-<tr class="even">
-<td><code>slsqp</code></td>
-<td>NLopt SLSQP</td>
-<td>Smooth, well-conditioned problems; faster per iteration</td>
-</tr>
-<tr class="odd">
-<td><code>trust_region</code></td>
-<td>Newton trust-region with Steihaug CG</td>
-<td>Ill-conditioned problems; guaranteed descent</td>
-</tr>
-<tr class="even">
-<td><code>lbfgs</code></td>
-<td>Built-in L-BFGS</td>
-<td>Large parameter spaces</td>
-</tr>
-<tr class="odd">
-<td><code>nlopt_lbfgs</code></td>
-<td>NLopt L-BFGS</td>
-<td>Alternative L-BFGS</td>
-</tr>
-<tr class="even">
-<td><code>mma</code></td>
-<td>NLopt Method of Moving Asymptotes</td>
-<td>When SLSQP stalls</td>
-</tr>
-<tr class="odd">
-<td><code>bfgs</code></td>
-<td>Built-in BFGS quasi-Newton</td>
-<td>Small parameter spaces</td>
-</tr>
-</tbody>
-</table>
-<p><strong><code>bobyqa</code></strong> does not use gradients — robust to small discontinuities in the FOCE surface caused by EBE re-estimation, but converges more slowly on smooth problems.</p>
-<p><strong><code>trust_region</code></strong> uses an AD-based gradient and a BHHH approximate Hessian (<code>H ≈ 4 Σ gᵢgᵢᵀ</code>), which is always positive semi-definite and costs no extra OFV evaluations beyond the gradient. The Steihaug CG budget defaults to <code>ceil(sqrt(n_params))</code> (typically 5 for standard NLME models); override with <code>steihaug_max_iters</code> if needed.</p>
-</section>
-<section id="saem-specific-options" class="level2">
-<h2 class="anchored" data-anchor-id="saem-specific-options">SAEM-specific options</h2>
+<section id="saem-stochastic-approximation-em" class="level3">
+<h3 class="anchored" data-anchor-id="saem-stochastic-approximation-em"><code>saem</code> — Stochastic Approximation EM</h3>
+<p>Replaces MAP optimization with Metropolis-Hastings sampling for the E-step. More robust to multi-modal ETA posteriors and high-shrinkage scenarios. Run time is controlled by iteration counts, not <code>maxiter</code>.</p>
+<pre><code>[fit_options]
+  method        = saem
+  n_exploration = 150
+  n_convergence = 250
+  covariance    = true</code></pre>
+<p><strong>SAEM-specific options:</strong></p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -823,35 +692,237 @@ method = gn_hybrid</code></pre>
 <tr class="odd">
 <td><code>n_exploration</code></td>
 <td><code>150</code></td>
-<td>Phase 1 iterations (step size γ = 1)</td>
+<td>Phase 1 iterations — stochastic, step size γ = 1. Sampler explores the posterior.</td>
 </tr>
 <tr class="even">
 <td><code>n_convergence</code></td>
 <td><code>250</code></td>
-<td>Phase 2 iterations (step size γ = 1/k)</td>
+<td>Phase 2 iterations — step size anneals to 0. Running average converges.</td>
 </tr>
 <tr class="odd">
 <td><code>n_mh_steps</code></td>
-<td><code>3</code></td>
-<td>Metropolis-Hastings steps per subject per iteration</td>
+<td><code>10</code></td>
+<td>Metropolis-Hastings proposals per subject per iteration. More = better mixing, slower per iteration.</td>
 </tr>
 <tr class="even">
 <td><code>adapt_interval</code></td>
 <td><code>50</code></td>
-<td>Iterations between MH step-size adaptation</td>
+<td>How often (iterations) to adapt the MH proposal scale.</td>
 </tr>
 <tr class="odd">
-<td><code>seed</code></td>
+<td><code>omega_burnin</code></td>
+<td><code>20</code></td>
+<td>Hold Ω fixed for this many iterations while the sampler warms up. Guards against Ω collapse on sparse data. Set <code>0</code> to disable.</td>
+</tr>
+<tr class="even">
+<td><code>seed</code> / <code>saem_seed</code></td>
 <td><code>12345</code></td>
-<td>RNG seed for reproducibility</td>
+<td>RNG seed for the MH sampler. Independent of <code>multi_start_seed</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>n_leapfrog</code> / <code>saem_n_leapfrog</code></td>
+<td><code>0</code></td>
+<td>Leapfrog steps for HMC proposals. <code>0</code> = Metropolis-Hastings. A positive value replaces MH with HMC — better mixing for correlated ETAs. <strong>Requires an AD (Enzyme) build.</strong></td>
 </tr>
 </tbody>
 </table>
+<p><strong>Works with:</strong> IOV · BLOQ M3 · method chains</p>
+<p><strong>Does not accept:</strong> <code>optimizer</code>, <code>maxiter</code>, <code>global_search</code>, <code>reconverge_gradient_interval</code></p>
+<hr>
 </section>
-<section id="global-search" class="level2">
-<h2 class="anchored" data-anchor-id="global-search">Global search</h2>
-<pre><code>global_search = true</code></pre>
-<p>Runs NLopt CRS2-LM (Controlled Random Search with Local Mutation) as a gradient-free pre-search before the local optimizer. Samples within parameter bounds; the local optimizer starts from the best point found. Useful for poorly-identified models or when the local optimizer lands in degenerate basins.</p>
+<section id="imp-importance-sampling-chain-terminal-stage" class="level3">
+<h3 class="anchored" data-anchor-id="imp-importance-sampling-chain-terminal-stage"><code>imp</code> — Importance Sampling <em>(chain-terminal stage)</em></h3>
+<p>Computes the marginal log-likelihood by Monte Carlo importance sampling around the FOCEI/SAEM solution. Does <strong>not</strong> update parameters — purely diagnostic. Must be the <strong>last</strong> stage of a chain.</p>
+<pre><code>[fit_options]
+  method = [focei, imp]</code></pre>
+<p>or in R: <code>ferx_fit(model, data, method = c("focei", "imp"))</code>.</p>
+<p>The marginal -2LL is more accurate than the FOCEI Laplace approximation and is comparable across non-nested models in the same family.</p>
+<p><strong>IMP-specific options</strong> (pass via <code>settings = list(...)</code> in R):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>is_samples</code></td>
+<td><code>1000</code></td>
+<td>Monte Carlo draws per subject. Halving the MC SE requires 4× more samples.</td>
+</tr>
+<tr class="even">
+<td><code>is_proposal_df</code></td>
+<td><code>5</code></td>
+<td>Student-t proposal degrees of freedom. Smaller = heavier tails = more robust to misspecified covariance, but less efficient.</td>
+</tr>
+<tr class="odd">
+<td><code>is_seed</code></td>
+<td><em>(engine)</em></td>
+<td>RNG seed for IS step.</td>
+</tr>
+<tr class="even">
+<td><code>is_low_ess_threshold</code></td>
+<td><code>0.1</code></td>
+<td>ESS fraction below which a subject is flagged in <code>fit$importance_sampling$low_ess_subject_ids</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Works with:</strong> any method as the preceding stage · IOV (kappa is fixed at EBE mode; a note appears in <code>print(fit)</code>)</p>
+<hr>
+</section>
+</section>
+<section id="method-chains" class="level2">
+<h2 class="anchored" data-anchor-id="method-chains">Method chains</h2>
+<p>Pass a list to run stages in sequence. Each stage is seeded from the previous converged parameters; only the final stage produces covariance/diagnostics.</p>
+<pre><code>[fit_options]
+  method = [saem, focei]</code></pre>
+<p>In R: <code>ferx_fit(model, data, method = c("saem", "focei"))</code>.</p>
+<p><strong>Common chains and their purpose:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Chain</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>[saem, focei]</code></td>
+<td>SAEM finds the basin robustly; FOCEI polishes to the MLE</td>
+</tr>
+<tr class="even">
+<td><code>[gn, focei]</code></td>
+<td>Fast GN warm-up then accurate FOCEI</td>
+</tr>
+<tr class="odd">
+<td><code>[focei, imp]</code></td>
+<td>FOCEI fit + exact marginal log-likelihood</td>
+</tr>
+<tr class="even">
+<td><code>[saem, imp]</code></td>
+<td>Most robust: SAEM basin + exact marginal LL</td>
+</tr>
+<tr class="odd">
+<td><code>[saem, focei, imp]</code></td>
+<td>Full pipeline: robust start → MLE → exact marginal LL</td>
+</tr>
+</tbody>
+</table>
+<p>Options that apply to <em>any</em> stage in the chain are accepted without a warning (e.g.&nbsp;both <code>n_exploration</code> and <code>maxiter</code> are valid in a <code>[saem, focei]</code> chain).</p>
+<hr>
+</section>
+<section id="outer-optimizer" class="level2">
+<h2 class="anchored" data-anchor-id="outer-optimizer">Outer optimizer</h2>
+<p>Applies to <strong>FOCE / FOCEI / GN-hybrid</strong> (not pure GN, not SAEM).</p>
+<pre><code>[fit_options]
+  optimizer = bobyqa    # default</code></pre>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Optimizer</th>
+<th>Algorithm</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>bobyqa</code></td>
+<td>NLopt BOBYQA — derivative-free <strong>(default)</strong></td>
+<td>General use. Robust to small surface discontinuities.</td>
+</tr>
+<tr class="even">
+<td><code>slsqp</code></td>
+<td>NLopt SLSQP — gradient-based</td>
+<td>Smooth, well-conditioned problems. Faster per iteration. Pair with <code>reconverge_gradient_interval = 1</code> on IOV or difficult models.</td>
+</tr>
+<tr class="odd">
+<td><code>trust_region</code></td>
+<td>Newton trust-region with Steihaug CG</td>
+<td>Ill-conditioned problems; guaranteed descent each step.</td>
+</tr>
+<tr class="even">
+<td><code>lbfgs</code> / <code>nlopt_lbfgs</code></td>
+<td>L-BFGS</td>
+<td>Moderate-sized parameter spaces.</td>
+</tr>
+<tr class="odd">
+<td><code>mma</code></td>
+<td>NLopt Method of Moving Asymptotes</td>
+<td>When SLSQP stalls.</td>
+</tr>
+<tr class="even">
+<td><code>bfgs</code></td>
+<td>Hand-rolled BFGS</td>
+<td>Small parameter spaces.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Trust-region tuning:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>steihaug_max_iters</code></td>
+<td><code>ceil(sqrt(n_params))</code> ≥ 5</td>
+<td>CG subproblem budget. Increase for ill-conditioned models. Only consumed with <code>optimizer = trust_region</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Gradient-based optimizer tuning:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>stagnation_guard</code></td>
+<td><code>true</code></td>
+<td>Terminate NLopt early when OFV plateau is numerically flat. Set <code>false</code> to let SLSQP/L-BFGS run to their own xtol/ftol or <code>maxiter</code>.</td>
+</tr>
+<tr class="even">
+<td><code>reconverge_gradient_interval</code></td>
+<td><code>0</code></td>
+<td>Re-solve EBEs during the population gradient every N evaluations. <code>0</code> = fixed-EBE gradient (cheap). <code>1</code> = reconverge every evaluation (~5–6× cost, recovers the full surface). Helps gradient-based optimizers past ill-conditioned plateaus. IOV models always reconverge regardless of this setting.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Global pre-search</strong> (before local optimizer):</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -869,55 +940,213 @@ method = gn_hybrid</code></pre>
 <tr class="odd">
 <td><code>global_search</code></td>
 <td><code>false</code></td>
-<td>Enable CRS2-LM pre-search</td>
+<td>Run NLopt CRS2-LM global search before local refinement.</td>
 </tr>
 <tr class="even">
 <td><code>global_maxeval</code></td>
 <td><code>200 * (n_params + 1)</code></td>
-<td>Max OFV evaluations during global search</td>
+<td>OFV evaluation budget for the global stage.</td>
 </tr>
 </tbody>
 </table>
-<p>Requires a full NLopt build — a warning is emitted if CRS2-LM is unavailable.</p>
+<hr>
 </section>
-<section id="sir-sampling-importance-resampling" class="level2">
-<h2 class="anchored" data-anchor-id="sir-sampling-importance-resampling">SIR (Sampling Importance Resampling)</h2>
-<p>SIR provides non-parametric parameter uncertainty estimates as an optional post-estimation step. Requires <code>covariance = true</code>.</p>
+<section id="convergence-and-iteration-control" class="level2">
+<h2 class="anchored" data-anchor-id="convergence-and-iteration-control">Convergence and iteration control</h2>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Key</th>
+<th>Methods</th>
 <th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>sir</code></td>
-<td><code>false</code></td>
-<td>Enable SIR</td>
+<td><code>maxiter</code></td>
+<td>FOCE/FOCEI/GN/GN-hybrid</td>
+<td><code>500</code></td>
+<td>Maximum outer iterations. Not used by SAEM (use <code>n_exploration</code>/<code>n_convergence</code>).</td>
 </tr>
 <tr class="even">
-<td><code>sir_samples</code></td>
-<td><code>1000</code></td>
-<td>Number of proposal samples (M)</td>
+<td><code>inner_maxiter</code></td>
+<td>all</td>
+<td><code>200</code></td>
+<td>Per-subject EBE iteration cap.</td>
 </tr>
 <tr class="odd">
-<td><code>sir_resamples</code></td>
-<td><code>250</code></td>
-<td>Number of resampled vectors (m)</td>
+<td><code>inner_tol</code></td>
+<td>all</td>
+<td><code>1e-4</code></td>
+<td>Gradient-norm convergence tolerance for the inner EBE loop.</td>
 </tr>
 <tr class="even">
-<td><code>sir_seed</code></td>
-<td><code>12345</code></td>
-<td>RNG seed</td>
+<td><code>max_unconverged_frac</code></td>
+<td>all</td>
+<td><code>0.1</code></td>
+<td>Fraction of subjects (with ≥ <code>min_obs_for_convergence_check</code> obs) allowed unconverged EBEs before the step is rejected. Raise for sparse populations.</td>
+</tr>
+<tr class="odd">
+<td><code>min_obs_for_convergence_check</code></td>
+<td>all</td>
+<td><code>2</code></td>
+<td>Subjects with fewer observations are excluded from the convergence-guard count.</td>
 </tr>
 </tbody>
 </table>
-<p>See <a href="https://ferx-nlme.github.io/ferx-core/estimation/sir.html">Estimation — SIR (ferx-core book)</a> for details.</p>
+<hr>
 </section>
-<section id="parameter-scaling-and-ebe-convergence-guard" class="level2">
-<h2 class="anchored" data-anchor-id="parameter-scaling-and-ebe-convergence-guard">Parameter scaling and EBE convergence guard</h2>
+<section id="special-data-features" class="level2">
+<h2 class="anchored" data-anchor-id="special-data-features">Special data features</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Methods</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>iov_column</code></td>
+<td>all</td>
+<td>—</td>
+<td>Name of the occasion column (e.g.&nbsp;<code>OCC</code>). Required for IOV / kappa models.</td>
+</tr>
+<tr class="even">
+<td><code>bloq_method</code></td>
+<td>all</td>
+<td><code>drop</code></td>
+<td>BLOQ handling: <code>drop</code> excludes CENS=1 rows; <code>m3</code> uses Beal’s M3 likelihood (requires <code>CENS</code> column, DV = LLOQ on censored rows).</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="gradient-method" class="level2">
+<h2 class="anchored" data-anchor-id="gradient-method">Gradient method</h2>
+<p>Controls how the <strong>inner-loop</strong> (per-subject EBE) gradient is computed. Set in the model file with <code>gradient = ...</code> or in R with the <code>gradient</code> argument.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>auto</code> <em>(default)</em></td>
+<td>Use Enzyme AD when available and model has an analytical PK path; otherwise finite differences. Right choice for almost all uses.</td>
+</tr>
+<tr class="even">
+<td><code>ad</code></td>
+<td>Force Enzyme reverse-mode AD. ~5× faster per gradient call on 1-cpt oral (3 ETAs); advantage grows with more ETAs. Requires AD build. ODE models silently fall back to FD.</td>
+</tr>
+<tr class="odd">
+<td><code>fd</code></td>
+<td>Force finite differences. Always available. Required for SDE (<code>[diffusion]</code>) models and Form-C per-CMT scaling.</td>
+</tr>
+</tbody>
+</table>
+<p>Set <code>FERX_TIME_GRADIENTS=1</code> to print per-call timings at the end of a fit.</p>
+<hr>
+</section>
+<section id="starting-values-and-robustness" class="level2">
+<h2 class="anchored" data-anchor-id="starting-values-and-robustness">Starting values and robustness</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key / argument</th>
+<th>Methods</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>inits_from_nca</code></td>
+<td>all</td>
+<td><code>false</code></td>
+<td>Derive starting values from NCA before the optimizer. <code>true</code> = <code>"nca_sweep"</code>. Options: <code>"nca"</code>, <code>"nca_sweep"</code>, <code>"nca_ebe"</code>. Most useful with <code>gn</code> or <code>trust_region</code>.</td>
+</tr>
+<tr class="even">
+<td><code>n_starts</code></td>
+<td>FOCE/FOCEI/GN</td>
+<td><code>1</code></td>
+<td>Independent fits from perturbed initial values (multi-start). Best OFV wins.</td>
+</tr>
+<tr class="odd">
+<td><code>start_sigma</code></td>
+<td>FOCE/FOCEI/GN</td>
+<td><code>0.3</code></td>
+<td>Log-space perturbation for multi-start (≈ 30% CV).</td>
+</tr>
+<tr class="even">
+<td><code>multi_start_seed</code></td>
+<td>FOCE/FOCEI/GN</td>
+<td><code>42</code></td>
+<td>RNG seed for start-point perturbations.</td>
+</tr>
+<tr class="odd">
+<td><code>scale_params</code></td>
+<td>all</td>
+<td><code>false</code></td>
+<td>Apply per-coordinate scaling to the outer optimizer. Leave <code>false</code> (default) — see note.</td>
+</tr>
+<tr class="even">
+<td><code>mu_referencing</code></td>
+<td>all</td>
+<td><code>true</code></td>
+<td>Auto-detect mu-referencing from <code>[individual_parameters]</code>. Disable only for debugging.</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why <code>scale_params</code> defaults to <code>false</code>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Scaling divides each log/Cholesky-packed coordinate by its initial absolute value, so the optimizer works in a near-unit-magnitude space. This sounds helpful but is counterproductive for standard NLME: a coordinate like <code>log(V) = log(20) ≈ 3</code> gets a scale factor of 3, so the optimizer’s unit step becomes a 3-unit move in log-space — a 20× multiplicative jump in V. That overshoots and, through the uniform gradient cap, starves the step in Ω dimensions. Leave at <code>false</code> unless you have a specific reason (e.g.&nbsp;A/B testing the scaled trajectory on an unusual model).</p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="uncertainty-quantification" class="level2">
+<h2 class="anchored" data-anchor-id="uncertainty-quantification">Uncertainty quantification</h2>
+<section id="sir-post-fit-requires-covariance-true" class="level3">
+<h3 class="anchored" data-anchor-id="sir-post-fit-requires-covariance-true">SIR (post-fit, requires <code>covariance = true</code>)</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -933,104 +1162,332 @@ method = gn_hybrid</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>scale_params</code></td>
-<td><code>true</code></td>
-<td>Scale packed parameters to O(1) before optimizer. Improves conditioning when log-transformed parameters span orders of magnitude.</td>
+<td><code>sir</code></td>
+<td><code>false</code></td>
+<td>Enable Sampling Importance Resampling after the fit.</td>
 </tr>
 <tr class="even">
-<td><code>max_unconverged_frac</code></td>
-<td><code>0.1</code></td>
-<td>Fraction of subjects (with ≥ <code>min_obs_for_convergence_check</code> observations) allowed to have unconverged EBEs before the step is rejected (OFV = ∞). Set to <code>1.0</code> to disable.</td>
+<td><code>sir_samples</code></td>
+<td><code>1000</code></td>
+<td>Candidate draws (M). More → smoother CI, slower.</td>
 </tr>
 <tr class="odd">
-<td><code>min_obs_for_convergence_check</code></td>
-<td><code>2</code></td>
-<td>Subjects with fewer observations are excluded from the convergence-guard check.</td>
+<td><code>sir_resamples</code></td>
+<td><code>250</code></td>
+<td>Retained draws (m). Rule of thumb: m ≈ M/4.</td>
 </tr>
 <tr class="even">
-<td><code>steihaug_max_iters</code></td>
-<td>adaptive</td>
-<td>Max CG iterations for the trust-region Steihaug subproblem (<code>optimizer = trust_region</code> only). Default uses <code>ceil(sqrt(n_params))</code> clamped to at least 5 — typically 5 for standard NLME models. Set explicitly to pin the budget (e.g.&nbsp;<code>steihaug_max_iters = 20</code>).</td>
+<td><code>sir_seed</code></td>
+<td><em>(engine)</em></td>
+<td>RNG seed, independent of <code>saem_seed</code>.</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="options-that-dont-apply-to-the-selected-method" class="level2">
-<h2 class="anchored" data-anchor-id="options-that-dont-apply-to-the-selected-method">Options that don’t apply to the selected method</h2>
-<p>If you set an option the chosen method doesn’t consume (e.g.&nbsp;<code>n_convergence</code> with <code>method = focei</code>), ferx emits a warning listing the option and the keys that <em>are</em> available. The option is ignored — the fit still proceeds.</p>
-<p>For a chained fit (<code>method = [saem, focei]</code>), an option is kept if it applies to <em>any</em> stage in the chain, so SAEM and FOCEI keys can be mixed without warnings.</p>
+<section id="imp-chain-stage-see-above" class="level3">
+<h3 class="anchored" data-anchor-id="imp-chain-stage-see-above">IMP (chain stage — see above)</h3>
+<p>IMP is the more accurate alternative when you need the marginal log-likelihood. SIR gives you non-parametric parameter uncertainty intervals. They serve different purposes and can be combined:</p>
+<pre><code>[fit_options]
+  method        = [focei, imp]
+  sir           = true
+  sir_samples   = 2000
+  sir_resamples = 500
+  covariance    = true</code></pre>
+<hr>
 </section>
-<section id="examples" class="level2">
-<h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<p>Standard FOCE with defaults:</p>
+</section>
+<section id="diagnostics-and-output" class="level2">
+<h2 class="anchored" data-anchor-id="diagnostics-and-output">Diagnostics and output</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key / argument</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>optimizer_trace</code></td>
+<td><code>false</code></td>
+<td>Write per-iteration CSV to a temp file. Read with <code>ferx_trace(fit)</code>; plot with <code>ferx_plot_trace(fit)</code>.</td>
+</tr>
+<tr class="even">
+<td><code>threads</code></td>
+<td><em>(all CPUs)</em></td>
+<td>Thread count for the Rust backend. Cap on shared machines or to avoid SMT contention: <code>parallel::detectCores(logical = FALSE)</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>covariance</code></td>
+<td><code>true</code></td>
+<td>Compute covariance matrix and SEs. Set <code>false</code> during exploratory iterations to save time.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="settings-precedence" class="level2">
+<h2 class="anchored" data-anchor-id="settings-precedence">Settings precedence</h2>
+<p>Three layers can set the same option. The order of precedence (highest first):</p>
+<ol type="1">
+<li><strong>Dedicated <code>ferx_fit()</code> arguments</strong> (<code>method</code>, <code>covariance</code>, <code>bloq_method</code>, <code>gradient</code>, <code>threads</code>, <code>sir</code>, <code>optimizer_trace</code>, <code>scale_params</code>, <code>inits_from_nca</code>)</li>
+<li><strong><code>settings = list(...)</code></strong> — fine-grained overrides in R</li>
+<li><strong><code>[fit_options]</code> in the <code>.ferx</code> file</strong> — model-file defaults</li>
+</ol>
+<p>A <code>warning()</code> is emitted when a call-time value overrides the model file. Inspect <code>fit$model_file_settings</code> and <code>fit$call_settings</code> to audit.</p>
+<hr>
+</section>
+<section id="complete-worked-examples" class="level2">
+<h2 class="anchored" data-anchor-id="complete-worked-examples">Complete worked examples</h2>
+<p><strong>Standard FOCEI (default):</strong></p>
 <pre><code>[fit_options]
-  method     = foce
-  maxiter    = 300
+  method     = focei
   covariance = true</code></pre>
-<p>Multi-start FOCEI (8 parallel starts, reproducible):</p>
+<p><strong>Fast exploratory GN:</strong></p>
 <pre><code>[fit_options]
-  method           = focei
-  covariance       = true
-  n_starts         = 8
-  start_sigma      = 0.3
-  multi_start_seed = 42</code></pre>
-<p>FOCEI with global search:</p>
+  method     = gn
+  covariance = false</code></pre>
+<p><strong>SAEM → FOCEI chain (complex model):</strong></p>
 <pre><code>[fit_options]
-  method        = focei
-  maxiter       = 500
-  covariance    = true
-  global_search = true</code></pre>
-<p>SAEM with custom settings:</p>
-<pre><code>[fit_options]
-  method        = saem
+  method        = [saem, focei]
   n_exploration = 200
   n_convergence = 300
-  n_mh_steps    = 5
-  seed          = 42
+  omega_burnin  = 30
   covariance    = true</code></pre>
-<p>SAEM → FOCEI chain:</p>
+<p><strong>FOCEI + exact marginal log-likelihood:</strong></p>
 <pre><code>[fit_options]
-  method     = [saem, focei]
+  method   = [focei, imp]
+  is_samples = 2000
   covariance = true</code></pre>
-<p>FOCEI with SIR uncertainty:</p>
-<pre><code>[fit_options]
-  method        = focei
-  covariance    = true
-  sir           = true
-  sir_samples   = 1000
-  sir_resamples = 250
-  sir_seed      = 42</code></pre>
-<p>Derivative-free BOBYQA fit:</p>
-<pre><code>[fit_options]
-  method        = foce
-  optimizer     = bobyqa
-  maxiter       = 300
-  inner_maxiter = 100
-  inner_tol     = 1e-6</code></pre>
-<p>IOV model:</p>
+<p><strong>IOV model:</strong></p>
 <pre><code>[fit_options]
   method     = focei
   iov_column = OCC
   covariance = true</code></pre>
-<p>Enable optimizer trace with EBE guard:</p>
+<p><strong>IOV with SAEM (robust):</strong></p>
 <pre><code>[fit_options]
-  method                        = focei
-  optimizer_trace               = true
-  max_unconverged_frac          = 0.5
-  min_obs_for_convergence_check = 3</code></pre>
-<p>M3 BLOQ handling:</p>
+  method        = [saem, focei]
+  iov_column    = OCC
+  n_exploration = 150
+  n_convergence = 250
+  omega_burnin  = 20
+  covariance    = true</code></pre>
+<p><strong>BLOQ M3:</strong></p>
 <pre><code>[fit_options]
   method      = focei
   bloq_method = m3
   covariance  = true</code></pre>
+<p><strong>Multi-start (8 parallel starts):</strong></p>
+<pre><code>[fit_options]
+  method           = focei
+  n_starts         = 8
+  start_sigma      = 0.3
+  multi_start_seed = 42
+  covariance       = true</code></pre>
+<p><strong>Tight convergence + optimizer trace:</strong></p>
+<pre><code>[fit_options]
+  method          = focei
+  optimizer       = slsqp
+  maxiter         = 500
+  inner_maxiter   = 100
+  inner_tol       = 1e-6
+  optimizer_trace = true
+  covariance      = true</code></pre>
+<p><strong>FOCEI + SIR uncertainty:</strong></p>
+<pre><code>[fit_options]
+  method        = focei
+  covariance    = true
+  sir           = true
+  sir_samples   = 2000
+  sir_resamples = 500</code></pre>
+<p><strong>SAEM with HMC proposals (AD build only):</strong></p>
+<pre><code>[fit_options]
+  method       = saem
+  n_leapfrog   = 3
+  omega_burnin = 30
+  covariance   = false</code></pre>
+<hr>
 </section>
-<section id="optimizer-trace" class="level2">
-<h2 class="anchored" data-anchor-id="optimizer-trace">Optimizer trace</h2>
-<p>When <code>optimizer_trace = true</code>, a CSV is written to <code>/tmp/ferx_trace_&lt;pid&gt;_&lt;ts&gt;.csv</code> and the path is stored in <code>FitResult::trace_path</code>. Each row is one outer iteration. See <a href="https://ferx-nlme.github.io/ferx-core/output.html#optimizer-trace-csv">Output Files — Optimizer trace CSV (ferx-core book)</a> for the full column reference.</p>
-<p>In R:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(model, data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>tr  <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)       <span class="co"># read the CSV</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit)         <span class="co"># two-panel OFV + convergence plot</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="options-by-method-quick-reference" class="level2">
+<h2 class="anchored" data-anchor-id="options-by-method-quick-reference">Options by method — quick reference</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Option</th>
+<th style="text-align: center;">foce</th>
+<th style="text-align: center;">focei</th>
+<th style="text-align: center;">gn</th>
+<th style="text-align: center;">gn_hybrid</th>
+<th style="text-align: center;">saem</th>
+<th style="text-align: center;">imp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>maxiter</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="even">
+<td><code>optimizer</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="odd">
+<td><code>global_search</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="even">
+<td><code>reconverge_gradient_interval</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="odd">
+<td><code>stagnation_guard</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="even">
+<td><code>gn_lambda</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="odd">
+<td><code>n_exploration</code> / <code>n_convergence</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="even">
+<td><code>n_mh_steps</code> / <code>omega_burnin</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="odd">
+<td><code>n_leapfrog</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="even">
+<td><code>is_samples</code> / <code>is_proposal_df</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr class="odd">
+<td><code>inner_maxiter</code> / <code>inner_tol</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="even">
+<td><code>iov_column</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="odd">
+<td><code>bloq_method</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="even">
+<td><code>n_starts</code> / <code>start_sigma</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="odd">
+<td><code>sir</code> / <code>sir_samples</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr class="even">
+<td><code>covariance</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<p><em>(Chains: an option is accepted if it applies to any stage.)</em></p>
+<hr>
+</section>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See also</h2>
+<ul>
+<li><a href="../learn/method-chaining.html">Learn: Method chaining &amp; optimizers</a></li>
+<li><a href="../learn/robust-fitting.html">Learn: Robust fitting</a></li>
+<li><a href="../examples/saem.html">Example: SAEM estimation</a></li>
+<li><a href="../examples/iov.html">Example: IOV</a></li>
+<li><a href="../model-dsl/bloq.html">BLOQ DSL reference</a></li>
+<li><a href="../model-dsl/iov.html">IOV DSL reference</a></li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/fit-options.html">ferx-core fit options (full engine reference)</a></li>
+</ul>
 
 
 </section>
