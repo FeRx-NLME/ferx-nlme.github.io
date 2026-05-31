@@ -679,14 +679,14 @@ Tip
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_iov"</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Shows OMEGA_IOV Estimates block alongside the standard OMEGA output</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Shows OMEGA_IOV  (inter-occasion variability) block alongside the standard OMEGA output</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>omega_iov        <span class="co"># IOV omega matrix</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ebe_kappas       <span class="co"># per-subject, per-occasion kappa EBEs (list of lists)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="interpreting-output" class="level2">
 <h2 class="anchored" data-anchor-id="interpreting-output">Interpreting output</h2>
-<p>The <code>print(fit)</code> output gains a <code>--- OMEGA_IOV Estimates (Inter-Occasion Variability) ---</code> block after the standard omega section. For Option B with off-diagonal correlations, a correlations sub-block follows the diagonal entries.</p>
+<p>The <code>print(fit)</code> output gains a <code>OMEGA_IOV  (inter-occasion variability)</code> block after the standard omega section. For Option B with off-diagonal correlations, a correlations sub-block follows the diagonal entries.</p>
 <p><strong>EBE kappas</strong> are returned in <code>fit$ebe_kappas</code> but are not yet emitted as columns in the sdtab CSV. Per-kappa shrinkage is computed and reported in the <code>OMEGA_IOV</code> section of <code>print(fit)</code> alongside the BSV shrinkage values.</p>
 </section>
 <section id="tips" class="level2">

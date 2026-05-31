@@ -698,7 +698,7 @@ Note
 </section>
 <section id="interpreting-the-output" class="level2">
 <h2 class="anchored" data-anchor-id="interpreting-the-output">Interpreting the output</h2>
-<p><code>print(fit)</code> shows <code>DIFF_CENTRAL</code> in the <code>--- THETA Estimates ---</code> block alongside the structural PK parameters. A small <code>DIFF_CENTRAL</code> relative to the observation variance indicates little system noise; a large value relative to sigma suggests the model is absorbing structural misfit as process noise — consider revisiting the structural model.</p>
+<p><code>print(fit)</code> shows <code>DIFF_CENTRAL</code> in the <code>THETA</code> block alongside the structural PK parameters. A small <code>DIFF_CENTRAL</code> relative to the observation variance indicates little system noise; a large value relative to sigma suggests the model is absorbing structural misfit as process noise — consider revisiting the structural model.</p>
 <p><code>fit$uses_sde</code> is <code>TRUE</code> whenever the fit used the EKF path.</p>
 </section>
 <section id="see-also" class="level2">

@@ -643,20 +643,23 @@ Tip
 <p>After fitting, <code>print()</code> reports omega as <code>[log-normal]</code> with a CV%:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>, <span class="at">covariance =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- OMEGA Estimates ---</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL    [log-normal]  = 0.027888  CV% = 16.8  SE = N/A</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V     [log-normal]  = 0.009489  CV%  = 9.8  SE = N/A</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA    [log-normal]  = 0.356897  CV% = 65.5  SE = N/A</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (covariance = FALSE, so SE columns are NA)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># OMEGA  (between-subject variability)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------------------</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL    [log-normal]  = 0.027888  CV% = 16.8  SE = N/A</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V     [log-normal]  = 0.009489  CV%  = 9.8  SE = N/A</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA    [log-normal]  = 0.356897  CV% = 65.5  SE = N/A</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (covariance = FALSE, so SE columns are NA)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The CV% is derived from the log-scale variance as <code>CV% = 100 * sqrt(exp(omega_var) - 1)</code>. For small variances this is approximately <code>100 * sqrt(omega_var)</code>, but the exact formula is always used.</p>
 <p><code>ferx_estimates()</code> returns the omega variance on the log scale in <code>estimate</code>, with <code>transform = "variance"</code> (omega rows always use this label regardless of the ETA parameterisation style — the log-normal interpretation is conveyed by <code>print.ferx_fit()</code>, not by the tidy table). SE and 95 % CI columns are on the same log-variance scale:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param              transform  estimate      se  rse_pct  lower_95  upper_95</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_CL)      variance     0.0423  0.0121     28.6    0.0186    0.0660</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_V)       variance     0.0198  0.0089     44.9    0.0024    0.0372</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   OMEGA(ETA_KA)      variance     0.1570  0.0480     30.6    0.0629    0.2511</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate_natural / lower_95_natural / upper_95_natural are NA for omega rows</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (back-transform is not defined for variance parameters)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param    transform  estimate   se  rse_pct  lower_95  upper_95</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL    variance  0.027888   NA       NA        NA        NA</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V     variance  0.009489   NA       NA        NA        NA</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA    variance  0.356897   NA       NA        NA        NA</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># SE/CI columns are NA because covariance = FALSE was used above.</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run with covariance = TRUE to populate them.</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate_natural / lower_95_natural / upper_95_natural are NA for omega rows</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># (back-transform is not defined for variance parameters)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="choosing-initial-omega-values" class="level3">
 <h3 class="anchored" data-anchor-id="choosing-initial-omega-values">Choosing initial omega values</h3>
 <p>A common question is: “what omega value corresponds to 30% BSV?”</p>
