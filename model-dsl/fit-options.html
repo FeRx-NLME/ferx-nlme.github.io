@@ -516,7 +516,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#which-method-should-i-use" id="toc-which-method-should-i-use" class="nav-link active" data-scroll-target="#which-method-should-i-use">Which method should I use?</a></li>
+  <li><a href="#convergence-troubleshooting" id="toc-convergence-troubleshooting" class="nav-link active" data-scroll-target="#convergence-troubleshooting">Convergence troubleshooting</a></li>
+  <li><a href="#which-method-should-i-use" id="toc-which-method-should-i-use" class="nav-link" data-scroll-target="#which-method-should-i-use">Which method should I use?</a></li>
   <li><a href="#estimation-methods" id="toc-estimation-methods" class="nav-link" data-scroll-target="#estimation-methods">Estimation methods</a>
   <ul class="collapse">
   <li><a href="#focei-foce-with-interaction-default" id="toc-focei-foce-with-interaction-default" class="nav-link" data-scroll-target="#focei-foce-with-interaction-default"><code>focei</code> — FOCE with Interaction <em>(default)</em></a></li>
@@ -569,6 +570,43 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>The <code>[fit_options]</code> block in a <code>.ferx</code> file, and the arguments to <code>ferx_fit()</code>, control the estimation method, optimizer, convergence settings, and diagnostics. All keys have defaults — the block can be omitted entirely for a standard FOCEI fit.</p>
+<section id="convergence-troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="convergence-troubleshooting">Convergence troubleshooting</h2>
+<p>The most common reason to open this page is a fit that didn’t converge or gave surprising results. Work through this list in order:</p>
+<p><strong>1. Is the STATUS line red / does <code>fit$converged</code> return <code>FALSE</code>?</strong></p>
+<ul>
+<li>Check <code>ferx_warnings(fit)</code> — boundary parameters, high condition number, and unconverged subjects all appear there with guidance.</li>
+<li>Run <code>ferx_check_init()</code> first: if <code>ofv_drop</code> is near zero, the initial values are the problem. Fix them or use <code>inits_from_nca = "nca_sweep"</code>.</li>
+<li>If OFV is dropping but hit the iteration cap, increase <code>maxiter</code>.</li>
+<li>Plot the trace (<code>optimizer_trace = TRUE</code> then <code>ferx_plot_trace(fit)</code>) — is the OFV still declining at the last iteration, or has it stalled?</li>
+</ul>
+<p><strong>2. OFV converged but optimizer stalled above expected minimum</strong></p>
+<ul>
+<li>Switch from gradient-based (<code>slsqp</code>) to derivative-free (<code>bobyqa</code>) — the FOCE surface has small discontinuities from EBE re-estimation that trip gradient-based methods.</li>
+<li>If using <code>slsqp</code> or <code>lbfgs</code>, try <code>reconverge_gradient_interval = 1</code> to recover the full gradient surface (costs ~5–6× per outer iteration).</li>
+<li>Try <code>global_search = TRUE</code> to escape a local basin.</li>
+<li>Try <code>n_starts = 8</code> for multi-start (≈ same wall time as one run on 8 cores).</li>
+</ul>
+<p><strong>3. Some subjects always fail their EBE inner loop</strong></p>
+<ul>
+<li>Raise <code>inner_maxiter</code> (e.g.&nbsp;<code>200L → 500L</code>) and tighten <code>inner_tol</code> (e.g.&nbsp;<code>1e-4 → 1e-6</code>).</li>
+<li>Allow a fraction of failures: <code>max_unconverged_frac = 0.1</code> (default). Raise to <code>0.2</code> for large sparse datasets.</li>
+<li>Exclude very sparse subjects from the count: <code>min_obs_for_convergence_check = 3</code>.</li>
+</ul>
+<p><strong>4. IOV model stalls</strong></p>
+<ul>
+<li>Use a SAEM → FOCEI chain: <code>method = [saem, focei]</code>. The IOV variance surface is weakly identified and SAEM finds it more reliably than a cold FOCEI start.</li>
+<li>Do not use <code>slsqp</code> with IOV without <code>reconverge_gradient_interval = 1</code> — the fixed-EBE gradient cannot see the IOV variance direction.</li>
+</ul>
+<p><strong>5. SAEM doesn’t look converged</strong></p>
+<ul>
+<li>Inspect the trace (<code>optimizer_trace = TRUE</code>): the population parameters should settle to stable averages by the end of phase 2.</li>
+<li>Increase <code>n_convergence</code> (default 250 → 400+) if the averaging phase is too short.</li>
+<li>Increase <code>omega_burnin</code> (default 20) if Ω collapses in early iterations on sparse data.</li>
+<li>SAEM with HMC (<code>n_leapfrog = 3</code>, AD build) mixes faster for correlated ETAs.</li>
+</ul>
+<hr>
+</section>
 <section id="which-method-should-i-use" class="level2">
 <h2 class="anchored" data-anchor-id="which-method-should-i-use">Which method should I use?</h2>
 <table class="caption-top table">
