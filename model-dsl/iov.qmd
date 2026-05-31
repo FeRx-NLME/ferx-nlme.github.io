@@ -121,7 +121,7 @@ nested list: `fit$ebe_kappas[[subject_id]][[occasion]]`).
 
 ## Estimation notes
 
-- **`foce` / `focei` are recommended.** SAEM currently does not support IOV.
+- **SAEM fully supports IOV.** A `c("saem", "focei")` chain is the most robust workflow: SAEM finds the basin, FOCEI polishes to the marginal minimum.
 - The inner optimizer jointly solves all BSV etas and all per-occasion kappas
   simultaneously (no separate kappa solve step).
 - The outer gradient for IOV models uses reconverged finite differences to

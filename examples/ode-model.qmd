@@ -108,7 +108,7 @@ fit$gradient_used
 - The ODE solver uses adaptive step-size control — the default tolerances
   (rtol = 1e-4, atol = 1e-6) work for most PK models; loosen if the fit is very
   slow or tighten if you observe discontinuities in predictions.
-- Steady-state (`SS=1`) is not supported for ODE models.
+- Steady-state (`SS=1`) is supported for ODE models via iterative pre-simulation (ferx simulates repeated doses until the state converges). SS doses are slower than for analytical models — roughly 50× the cost of a regular dose due to the RK45 integration segments.
 - There is no Enzyme autodiff path for ODE models — `gradient_used` will always
   be `"finite_differences"`.
 

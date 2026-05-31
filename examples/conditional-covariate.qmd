@@ -34,8 +34,10 @@ ID,TIME,DV,EVID,AMT,CMT,RATE,MDV,WT,CRCL
 2,1,3.1,0,.,1,0,0,61,72
 ```
 
-Covariate values must be constant within each subject row-block (time-invariant
-covariates). Time-varying covariates are not supported with analytical PK solvers.
+Covariate values that change within a subject are supported via `EVID=2` rows:
+the compartment state is unchanged but PK parameters are re-evaluated from the
+new covariate values at that time point (matching NONMEM's `$PK runs at every
+record` semantic). For time-constant covariates no `EVID=2` rows are needed.
 
 ## Model file
 
