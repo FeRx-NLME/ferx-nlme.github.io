@@ -36,7 +36,8 @@ After fitting, `print()` reports omega as `[log-normal]` with a CV%:
 ```r
 fit <- ferx_fit(ex$model, ex$data, method = "focei", covariance = FALSE)
 fit
-# --- OMEGA Estimates ---
+# OMEGA  (between-subject variability)
+# ------------------------------------------------------------
 #   ETA_CL    [log-normal]  = 0.027888  CV% = 16.8  SE = N/A
 #   ETA_V     [log-normal]  = 0.009489  CV%  = 9.8  SE = N/A
 #   ETA_KA    [log-normal]  = 0.356897  CV% = 65.5  SE = N/A
@@ -55,10 +56,12 @@ same log-variance scale:
 
 ```r
 ferx_estimates(fit)
-#   param              transform  estimate      se  rse_pct  lower_95  upper_95
-#   OMEGA(ETA_CL)      variance     0.0423  0.0121     28.6    0.0186    0.0660
-#   OMEGA(ETA_V)       variance     0.0198  0.0089     44.9    0.0024    0.0372
-#   OMEGA(ETA_KA)      variance     0.1570  0.0480     30.6    0.0629    0.2511
+#   param    transform  estimate   se  rse_pct  lower_95  upper_95
+#   ETA_CL    variance  0.027888   NA       NA        NA        NA
+#   ETA_V     variance  0.009489   NA       NA        NA        NA
+#   ETA_KA    variance  0.356897   NA       NA        NA        NA
+# SE/CI columns are NA because covariance = FALSE was used above.
+# Run with covariance = TRUE to populate them.
 # estimate_natural / lower_95_natural / upper_95_natural are NA for omega rows
 # (back-transform is not defined for variance parameters)
 ```

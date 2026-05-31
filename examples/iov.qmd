@@ -102,7 +102,7 @@ library(ferx)
 ex  <- ferx_example("warfarin_iov")
 fit <- ferx_fit(ex$model, ex$data)
 print(fit)
-# Shows OMEGA_IOV Estimates block alongside the standard OMEGA output
+# Shows OMEGA_IOV  (inter-occasion variability) block alongside the standard OMEGA output
 
 fit$omega_iov        # IOV omega matrix
 fit$ebe_kappas       # per-subject, per-occasion kappa EBEs (list of lists)
@@ -110,7 +110,7 @@ fit$ebe_kappas       # per-subject, per-occasion kappa EBEs (list of lists)
 
 ## Interpreting output
 
-The `print(fit)` output gains a `--- OMEGA_IOV Estimates (Inter-Occasion Variability) ---`
+The `print(fit)` output gains a `OMEGA_IOV  (inter-occasion variability)`
 block after the standard omega section. For Option B with off-diagonal
 correlations, a correlations sub-block follows the diagonal entries.
 

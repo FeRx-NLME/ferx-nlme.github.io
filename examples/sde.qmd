@@ -104,7 +104,7 @@ ferx_estimates(fit)             # DIFF_CENTRAL appears in the theta block
 
 ## Interpreting the output
 
-`print(fit)` shows `DIFF_CENTRAL` in the `--- THETA Estimates ---` block
+`print(fit)` shows `DIFF_CENTRAL` in the `THETA` block
 alongside the structural PK parameters. A small `DIFF_CENTRAL` relative to
 the observation variance indicates little system noise; a large value relative
 to sigma suggests the model is absorbing structural misfit as process noise —
