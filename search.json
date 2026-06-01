@@ -1316,6 +1316,13 @@
     "text": "ferx has two builds. They produce the same parameter estimates — they differ in how gradients are computed and how fast fits run.\n\n\n\nBuild\nGradients\nCompile time\nFit speed\nWhen to use\n\n\n\n\nSimple (default)\nFinite differences\n~2 min\nBaseline\nTrying ferx out, Windows-native, no Rust nightly\n\n\nFull (Enzyme autodiff)\nExact via Enzyme\n~45–60 min one-time toolchain build\nFaster, more accurate Hessians\nProduction fits, large models, SIR / uncertainty quantification\n\n\n\nYou can start with the simple build and upgrade later — the R API is identical.\nFor a deeper walkthrough of either path, see the installation chapter of the ferx-r book.\n\n\nAlmost nothing is disabled — the simple build falls back to finite-difference (FD) gradients everywhere autodiff would be used:\n\n\n\n\n\n\n\nFeature\nSimple build\n\n\n\n\nferx_simulate(), ferx_predict()\nIdentical — no gradients used\n\n\nODE / SDE / EKF models\nIdentical — these always use FD, even in the full build\n\n\nSAEM\nIdentical — derivative-free E-step\n\n\nPopulation (outer-loop) optimizer\nIdentical — always FD in both builds\n\n\nFOCE / FOCEI inner loop with analytical 1-/2-cpt PK\nSlower — FD instead of Enzyme reverse-mode AD (≈ 2 × n_eta extra gradient calls per iteration); results match\n\n\nHessian-based standard errors\nSlightly less accurate (FD Hessian)\n\n\n\nIf you mostly fit ODE models or use SAEM, the full build buys you nothing. The full build’s main win is faster FOCEI on analytical-PK models and crisper SEs for SIR / uncertainty quantification work. Tracked in ferx-r#46."
   },
   {
+    "objectID": "get-started.html#pick-a-version",
+    "href": "get-started.html#pick-a-version",
+    "title": "Get started",
+    "section": "Pick a version",
+    "text": "Pick a version\nThe install snippets below default to main (development). For reproducible work, pin to the latest tagged release — currently v0.1.5:\n# Latest release (recommended for new users / reproducible work)\npak::pak(\"FeRx-NLME/ferx-r@v0.1.5\")\n\n# Latest development version (tracks main; picks up new features and fixes)\npak::pak(\"FeRx-NLME/ferx-r\")\n@v0.1.5 works with remotes::install_github() and devtools::install_github() too. See the ferx-r releases page for what each release ships and a link to the matching ferx-core engine release."
+  },
+  {
     "objectID": "get-started.html#simple-build",
     "href": "get-started.html#simple-build",
     "title": "Get started",
