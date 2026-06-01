@@ -32,6 +32,22 @@ If you mostly fit ODE models or use SAEM, the full build buys you nothing. The f
 
 ---
 
+## Pick a version
+
+The install snippets below default to **main** (development). For reproducible work, pin to the latest tagged release — currently **v0.1.5**:
+
+```r
+# Latest release (recommended for new users / reproducible work)
+pak::pak("FeRx-NLME/ferx-r@v0.1.5")
+
+# Latest development version (tracks main; picks up new features and fixes)
+pak::pak("FeRx-NLME/ferx-r")
+```
+
+`@v0.1.5` works with `remotes::install_github()` and `devtools::install_github()` too. See the [ferx-r releases page](https://github.com/FeRx-NLME/ferx-r/releases) for what each release ships and a link to the matching `ferx-core` engine release.
+
+---
+
 ## Simple build
 
 The simple build skips the Enzyme toolchain entirely. It works on plain stable Rust and falls back to finite-difference gradients. Estimates match the full build; fits are somewhat slower and standard errors from the FD Hessian are slightly less accurate.
