@@ -115,9 +115,28 @@ Occasion indices can be any positive integers and do not need to be consecutive.
 the standard omega block. For a `block_kappa` with off-diagonal correlations,
 a correlations sub-block follows.
 
-Shrinkage for kappa parameters is reported per-kappa alongside the BSV eta
-shrinkage. Per-occasion kappa EBEs are available in `fit$ebe_kappas` (a
-nested list: `fit$ebe_kappas[[subject_id]][[occasion]]`).
+Shrinkage for kappa parameters is reported at two levels of detail:
+
+- `fit$shrinkage_kappa` — pooled shrinkage (named numeric vector, one value per kappa parameter)
+- `fit$shrinkage_kappa_by_occ` — per-occasion shrinkage (data frame with column `occ` and one column per kappa)
+
+```r
+fit$shrinkage_kappa
+#  KAPPA_CL
+#     0.167
+
+fit$shrinkage_kappa_by_occ
+#   occ  KAPPA_CL
+# 1   1    0.182
+# 2   2    0.153
+# (values are illustrative; run the model to get exact numbers)
+```
+
+High shrinkage (> 30%) on a kappa indicates the data cannot reliably estimate
+per-occasion random effects for that parameter.
+
+Per-occasion kappa EBEs are available in `fit$ebe_kappas` (a data frame with
+columns `ID`, `OCC`, and one column per kappa parameter).
 
 ## Estimation notes
 

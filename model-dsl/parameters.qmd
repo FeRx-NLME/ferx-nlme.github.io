@@ -15,12 +15,13 @@ theta NAME(initial_value, lower_bound, upper_bound)
 - **NAME** — parameter name, referenced in `[individual_parameters]`
 - **initial_value** — starting value for estimation
 - **lower_bound** — lower bound constraint (must be > 0; parameters are log-transformed internally)
-- **upper_bound** — upper bound constraint
+- **upper_bound** — optional; omit when there is no natural ceiling
 
 ```
-theta TVCL(0.134, 0.001, 10.0)
+theta TVCL(0.134, 0.001, 10.0)  # (initial, lower, upper)
 theta TVV(8.1, 0.1, 500.0)
 theta TVKA(1.0, 0.01, 50.0)
+theta TVEMAX(0.8, 0.001)        # lower-bound only; no upper bound
 ```
 
 ## Omega (between-subject variability)
@@ -289,13 +290,16 @@ block_omega (ETA_CL, ETA_V) = [0.09, 0.0, 0.04] FIX   # entire block fixed
 theta TVLAG(0.25, FIX)   # two-element form: value + FIX, no bounds
 ```
 
-**Placement**: `FIX` may appear at the end of the line (after the closing
-parenthesis or value) or inside the parentheses for the two-element theta form.
-Both are accepted:
+**Placement is flexible**: `FIX` may appear at the end of the line or, for
+theta, inside the parentheses. For omega/sigma/kappa it can also precede the
+`~`:
 
 ```
-theta TVLAG(0.25, 0.0, 2.0) FIX   # after closing paren
-theta TVLAG(0.25, FIX)             # inside parens (no bounds)
+theta TVLAG(0.25, 0.0, 2.0) FIX       # after closing paren
+theta TVLAG(0.25, FIX)                 # inside parens (no bounds)
+theta CL (FIX) (0.134, 0.001, 10.0)   # FIX anywhere before the bound triple
+omega ETA_CL (FIX) ~ 0.07             # FIX before the tilde
+omega ETA_CL ~ 0.07 FIX               # FIX after the value — both forms OK
 ```
 
 Fixed parameters are shown in `print(fit)` and `ferx_estimates()` with `SE =

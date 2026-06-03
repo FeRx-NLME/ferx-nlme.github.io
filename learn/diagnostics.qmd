@@ -135,7 +135,23 @@ For a full walkthrough with plots see [Chapter 5 (Diagnostics)](https://ferx-nlm
 ## Goodness-of-fit plots from `fit$sdtab`
 
 `fit$sdtab` is a data frame with one row per observation containing PRED,
-IPRED, CWRES, and IWRES:
+IPRED, CWRES, IWRES, and additional columns depending on the model:
+
+| Column | Always present | When present |
+|---|---|---|
+| `ID`, `TIME`, `DV` | Yes | — |
+| `PRED`, `IPRED`, `CWRES`, `IWRES`, `EBE_OFV` | Yes | — |
+| `CMT` | No | Multi-endpoint models (any `CMT != 1` in the data) |
+| `OCC` | No | IOV models |
+| `CENS` | No | When the dataset has a `CENS` column (BLOQ) |
+
+For multi-endpoint models, split GOF plots by `CMT`:
+
+```r
+library(dplyr)
+sdtab <- fit$sdtab |>
+  mutate(endpoint = factor(CMT, levels = c(2, 3), labels = c("PK", "PD")))
+```
 
 ```r
 sdtab <- fit$sdtab
@@ -214,6 +230,113 @@ The raw warning strings are also available on the fit object:
 fit$warnings             # character vector of all warning messages
 fit$warnings_structured  # data frame: severity, category, message
 ```
+
+---
+
+## Run log — `ferx_runlog()`
+
+`ferx_runlog()` produces a NONMEM-style `.lst` summary in the console —
+useful for archiving results, quick convergence checks, and sharing with
+collaborators who expect NONMEM-style output.
+
+```r
+ex  <- ferx_example("warfarin")
+fit <- ferx_fit(ex$model, ex$data, method = "foce", covariance = TRUE)
+ferx_runlog(fit)
+```
+
+The output for the warfarin example looks like:
+
+```
+============================================================
+  ferx run log
+  Model:   warfarin
+  Method:  FOCE
+  ferx:    0.1.5
+  Date:    2026-06-04 00:54:58
+============================================================
+============================================================
+MODEL FILE
+------------------------------------------------------------
+# One-compartment oral PK model (warfarin)
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  ...
+============================================================
+DATA SUMMARY
+------------------------------------------------------------
+  Subjects:       10
+  Observations:   110
+  Time range:     0.5 to 120
+============================================================
+PARAMETER ESTIMATES
+------------------------------------------------------------
+  PARAMETER                            INITIAL           FINAL        SE     %RSE
+  TVCL                                   0.134        0.132779   0.01433    10.8%
+  TVV                                      8.1         7.69273    0.2899     3.8%
+  TVKA                                       1        0.756318   0.03491     4.6%
+  ETA_CL                                  0.07       0.0284934  0.006363    22.3%
+  ETA_V                                   0.02      0.00959794  0.002161    22.5%
+  ETA_KA                                   0.4        0.340694   0.07627    22.4%
+  PROP_ERR                                0.01       0.0106401  0.0007838     7.4%
+============================================================
+ESTIMATION SETTINGS
+------------------------------------------------------------
+  Optimizer:      bobyqa
+  Max iterations: 300
+  BLOQ method:    drop
+============================================================
+OBJECTIVE FUNCTION
+------------------------------------------------------------
+  OFV   = -280.183
+  AIC   = -266.183
+  BIC   = -247.28
+  Convergence: YES
+============================================================
+COVARIANCE STEP
+------------------------------------------------------------
+  Condition number: 12.08
+  Eigenvalues:      2.224  1.023  0.9999  0.9921  0.9246  0.6524  0.1841
+============================================================
+DIAGNOSTICS
+------------------------------------------------------------
+  ETA shrinkage:  ETA_CL=-0.1%  ETA_V=0.0%  ETA_KA=0.1%
+  EPS shrinkage:  15.3%
+  DW statistic:   2.609 (negative autocorrelation)
+  ETA normality (Shapiro-Wilk):
+    ETA_CL: W=0.900 p=0.217
+    ETA_V: W=0.849 p=0.057
+    ETA_KA: W=0.937 p=0.521
+============================================================
+FINAL GRADIENT
+------------------------------------------------------------
+  Gradient not available for this optimizer (BOBYQA / BFGS / GN / SAEM).
+============================================================
+RUNTIME
+------------------------------------------------------------
+  Wall time:   0.0 seconds
+  Gradient:    finite differences (inner) / N/A (outer)
+============================================================
+```
+
+**Capture to a file:**
+
+```r
+log_text <- ferx_runlog(fit, verbose = FALSE)
+writeLines(log_text, "warfarin_run1.log")
+```
+
+**Gradient convergence check** (for gradient-based optimizers such as L-BFGS):
+
+```r
+ferx_runlog(fit, gradient_tol = 0.001)  # flag any |grad| > 0.001
+```
+
+The `FINAL GRADIENT` section shows the gradient components at the best-OFV
+parameter point and warns if any exceed `gradient_tol` (default `0.01`).
+BOBYQA, GN, and SAEM do not produce a final gradient.
+
+---
 
 ## Other `ferx_fit` fields
 
