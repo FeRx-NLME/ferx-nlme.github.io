@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -650,7 +685,22 @@ kappa KAPPA_KA ~ 0.10</code></pre>
 <section id="interpreting-output" class="level2">
 <h2 class="anchored" data-anchor-id="interpreting-output">Interpreting output</h2>
 <p><code>print(fit)</code> gains an <code>OMEGA_IOV (inter-occasion variability)</code> section after the standard omega block. For a <code>block_kappa</code> with off-diagonal correlations, a correlations sub-block follows.</p>
-<p>Shrinkage for kappa parameters is reported per-kappa alongside the BSV eta shrinkage. Per-occasion kappa EBEs are available in <code>fit$ebe_kappas</code> (a nested list: <code>fit$ebe_kappas[[subject_id]][[occasion]]</code>).</p>
+<p>Shrinkage for kappa parameters is reported at two levels of detail:</p>
+<ul>
+<li><code>fit$shrinkage_kappa</code> — pooled shrinkage (named numeric vector, one value per kappa parameter)</li>
+<li><code>fit$shrinkage_kappa_by_occ</code> — per-occasion shrinkage (data frame with column <code>occ</code> and one column per kappa)</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_kappa</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  KAPPA_CL</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     0.167</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_kappa_by_occ</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   occ  KAPPA_CL</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1   1    0.182</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2   2    0.153</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># (values are illustrative; run the model to get exact numbers)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>High shrinkage (&gt; 30%) on a kappa indicates the data cannot reliably estimate per-occasion random effects for that parameter.</p>
+<p>Per-occasion kappa EBEs are available in <code>fit$ebe_kappas</code> (a data frame with columns <code>ID</code>, <code>OCC</code>, and one column per kappa parameter).</p>
 </section>
 <section id="estimation-notes" class="level2">
 <h2 class="anchored" data-anchor-id="estimation-notes">Estimation notes</h2>

@@ -586,6 +586,7 @@ window.Quarto = {
   <li><a href="#iwres-autocorrelation-check_diagnostics" id="toc-iwres-autocorrelation-check_diagnostics" class="nav-link" data-scroll-target="#iwres-autocorrelation-check_diagnostics">IWRES autocorrelation — <code>check_diagnostics()</code></a></li>
   <li><a href="#goodness-of-fit-plots-from-fitsdtab" id="toc-goodness-of-fit-plots-from-fitsdtab" class="nav-link" data-scroll-target="#goodness-of-fit-plots-from-fitsdtab">Goodness-of-fit plots from <code>fit$sdtab</code></a></li>
   <li><a href="#structured-warnings-ferx_warnings" id="toc-structured-warnings-ferx_warnings" class="nav-link" data-scroll-target="#structured-warnings-ferx_warnings">Structured warnings — <code>ferx_warnings()</code></a></li>
+  <li><a href="#run-log-ferx_runlog" id="toc-run-log-ferx_runlog" class="nav-link" data-scroll-target="#run-log-ferx_runlog">Run log — <code>ferx_runlog()</code></a></li>
   <li><a href="#other-ferx_fit-fields" id="toc-other-ferx_fit-fields" class="nav-link" data-scroll-target="#other-ferx_fit-fields">Other <code>ferx_fit</code> fields</a></li>
   <li><a href="#convergence-diagnostics-ferx_check_init" id="toc-convergence-diagnostics-ferx_check_init" class="nav-link" data-scroll-target="#convergence-diagnostics-ferx_check_init">Convergence diagnostics — <code>ferx_check_init()</code></a></li>
   <li><a href="#optimizer-trace-ferx_trace-ferx_plot_trace" id="toc-optimizer-trace-ferx_trace-ferx_plot_trace" class="nav-link" data-scroll-target="#optimizer-trace-ferx_trace-ferx_plot_trace">Optimizer trace — <code>ferx_trace()</code> / <code>ferx_plot_trace()</code></a></li>
@@ -773,47 +774,87 @@ Tip
 </section>
 <section id="goodness-of-fit-plots-from-fitsdtab" class="level2">
 <h2 class="anchored" data-anchor-id="goodness-of-fit-plots-from-fitsdtab">Goodness-of-fit plots from <code>fit$sdtab</code></h2>
-<p><code>fit$sdtab</code> is a data frame with one row per observation containing PRED, IPRED, CWRES, and IWRES:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sdtab <span class="ot">&lt;-</span> fit<span class="sc">$</span>sdtab</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>fit$sdtab</code> is a data frame with one row per observation containing PRED, IPRED, CWRES, IWRES, and additional columns depending on the model:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Always present</th>
+<th>When present</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ID</code>, <code>TIME</code>, <code>DV</code></td>
+<td>Yes</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td><code>PRED</code>, <code>IPRED</code>, <code>CWRES</code>, <code>IWRES</code>, <code>EBE_OFV</code></td>
+<td>Yes</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td><code>CMT</code></td>
+<td>No</td>
+<td>Multi-endpoint models (any <code>CMT != 1</code> in the data)</td>
+</tr>
+<tr class="even">
+<td><code>OCC</code></td>
+<td>No</td>
+<td>IOV models</td>
+</tr>
+<tr class="odd">
+<td><code>CENS</code></td>
+<td>No</td>
+<td>When the dataset has a <code>CENS</code> column (BLOQ)</td>
+</tr>
+</tbody>
+</table>
+<p>For multi-endpoint models, split GOF plots by <code>CMT</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sdtab <span class="ot">&lt;-</span> fit<span class="sc">$</span>sdtab <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">endpoint =</span> <span class="fu">factor</span>(CMT, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"PK"</span>, <span class="st">"PD"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sdtab <span class="ot">&lt;-</span> fit<span class="sc">$</span>sdtab</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Standard GOF plots</strong> with ggplot2:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs PRED</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, DV)) <span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs PRED"</span>, <span class="at">x =</span> <span class="st">"Population prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs IPRED</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(IPRED, DV)) <span class="sc">+</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs IPRED"</span>, <span class="at">x =</span> <span class="st">"Individual prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs TIME</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(TIME, CWRES)) <span class="sc">+</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>),</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>), <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs TIME"</span>)</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs PRED</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, CWRES)) <span class="sc">+</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>),</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>), <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs PRED"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs PRED</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, DV)) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs PRED"</span>, <span class="at">x =</span> <span class="st">"Population prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># DV vs IPRED</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(IPRED, DV)) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"DV vs IPRED"</span>, <span class="at">x =</span> <span class="st">"Individual prediction"</span>, <span class="at">y =</span> <span class="st">"Observed"</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs TIME</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(TIME, CWRES)) <span class="sc">+</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>),</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>), <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs TIME"</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># CWRES vs PRED</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sdtab, <span class="fu">aes</span>(PRED, CWRES)) <span class="sc">+</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>),</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="fu">c</span>(<span class="st">"dashed"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span>), <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs PRED"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="structured-warnings-ferx_warnings" class="level2">
 <h2 class="anchored" data-anchor-id="structured-warnings-ferx_warnings">Structured warnings — <code>ferx_warnings()</code></h2>
 <p>ferx classifies non-fatal issues from a run into severity levels and categories and makes them available via <code>ferx_warnings()</code>. Critical issues are also surfaced inline in the <code>STATUS</code> line of <code>print(fit)</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_warnings</span>(fit)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   severity  category              message</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   warning   shrinkage             ETA_KA shrinkage = 0.58 (&gt; 0.40): EBEs</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   unreliable for this parameter</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   info      mu_referencing        ETA_CL detected as log-normal mu-referenced</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   info      mu_referencing        ETA_V detected as log-normal mu-referenced</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_warnings</span>(fit)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   severity  category              message</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   warning   shrinkage             ETA_KA shrinkage = 0.58 (&gt; 0.40): EBEs</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   unreliable for this parameter</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   info      mu_referencing        ETA_CL detected as log-normal mu-referenced</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   info      mu_referencing        ETA_V detected as log-normal mu-referenced</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Severity levels:</strong></p>
 <table class="caption-top table">
 <colgroup>
@@ -877,27 +918,112 @@ Tip
 </tbody>
 </table>
 <p>The raw warning strings are also available on the fit object:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings             <span class="co"># character vector of all warning messages</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings_structured  <span class="co"># data frame: severity, category, message</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings             <span class="co"># character vector of all warning messages</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings_structured  <span class="co"># data frame: severity, category, message</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="run-log-ferx_runlog" class="level2">
+<h2 class="anchored" data-anchor-id="run-log-ferx_runlog">Run log — <code>ferx_runlog()</code></h2>
+<p><code>ferx_runlog()</code> produces a NONMEM-style <code>.lst</code> summary in the console — useful for archiving results, quick convergence checks, and sharing with collaborators who expect NONMEM-style output.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"foce"</span>, <span class="at">covariance =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_runlog</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The output for the warfarin example looks like:</p>
+<pre><code>============================================================
+  ferx run log
+  Model:   warfarin
+  Method:  FOCE
+  ferx:    0.1.5
+  Date:    2026-06-04 00:54:58
+============================================================
+============================================================
+MODEL FILE
+------------------------------------------------------------
+# One-compartment oral PK model (warfarin)
+[parameters]
+  theta TVCL(0.134, 0.001, 10.0)
+  ...
+============================================================
+DATA SUMMARY
+------------------------------------------------------------
+  Subjects:       10
+  Observations:   110
+  Time range:     0.5 to 120
+============================================================
+PARAMETER ESTIMATES
+------------------------------------------------------------
+  PARAMETER                            INITIAL           FINAL        SE     %RSE
+  TVCL                                   0.134        0.132779   0.01433    10.8%
+  TVV                                      8.1         7.69273    0.2899     3.8%
+  TVKA                                       1        0.756318   0.03491     4.6%
+  ETA_CL                                  0.07       0.0284934  0.006363    22.3%
+  ETA_V                                   0.02      0.00959794  0.002161    22.5%
+  ETA_KA                                   0.4        0.340694   0.07627    22.4%
+  PROP_ERR                                0.01       0.0106401  0.0007838     7.4%
+============================================================
+ESTIMATION SETTINGS
+------------------------------------------------------------
+  Optimizer:      bobyqa
+  Max iterations: 300
+  BLOQ method:    drop
+============================================================
+OBJECTIVE FUNCTION
+------------------------------------------------------------
+  OFV   = -280.183
+  AIC   = -266.183
+  BIC   = -247.28
+  Convergence: YES
+============================================================
+COVARIANCE STEP
+------------------------------------------------------------
+  Condition number: 12.08
+  Eigenvalues:      2.224  1.023  0.9999  0.9921  0.9246  0.6524  0.1841
+============================================================
+DIAGNOSTICS
+------------------------------------------------------------
+  ETA shrinkage:  ETA_CL=-0.1%  ETA_V=0.0%  ETA_KA=0.1%
+  EPS shrinkage:  15.3%
+  DW statistic:   2.609 (negative autocorrelation)
+  ETA normality (Shapiro-Wilk):
+    ETA_CL: W=0.900 p=0.217
+    ETA_V: W=0.849 p=0.057
+    ETA_KA: W=0.937 p=0.521
+============================================================
+FINAL GRADIENT
+------------------------------------------------------------
+  Gradient not available for this optimizer (BOBYQA / BFGS / GN / SAEM).
+============================================================
+RUNTIME
+------------------------------------------------------------
+  Wall time:   0.0 seconds
+  Gradient:    finite differences (inner) / N/A (outer)
+============================================================</code></pre>
+<p><strong>Capture to a file:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>log_text <span class="ot">&lt;-</span> <span class="fu">ferx_runlog</span>(fit, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(log_text, <span class="st">"warfarin_run1.log"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Gradient convergence check</strong> (for gradient-based optimizers such as L-BFGS):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_runlog</span>(fit, <span class="at">gradient_tol =</span> <span class="fl">0.001</span>)  <span class="co"># flag any |grad| &gt; 0.001</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>FINAL GRADIENT</code> section shows the gradient components at the best-OFV parameter point and warns if any exceed <code>gradient_tol</code> (default <code>0.01</code>). BOBYQA, GN, and SAEM do not produce a final gradient.</p>
+<hr>
 </section>
 <section id="other-ferx_fit-fields" class="level2">
 <h2 class="anchored" data-anchor-id="other-ferx_fit-fields">Other <code>ferx_fit</code> fields</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ofv                  <span class="co"># objective function value (-2 log-likelihood)</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>aic                  <span class="co"># AIC = OFV + 2p</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>bic                  <span class="co"># BIC = OFV + p*ln(N)</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>converged            <span class="co"># TRUE if the outer optimizer converged</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>method               <span class="co"># estimation method used</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>gradient_used        <span class="co"># "enzyme", "dual", or "finite_differences"</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings             <span class="co"># non-fatal warnings from the run</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ebe_etas             <span class="co"># empirical Bayes ETAs per subject (data frame)</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>individual_estimates <span class="co"># individual PK parameters (CL, V, KA, ...) per subject</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>eta_normality        <span class="co"># Shapiro-Wilk normality test p-value per ETA</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eta        <span class="co"># ETA shrinkage per random effect</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eps        <span class="co"># EPS shrinkage (scalar or vector for multi-sigma models)</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>dw_statistic         <span class="co"># pooled Durbin-Watson statistic for IWRES</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>iwres_lag1_r         <span class="co"># pooled lag-1 Pearson r for IWRES</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ofv                  <span class="co"># objective function value (-2 log-likelihood)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>aic                  <span class="co"># AIC = OFV + 2p</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>bic                  <span class="co"># BIC = OFV + p*ln(N)</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>converged            <span class="co"># TRUE if the outer optimizer converged</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>method               <span class="co"># estimation method used</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>gradient_used        <span class="co"># "enzyme", "dual", or "finite_differences"</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings             <span class="co"># non-fatal warnings from the run</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>ebe_etas             <span class="co"># empirical Bayes ETAs per subject (data frame)</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>individual_estimates <span class="co"># individual PK parameters (CL, V, KA, ...) per subject</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>eta_normality        <span class="co"># Shapiro-Wilk normality test p-value per ETA</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eta        <span class="co"># ETA shrinkage per random effect</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>shrinkage_eps        <span class="co"># EPS shrinkage (scalar or vector for multi-sigma models)</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>dw_statistic         <span class="co"># pooled Durbin-Watson statistic for IWRES</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>iwres_lag1_r         <span class="co"># pooled lag-1 Pearson r for IWRES</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Shrinkage</strong> — values near 1 indicate that the data are not informative about a random effect:</p>
 <p><span class="math display">\[\text{ETA shrinkage}_k = 1 - \frac{\text{SD}(\hat{\eta}_k)}{\sqrt{\omega_{kk}}} \qquad \text{EPS shrinkage} = 1 - \text{SD}(\text{IWRES})\]</span></p>
 <hr>
@@ -905,24 +1031,24 @@ Tip
 <section id="convergence-diagnostics-ferx_check_init" class="level2">
 <h2 class="anchored" data-anchor-id="convergence-diagnostics-ferx_check_init">Convergence diagnostics — <code>ferx_check_init()</code></h2>
 <p>Before committing to a long fit, run a 5-iteration pilot to confirm the OFV is decreasing from the initial values:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>chk <span class="ot">&lt;-</span> <span class="fu">ferx_check_init</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>chk<span class="sc">$</span>summary</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   n_iter  ofv_start  ofv_end  ofv_drop  converged</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#        5     -180.2   -186.3      6.1      FALSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>chk <span class="ot">&lt;-</span> <span class="fu">ferx_check_init</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>chk<span class="sc">$</span>summary</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   n_iter  ofv_start  ofv_end  ofv_drop  converged</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#        5     -180.2   -186.3      6.1      FALSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="optimizer-trace-ferx_trace-ferx_plot_trace" class="level2">
 <h2 class="anchored" data-anchor-id="optimizer-trace-ferx_trace-ferx_plot_trace">Optimizer trace — <code>ferx_trace()</code> / <code>ferx_plot_trace()</code></h2>
 <p>When <code>optimizer_trace = TRUE</code> is passed to <code>ferx_fit()</code>, ferx writes a per-iteration CSV. Read and plot it:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tr <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)          <span class="co"># data frame with one row per outer iteration</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tr[, <span class="fu">c</span>(<span class="st">"iter"</span>, <span class="st">"ofv"</span>, <span class="st">"grad_norm"</span>)])</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit)           <span class="co"># two-panel plot: OFV + method-specific metric</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit, <span class="at">log_ofv =</span> <span class="cn">TRUE</span>)  <span class="co"># OFV on log scale (OFV - min(OFV))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>tr <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)          <span class="co"># data frame with one row per outer iteration</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tr[, <span class="fu">c</span>(<span class="st">"iter"</span>, <span class="st">"ofv"</span>, <span class="st">"grad_norm"</span>)])</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit)           <span class="co"># two-panel plot: OFV + method-specific metric</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit, <span class="at">log_ofv =</span> <span class="cn">TRUE</span>)  <span class="co"># OFV on log scale (OFV - min(OFV))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>ferx_trace()</code> with no argument recalls the trace from the last <code>ferx_fit()</code> call in the current session:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>()    <span class="co"># same as ferx_trace(fit) after the above</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>()    <span class="co"># same as ferx_trace(fit) after the above</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>See <a href="https://ferx-nlme.github.io/ferx-core/output.html#optimizer-trace-csv">Output Files — Optimizer trace CSV (ferx-core book)</a> for the full column reference.</p>
 
 

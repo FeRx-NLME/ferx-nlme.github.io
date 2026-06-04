@@ -601,11 +601,12 @@ window.Quarto = {
 <li><strong>NAME</strong> — parameter name, referenced in <code>[individual_parameters]</code></li>
 <li><strong>initial_value</strong> — starting value for estimation</li>
 <li><strong>lower_bound</strong> — lower bound constraint (must be &gt; 0; parameters are log-transformed internally)</li>
-<li><strong>upper_bound</strong> — upper bound constraint</li>
+<li><strong>upper_bound</strong> — optional; omit when there is no natural ceiling</li>
 </ul>
-<pre><code>theta TVCL(0.134, 0.001, 10.0)
+<pre><code>theta TVCL(0.134, 0.001, 10.0)  # (initial, lower, upper)
 theta TVV(8.1, 0.1, 500.0)
-theta TVKA(1.0, 0.01, 50.0)</code></pre>
+theta TVKA(1.0, 0.01, 50.0)
+theta TVEMAX(0.8, 0.001)        # lower-bound only; no upper bound</code></pre>
 </section>
 <section id="omega-between-subject-variability" class="level2">
 <h2 class="anchored" data-anchor-id="omega-between-subject-variability">Omega (between-subject variability)</h2>
@@ -785,9 +786,12 @@ kappa KAPPA_CL ~ 0.05 FIX             # kappa fixed at 0.05
 block_omega (ETA_CL, ETA_V) = [0.09, 0.0, 0.04] FIX   # entire block fixed</code></pre>
 <p><code>FIX</code> can also appear as part of the initial-value triple for <code>theta</code>:</p>
 <pre><code>theta TVLAG(0.25, FIX)   # two-element form: value + FIX, no bounds</code></pre>
-<p><strong>Placement</strong>: <code>FIX</code> may appear at the end of the line (after the closing parenthesis or value) or inside the parentheses for the two-element theta form. Both are accepted:</p>
-<pre><code>theta TVLAG(0.25, 0.0, 2.0) FIX   # after closing paren
-theta TVLAG(0.25, FIX)             # inside parens (no bounds)</code></pre>
+<p><strong>Placement is flexible</strong>: <code>FIX</code> may appear at the end of the line or, for theta, inside the parentheses. For omega/sigma/kappa it can also precede the <code>~</code>:</p>
+<pre><code>theta TVLAG(0.25, 0.0, 2.0) FIX       # after closing paren
+theta TVLAG(0.25, FIX)                 # inside parens (no bounds)
+theta CL (FIX) (0.134, 0.001, 10.0)   # FIX anywhere before the bound triple
+omega ETA_CL (FIX) ~ 0.07             # FIX before the tilde
+omega ETA_CL ~ 0.07 FIX               # FIX after the value — both forms OK</code></pre>
 <p>Fixed parameters are shown in <code>print(fit)</code> and <code>ferx_estimates()</code> with <code>SE = fixed</code> and <code>%RSE = fixed</code>; they are excluded from the covariance matrix.</p>
 <p><strong>Typical uses:</strong> - Fix a lag time or Hill coefficient to a literature value - Fix omega to zero to temporarily remove BSV from a parameter - Fix sigma during a two-stage estimation (fix PK error while fitting PD)</p>
 </section>
