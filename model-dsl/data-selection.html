@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Covariate model – ferx</title>
+<title>Data selection – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -579,11 +579,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link active" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#covariate-effects" id="toc-covariate-effects" class="nav-link" data-scroll-target="#covariate-effects">Covariate effects</a></li>
-  <li><a href="#data-requirements" id="toc-data-requirements" class="nav-link" data-scroll-target="#data-requirements">Data requirements</a></li>
-  <li><a href="#in-r" id="toc-in-r" class="nav-link" data-scroll-target="#in-r">In R</a></li>
-  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a></li>
+  <li><a href="#syntax" id="toc-syntax" class="nav-link active" data-scroll-target="#syntax">Syntax</a></li>
+  <li><a href="#ignore" id="toc-ignore" class="nav-link" data-scroll-target="#ignore"><code>ignore</code></a></li>
+  <li><a href="#accept" id="toc-accept" class="nav-link" data-scroll-target="#accept"><code>accept</code></a></li>
+  <li><a href="#ignore_subjects" id="toc-ignore_subjects" class="nav-link" data-scroll-target="#ignore_subjects"><code>ignore_subjects</code></a></li>
+  <li><a href="#evaluation-order" id="toc-evaluation-order" class="nav-link" data-scroll-target="#evaluation-order">Evaluation order</a></li>
+  <li><a href="#supported-columns" id="toc-supported-columns" class="nav-link" data-scroll-target="#supported-columns">Supported columns</a></li>
+  <li><a href="#exclusion-summary" id="toc-exclusion-summary" class="nav-link" data-scroll-target="#exclusion-summary">Exclusion summary</a></li>
+  <li><a href="#r-companion-ferx_selection" id="toc-r-companion-ferx_selection" class="nav-link" data-scroll-target="#r-companion-ferx_selection">R companion: <code>ferx_selection()</code></a></li>
+  <li><a href="#nonmem-equivalents" id="toc-nonmem-equivalents" class="nav-link" data-scroll-target="#nonmem-equivalents">NONMEM equivalents</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -593,7 +599,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example: Covariate model</h1>
+<h1 class="title">Data selection</h1>
 </div>
 
 
@@ -610,111 +616,184 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>A two-compartment oral model with body weight (WT) and creatinine clearance (CRCL) as covariates on clearance.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
+<p>The optional <code>[data_selection]</code> block excludes records from the dataset at read time without modifying the CSV. It is the ferx equivalent of NONMEM’s <code>$DATA IGNORE=</code> / <code>$DATA ACCEPT=</code>.</p>
+<section id="syntax" class="level2">
+<h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
+<pre><code>[data_selection]
+  ignore = &lt;expression&gt;
+  accept = &lt;expression&gt;
+  ignore_subjects = [&lt;id&gt;, ...]</code></pre>
+<p>All three keys are optional. Omitting the block entirely means “use all records.”</p>
+<hr>
+</section>
+<section id="ignore" class="level2">
+<h2 class="anchored" data-anchor-id="ignore"><code>ignore</code></h2>
+<p>A record is <strong>excluded</strong> when the expression is true.</p>
+<pre><code>[data_selection]
+  ignore = DV &lt; 0.001</code></pre>
+<p>Multiple <code>ignore</code> lines are independent: a record is excluded when <strong>any</strong> one of them matches. Each line is a separate reason to drop the record.</p>
+<p>Within a single line, join sub-conditions with <code>&amp;&amp;</code>:</p>
+<pre><code>[data_selection]
+  ignore = EVID == 0 &amp;&amp; DV &lt; 0.001</code></pre>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For background on covariate parameterisation, see <a href="https://ferx-nlme.github.io/ferx-book/chapters/03-model-dsl.html">Chapter 3 (Model DSL)</a> in the ferx book.</p>
+<p><code>||</code> within a single expression is <strong>not</strong> supported. Use multiple lines instead — each line already acts as an independent OR condition.</p>
 </div>
 </div>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code># Two-compartment oral PK model with covariates
-
-[parameters]
-  theta TVCL(5.0, 0.01, 100.0)
-  theta TVV1(50.0, 0.1, 1000.0)
-  theta TVQ(10.0, 0.01, 200.0)
-  theta TVV2(100.0, 0.1, 5000.0)
-  theta TVKA(1.0, 0.01, 50.0)
-  theta THETA_WT(0.75, 0.01, 2.0)
-  theta THETA_CRCL(0.5, 0.01, 2.0)
-
-  omega ETA_CL ~ 0.09
-  omega ETA_V1 ~ 0.04
-  omega ETA_Q  ~ 0.04
-  omega ETA_V2 ~ 0.09
-  omega ETA_KA ~ 0.25
-
-  sigma PROP_ERR ~ 0.04
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL) * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL
-  V1 = TVV1 * exp(ETA_V1)
-  Q  = TVQ  * exp(ETA_Q)
-  V2 = TVV2 * exp(ETA_V2)
-  KA = TVKA * exp(ETA_KA)
-
-[structural_model]
-  pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-
-[fit_options]
-  method     = focei
-  maxiter    = 500
-  covariance = true</code></pre>
+<hr>
 </section>
-<section id="covariate-effects" class="level2">
-<h2 class="anchored" data-anchor-id="covariate-effects">Covariate effects</h2>
-<p>The clearance equation includes two covariate effects:</p>
-<pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL</code></pre>
+<section id="accept" class="level2">
+<h2 class="anchored" data-anchor-id="accept"><code>accept</code></h2>
+<p>A record is <strong>kept</strong> only when the expression is true; excluded otherwise.</p>
+<pre><code>[data_selection]
+  accept = BW &gt;= 30 &amp;&amp; BW &lt; 48</code></pre>
+<p>Multiple <code>accept</code> lines are independent: a record is excluded when <strong>any</strong> accept condition fails.</p>
+<hr>
+</section>
+<section id="ignore_subjects" class="level2">
+<h2 class="anchored" data-anchor-id="ignore_subjects"><code>ignore_subjects</code></h2>
+<p>Exclude all records for one or more subjects by ID value:</p>
+<pre><code>[data_selection]
+  ignore_subjects = [3, 17]</code></pre>
+<p>Single-subject shorthand (no brackets):</p>
+<pre><code>[data_selection]
+  ignore_subjects = 3</code></pre>
+<hr>
+</section>
+<section id="evaluation-order" class="level2">
+<h2 class="anchored" data-anchor-id="evaluation-order">Evaluation order</h2>
+<p>For each record:</p>
+<ol type="1">
+<li><code>ignore_subjects</code> — exclude immediately if the ID is listed.</li>
+<li><code>ignore</code> — exclude if any clause matches.</li>
+<li><code>accept</code> — exclude if any clause fails.</li>
+</ol>
+<p>A record must pass all three stages to be included.</p>
+<hr>
+</section>
+<section id="supported-columns" class="level2">
+<h2 class="anchored" data-anchor-id="supported-columns">Supported columns</h2>
+<p>Column names are case-insensitive.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ID</code></td>
+<td>String — only <code>==</code> and <code>!=</code> (no ordered comparisons)</td>
+</tr>
+<tr class="even">
+<td><code>TIME</code>, <code>DV</code>, <code>EVID</code>, <code>AMT</code>, <code>CMT</code>, <code>RATE</code>, <code>MDV</code>, <code>CENS</code>, <code>II</code>, <code>SS</code></td>
+<td>Numeric</td>
+</tr>
+<tr class="odd">
+<td>Any covariate column</td>
+<td>Numeric</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Missing values:</strong> a comparison against a column whose value is missing (<code>.</code>, blank, <code>NA</code>) never fires. For example, <code>ignore = DV &lt; 0.001</code> does <strong>not</strong> exclude dose rows — their <code>DV</code> is missing. Only observation rows with a real <code>DV</code> below the threshold are dropped.</p>
+<p><code>ADDL</code> and <code>OCC</code> are <strong>not</strong> filter targets.</p>
+<hr>
+</section>
+<section id="exclusion-summary" class="level2">
+<h2 class="anchored" data-anchor-id="exclusion-summary">Exclusion summary</h2>
+<p>After reading the data, ferx prints and stores exclusion counts:</p>
+<pre><code>DATA SELECTION
+  Records read: 120    Obs excl.: 2    Doses excl.: 0    Other excl.: 0
+  Fired ignore: DV &lt; 1.0</code></pre>
+<p>The same information is in <code>fit$exclusions</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>exclusions<span class="sc">$</span>n_records_total   <span class="co"># 120</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>exclusions<span class="sc">$</span>n_obs_excluded    <span class="co"># 2</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>exclusions<span class="sc">$</span>fired_ignore      <span class="co"># "ignore: DV &lt; 1.0"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="r-companion-ferx_selection" class="level2">
+<h2 class="anchored" data-anchor-id="r-companion-ferx_selection">R companion: <code>ferx_selection()</code></h2>
+<p><code>ferx_selection()</code> applies the same filtering logic in pure R before committing to a fit, so you can inspect which records would be excluded:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_data_selection"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>sel <span class="ot">&lt;-</span> <span class="fu">ferx_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(sel)                           <span class="co"># retained records</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>sel<span class="sc">$</span>exclusions<span class="sc">$</span>n_obs_excluded       <span class="co"># number of excluded obs</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect excluded rows and the matched rule:</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_selection_excluded</span>(sel)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"DV"</span>, <span class="st">".exclude_reason"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The returned <code>ferx_data</code> object can be passed directly to <code>ferx_fit()</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(<span class="at">model =</span> ex<span class="sc">$</span>model,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">data  =</span> <span class="fu">ferx_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When both a <code>[data_selection]</code> block in the model file and a <code>ferx_selection()</code> call supply conditions, they are <strong>merged</strong>: duplicate expressions are deduplicated automatically.</p>
+<hr>
+</section>
+<section id="nonmem-equivalents" class="level2">
+<h2 class="anchored" data-anchor-id="nonmem-equivalents">NONMEM equivalents</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>NONMEM</th>
+<th>ferx</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$DATA IGNORE=C</code></td>
+<td><code>ignore = C == 1</code></td>
+</tr>
+<tr class="even">
+<td><code>$DATA IGNORE=(BW.GT.80)</code></td>
+<td><code>ignore = BW &gt; 80</code></td>
+</tr>
+<tr class="odd">
+<td><code>$DATA ACCEPT=(DV.GE.0.001)</code></td>
+<td><code>accept = DV &gt;= 0.001</code></td>
+</tr>
+<tr class="even">
+<td><code>$DATA IGNORE=(ID.EQ.3) IGNORE=(ID.EQ.17)</code></td>
+<td><code>ignore_subjects = [3, 17]</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_data_selection"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>warfarin_data_selection</code> model drops observations below a surrogate LLOQ of 1.0 mg/L (<code>ignore = DV &lt; 1.0</code>). The print output shows:</p>
+<pre><code>DATA SELECTION
+  Records read: 120    Obs excl.: 2    Doses excl.: 0    Other excl.: 0
+  Fired ignore: DV &lt; 1.0</code></pre>
+<p>See also <a href="../examples/warfarin-data-selection.html">Example: data selection</a> for a full worked example including the R-side preview with <code>ferx_selection()</code>.</p>
+<hr>
+</section>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><code>(WT/70)^THETA_WT</code> — allometric scaling with body weight, centred at 70 kg. THETA_WT is estimated (typical value ~0.75 for CL).</li>
-<li><code>(CRCL/100)^THETA_CRCL</code> — renal function effect, centred at 100 mL/min. THETA_CRCL is estimated.</li>
-</ul>
-<p>Both effects are <strong>centred</strong>: when WT = 70 kg and CRCL = 100 mL/min, both terms equal 1.0, so TVCL is interpretable as the clearance of a 70 kg patient with normal renal function.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Mu-referencing with covariates">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Mu-referencing with covariates
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Both term orderings are detected correctly — ferx recognises the <code>theta * exp(eta)</code> mu-reference regardless of where covariate multipliers appear:</p>
-<pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^0.75   # fine
-CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)   # also fine</code></pre>
-</div>
-</div>
-</section>
-<section id="data-requirements" class="level2">
-<h2 class="anchored" data-anchor-id="data-requirements">Data requirements</h2>
-<p>The dataset must include <code>WT</code> and <code>CRCL</code> columns:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,MDV,WT,CRCL
-1,0,.,1,100,1,1,72.5,105
-1,0.5,12.3,0,.,.,0,72.5,105
-1,1.0,18.7,0,.,.,0,72.5,105</code></pre>
-<p>Covariate columns are automatically detected — any column not in the standard NONMEM set (ID, TIME, DV, EVID, AMT, CMT, RATE, MDV, CENS, II, SS) is treated as a covariate. Names in the data file are matched case-insensitively against those used in <code>[individual_parameters]</code>.</p>
-</section>
-<section id="in-r" class="level2">
-<h2 class="anchored" data-anchor-id="in-r">In R</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_cov"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA-covariate correlations: check if covariates were absorbed</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit, data)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA_CL correlations with WT and CRCL should be near zero after fitting</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="notes" class="level2">
-<h2 class="anchored" data-anchor-id="notes">Notes</h2>
-<ul>
-<li>FOCEI is used here because the proportional error model creates an interaction between random effects and residual error.</li>
-<li>The estimated covariate exponents (THETA_WT, THETA_CRCL) have standard errors that can be used for a likelihood-ratio test of significance.</li>
-<li>The initial values for covariate thetas (THETA_WT = 0.75, THETA_CRCL = 0.5) are the allometric theory values — informative starting points that speed convergence.</li>
+<li><a href="../examples/warfarin-data-selection.html">Example: data selection (LLOQ filtering)</a></li>
+<li><a href="../model-dsl/fit-options.html">Fit options</a></li>
 </ul>
 
 

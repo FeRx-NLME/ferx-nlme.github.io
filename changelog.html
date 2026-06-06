@@ -374,6 +374,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Scaling</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./model-dsl/derived.html">
+ <span class="dropdown-text">Derived columns</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./model-dsl/data-selection.html">
+ <span class="dropdown-text">Data selection</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./model-dsl/bloq.html">
  <span class="dropdown-text">BLOQ (M3 method)</span></a>
   </li>  
@@ -492,6 +500,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="./examples/multistart.html">
  <span class="dropdown-text">Multi-start fitting</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/warfarin-derived.html">
+ <span class="dropdown-text">Derived columns ([derived])</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/warfarin-derived-pkpd.html">
+ <span class="dropdown-text">Derived PK/PD quantities</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/two-cpt-oral-derived.html">
+ <span class="dropdown-text">Two-cpt oral with derived AUC</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/warfarin-data-selection.html">
+ <span class="dropdown-text">Data selection (LLOQ filtering)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./examples/warfarin-ode-time.html">
+ <span class="dropdown-text">ODE with TIME, TAFD, and TAD</span></a>
+  </li>  
     </ul>
 </li>
 </ul>
@@ -535,24 +563,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
 <li>
-<a href="#ferx-0.1.5" id="toc-ferx-0.1.5" class="nav-link active" data-scroll-target="#ferx-0.1.5">ferx 0.1.5</a>
+<a href="#ferx-development" id="toc-ferx-development" class="nav-link active" data-scroll-target="#ferx-development">ferx (development)</a>
+  <ul class="collapse">
+<li><a href="#new-features" id="toc-new-features" class="nav-link" data-scroll-target="#new-features">New features</a></li>
+  <li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug fixes</a></li>
+  <li><a href="#build" id="toc-build" class="nav-link" data-scroll-target="#build">Build</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#ferx-0.1.5" id="toc-ferx-0.1.5" class="nav-link" data-scroll-target="#ferx-0.1.5">ferx 0.1.5</a>
   <ul class="collapse">
 <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
-  <li><a href="#new-features" id="toc-new-features" class="nav-link" data-scroll-target="#new-features">New features</a></li>
-  <li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug fixes</a></li>
   <li><a href="#new-features-1" id="toc-new-features-1" class="nav-link" data-scroll-target="#new-features-1">New features</a></li>
-  <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking changes</a></li>
   <li><a href="#bug-fixes-1" id="toc-bug-fixes-1" class="nav-link" data-scroll-target="#bug-fixes-1">Bug fixes</a></li>
+  <li><a href="#new-features-2" id="toc-new-features-2" class="nav-link" data-scroll-target="#new-features-2">New features</a></li>
+  <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking changes</a></li>
+  <li><a href="#bug-fixes-2" id="toc-bug-fixes-2" class="nav-link" data-scroll-target="#bug-fixes-2">Bug fixes</a></li>
   <li><a href="#documentation-1" id="toc-documentation-1" class="nav-link" data-scroll-target="#documentation-1">Documentation</a></li>
   </ul>
 </li>
   <li>
 <a href="#ferx-0.1.2" id="toc-ferx-0.1.2" class="nav-link" data-scroll-target="#ferx-0.1.2">ferx 0.1.2</a>
   <ul class="collapse">
-<li><a href="#new-features-2" id="toc-new-features-2" class="nav-link" data-scroll-target="#new-features-2">New features</a></li>
+<li><a href="#new-features-3" id="toc-new-features-3" class="nav-link" data-scroll-target="#new-features-3">New features</a></li>
   <li><a href="#documentation-2" id="toc-documentation-2" class="nav-link" data-scroll-target="#documentation-2">Documentation</a></li>
   <li><a href="#changes-to-existing-functions" id="toc-changes-to-existing-functions" class="nav-link" data-scroll-target="#changes-to-existing-functions">Changes to existing functions</a></li>
-  <li><a href="#bug-fixes-2" id="toc-bug-fixes-2" class="nav-link" data-scroll-target="#bug-fixes-2">Bug fixes</a></li>
+  <li><a href="#bug-fixes-3" id="toc-bug-fixes-3" class="nav-link" data-scroll-target="#bug-fixes-3">Bug fixes</a></li>
   </ul>
 </li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -573,12 +609,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="ferx-0.1.5" class="level1"><h1>ferx 0.1.5</h1>
+</header><section id="ferx-development" class="level1"><h1>ferx (development)</h1>
+<section id="new-features" class="level2"><h2 class="anchored" data-anchor-id="new-features">New features</h2>
+<ul>
+<li>
+<p><strong>Data-selection filtering</strong> (<code>[data_selection]</code> block, <code>ferx_fit(ignore=)</code>, <code>ferx_selection()</code>): records can now be excluded from the analysis dataset at read time without modifying the CSV – equivalent to NONMEM <code>$DATA IGNORE=</code> / <code>ACCEPT=</code>. Three entry points:</p>
+<ul>
+<li>
+<code>[data_selection]</code> block in <code>.ferx</code> model files (keys <code>ignore</code>, <code>accept</code>, <code>ignore_subjects</code>).</li>
+<li>
+<code>ferx_fit(model, data, ignore = "DV &lt; 1.0", accept = ..., ignore_ids = ...)</code> passes conditions directly from R; conditions from both the model file and the R call are merged and deduplicated.</li>
+<li>
+<code>ferx_selection(data, ignore = ..., accept = ..., ignore_ids = ...)</code> is a pure-R preview that returns a <code>ferx_data</code> S3 object you can inspect before fitting, or pass directly to <code>ferx_fit()</code> as the <code>data</code> argument.</li>
+</ul>
+<p>Exclusion counts are exposed on <code>fit$exclusions</code> (a list with <code>n_records_total</code>, <code>n_obs_excluded</code>, <code>n_dose_excluded</code>, <code>n_other_excluded</code>, <code>excluded_subject_ids</code>, <code>fired_ignore</code>, <code>fired_accept</code>). <code>print.ferx_fit()</code> shows a <strong>DATA SELECTION</strong> block when rules fired. <code>ferx_runlog()</code> includes an exclusion count line in the data summary. Exclusions survive <code>ferx_save_fit()</code> / <code>ferx_load_fit()</code> round-trips. The bundled <code>warfarin_data_selection</code> example demonstrates the feature.</p>
+</li>
+<li><p><code>ferx_selection_excluded(x)</code> is a new generic: called on a <code>ferx_data</code> object it returns the excluded rows (with a <code>.exclude_reason</code> column); called on a <code>ferx_fit</code> it re-reads the data file and marks records from excluded subjects.</p></li>
+<li><p><code>ferx_columns(data)</code> prints the column headers of a NONMEM CSV dataset, grouped into required NONMEM columns (<code>ID</code>, <code>TIME</code>, <code>DV</code>, <code>EVID</code>, <code>AMT</code>, <code>CMT</code>), optional NONMEM columns (<code>RATE</code>, <code>MDV</code>, <code>II</code>, <code>SS</code>, <code>CENS</code>, <code>OCC</code>), and covariates / user-defined columns. Accepts a file path, a <code>ferx_fit</code> object (uses <code>fit$data_path</code>), or a <code>ferx_example()</code> list. Returns the column name vector invisibly.</p></li>
+<li><p><code>ferx_runlog(fit)</code> produces a NONMEM-style <code>.lst</code> run summary: model file content, data summary (subject / observation counts, time range), INITIAL vs FINAL parameter table with SE and %RSE for every theta/omega/sigma, estimation settings (optimizer, max iterations, BLOQ method, NCA warm-start, random seeds, covariate columns present in the data), OFV / AIC / BIC with convergence flag, covariance-step condition number and eigenvalues, ETA/EPS shrinkage, Durbin-Watson autocorrelation, Shapiro-Wilk ETA normality, and final gradient with a convergence threshold check. Pass <code>verbose = FALSE</code> to capture the output as a character string.</p></li>
+<li><p><code>ferx_runlog(fit, show_iterations = TRUE)</code> gains an <strong>Iteration history</strong> section when <code>optimizer_trace = TRUE</code> was used: per-iteration OFV, delta-OFV, and method-specific convergence metrics (GRAD_NORM / STEP_NORM for FOCE/FOCEI/BFGS; LM_LAMBDA + ACC for Gauss-Newton; COND_NLL + GAMMA + MH_ACCEPT for SAEM). Runs with more than 30 iterations are truncated to the first 10 and last 10. Set <code>show_iterations = FALSE</code> to suppress the section.</p></li>
+<li><p><code>ferx_runlog_iters(fit)</code> is a new function that prints the complete untruncated per-iteration table. Accepts a <code>ferx_fit</code> object or a path to a trace CSV.</p></li>
+<li><p><code>print.ferx_job(handle)</code> now shows a live trace snapshot (last 5 iterations) when the rstudio-backend handle is printed during a running fit.</p></li>
+<li><p><code>fit$sdtab</code> gains a <code>CMT</code> column for multi-endpoint models (present whenever any observation row has <code>CMT != 1</code>). Use this column to split GOF plots by endpoint without rejoining the original dataset.</p></li>
+<li><p><code>fit$sdtab</code> now carries the actual subject ID from the data (parsed as numeric where possible). Previously the ID column was a 1-based loop index that broke downstream joins when IDs were non-consecutive or non-numeric. Non-numeric IDs now trigger a <code>warning</code>-severity message.</p></li>
+<li><p><code>ferx_fit</code> objects from file-based fits now carry <code>fit$model_text</code> (verbatim <code>.ferx</code> source), <code>fit$theta_init</code> / <code>fit$omega_init</code> / <code>fit$sigma_init</code> (optimizer starting values), <code>fit$obs_time_range</code>, <code>fit$final_gradient</code>, <code>fit$optimizer_label</code>, <code>fit$bloq_method_label</code>, <code>fit$n_starts</code>, <code>fit$inits_from_nca</code>, <code>fit$covariate_names</code>, and several reproducibility seed fields. These fields power <code>ferx_runlog()</code> and are preserved in <code>.fitrx</code> bundles.</p></li>
+</ul></section><section id="bug-fixes" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes">Bug fixes</h2>
+<ul>
+<li><p>Shapiro-Wilk ETA-normality flags now fold into a single warning that lists every flagged ETA (with its p-value) instead of firing one warning per ETA. Both <code>fit$warnings</code> and the structured <code>eta_normality</code> warning shown by <code>ferx_warnings()</code> are affected (ferx-core#163).</p></li>
+<li><p><code>ferx_runlog()</code>: theta names now resolve via <code>names(fit$theta)</code> (where <code>R/fit.R</code> stores them) instead of <code>fit$theta_names</code> (which is <code>NULL</code> by design after the R post-processing step). Fall-back chain: <code>names(fit$theta)</code> → <code>fit$theta_names</code> → <code>fit$model_structure$theta_names</code> → <code>THETA(i)</code>.</p></li>
+<li><p><code>ferx_runlog()</code>: <code>model_text</code>, <code>inits_from_nca</code>, and seed fields (<code>multi_start_seed</code>, <code>saem_seed</code>, <code>sir_seed_used</code>, <code>is_seed</code>) now guard against <code>NA_character_</code> / <code>NA_real_</code> values that extendr emits for Rust <code>Option&lt;T&gt;::None</code>, preventing spurious “NA” entries in the run log.</p></li>
+<li><p><code>ferx_runlog()</code>: gradient-tolerance line suppressed for derivative-free optimizers (BOBYQA, GN, SAEM) where a gradient tolerance is not applicable.</p></li>
+<li><p><code>ferx_rust_fit()</code> (internal): <code>fit$model_text</code> was <code>NA</code> for file-based fits because the R binding’s provenance block set <code>model_path</code> / <code>model_hash</code> but did not set <code>model_text</code>. Fixed by reading the model file in the same block.</p></li>
+</ul></section><section id="build" class="level2"><h2 class="anchored" data-anchor-id="build">Build</h2>
+<ul>
+<li>
+<code>src/Makevars</code>: the autodiff build now forces fat LTO with <code>override</code>. R CMD INSTALL runs make with <code>-e</code> semantics, so a stale <code>CARGO_PROFILE_RELEASE_LTO=thin</code> in the environment could previously leak past the makefile and silently build autodiff with thin LTO — which keeps the differentiated ferx-core functions in a separate module from their callers and breaks cross-crate Enzyme. <code>override</code> makes the makefile value authoritative regardless of the environment.</li>
+<li>
+<code>src/Makevars</code>: building with <code>FERX_NO_AUTODIFF=0</code> now preflights for the <code>enzyme</code> rustup toolchain and fails fast with an actionable message (how to install the toolchain, or how to fall back to finite-difference gradients) instead of a cryptic <code>toolchain 'enzyme' is not installed</code> error from cargo.</li>
+<li>
+<code>src/ad-preflight.sh</code> (new): the autodiff build now runs an <em>AD self-test</em> before the long fat-LTO link. Registering an <code>enzyme</code> toolchain is not enough — a standalone Enzyme plugin copied into a prebuilt nightly’s sysroot passes the name check but then hangs forever in <code>llvm::Constant::getNullValue</code> the first time it differentiates anything. The self-test compiles and runs a real <code>#[autodiff_forward]</code> function under a portable timeout (no <code>timeout</code>/ <code>gtimeout</code> dependency); a hang is turned into a clean failure that aborts the build with a pointer to the toolchain rebuild instructions, instead of leaving the user staring at a wedged <code>rustc</code>. The result is cached per toolchain fingerprint, so identical reinstalls skip it. Set <code>FERX_AD_PREFLIGHT_SKIP=1</code> to bypass, or <code>FERX_AD_PREFLIGHT_TIMEOUT=&lt;seconds&gt;</code> to adjust the budget. (ferx-r#111)</li>
+</ul></section></section><section id="ferx-0.1.5" class="level1"><h1>ferx 0.1.5</h1>
 <section id="documentation" class="level2"><h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
 <ul>
 <li>
 <code>?ferx_fit</code>: the <code>settings</code> parameter block is restructured into labelled sections, one per estimation method (Shared, FOCE/FOCEI/GN-hybrid, Trust-region, SAEM, Gauss-Newton, Importance Sampling, SIR, Multi-start). Each key now lists its default value and which methods accept it.</li>
-</ul></section><section id="new-features" class="level2"><h2 class="anchored" data-anchor-id="new-features">New features</h2>
+</ul></section><section id="new-features-1" class="level2"><h2 class="anchored" data-anchor-id="new-features-1">New features</h2>
 <ul>
 <li><p><code>ferx_fit_async(model, data, ...)</code> now returns a <code>ferx_job</code> handle immediately so the R session stays free. Call <code>ferx_collect(handle)</code> to block-wait with live optimizer-trace progress; pass <code>verbose = FALSE</code> to suppress the display and just block until the result is ready. In RStudio the fit appears in the Jobs pane; elsewhere a <code><a href="https://callr.r-lib.org/reference/r_bg.html">callr::r_bg()</a></code> background process is used. The returned <code>ferx_fit</code> object is identical to what <code>ferx_fit()</code> produces. <strong>Breaking change from #91</strong>: <code>ferx_fit_async()</code> previously blocked and returned the fit directly; it now returns a handle that must be passed to <code>ferx_collect()</code>.</p></li>
 <li><p><code>print(fit)</code> has a new compact layout: a prominent <code>STATUS: CONVERGED</code> / <code>NOT CONVERGED</code> line with iteration count and wall time immediately after the header; OFV / AIC / BIC on one line; bold section headers with thin rules instead of <code>--- THETA Estimates ---</code> banners; shrinkage as a single line with inline <code>[!]</code> for values &gt; 30%; a diagnostics line consolidating covariance status, condition number, and Durbin-Watson; and a colour-coded warning-count footer pointing at <code>ferx_warnings(fit)</code>. Programmatic access (<code>fit$theta</code>, <code>ferx_estimates()</code>, <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>) is unchanged.</p></li>
@@ -605,12 +680,12 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 <li><p>New bundled example <code>ferx_example("transit_2cpt")</code>: two-compartment ODE model with 3-transit-compartment absorption and allometric scaling.</p></li>
 <li><p><code>ferx_fit()</code> accepts <code>"imp"</code> as a chained method (e.g.&nbsp;<code>method = c("focei", "imp")</code> or <code>method = c("saem", "imp")</code>). The terminal IMP stage runs an importance-sampling estimate of the marginal <code>-2 log L</code>, exposed on <code>fit$importance_sampling</code> (a list with <code>minus2_log_likelihood</code>, <code>mc_standard_error</code>, <code>n_samples</code>, <code>proposal_df</code>, <code>ess_min</code>/<code>ess_median</code>, <code>kappa_treatment</code>, and parallel <code>low_ess_subject_ids</code>/<code>low_ess_subject_frac</code> vectors). <code>print(fit)</code> and <code>summary(fit)</code> render the new block. New IMP-specific settings keys are recognized by <code>ferx_fit(settings = ...)</code>: <code>is_samples</code>, <code>is_proposal_df</code>, <code>is_seed</code>, <code>is_low_ess_threshold</code>. Requires ferx-core with importance-sampling support merged (FeRx-NLME/ferx-core IMP PR).</p></li>
 <li><p>New <code>stagnation_guard</code> key recognized by <code>ferx_fit(settings = ...)</code>. Pass <code>settings = list(stagnation_guard = FALSE)</code> to disable the NLopt outer-loop stagnation guard so SLSQP / L-BFGS run to their own xtol / ftol or to <code>maxiter</code> instead of short-circuiting on a numerically-flat OFV plateau. Useful for debugging or for problems with very slow but real OFV improvements below the guard’s 1e-3 threshold. Consumed by FOCE / FOCEI / GN-hybrid only. Requires ferx-core with PR FeRx-NLME/ferx-core#62 merged.</p></li>
-</ul></section><section id="bug-fixes" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes">Bug fixes</h2>
+</ul></section><section id="bug-fixes-1" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-1">Bug fixes</h2>
 <ul>
 <li><p>SAEM no longer collapses the random-effect variances (Omega) on sparsely sampled data. Previously, with few observations per subject, the between-subject variability could shrink toward zero during the first iterations while the residual error absorbed it (tiny <code>omega</code>, inflated additive <code>sigma</code>). A burn-in now holds Omega fixed while the MH sampler warms up, tunable via <code>settings = list(omega_burnin = &lt;int&gt;)</code> (default 20; <code>0</code> restores the previous behaviour). Requires the matching ferx-core update that adds the SAEM Omega burn-in.</p></li>
 <li><p>SIR confidence intervals now work correctly for models with <code>FIX</code>-ed parameters. Previously, any fixed parameter caused the proposal covariance to be singular, and SIR returned “All SIR samples had invalid weights”. Sampling is now restricted to the free-parameter subspace and fixed parameters are held at their estimated values throughout. Requires ferx-core &gt;= 0.1.0 (commit 47b48b5, ferx-core#64).</p></li>
 <li><p>All output functions now display the declared variable name (<code>ETA_CL</code>, <code>EPS_PROP</code>) rather than wrapping it in <code>OMEGA()</code>/<code>SIGMA()</code>. Affected surfaces: <code>print(fit)</code> OMEGA section and shrinkage, <code>ferx_estimates()</code>, <code>ferx_cor_matrix()</code> (via <code>fit$cov_matrix</code> dimnames), <code>fit$omega</code> row/column names, <code>fit$sir_ci_omega</code>, <code>fit$sir_ci_sigma</code>, and <code>summary(fit)</code> shrinkage. When names are absent the fallback remains the conventional numbered form: <code>OMEGA(1,1)</code>, <code>SIGMA(1)</code>. (#19)</p></li>
-</ul></section><section id="new-features-1" class="level2"><h2 class="anchored" data-anchor-id="new-features-1">New features</h2>
+</ul></section><section id="new-features-2" class="level2"><h2 class="anchored" data-anchor-id="new-features-2">New features</h2>
 <ul>
 <li><p>IWRES autocorrelation diagnostic: <code>fit$dw_statistic</code> (pooled Durbin-Watson) and <code>fit$iwres_lag1_r</code> (pooled lag-1 Pearson r) are now returned by <code>ferx_fit()</code>. A <code>--- Diagnostics ---</code> block is printed by <code>print(fit)</code> when the values are available; an actionable <code><a href="https://rdrr.io/r/base/message.html">message()</a></code> is emitted when DW &lt; 1.5 or DW &gt; 2.5. The new <code>check_diagnostics(fit)</code> function returns a structured list with an <code>$autocorrelation</code> data frame and a tidy <code>$shrinkage</code> data frame covering both ETA and EPS components. Both fields round-trip through <code>ferx_save</code>/<code>ferx_load</code>; old <code>.fitrx</code> files deserialize with <code>NA</code>. Requires ferx-core ≥ 0.1.0 (commit 5653ddae, ferx-core#20). (#6)</p></li>
 <li><p>SDE support via Extended Kalman Filter: models with a <code>[diffusion]</code> block in the <code>.ferx</code> file now run through the EKF likelihood. <code>fit$uses_sde</code> is <code>TRUE</code> for these fits; diffusion variance parameters appear in <code>fit$theta</code> as <code>DIFF_&lt;STATE&gt;</code> (e.g.&nbsp;<code>DIFF_CENTRAL</code>). Autodiff is automatically forced to finite differences for SDE models; SAEM is not supported and raises a hard error. Requires ferx-core ≥ 0.1.0 (commit 03332951).</p></li>
@@ -634,7 +709,7 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 <p><code>ferx_model()</code> argument order is now <code>ferx_model(data, model)</code> (data first). This enables the natural data-first pipe entry point <code>ex$data |&gt; ferx_model(ex$model) |&gt; ferx_fit()</code> (#81).</p>
 <p>Old-style positional calls (<code>ferx_model("pk.ferx")</code> or <code>ferx_model("pk.ferx", "data.csv")</code>) are detected by the <code>.ferx</code> extension on what is now the <code>data</code> argument and auto-corrected with a deprecation warning. The compatibility shim will be removed in a future release. Calls that pass <code>data</code> by name (<code>ferx_model("pk.ferx", data = "data.csv")</code>) keep working unchanged because R matches <code>data =</code> by name first and the remaining positional argument falls into the <code>model</code> slot.</p>
 </li>
-</ul></section><section id="bug-fixes-1" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-1">Bug fixes</h2>
+</ul></section><section id="bug-fixes-2" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-2">Bug fixes</h2>
 <ul>
 <li><p>Bundled example <code>warfarin_additive_eta.ferx</code> used <code>tlag=TLAG</code> on its structural_model line. <code>tlag</code> was never a recognized PK parameter key in the engine, so the parser silently interpreted the value as the <code>cl=</code> parameter, overwriting the clearance value and producing incorrect fits. Updated to <code>lagtime=TLAG</code>. If you derived a local model from this example, change <code>tlag=</code> to <code>lagtime=</code> (or <code>alag=</code>). Pairs with ferx-core#12.</p></li>
 <li><p><code>ferx_model_validate()</code> no longer flags <code>[initial_values]</code> as a missing required section. The block was removed from the engine in <a href="https://github.com/FeRx-NLME/ferx-core/commit/e5e934d">ferx-core e5e934d</a> — theta / omega / sigma initial values are read from <code>[parameters]</code> and the parser silently ignores any leftover <code>[initial_values]</code> block. The R-side validator and <code>ferx_model_new()</code> templates hadn’t been updated. Now: validator’s <code>required_sections</code> drops <code>initial_values</code>, all five <code>ferx_model_new()</code> templates and every bundled <code>.ferx</code> example file emit the trimmed shape, and a regression test guards against the block creeping back into templates (#16).</p></li>
@@ -644,7 +719,7 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 <ul>
 <li>New vignette <em>“Editing ferx model files programmatically”</em> covering <code>ferx_model_new()</code>, <code>ferx_model_section()</code>, and <code>ferx_model_set_section()</code>: skeleton creation, section inspection, read-modify-write patterns, a console-only fit workflow, and overwrite-guard behaviour.</li>
 </ul></section></section><section id="ferx-0.1.2" class="level1"><h1>ferx 0.1.2</h1>
-<section id="new-features-2" class="level2"><h2 class="anchored" data-anchor-id="new-features-2">New features</h2>
+<section id="new-features-3" class="level2"><h2 class="anchored" data-anchor-id="new-features-3">New features</h2>
 <ul>
 <li><p>New <code>ferx_model_validate(path)</code> checks a <code>.ferx</code> file for syntax errors and missing required sections without running the optimizer. Prints a section presence report and returns <code>TRUE</code>/<code>FALSE</code> invisibly. Required sections are <code>[parameters]</code>, <code>[individual_parameters]</code>, <code>[structural_model]</code>, <code>[error_model]</code>, and <code>[initial_values]</code>; <code>[odes]</code> and <code>[fit_options]</code> are optional.</p></li>
 <li><p><code>ferx_fit()</code> now returns <code>$eigenvalues</code> (sorted descending) and <code>$condition_number</code> (ratio of largest to smallest eigenvalue) for the covariance correlation matrix. Both are <code>NULL</code> when the covariance step was not run or failed. <code>condition_number = Inf</code> signals a non-positive eigenvalue. A warning is appended when <code>condition_number &gt; 1000</code>. The condition number is shown on the <code>Covariance:</code> line in <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> output.</p></li>
@@ -661,7 +736,7 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 <li><p><code>result$model_structure</code> is now sourced from the Rust engine (built from the parsed <code>CompiledModel</code>) instead of an R-side regex re-parse of the <code>.ferx</code> file (closes ferx-core#49). The shape is unchanged — <code>theta_names</code>, <code>model_type</code>, <code>iiv</code>, <code>iov</code>, <code>residual</code> — so <code>ferx_model_inspect()</code> callers see the same fields. <code>model_type</code> now distinguishes IV bolus from infusion (e.g.&nbsp;<code>"1-cpt IV infusion"</code>) and adds 3-cpt variants; the pre-fit <code>ferx_model_inspect(path)</code> parser was updated to the same label set so both the file-based and fit-based inspection paths report identical strings.</p></li>
 <li><p><code>ferx_model_edit()</code> gains <code>overwrite = FALSE</code>. Previously the function silently skipped the file copy when the destination already existed; it now errors with a clear message. Callers that relied on the silent-skip must add <code>overwrite = TRUE</code>.</p></li>
 <li><p><code>ferx_model_new()</code> gains <code>print = FALSE</code>. When <code>print = TRUE</code> the skeleton is printed to the console without writing any file or opening an editor; <code>path</code> becomes optional in that mode. Five templates are available: <code>"1cpt_oral"</code> (default), <code>"1cpt_iv"</code>, <code>"2cpt_oral"</code>, <code>"2cpt_iv"</code>, <code>"ode"</code>.</p></li>
-</ul></section><section id="bug-fixes-2" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-2">Bug fixes</h2>
+</ul></section><section id="bug-fixes-3" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-3">Bug fixes</h2>
 <ul>
 <li><p><code>print.ferx_fit()</code> now uses the exact coefficient of variation formula for <code>EXP(OMEGA)</code> log-normal parameters: <code>sqrt(exp(omega) - 1) * 100</code> instead of the approximation <code>sqrt(omega) * 100</code> (doi:10.1002/psp4.12507). Applied only when <code>eta_param_types == "log_normal"</code> (defaults to log-normal when the field is absent). Display for logit, additive, and custom ETA types is deferred to #53.</p></li>
 <li><p><code>ferx_model_section()</code>: fixed a descending-index bug where an empty section body (header immediately followed by another header) returned lines in reverse instead of <code>character(0)</code>.</p></li>

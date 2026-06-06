@@ -58,7 +58,7 @@ gradient vector with a convergence diagnostic.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferx_runlog</span><span class="op">(</span><span class="va">fit</span>, gradient_tol <span class="op">=</span> <span class="fl">0.01</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferx_runlog</span><span class="op">(</span><span class="va">fit</span>, gradient_tol <span class="op">=</span> <span class="fl">0.1</span>, show_iterations <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -71,9 +71,19 @@ gradient vector with a convergence diagnostic.</p>
 
 
 <dt id="arg-gradient-tol">gradient_tol<a class="anchor" aria-label="anchor" href="#arg-gradient-tol"></a></dt>
-<dd><p>Numeric scalar.  Components of <code>final_gradient</code>
-whose absolute value exceeds this threshold trigger a convergence warning.
-Default <code>0.01</code> (matches typical NONMEM practice).</p></dd>
+<dd><p>Numeric scalar.  Threshold for the relative gradient
+(<code>|grad[i] * param[i]|</code>); components exceeding this trigger a
+convergence warning.  Default <code>0.1</code>.</p></dd>
+
+
+<dt id="arg-show-iterations">show_iterations<a class="anchor" aria-label="anchor" href="#arg-show-iterations"></a></dt>
+<dd><p>Logical.  When <code>TRUE</code> (the default) and the fit
+was run with <code>optimizer_trace = TRUE</code>, an "Iteration history" section
+is inserted showing OFV, delta-OFV, and method-specific convergence
+metrics (gradient norm for FOCE/BFGS, LM-lambda for Gauss-Newton,
+MH-accept-rate for SAEM) per iteration.  Runs with more than 30 iterations
+are truncated to the first 10 and last 10 rows.  Set to <code>FALSE</code> to
+suppress this section.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>

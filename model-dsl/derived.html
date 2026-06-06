@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Covariate model – ferx</title>
+<title>Derived columns and output – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -579,11 +579,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link active" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#covariate-effects" id="toc-covariate-effects" class="nav-link" data-scroll-target="#covariate-effects">Covariate effects</a></li>
-  <li><a href="#data-requirements" id="toc-data-requirements" class="nav-link" data-scroll-target="#data-requirements">Data requirements</a></li>
-  <li><a href="#in-r" id="toc-in-r" class="nav-link" data-scroll-target="#in-r">In R</a></li>
-  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a></li>
+  <li><a href="#derived-computed-columns" id="toc-derived-computed-columns" class="nav-link active" data-scroll-target="#derived-computed-columns"><code>[derived]</code> — computed columns</a>
+  <ul class="collapse">
+  <li><a href="#available-variables" id="toc-available-variables" class="nav-link" data-scroll-target="#available-variables">Available variables</a></li>
+  <li><a href="#operators-and-functions" id="toc-operators-and-functions" class="nav-link" data-scroll-target="#operators-and-functions">Operators and functions</a></li>
+  <li><a href="#computation-kinds" id="toc-computation-kinds" class="nav-link" data-scroll-target="#computation-kinds">Computation kinds</a></li>
+  <li><a href="#sequential-scoping" id="toc-sequential-scoping" class="nav-link" data-scroll-target="#sequential-scoping">Sequential scoping</a></li>
+  <li><a href="#naming-rules" id="toc-naming-rules" class="nav-link" data-scroll-target="#naming-rules">Naming rules</a></li>
+  </ul></li>
+  <li><a href="#output-echo-individual-parameters-and-covariates" id="toc-output-echo-individual-parameters-and-covariates" class="nav-link" data-scroll-target="#output-echo-individual-parameters-and-covariates"><code>[output]</code> — echo individual parameters and covariates</a>
+  <ul class="collapse">
+  <li><a href="#mandatory-sdtab-minimum-always-present" id="toc-mandatory-sdtab-minimum-always-present" class="nav-link" data-scroll-target="#mandatory-sdtab-minimum-always-present">Mandatory sdtab minimum (always present)</a></li>
+  </ul></li>
+  <li><a href="#full-example" id="toc-full-example" class="nav-link" data-scroll-target="#full-example">Full example</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -593,7 +602,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example: Covariate model</h1>
+<h1 class="title">Derived columns and output</h1>
 </div>
 
 
@@ -610,7 +619,223 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>A two-compartment oral model with body weight (WT) and creatinine clearance (CRCL) as covariates on clearance.</p>
+<p>The optional <code>[derived]</code> and <code>[output]</code> blocks extend the sdtab with extra columns computed after the fit. Use them to add NCA-style summaries, PD metrics, unit-converted readouts, or any expression the optimiser does not need to see.</p>
+<section id="derived-computed-columns" class="level2">
+<h2 class="anchored" data-anchor-id="derived-computed-columns"><code>[derived]</code> — computed columns</h2>
+<p>Each line in <code>[derived]</code> has the form <code>name = expression</code>. The name becomes a new sdtab column; the expression is evaluated for every observation row.</p>
+<pre><code>[derived]
+  KE     = CL / V
+  T_HALF = 0.6931472 / KE
+  CMAX   = max(IPRED)
+  AUC_24 = integral(IPRED, from=0, to=24)</code></pre>
+<section id="available-variables" class="level3">
+<h3 class="anchored" data-anchor-id="available-variables">Available variables</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Individual-parameter names (<code>CL</code>, <code>V</code>, …)</td>
+<td>EBE-derived value for the subject</td>
+</tr>
+<tr class="even">
+<td>Theta names (<code>TVCL</code>, <code>TVV</code>, …)</td>
+<td>Final population estimate</td>
+</tr>
+<tr class="odd">
+<td>Eta names (<code>ETA_CL</code>, …)</td>
+<td>Subject EBE</td>
+</tr>
+<tr class="even">
+<td>Covariate names (<code>WT</code>, <code>AGE</code>, …)</td>
+<td>Subject covariate (constant per row)</td>
+</tr>
+<tr class="odd">
+<td><code>IPRED</code></td>
+<td>Individual prediction at the row’s time</td>
+</tr>
+<tr class="even">
+<td><code>DV</code></td>
+<td>Observed value</td>
+</tr>
+<tr class="odd">
+<td><code>TAFD</code></td>
+<td>Time after first dose</td>
+</tr>
+<tr class="even">
+<td><code>TAD</code></td>
+<td>Time after most recent dose</td>
+</tr>
+<tr class="odd">
+<td><code>TIME</code></td>
+<td>Nominal time</td>
+</tr>
+<tr class="even">
+<td><code>MACHEPS</code></td>
+<td>Machine epsilon (≈ 2.22 × 10⁻¹⁶)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="operators-and-functions" class="level3">
+<h3 class="anchored" data-anchor-id="operators-and-functions">Operators and functions</h3>
+<p>Standard arithmetic (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>), comparison (<code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>==</code>, <code>!=</code>), logical (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>), <code>mod</code> for modulo, <code>^</code> for power.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>exp(x)</code>, <code>log(x)</code>, <code>sqrt(x)</code>, <code>abs(x)</code></td>
+<td>Standard math</td>
+</tr>
+<tr class="even">
+<td><code>floor(x)</code>, <code>ceil(x)</code>, <code>round(x)</code></td>
+<td>Rounding</td>
+</tr>
+<tr class="odd">
+<td><code>max(expr)</code></td>
+<td>Subject-level maximum</td>
+</tr>
+<tr class="even">
+<td><code>min(expr)</code></td>
+<td>Subject-level minimum</td>
+</tr>
+<tr class="odd">
+<td><code>tmax(expr)</code></td>
+<td>Time at which <code>expr</code> is maximum</td>
+</tr>
+<tr class="even">
+<td><code>integral(expr, from=t0, to=t1)</code></td>
+<td>Trapezoidal AUC</td>
+</tr>
+<tr class="odd">
+<td><code>integral(expr, from=t0, to=t1, step=dt)</code></td>
+<td>Grid-based AUC (IPRED only)</td>
+</tr>
+<tr class="even">
+<td><code>integral(expr, window=W, anchor=A, step=dt)</code></td>
+<td>Periodic AUC</td>
+</tr>
+<tr class="odd">
+<td><code>integral(1.0, condition, window=W, anchor=A, step=dt)</code></td>
+<td>Time-above-threshold</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="computation-kinds" class="level3">
+<h3 class="anchored" data-anchor-id="computation-kinds">Computation kinds</h3>
+<section id="per-row-default" class="level4">
+<h4 class="anchored" data-anchor-id="per-row-default">Per-row (default)</h4>
+<p>The expression is evaluated independently at each observation row.</p>
+<pre><code>KE     = CL / V
+T_HALF = 0.6931472 / KE
+DAY    = floor(TAFD / 24) + 1</code></pre>
+<p><code>KE</code> and <code>T_HALF</code> are constant per subject (they depend only on EBE parameters), but they still appear on every row. <code>DAY</code> varies across rows.</p>
+</section>
+<section id="aggregate" class="level4">
+<h4 class="anchored" data-anchor-id="aggregate">Aggregate</h4>
+<p><code>max(expr)</code>, <code>min(expr)</code>, or <code>tmax(expr)</code> produce a single value per subject broadcast to all rows. An optional filter is the second argument:</p>
+<pre><code>CMAX      = max(IPRED)
+TMAX      = tmax(IPRED)
+CTROUGH   = min(IPRED, TAD &lt; 1e-10)    # trough at dose time
+CMAX_D1   = max(IPRED, TAFD &lt; 24)      # day-1 peak
+CMAX_D14  = max(IPRED, TAFD &gt;= 312 &amp;&amp; TAFD &lt; 336)</code></pre>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong><code>1e-10</code> for troughs.</strong> <code>TAD == 0</code> is mathematically true at dose rows, but floating-point residuals from modular arithmetic can produce <code>TAD = 1e-13</code> instead of <code>0</code>. The guard <code>TAD &lt; 1e-10</code> is the standard idiom to reliably capture the trough without false positives.</p>
+</div>
+</div>
+<p>If no row passes the filter the result is <code>NaN</code>.</p>
+</section>
+<section id="integral" class="level4">
+<h4 class="anchored" data-anchor-id="integral">Integral</h4>
+<p><code>integral(expr, from=t0, to=t1)</code> computes the area under <code>expr</code> over <code>[t0, t1)</code> using the trapezoidal rule at observation times.</p>
+<p>Add <code>step=dt</code> to force evaluation on a uniform grid — useful when the observation design is sparse or when computing time-above-threshold:</p>
+<pre><code>AUC_24     = integral(IPRED, from=0, to=24)
+AUC_GRID   = integral(IPRED, from=0, to=24, step=0.5)
+AUC_DV_24  = integral(DV,    from=0, to=24)           # observation times only</code></pre>
+<p><code>window=W, anchor=A</code> yields a periodic AUC: one value per <code>W</code>-unit window, starting at <code>A</code>:</p>
+<pre><code>AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)</code></pre>
+<p><strong>Time-above-threshold.</strong> Use <code>integral(1.0, condition, ...)</code> to measure hours above a threshold. Always include <code>step=</code> here — without it, only observation time points are evaluated and sparse sampling can miss brief threshold crossings:</p>
+<pre><code>TAM_TAU = integral(1.0, IPRED &gt; MEC, window=24, anchor=0, step=0.1)</code></pre>
+<hr>
+</section>
+</section>
+<section id="sequential-scoping" class="level3">
+<h3 class="anchored" data-anchor-id="sequential-scoping">Sequential scoping</h3>
+<p>A derived column may reference earlier columns in the same block. Forward references are not allowed.</p>
+<pre><code>[derived]
+  KE   = CL / V
+  T_HALF = 0.6931472 / KE    # ok — KE defined above
+  # CL2 = KE * V             # would be fine
+  # BAD = FUTURE + 1   # FUTURE not defined yet → parse error</code></pre>
+</section>
+<section id="naming-rules" class="level3">
+<h3 class="anchored" data-anchor-id="naming-rules">Naming rules</h3>
+<p>A <code>[derived]</code> name must <strong>not</strong> clash with the mandatory sdtab columns (<code>ID</code>, <code>TIME</code>, <code>DV</code>, <code>IPRED</code>, <code>CWRES</code>, <code>IWRES</code>, <code>ETA1</code>, <code>ETA2</code>, …, <code>TAFD</code>, <code>TAD</code>) or with any theta, eta, or individual-parameter name. Shadowing a covariate name is allowed but emits a warning.</p>
+<hr>
+</section>
+</section>
+<section id="output-echo-individual-parameters-and-covariates" class="level2">
+<h2 class="anchored" data-anchor-id="output-echo-individual-parameters-and-covariates"><code>[output]</code> — echo individual parameters and covariates</h2>
+<p>The <code>[output]</code> block lists extra columns to write to sdtab beyond the mandatory minimum. Each entry is a bare name:</p>
+<pre><code>[output]
+  CL V KA WT</code></pre>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Can list</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Covariates</td>
+<td><code>WT</code>, <code>AGE</code>, <code>SEX</code></td>
+</tr>
+<tr class="even">
+<td>Individual parameters</td>
+<td><code>CL</code>, <code>V</code>, <code>KA</code></td>
+</tr>
+<tr class="odd">
+<td>Names already in <code>[derived]</code></td>
+<td>redundant but harmless</td>
+</tr>
+<tr class="even">
+<td>Eta names</td>
+<td>already in mandatory minimum; emits a warning</td>
+</tr>
+</tbody>
+</table>
+<section id="mandatory-sdtab-minimum-always-present" class="level3">
+<h3 class="anchored" data-anchor-id="mandatory-sdtab-minimum-always-present">Mandatory sdtab minimum (always present)</h3>
+<p><code>ID</code>, <code>TIME</code>, <code>DV</code>, <code>CENS</code>, <code>OCC</code>, <code>CMT</code>, <code>PRED</code>, <code>IPRED</code>, <code>CWRES</code>, <code>IWRES</code>, <code>EBE_OFV</code>, <code>N_OBS</code>, <code>TAFD</code>, <code>TAD</code></p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -621,100 +846,47 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For background on covariate parameterisation, see <a href="https://ferx-nlme.github.io/ferx-book/chapters/03-model-dsl.html">Chapter 3 (Model DSL)</a> in the ferx book.</p>
+<p><strong><code>[derived]</code> vs <code>[output]</code>.</strong> Names in <code>[derived]</code> are automatically in sdtab. Use <code>[output]</code> only for individual parameters and covariates that <code>[derived]</code> does not already compute.</p>
 </div>
 </div>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code># Two-compartment oral PK model with covariates
-
-[parameters]
-  theta TVCL(5.0, 0.01, 100.0)
-  theta TVV1(50.0, 0.1, 1000.0)
-  theta TVQ(10.0, 0.01, 200.0)
-  theta TVV2(100.0, 0.1, 5000.0)
-  theta TVKA(1.0, 0.01, 50.0)
-  theta THETA_WT(0.75, 0.01, 2.0)
-  theta THETA_CRCL(0.5, 0.01, 2.0)
-
-  omega ETA_CL ~ 0.09
-  omega ETA_V1 ~ 0.04
-  omega ETA_Q  ~ 0.04
-  omega ETA_V2 ~ 0.09
-  omega ETA_KA ~ 0.25
-
-  sigma PROP_ERR ~ 0.04
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL) * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL
-  V1 = TVV1 * exp(ETA_V1)
-  Q  = TVQ  * exp(ETA_Q)
-  V2 = TVV2 * exp(ETA_V2)
-  KA = TVKA * exp(ETA_KA)
-
-[structural_model]
-  pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-
-[fit_options]
-  method     = focei
-  maxiter    = 500
-  covariance = true</code></pre>
+<hr>
 </section>
-<section id="covariate-effects" class="level2">
-<h2 class="anchored" data-anchor-id="covariate-effects">Covariate effects</h2>
-<p>The clearance equation includes two covariate effects:</p>
-<pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL</code></pre>
+</section>
+<section id="full-example" class="level2">
+<h2 class="anchored" data-anchor-id="full-example">Full example</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_derived"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The bundled <code>warfarin_derived</code> model demonstrates all three computation kinds plus <code>[output]</code>:</p>
+<pre><code>[derived]
+  KE        = CL / V
+  T_HALF    = 0.6931472 / KE
+  DAY       = floor(TAFD / 24) + 1
+  CMAX      = max(IPRED)
+  CTROUGH   = min(IPRED, TAD &lt; 1e-10)
+  CMAX_D1   = max(IPRED, TAFD &lt; 24)
+  AUC_0_72  = integral(IPRED, from=0, to=72)
+  AUC_TAU   = integral(IPRED, window=24, anchor=0, step=0.1)
+  AUC_DV_72 = integral(DV,    from=0, to=72)
+
+[output]
+  CL V KA</code></pre>
+<p>After fitting, <code>fit$sdtab</code> contains all derived columns plus the echoed individual parameters:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fit<span class="sc">$</span>sdtab)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate columns: one value per subject (broadcast across rows)</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"AUC_0_72"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>See also <a href="../examples/warfarin-derived.html">Example: derived columns</a> for a full worked example.</p>
+<hr>
+</section>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><code>(WT/70)^THETA_WT</code> — allometric scaling with body weight, centred at 70 kg. THETA_WT is estimated (typical value ~0.75 for CL).</li>
-<li><code>(CRCL/100)^THETA_CRCL</code> — renal function effect, centred at 100 mL/min. THETA_CRCL is estimated.</li>
-</ul>
-<p>Both effects are <strong>centred</strong>: when WT = 70 kg and CRCL = 100 mL/min, both terms equal 1.0, so TVCL is interpretable as the clearance of a 70 kg patient with normal renal function.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Mu-referencing with covariates">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Mu-referencing with covariates
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Both term orderings are detected correctly — ferx recognises the <code>theta * exp(eta)</code> mu-reference regardless of where covariate multipliers appear:</p>
-<pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^0.75   # fine
-CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)   # also fine</code></pre>
-</div>
-</div>
-</section>
-<section id="data-requirements" class="level2">
-<h2 class="anchored" data-anchor-id="data-requirements">Data requirements</h2>
-<p>The dataset must include <code>WT</code> and <code>CRCL</code> columns:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,MDV,WT,CRCL
-1,0,.,1,100,1,1,72.5,105
-1,0.5,12.3,0,.,.,0,72.5,105
-1,1.0,18.7,0,.,.,0,72.5,105</code></pre>
-<p>Covariate columns are automatically detected — any column not in the standard NONMEM set (ID, TIME, DV, EVID, AMT, CMT, RATE, MDV, CENS, II, SS) is treated as a covariate. Names in the data file are matched case-insensitively against those used in <code>[individual_parameters]</code>.</p>
-</section>
-<section id="in-r" class="level2">
-<h2 class="anchored" data-anchor-id="in-r">In R</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_cov"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA-covariate correlations: check if covariates were absorbed</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit, data)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA_CL correlations with WT and CRCL should be near zero after fitting</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="notes" class="level2">
-<h2 class="anchored" data-anchor-id="notes">Notes</h2>
-<ul>
-<li>FOCEI is used here because the proportional error model creates an interaction between random effects and residual error.</li>
-<li>The estimated covariate exponents (THETA_WT, THETA_CRCL) have standard errors that can be used for a likelihood-ratio test of significance.</li>
-<li>The initial values for covariate thetas (THETA_WT = 0.75, THETA_CRCL = 0.5) are the allometric theory values — informative starting points that speed convergence.</li>
+<li><a href="../examples/warfarin-derived.html">Example: derived columns</a></li>
+<li><a href="../examples/warfarin-derived-pkpd.html">Example: derived PK/PD quantities</a></li>
+<li><a href="../examples/two-cpt-oral-derived.html">Example: two-cpt oral with derived AUC</a></li>
+<li><a href="../model-dsl/structural-model.html">Structural model</a></li>
+<li><a href="../model-dsl/odes.html">ODE models</a></li>
 </ul>
 
 

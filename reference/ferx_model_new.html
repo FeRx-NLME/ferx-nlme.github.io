@@ -150,7 +150,7 @@ Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   covariance = true</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">ferx_model_new</span><span class="op">(</span>template <span class="op">=</span> <span class="st">"2cpt_iv"</span>, print <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # Two-compartment IV bolus PK model</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # Two-compartment IV PK model (RATE column drives bolus vs infusion)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [parameters]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   theta TVCL(5.0, 0.1, 100.0)</span>
@@ -172,7 +172,7 @@ Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   V2 = TVV2 * exp(ETA_V2)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [structural_model]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   pk two_cpt_iv_bolus(cl=CL, v1=V1, q=Q, v2=V2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pk two_cpt_iv(cl=CL, v1=V1, q=Q, v2=V2)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [error_model]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   DV ~ proportional(PROP_ERR)</span>
@@ -185,9 +185,9 @@ Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Write a skeleton to a temp file and show it</span></span></span>
 <span class="r-in"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">ferx_model_new</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".ferx"</span><span class="op">)</span>, edit <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Created /tmp/RtmpO9y6A3/file2547444631a0.ferx</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Created /tmp/RtmpbweQcM/file25576a22d890.ferx</span>
 <span class="r-in"><span><span class="fu"><a href="ferx_model_show.html">ferx_model_show</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # model: file2547444631a0.ferx </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # model: file25576a22d890.ferx </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # One-compartment oral PK model</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [parameters]</span>

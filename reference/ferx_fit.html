@@ -69,6 +69,9 @@ powered by automatic differentiation (Enzyme).</p>
 <span>  settings <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  include_data <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ignore <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  accept <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ignore_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -419,6 +422,30 @@ reference in the ferx-core docs for the on-disk schema.</p></dd>
 <code>FALSE</code>.</p></dd>
 
 
+<dt id="arg-ignore">ignore<a class="anchor" aria-label="anchor" href="#arg-ignore"></a></dt>
+<dd><p>Character vector of filter expressions that exclude a record
+when the expression evaluates to true (NONMEM <code>$DATA IGNORE=</code>
+equivalent). Expressions use standard comparison operators
+(<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>) on
+column names. Use <code>&amp;&amp;</code> within one expression for AND; for OR use
+multiple elements. These conditions are merged with any
+<code>[data_selection] ignore</code> rules in the model file.
+Example: <code>ignore = c("DV &lt; 0.001", "EVID != 0 &amp;&amp; MDV == 1")</code>.</p></dd>
+
+
+<dt id="arg-accept">accept<a class="anchor" aria-label="anchor" href="#arg-accept"></a></dt>
+<dd><p>Character vector of filter expressions. A record is kept
+only when all conditions pass; excluded if any fail (NONMEM
+<code>$DATA ACCEPT=</code> equivalent). Merged with model-file <code>accept</code>
+rules.</p></dd>
+
+
+<dt id="arg-ignore-ids">ignore_ids<a class="anchor" aria-label="anchor" href="#arg-ignore-ids"></a></dt>
+<dd><p>Numeric or character vector of subject IDs to exclude
+entirely. Sugar for <code>ignore = "ID == &lt;id&gt;"</code> applied per-subject.
+Merged with <code>[data_selection] ignore_subjects</code> from the model file.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Reserved for future use. Unrecognised arguments raise an error.</p></dd>
 
@@ -482,9 +509,33 @@ error models report <code>c("proportional", "additive")</code> in that order.</p
 <dd><p>Data frame with ID, TIME, DV, PRED, IPRED, CWRES, IWRES,
 EBE_OFV, N_OBS; OCC if any subject carries an occasion column; CENS
 if any rows are below LLOQ; CMT if the dataset has more than one
-endpoint (any observation with <code>CMT != 1</code>).  Per-subject ETAs
-live in <code>ebe_etas</code>; per-subject parameter values in
-<code>individual_estimates</code>.</p></dd>
+endpoint (any observation with <code>CMT != 1</code>).  TAFD (time after
+first dose) and TAD (time after last dose, SS-aware) are included
+automatically.  Columns declared in <code>[derived]</code> (per-row
+expressions, aggregates, integrals) and <code>[output]</code> (individual
+PK parameters or covariates echoed by name) appear at the end of the
+data frame in declaration order.
+Note: per-subject ETA (EBE) values are in <code>fit$ebe_etas</code> (one
+row per subject, no row duplication); per-subject individual parameter
+values are in <code>fit$individual_estimates</code>.  ETAs are available as
+read-only context variables inside <code>[derived]</code> expressions but
+are not written as sdtab columns.</p></dd>
+
+<dt>covtab</dt>
+<dd><p>Data frame echoing the declared covariate columns, present
+only when the model has a <code>[covariates]</code> block. Columns: <code>ID</code>,
+<code>TIME</code>, <code>EVID</code>, then one column per declared covariate (in
+declaration order). Unlike <code>sdtab</code> (observation rows only), it has
+one row per input dataset record, including dose and other-event rows;
+missing covariate values are <code>NA</code>. <code>NULL</code> when no
+<code>[covariates]</code> block is declared.</p></dd>
+
+<dt>covariate_types</dt>
+<dd><p>Named character vector mapping each declared
+covariate to its type, <code>"continuous"</code> or <code>"categorical"</code> (the
+type from the <code>[covariates]</code> block). Parallel to the covariate
+columns of <code>covtab</code>. <code>NULL</code> when no <code>[covariates]</code> block
+is declared.</p></dd>
 
 <dt>ebe_etas</dt>
 <dd><p>Data frame with one row per subject containing the BSV
@@ -701,8 +752,17 @@ or <code>NULL</code> when model-file initial values were used directly.</p></dd>
 present in the dataset (beyond <code>ID</code>, <code>TIME</code>, <code>DV</code>,
 <code>EVID</code>, <code>AMT</code>, <code>CMT</code>, <code>RATE</code>, <code>MDV</code>,
 <code>II</code>, <code>SS</code>, <code>CENS</code>, <code>OCC</code>). Empty when no
-covariates are present. Used by <code><a href="ferx_runlog.html">ferx_runlog</a></code> to echo
-the dataset column list.</p></dd>
+covariates are present. Contains only non-standard covariate columns;
+see <code>input_columns</code> for the complete ordered column list.</p></dd>
+
+<dt>input_columns</dt>
+<dd><p>Character vector of all column headers from the
+data CSV in file order, analogous to NONMEM <code>$INPUT</code>. Includes
+both standard columns (<code>ID</code>, <code>TIME</code>, <code>DV</code>, etc.) and
+any covariate columns. Empty for in-memory fits that never read a file
+and absent after a <code><a href="ferx_save_fit.html">ferx_save_fit</a></code>/<code><a href="ferx_load_fit.html">ferx_load_fit</a></code>
+round-trip on older bundles. Use this field (not <code>covariate_names</code>)
+when you need the complete ordered column list.</p></dd>
 
 <dt>cov_matrix</dt>
 <dd><p>Full parameter covariance matrix as a named numeric
@@ -872,6 +932,15 @@ feature is off or no NN blocks are present. Each sub-list contains:
 (total weight + bias count), <code>weights_offset</code> (0-based start index
 into <code>fit$theta</code>), <code>input_names</code>, <code>output_names</code>, and
 <code>weights</code> (numeric vector of trained values).</p></dd>
+
+<dt>exclusions</dt>
+<dd><p>Named list summarising records excluded by
+<code>[data_selection]</code> rules (model file and/or <code>ignore</code>/
+<code>accept</code>/<code>ignore_ids</code> arguments). Fields:
+<code>n_records_total</code>, <code>n_obs_excluded</code>, <code>n_dose_excluded</code>,
+<code>n_other_excluded</code>, <code>excluded_subject_ids</code> (character),
+<code>fired_ignore</code> (character), <code>fired_accept</code> (character).
+<code>NULL</code> when no data-selection rules were active.</p></dd>
 
 </dl></div>
     <div id="process-noise-sde-diffusion-">

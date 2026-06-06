@@ -387,6 +387,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Scaling</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../model-dsl/derived.html">
+ <span class="dropdown-text">Derived columns</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../model-dsl/data-selection.html">
+ <span class="dropdown-text">Data selection</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../model-dsl/bloq.html">
  <span class="dropdown-text">BLOQ (M3 method)</span></a>
   </li>  
@@ -505,6 +513,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../examples/multistart.html">
  <span class="dropdown-text">Multi-start fitting</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-derived.html">
+ <span class="dropdown-text">Derived columns ([derived])</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-derived-pkpd.html">
+ <span class="dropdown-text">Derived PK/PD quantities</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/two-cpt-oral-derived.html">
+ <span class="dropdown-text">Two-cpt oral with derived AUC</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-data-selection.html">
+ <span class="dropdown-text">Data selection (LLOQ filtering)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-ode-time.html">
+ <span class="dropdown-text">ODE with TIME, TAFD, and TAD</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -559,6 +587,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ss2" id="toc-ss2" class="nav-link" data-scroll-target="#ss2"><code>SS=2</code></a></li>
   </ul></li>
   <li><a href="#runnable-example" id="toc-runnable-example" class="nav-link" data-scroll-target="#runnable-example">Runnable example</a></li>
+  <li><a href="#addl-multiple-additional-doses" id="toc-addl-multiple-additional-doses" class="nav-link" data-scroll-target="#addl-multiple-additional-doses">ADDL — multiple additional doses</a>
+  <ul class="collapse">
+  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
+  <li><a href="#trough-detection-with-addl" id="toc-trough-detection-with-addl" class="nav-link" data-scroll-target="#trough-detection-with-addl">Trough detection with ADDL</a></li>
+  <li><a href="#bundled-model" id="toc-bundled-model" class="nav-link" data-scroll-target="#bundled-model">Bundled model</a></li>
+  <li><a href="#nonmem-equivalent" id="toc-nonmem-equivalent" class="nav-link" data-scroll-target="#nonmem-equivalent">NONMEM equivalent</a></li>
+  </ul></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -655,13 +690,88 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The bundled <code>warfarin_ss</code> model is a 1-cpt oral model identical in structure to the single-dose warfarin example; the dataset (<code>warfarin_ss.csv</code>) records once-daily dosing at steady state (<code>SS=1</code>, <code>II=24</code>).</p>
+<hr>
+</section>
+<section id="addl-multiple-additional-doses" class="level2">
+<h2 class="anchored" data-anchor-id="addl-multiple-additional-doses">ADDL — multiple additional doses</h2>
+<p>The <code>ADDL</code> column is the NONMEM-compatible way to record repeated identical doses without listing each one as a separate row. A single dose row with <code>ADDL=N</code> and <code>II=interval</code> expands to <code>N + 1</code> explicit dose events at <code>II</code>-unit spacings.</p>
+<pre><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV,II,ADDL
+1,0,.,1,70,1,0,1,24,6     # dose on day 1 + 6 more = 7 total, q24h
+1,2,5.1,0,.,1,0,0,.,.
+1,4,4.8,0,.,1,0,0,.,.
+...
+1,168,1.4,0,.,1,0,0,.,.   # observation on day 8</code></pre>
+<p>The expansion happens at read time: ferx converts the single dose record into 7 explicit <code>DoseEvent</code> objects internally. <code>TAD</code> resets to zero at each of the 7 expanded doses.</p>
+<section id="model-file" class="level3">
+<h3 class="anchored" data-anchor-id="model-file">Model file</h3>
+<p>No special syntax is required. The model file is identical to a single-dose model — the multi-dose structure comes from the dataset, not from the <code>.ferx</code> file:</p>
+<pre><code>[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)</code></pre>
+</section>
+<section id="trough-detection-with-addl" class="level3">
+<h3 class="anchored" data-anchor-id="trough-detection-with-addl">Trough detection with ADDL</h3>
+<p>Because TAD resets at each expanded dose, the standard <code>TAD &lt; 1e-10</code> guard correctly identifies trough time points for any dose in the sequence:</p>
+<pre><code>[derived]
+  CMIN_TAU = min(IPRED, TAD &lt; 1e-10)</code></pre>
+<p>The <code>1e-10</code> tolerance absorbs floating-point residuals that can make TAD equal <code>1e-13</code> rather than <code>0</code> at a dose time. Do <strong>not</strong> use <code>TAD == 0</code>.</p>
+</section>
+<section id="bundled-model" class="level3">
+<h3 class="anchored" data-anchor-id="bundled-model">Bundled model</h3>
+<p>The <code>warfarin_addl</code> model file demonstrates this design. It uses a 7-dose ADDL scheme and shows trough detection and periodic AUC in <code>[derived]</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_show</span>(<span class="fu">ferx_example</span>(<span class="st">"warfarin_addl"</span>)<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>The <code>warfarin_addl</code> dataset is not yet bundled.</strong> The model file exists in the package but <code>ferx_example("warfarin_addl")</code> does not return a data path. Supply your own ADDL-format dataset that matches the schema above.</p>
+</div>
+</div>
+</section>
+<section id="nonmem-equivalent" class="level3">
+<h3 class="anchored" data-anchor-id="nonmem-equivalent">NONMEM equivalent</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>NONMEM</th>
+<th>ferx</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$DATA ADDL</code> column</td>
+<td><code>ADDL</code> column (same semantics)</td>
+</tr>
+<tr class="even">
+<td><code>II</code> column (inter-dose interval)</td>
+<td><code>II</code> column (same)</td>
+</tr>
+<tr class="odd">
+<td>Multiple explicit dose records</td>
+<td>Single record + <code>ADDL=N, II=interval</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
 </section>
 <section id="see-also" class="level2">
 <h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
 <li><a href="https://ferx-nlme.github.io/ferx-core/model-file/steady-state.html">Steady-State Doses — ferx-core book</a> — full algorithm details, NONMEM equivalence, and validation notes</li>
-<li><a href="https://ferx-nlme.github.io/ferx-core/data-format.html">Data Format (ferx-core book)</a> — <code>SS</code> and <code>II</code> column reference</li>
+<li><a href="https://ferx-nlme.github.io/ferx-core/data-format.html">Data Format (ferx-core book)</a> — <code>SS</code>, <code>II</code>, and <code>ADDL</code> column reference</li>
 <li><a href="../model-dsl/lag-time.html">Lag time</a> — interaction with <code>lagtime</code></li>
+<li><a href="../model-dsl/derived.html">Derived columns</a> — <code>TAD</code>-based trough detection in <code>[derived]</code></li>
 </ul>
 
 

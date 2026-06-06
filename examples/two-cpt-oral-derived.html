@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.38">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
-<title>Example: Covariate model – ferx</title>
+<title>Example: Two-cpt oral with derived AUC – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -60,7 +57,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
@@ -82,8 +78,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -109,12 +104,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-
-<link rel="stylesheet" href="../styles.css">
+}</script><link rel="stylesheet" href="../styles.css">
 </head>
-
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -280,14 +271,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
-    </a>
+    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content"><img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content"></a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">ferx</span>
     </a>
@@ -298,7 +285,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link" href="../get-started.html"> 
 <span class="menu-text">Get started</span></a>
   </li>  
@@ -306,8 +293,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-learn" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Learn</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-learn">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-learn">
+<li>
     <a class="dropdown-item" href="../learn/model-workflow.html">
  <span class="dropdown-text">Model workflow</span></a>
   </li>  
@@ -344,13 +331,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Robust fitting</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-model-dsl" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Model DSL</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-model-dsl">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-model-dsl">
+<li>
     <a class="dropdown-item" href="../model-dsl/overview.html">
  <span class="dropdown-text">Overview</span></a>
   </li>  
@@ -419,13 +406,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Fit options</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Examples</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">
+<li>
     <a class="dropdown-item" href="../examples/warfarin.html">
  <span class="dropdown-text">One-compartment oral (warfarin)</span></a>
   </li>  
@@ -534,10 +521,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">ODE with TIME, TAFD, and TAD</span></a>
   </li>  
     </ul>
-  </li>
+</li>
 </ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
     <a class="nav-link" href="https://ferx-nlme.github.io/ferx-book/"> 
 <span class="menu-text">ferx-r</span></a>
   </li>  
@@ -563,37 +550,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link active" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#covariate-effects" id="toc-covariate-effects" class="nav-link" data-scroll-target="#covariate-effects">Covariate effects</a></li>
-  <li><a href="#data-requirements" id="toc-data-requirements" class="nav-link" data-scroll-target="#data-requirements">Data requirements</a></li>
-  <li><a href="#in-r" id="toc-in-r" class="nav-link" data-scroll-target="#in-r">In R</a></li>
-  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a></li>
+<li><a href="#model" id="toc-model" class="nav-link active" data-scroll-target="#model">Model</a></li>
+  <li><a href="#fit" id="toc-fit" class="nav-link" data-scroll-target="#fit">Fit</a></li>
+  <li>
+<a href="#derived-columns" id="toc-derived-columns" class="nav-link" data-scroll-target="#derived-columns">Derived columns</a>
+  <ul class="collapse">
+<li><a href="#micro-rate-constants" id="toc-micro-rate-constants" class="nav-link" data-scroll-target="#micro-rate-constants">Micro-rate constants</a></li>
+  <li><a href="#peak-and-auc-summaries" id="toc-peak-and-auc-summaries" class="nav-link" data-scroll-target="#peak-and-auc-summaries">Peak and AUC summaries</a></li>
+  <li><a href="#periodic-auc" id="toc-periodic-auc" class="nav-link" data-scroll-target="#periodic-auc">Periodic AUC</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+</li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Example: Covariate model</h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Example: Two-cpt oral with derived AUC</h1>
 </div>
 
 
@@ -607,121 +591,256 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header>
-
-
-<p>A two-compartment oral model with body weight (WT) and creatinine clearance (CRCL) as covariates on clearance.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For background on covariate parameterisation, see <a href="https://ferx-nlme.github.io/ferx-book/chapters/03-model-dsl.html">Chapter 3 (Model DSL)</a> in the ferx book.</p>
-</div>
-</div>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code># Two-compartment oral PK model with covariates
+</header><p>A two-compartment oral PK model with <code>[derived]</code> columns for micro-rate constants and NCA-style summaries: peak (<code>CMAX</code>, <code>TMAX</code>), first-week AUC (<code>AUC_0_168</code>), and a periodic 24-h AUC (<code>AUC_TAU</code>).</p>
+<section id="model" class="level2"><h2 class="anchored" data-anchor-id="model">Model</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ferx-nlme.github.io/reference/">ferx</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ex</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"two_cpt_oral_derived"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_model_show.html">ferx_model_show</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># model: two_cpt_oral_derived.ferx 
+# Two-compartment oral PK with [derived] output
 
 [parameters]
-  theta TVCL(5.0, 0.01, 100.0)
-  theta TVV1(50.0, 0.1, 1000.0)
-  theta TVQ(10.0, 0.01, 200.0)
-  theta TVV2(100.0, 0.1, 5000.0)
-  theta TVKA(1.0, 0.01, 50.0)
-  theta THETA_WT(0.75, 0.01, 2.0)
-  theta THETA_CRCL(0.5, 0.01, 2.0)
+  theta TVCL(5.0,  0.1,  50.0)
+  theta TVV1(30.0, 3.0, 300.0)
+  theta TVQ( 2.0,  0.1,  20.0)
+  theta TVV2(50.0, 5.0, 500.0)
+  theta TVKA(1.0,  0.05, 20.0)
 
   omega ETA_CL ~ 0.09
-  omega ETA_V1 ~ 0.04
-  omega ETA_Q  ~ 0.04
-  omega ETA_V2 ~ 0.09
-  omega ETA_KA ~ 0.25
+  omega ETA_V1 ~ 0.09
 
-  sigma PROP_ERR ~ 0.04
+  sigma PROP_ERR ~ 0.02 (sd)
 
 [individual_parameters]
-  CL = TVCL * exp(ETA_CL) * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL
+  CL = TVCL * exp(ETA_CL)
   V1 = TVV1 * exp(ETA_V1)
-  Q  = TVQ  * exp(ETA_Q)
-  V2 = TVV2 * exp(ETA_V2)
-  KA = TVKA * exp(ETA_KA)
+  Q  = TVQ
+  V2 = TVV2
+  KA = TVKA
 
 [structural_model]
-  pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)
+  pk two_cpt_oral(cl=CL, v=V1, q=Q, v2=V2, ka=KA)
 
 [error_model]
   DV ~ proportional(PROP_ERR)
 
+[derived]
+  K10 = CL / V1
+  K12 = Q  / V1
+  K21 = Q  / V2
+
+  CMAX       = max(IPRED)
+  TMAX       = tmax(IPRED)
+  AUC_0_168  = integral(IPRED, from=0, to=168, step=0.2)
+  AUC_TAU    = integral(IPRED, window=24, anchor=0, step=0.2)
+
+[output]
+  CL V1 Q V2 KA
+
 [fit_options]
-  method     = focei
-  maxiter    = 500
-  covariance = true</code></pre>
-</section>
-<section id="covariate-effects" class="level2">
-<h2 class="anchored" data-anchor-id="covariate-effects">Covariate effects</h2>
-<p>The clearance equation includes two covariate effects:</p>
-<pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^THETA_WT * (CRCL/100)^THETA_CRCL</code></pre>
-<ul>
-<li><code>(WT/70)^THETA_WT</code> — allometric scaling with body weight, centred at 70 kg. THETA_WT is estimated (typical value ~0.75 for CL).</li>
-<li><code>(CRCL/100)^THETA_CRCL</code> — renal function effect, centred at 100 mL/min. THETA_CRCL is estimated.</li>
-</ul>
-<p>Both effects are <strong>centred</strong>: when WT = 70 kg and CRCL = 100 mL/min, both terms equal 1.0, so TVCL is interpretable as the clearance of a 70 kg patient with normal renal function.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Mu-referencing with covariates">
+  method  = focei
+  maxiter = 500</code></pre>
+</div>
+</div>
+<p>The <code>[derived]</code> block computes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead><tr class="header">
+<th>Column</th>
+<th>Expression</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>K10</code></td>
+<td><code>CL / V1</code></td>
+<td>Elimination micro-rate constant</td>
+</tr>
+<tr class="even">
+<td><code>K12</code></td>
+<td><code>Q / V1</code></td>
+<td>Central→peripheral micro-rate</td>
+</tr>
+<tr class="odd">
+<td><code>K21</code></td>
+<td><code>Q / V2</code></td>
+<td>Peripheral→central micro-rate</td>
+</tr>
+<tr class="even">
+<td><code>CMAX</code></td>
+<td><code>max(IPRED)</code></td>
+<td>Subject peak concentration</td>
+</tr>
+<tr class="odd">
+<td><code>TMAX</code></td>
+<td><code>tmax(IPRED)</code></td>
+<td>Time of peak</td>
+</tr>
+<tr class="even">
+<td><code>AUC_0_168</code></td>
+<td><code>integral(IPRED, from=0, to=168, step=0.2)</code></td>
+<td>Week-1 AUC</td>
+</tr>
+<tr class="odd">
+<td><code>AUC_TAU</code></td>
+<td><code>integral(IPRED, window=24, anchor=0, step=0.2)</code></td>
+<td>Periodic 24-h AUC</td>
+</tr>
+</tbody>
+</table>
+<p><code>[output]</code> echoes <code>CL</code>, <code>V1</code>, <code>Q</code>, <code>V2</code>, <code>KA</code> into sdtab.</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Mu-referencing with covariates
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Both term orderings are detected correctly — ferx recognises the <code>theta * exp(eta)</code> mu-reference regardless of where covariate multipliers appear:</p>
-<pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^0.75   # fine
-CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)   # also fine</code></pre>
+<p>This example uses the <code>two_cpt_oral_cov</code> dataset (which has <code>WT</code> and <code>CRCL</code> covariate columns). The model does not use these covariates — they are present in the dataset but ignored by the structural and individual-parameter blocks.</p>
 </div>
 </div>
-</section>
-<section id="data-requirements" class="level2">
-<h2 class="anchored" data-anchor-id="data-requirements">Data requirements</h2>
-<p>The dataset must include <code>WT</code> and <code>CRCL</code> columns:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,MDV,WT,CRCL
-1,0,.,1,100,1,1,72.5,105
-1,0.5,12.3,0,.,.,0,72.5,105
-1,1.0,18.7,0,.,.,0,72.5,105</code></pre>
-<p>Covariate columns are automatically detected — any column not in the standard NONMEM set (ID, TIME, DV, EVID, AMT, CMT, RATE, MDV, CENS, II, SS) is treated as a covariate. Names in the data file are matched case-insensitively against those used in <code>[individual_parameters]</code>.</p>
-</section>
-<section id="in-r" class="level2">
-<h2 class="anchored" data-anchor-id="in-r">In R</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_cov"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA-covariate correlations: check if covariates were absorbed</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit, data)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ETA_CL correlations with WT and CRCL should be near zero after fitting</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="notes" class="level2">
-<h2 class="anchored" data-anchor-id="notes">Notes</h2>
+</section><section id="fit" class="level2"><h2 class="anchored" data-anchor-id="fit">Fit</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Mu-referencing detected for: ETA_CL, ETA_V1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>============================================================
+ NONLINEAR MIXED EFFECTS MODEL ESTIMATION
+============================================================
+ Model: two_cpt_oral_derived     Dataset: two_cpt_oral_cov
+ Method: FOCEI | Gradient: FD | Subjects: 30 | Obs: 300
+
+ STATUS: CONVERGED   423 iterations   0.6s
+ OFV: -696.6876    AIC: -680.6876    BIC: -651.0573
+
+MODEL STRUCTURE (auto-derived)
+------------------------------------------------------------
+  Structural:  2-cpt oral  (TVCL, TVV1, TVQ, TVV2, TVKA)
+  IIV:         ETA_CL, ETA_V1
+  IOV:         none
+  Residual:    proportional
+
+THETA
+------------------------------------------------------------
+Parameter            Estimate           SE       %RSE
+----------------------------------------------------
+TVCL                 4.390102     0.030158        0.7
+TVV1                50.378191     1.212722        2.4
+TVQ                  8.864322     0.242002        2.7
+TVV2                91.298252     1.615809        1.8
+TVKA                 1.282321     0.049125        3.8
+
+OMEGA  (between-subject variability)
+------------------------------------------------------------
+  ETA_CL                   [log-normal]  = 0.197744  CV% = 46.8  SE = 0.026717
+  ETA_V1                   [log-normal]  = 0.110238  CV% = 34.1  SE = 0.014505
+
+SIGMA  (residual error)
+------------------------------------------------------------
+  PROP_ERR         [proportional] = 0.106696  (var = 0.011384, CV% = 10.7)  SE = 0.003450  [initial specified as SD]
+
+SHRINKAGE
+------------------------------------------------------------
+ ETA_CL: 4.9%   ETA_V1: 3.0%   EPS: 9.6%
+
+DIAGNOSTICS
+------------------------------------------------------------
+ Covariance: computed   Cond: 32.6   DW: 0.61 [positive autocorrelation]   IWRES lag-1 r: 0.657
+
+RUN INFO
+------------------------------------------------------------
+ Gradient (requested): auto   (used: fd)
+ ferx v0.1.5 (core v0.1.5)
+
+SETTINGS  (model file / call-time override)
+------------------------------------------------------------
+  method                       focei  [model only]
+  maxiter                      500  [model only]
+
+------------------------------------------------------------
+ 2 warning   1 info  --  call ferx_warnings(fit) for details
+============================================================</code></pre>
+</div>
+</div>
+</section><section id="derived-columns" class="level2"><h2 class="anchored" data-anchor-id="derived-columns">Derived columns</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "ID"        "TIME"      "DV"        "PRED"      "IPRED"     "CWRES"    
+ [7] "IWRES"     "EBE_OFV"   "N_OBS"     "TAFD"      "TAD"       "CL"       
+[13] "V1"        "Q"         "V2"        "KA"        "K10"       "K12"      
+[19] "K21"       "CMAX"      "TMAX"      "AUC_0_168" "AUC_TAU"  </code></pre>
+</div>
+</div>
+<section id="micro-rate-constants" class="level3"><h3 class="anchored" data-anchor-id="micro-rate-constants">Micro-rate constants</h3>
+<p><code>K10</code>, <code>K12</code>, <code>K21</code> are per-row (constant per subject, dependent on EBE parameters):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"CL"</span>, <span class="st">"V1"</span>, <span class="st">"Q"</span>, <span class="st">"V2"</span>, <span class="st">"K10"</span>, <span class="st">"K12"</span>, <span class="st">"K21"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   ID       CL       V1        Q       V2        K10       K12        K21
+1   1 4.265402 34.43194 8.864322 91.29825 0.12387921 0.2574447 0.09709192
+11  2 5.682651 42.59018 8.864322 91.29825 0.13342632 0.2081307 0.09709192
+21  3 4.782190 51.52692 8.864322 91.29825 0.09280955 0.1720328 0.09709192
+31  4 3.065057 27.44802 8.864322 91.29825 0.11166769 0.3229494 0.09709192
+41  5 5.611389 44.86298 8.864322 91.29825 0.12507838 0.1975866 0.09709192
+51  6 7.808147 41.71349 8.864322 91.29825 0.18718520 0.2125049 0.09709192</code></pre>
+</div>
+</div>
+</section><section id="peak-and-auc-summaries" class="level3"><h3 class="anchored" data-anchor-id="peak-and-auc-summaries">Peak and AUC summaries</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"TMAX"</span>, <span class="st">"AUC_0_168"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   ID     CMAX TMAX AUC_0_168
+1   1 4.214111    1  88.40982
+11  2 3.503477    2  65.51782
+21  3 3.187721    2  79.28387
+31  4 5.134956    1 121.11558
+41  5 3.404415    2  66.58322
+51  6 3.438764    1  45.32703</code></pre>
+</div>
+</div>
+</section><section id="periodic-auc" class="level3"><h3 class="anchored" data-anchor-id="periodic-auc">Periodic AUC</h3>
+<p><code>AUC_TAU</code> changes from interval to interval as the concentration profile accumulates or washes out:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">$</span><span class="va">ID</span> <span class="op">==</span> <span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">$</span><span class="va">ID</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"TIME"</span>, <span class="st">"TAFD"</span>, <span class="st">"AUC_TAU"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   TIME TAFD  AUC_TAU
+1   0.5  0.5 35.68493
+2   1.0  1.0 35.68493
+3   2.0  2.0 35.68493
+4   4.0  4.0 35.68493
+5   6.0  6.0 35.68493
+6   8.0  8.0 35.68493
+7  12.0 12.0 35.68493
+8  24.0 24.0 11.63419
+9  36.0 36.0 11.63419
+10 48.0 48.0  8.21814</code></pre>
+</div>
+</div>
+</section></section><section id="see-also" class="level2"><h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li>FOCEI is used here because the proportional error model creates an interaction between random effects and residual error.</li>
-<li>The estimated covariate exponents (THETA_WT, THETA_CRCL) have standard errors that can be used for a likelihood-ratio test of significance.</li>
-<li>The initial values for covariate thetas (THETA_WT = 0.75, THETA_CRCL = 0.5) are the allometric theory values — informative starting points that speed convergence.</li>
+<li><a href="../model-dsl/derived.html">Model DSL: Derived columns</a></li>
+<li><a href="../examples/warfarin-derived.html">Example: derived columns</a></li>
+<li>
+<a href="../examples/covariates.html">Example: covariate model</a> — same dataset, with covariates</li>
 </ul>
 
 
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1135,8 +1254,7 @@ CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)   # also fine</code></pre>
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p>© 2026 FeRx-NLME · MIT licensed</p>
 </div>   
@@ -1148,8 +1266,6 @@ CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)   # also fine</code></pre>
 </div>
   </div>
 </footer>
-
-
 
 
 </body></html>

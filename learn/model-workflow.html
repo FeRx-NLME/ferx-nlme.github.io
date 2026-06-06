@@ -387,6 +387,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Scaling</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../model-dsl/derived.html">
+ <span class="dropdown-text">Derived columns</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../model-dsl/data-selection.html">
+ <span class="dropdown-text">Data selection</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../model-dsl/bloq.html">
  <span class="dropdown-text">BLOQ (M3 method)</span></a>
   </li>  
@@ -504,6 +512,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../examples/multistart.html">
  <span class="dropdown-text">Multi-start fitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-derived.html">
+ <span class="dropdown-text">Derived columns ([derived])</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-derived-pkpd.html">
+ <span class="dropdown-text">Derived PK/PD quantities</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/two-cpt-oral-derived.html">
+ <span class="dropdown-text">Two-cpt oral with derived AUC</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-data-selection.html">
+ <span class="dropdown-text">Data selection (LLOQ filtering)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-ode-time.html">
+ <span class="dropdown-text">ODE with TIME, TAFD, and TAD</span></a>
   </li>  
     </ul>
   </li>
@@ -891,18 +919,24 @@ Tip
 </section>
 <section id="saving-and-reloading-fits" class="level2">
 <h2 class="anchored" data-anchor-id="saving-and-reloading-fits">Saving and reloading fits</h2>
-<p>Long estimation runs can be saved to disk and reloaded in a later session with <code>ferx_save_fit()</code> / <code>ferx_load_fit()</code>. The saved file is a compressed RDS and preserves the full <code>ferx_fit</code> object including <code>sdtab</code>, <code>ebe_etas</code>, trace path, and all metadata.</p>
+<p>Long estimation runs can be saved to disk and reloaded in a later session with <code>ferx_save_fit()</code> / <code>ferx_load_fit()</code>. The file format is <code>.fitrx</code> — a cross-language zip archive of JSON metadata and CSV diagnostics (sdtab, ebes). It preserves the full <code>ferx_fit</code> object including <code>sdtab</code>, <code>ebe_etas</code>, trace path, and all metadata.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save after a long run</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>, <span class="at">covariance =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_save_fit</span>(fit, <span class="st">"warfarin_focei.rds"</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_save_fit</span>(fit, <span class="st">"warfarin_focei.fitrx"</span>)</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Later — restore and continue working</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">ferx_load_fit</span>(<span class="st">"warfarin_focei.rds"</span>)</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(fit<span class="sc">$</span>theta, fit2<span class="sc">$</span>theta)   <span class="co"># TRUE</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Or auto-save inside ferx_fit() via the output argument:</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">output =</span> <span class="st">"warfarin_focei.fitrx"</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Embed the input CSV so the bundle is fully self-contained:</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_save_fit</span>(fit, <span class="st">"warfarin_focei.fitrx"</span>, <span class="at">include_data =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Later — restore and continue working</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">ferx_load_fit</span>(<span class="st">"warfarin_focei.fitrx"</span>)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(fit<span class="sc">$</span>theta, fit2<span class="sc">$</span>theta)   <span class="co"># TRUE</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The loaded object is indistinguishable from the original: all downstream functions (<code>ferx_estimates()</code>, <code>ferx_cor_matrix()</code>, <code>ferx_plot_trace()</code>, <code>ferx_simulate()</code>, etc.) work without modification.</p>
 <p><strong>Tip:</strong> save immediately after fitting so a crash or session restart does not lose results. Use a naming convention that records the run number, method, and date:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_save_fit</span>(fit, <span class="fu">sprintf</span>(<span class="st">"run%02d_focei_%s.rds"</span>, run_number, <span class="fu">Sys.Date</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_save_fit</span>(fit, <span class="fu">sprintf</span>(<span class="st">"run%02d_focei_%s.fitrx"</span>, run_number, <span class="fu">Sys.Date</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="non-blocking-async-fitting" class="level2">
