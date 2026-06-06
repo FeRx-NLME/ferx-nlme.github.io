@@ -122,6 +122,138 @@ TAM_TAU = integral(1.0, IPRED > MEC, window=24, anchor=0, step=0.1)
 
 ---
 
+### AUC calculations — recipe guide
+
+All four common NCA-style AUC forms are supported. Choose by what you want to
+integrate and over which time window.
+
+#### Fixed window — AUC from t₀ to t₁
+
+Trapezoidal rule at observation time points. Fast and exact when sampling is
+dense:
+
+```
+[derived]
+  AUC_24  = integral(IPRED, from=0,  to=24)
+  AUC_72  = integral(IPRED, from=0,  to=72)
+  AUC_INF = integral(IPRED, from=0,  to=168)
+```
+
+#### Fixed window with fine grid — for sparse or uneven sampling
+
+Forces a uniform evaluation grid so the trapezoid covers gaps between
+observation times. Use `step` in the same time units as `TIME`:
+
+```
+[derived]
+  AUC_72_grid = integral(IPRED, from=0, to=72, step=0.5)
+```
+
+A smaller `step` is more accurate but slower at render time. `step=0.1`–`0.5`
+is usually sufficient for PK profiles.
+
+#### Periodic AUC — one value per dosing interval
+
+`window=W, anchor=A` aligns the integration windows to the dosing schedule.
+Each observation row gets the AUC for its current `W`-unit window:
+
+```
+[derived]
+  AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)
+```
+
+The window starting at `anchor + n * window` for integer `n` is chosen for
+each observation based on its `TIME`. For q24h dosing starting at `TIME=0`,
+`anchor=0, window=24` gives one AUC value per day.
+
+#### NCA AUC from observed values
+
+`integral(DV, ...)` uses observed `DV` values at the actual observation times
+— no IPRED interpolation. The `step=` argument is ignored for DV integrals:
+
+```
+[derived]
+  AUC_DV_72 = integral(DV, from=0, to=72)
+```
+
+#### Time-above-threshold (TAT)
+
+`integral(1.0, condition, ...)` counts time units where the condition is true.
+Always add `step=` — without it only observation time points are evaluated,
+and sparse sampling misses crossings between samples:
+
+```
+[derived]
+  TAT_0_5   = integral(1.0, IPRED > 0.5,  from=0, to=72,   step=0.1)
+  TAT_MEC   = integral(1.0, IPRED > MEC,  window=24, anchor=0, step=0.1)
+```
+
+#### Partial AUC — subset of subjects or time points
+
+Combine a fixed window with an aggregate filter to scope the integral:
+
+```
+[derived]
+  AUC_D1    = integral(IPRED, from=0,  to=24)
+  AUC_SS    = integral(IPRED, from=312, to=336)   # day 14 at steady state
+```
+
+---
+
+### ODE models
+
+`[derived]` works identically whether the structural model is an analytical PK
+shortcut or an ODE system. The same expression language, the same time
+variables, and the same integral forms are available in both cases.
+
+#### TIME, TAFD, TAD in ODE-based fits
+
+All three time variables have the same steady-state-aware semantics in
+`[derived]` as in `[odes]`:
+
+| Variable | Resets at | Typical use in `[derived]` |
+|---|---|---|
+| `TIME` | Never | Absolute-clock conditions (`TAFD < 24`) |
+| `TAFD` | First dose | Day-number, study-elapsed conditions |
+| `TAD` | Every dose | Trough detection, within-interval AUC |
+
+```
+[derived]
+  # Works the same for ODE and analytical models:
+  KE     = CL / V
+  T_HALF = 0.6931472 / KE
+  CMAX   = max(IPRED)
+  AUC_72 = integral(IPRED, from=0, to=72, step=0.2)
+```
+
+#### ODE accumulator states are not accessible in sdtab
+
+A compartment defined purely to accumulate a running total in `[odes]` (e.g.
+`d/dt(AUC_D1) = central/V`) is **not** exposed in `fit$sdtab`. The value
+accumulates correctly during integration and can influence the ODE trajectory,
+but ferx does not pass raw ODE state values at observation times to `[derived]`.
+
+```
+[odes]
+  d/dt(central) = -KA * central
+  d/dt(AUC_D1)  = central / V     # accumulates, but NOT in sdtab
+
+[derived]
+  # Use integral() instead to get AUC in sdtab:
+  AUC_72 = integral(IPRED, from=0, to=72, step=0.2)
+```
+
+Use ODE accumulator compartments when the accumulated value **feeds back into
+the ODE dynamics** (e.g. receptor occupancy driving PD). For post-fit reporting
+only, prefer `[derived] integral(...)`.
+
+::: {.callout-note}
+For a worked example with TIME, TAFD, and TAD inside `[odes]` alongside
+`[derived]` see [Example: ODE with TIME, TAFD, and TAD](../examples/warfarin-ode-time.qmd).
+:::
+
+---
+
 ### Sequential scoping
 
 A derived column may reference earlier columns in the same block. Forward
