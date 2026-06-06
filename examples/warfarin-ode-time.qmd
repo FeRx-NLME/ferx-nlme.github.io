@@ -21,27 +21,26 @@ ferx_model_show(ex$model)
 
 Key points:
 
-- `TIME` and `T` are synonymous — both track the ODE solver time axis (same
-  as the `TIME` column in the dataset).
-- `TAFD` and `TAD` have the same steady-state-aware semantics as in
-  `[derived]`: `TAFD` resets at the first dose and counts forward; `TAD`
-  resets at each dose event.
+- `TIME` and `T` are synonymous — both track the ODE solver time axis.
+- `TAFD` resets at the first dose; `TAD` resets at each dose event.
 - `d/dt(AUC_D1) = if (TIME < 24) central/V else 0.0` accumulates
-  concentration only during the first 24 h.
+  AUC only during the first 24 h. The inline `if` fires at every ODE solver
+  step, so the integral is exact (no grid approximation needed).
 - `d/dt(TAM_INT) = if (central/V > 0.5 && TAD < 24) 1.0 else 0.0` counts
-  hours above 0.5 mg/L within the dosing interval.
-- `[scaling] obs_scale = V` maps the `central` amount to a concentration for
-  the residual error step.
-- `[derived]` provides `KE`, `T_HALF`, `CMAX`, and `AUC_72` in sdtab.
+  hours above 0.5 mg/L within each dosing interval. `TAD < 24` resets the
+  window at every dose; the condition fires whenever concentration exceeds the
+  threshold.
+- `[scaling] obs_scale = V` maps the `central` amount to concentration.
+- `[derived]` adds `KE`, `T_HALF`, `CMAX`, and `AUC_72` to sdtab.
 
 ::: {.callout-note}
-**ODE accumulator states are not accessible in sdtab.** The states
-`AUC_D1` and `TAM_INT` accumulate during integration and correctly influence
-the ODE trajectory, but ferx does not expose raw ODE state values at
-observation times in sdtab. To get a post-fit integral in sdtab, use
-`[derived] integral(...)` instead. The accumulator approach is useful when
-the accumulated value feeds back into the ODE dynamics (e.g., receptor
-occupancy driving PD), not just for reporting.
+**ODE accumulator states vs sdtab.** `AUC_D1` and `TAM_INT` accumulate
+correctly during integration and can drive feedback dynamics (e.g., cumulative
+exposure affecting tolerance). Raw ODE state values are not written to
+`fit$sdtab` automatically. To report an integral in sdtab, use
+`[derived] integral(IPRED, ...)` — the two approaches are complementary: use
+ODE accumulators when the value feeds back into the RHS, and use `[derived]`
+for post-fit sdtab columns.
 :::
 
 ## Fit
