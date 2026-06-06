@@ -304,6 +304,41 @@ sdtab. Use `[output]` only for individual parameters and covariates that
 `[derived]` does not already compute.
 :::
 
+### Example — what `[output]` adds to sdtab
+
+Without `[output]`, individual parameters like `CL`, `V`, and `KA` are used
+during estimation but do **not** appear in `fit$sdtab`. With `[output]` they
+are echoed as extra columns:
+
+```
+# Without [output]: sdtab has IPRED, PRED, residuals — no CL/V/KA
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+
+# With [output]: CL, V, KA are appended to every row in fit$sdtab
+[output]
+  CL V KA
+```
+
+In R:
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_derived")
+fit <- ferx_fit(ex$model, ex$data)
+
+# CL, V, KA appear because the model has [output] CL V KA
+head(unique(fit$sdtab[, c("ID", "CL", "V", "KA")]))
+```
+
+Covariates work the same way — add them to `[output]` to carry them through
+to sdtab for downstream analysis:
+
+```
+[output]
+  CL V KA WT AGE
+```
+
 ---
 
 ## Full example
