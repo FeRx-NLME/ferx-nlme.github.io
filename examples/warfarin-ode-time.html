@@ -648,17 +648,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Key points:</p>
 <ul>
 <li>
-<code>TIME</code> and <code>T</code> are synonymous — both track the ODE solver time axis (same as the <code>TIME</code> column in the dataset).</li>
+<code>TIME</code> and <code>T</code> are synonymous — both track the ODE solver time axis.</li>
 <li>
-<code>TAFD</code> and <code>TAD</code> have the same steady-state-aware semantics as in <code>[derived]</code>: <code>TAFD</code> resets at the first dose and counts forward; <code>TAD</code> resets at each dose event.</li>
+<code>TAFD</code> resets at the first dose; <code>TAD</code> resets at each dose event.</li>
 <li>
-<code>d/dt(AUC_D1) = if (TIME &lt; 24) central/V else 0.0</code> accumulates concentration only during the first 24 h.</li>
+<code>d/dt(AUC_D1) = if (TIME &lt; 24) central/V else 0.0</code> accumulates AUC only during the first 24 h. The inline <code>if</code> fires at every ODE solver step, so the integral is exact (no grid approximation needed).</li>
 <li>
-<code>d/dt(TAM_INT) = if (central/V &gt; 0.5 &amp;&amp; TAD &lt; 24) 1.0 else 0.0</code> counts hours above 0.5 mg/L within the dosing interval.</li>
+<code>d/dt(TAM_INT) = if (central/V &gt; 0.5 &amp;&amp; TAD &lt; 24) 1.0 else 0.0</code> counts hours above 0.5 mg/L within each dosing interval. <code>TAD &lt; 24</code> resets the window at every dose; the condition fires whenever concentration exceeds the threshold.</li>
 <li>
-<code>[scaling] obs_scale = V</code> maps the <code>central</code> amount to a concentration for the residual error step.</li>
+<code>[scaling] obs_scale = V</code> maps the <code>central</code> amount to concentration.</li>
 <li>
-<code>[derived]</code> provides <code>KE</code>, <code>T_HALF</code>, <code>CMAX</code>, and <code>AUC_72</code> in sdtab.</li>
+<code>[derived]</code> adds <code>KE</code>, <code>T_HALF</code>, <code>CMAX</code>, and <code>AUC_72</code> to sdtab.</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -670,7 +670,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>ODE accumulator states are not accessible in sdtab.</strong> The states <code>AUC_D1</code> and <code>TAM_INT</code> accumulate during integration and correctly influence the ODE trajectory, but ferx does not expose raw ODE state values at observation times in sdtab. To get a post-fit integral in sdtab, use <code>[derived] integral(...)</code> instead. The accumulator approach is useful when the accumulated value feeds back into the ODE dynamics (e.g., receptor occupancy driving PD), not just for reporting.</p>
+<p><strong>ODE accumulator states vs sdtab.</strong> <code>AUC_D1</code> and <code>TAM_INT</code> accumulate correctly during integration and can drive feedback dynamics (e.g., cumulative exposure affecting tolerance). Raw ODE state values are not written to <code>fit$sdtab</code> automatically. To report an integral in sdtab, use <code>[derived] integral(IPRED, ...)</code> — the two approaches are complementary: use ODE accumulators when the value feeds back into the RHS, and use <code>[derived]</code> for post-fit sdtab columns.</p>
 </div>
 </div>
 </section><section id="fit" class="level2"><h2 class="anchored" data-anchor-id="fit">Fit</h2>
@@ -687,7 +687,7 @@ Note
  Model: warfarin_ode_time        Dataset: warfarin
  Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   90 iterations   56.8s
+ STATUS: CONVERGED   90 iterations   55.8s
  OFV: -285.9634    AIC: -271.9634    BIC: -253.0600
 
 MODEL STRUCTURE (auto-derived)

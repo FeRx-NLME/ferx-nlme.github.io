@@ -842,20 +842,25 @@ AUC_DV_24  = integral(DV,    from=0, to=24)           # observation times only</
 <p><code>[derived]</code> works identically whether the structural model is an analytical PK shortcut or an ODE system. The same expression language, the same time variables, and the same integral forms are available in both cases.</p>
 <section id="time-tafd-tad-in-ode-based-fits" class="level4">
 <h4 class="anchored" data-anchor-id="time-tafd-tad-in-ode-based-fits">TIME, TAFD, TAD in ODE-based fits</h4>
-<p>All three time variables have the same steady-state-aware semantics in <code>[derived]</code> as in <code>[odes]</code>:</p>
+<p>All three time variables have the same steady-state-aware semantics in both <code>[odes]</code> and <code>[derived]</code>:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Variable</th>
 <th>Resets at</th>
-<th>Typical use in <code>[derived]</code></th>
+<th>Typical use</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><code>TIME</code></td>
 <td>Never</td>
-<td>Absolute-clock conditions (<code>TAFD &lt; 24</code>)</td>
+<td>Absolute-clock conditions (<code>TIME &lt; 24</code> for day-1 only)</td>
 </tr>
 <tr class="even">
 <td><code>TAFD</code></td>
@@ -865,28 +870,44 @@ AUC_DV_24  = integral(DV,    from=0, to=24)           # observation times only</
 <tr class="odd">
 <td><code>TAD</code></td>
 <td>Every dose</td>
-<td>Trough detection, within-interval AUC</td>
+<td>Trough detection, within-interval AUC/TAT</td>
 </tr>
 </tbody>
 </table>
-<pre><code>[derived]
-  # Works the same for ODE and analytical models:
-  KE     = CL / V
-  T_HALF = 0.6931472 / KE
-  CMAX   = max(IPRED)
-  AUC_72 = integral(IPRED, from=0, to=72, step=0.2)</code></pre>
+<p>All four names <code>TIME</code>, <code>T</code>, <code>TAFD</code>, and <code>TAD</code> are injected into every ODE RHS evaluation at each solver step — not just at observation times.</p>
 </section>
-<section id="ode-accumulator-states-are-not-accessible-in-sdtab" class="level4">
-<h4 class="anchored" data-anchor-id="ode-accumulator-states-are-not-accessible-in-sdtab">ODE accumulator states are not accessible in sdtab</h4>
-<p>A compartment defined purely to accumulate a running total in <code>[odes]</code> (e.g. <code>d/dt(AUC_D1) = central/V</code>) is <strong>not</strong> exposed in <code>fit$sdtab</code>. The value accumulates correctly during integration and can influence the ODE trajectory, but ferx does not pass raw ODE state values at observation times to <code>[derived]</code>.</p>
-<pre><code>[odes]
-  d/dt(central) = -KA * central
-  d/dt(AUC_D1)  = central / V     # accumulates, but NOT in sdtab
+<section id="auc-and-time-above-threshold-as-ode-accumulator-states" class="level4">
+<h4 class="anchored" data-anchor-id="auc-and-time-above-threshold-as-ode-accumulator-states">AUC and time-above-threshold as ODE accumulator states</h4>
+<p>Inside <code>[odes]</code> you can add extra states whose derivative accumulates AUC, time above threshold, or any other running integral. Use an inline <code>if</code>-expression to restrict when the integrand fires:</p>
+<pre><code>[structural_model]
+  ode(obs_cmt=central, states=[depot, central, AUC_D1, TAM_INT])
 
-[derived]
-  # Use integral() instead to get AUC in sdtab:
-  AUC_72 = integral(IPRED, from=0, to=72, step=0.2)</code></pre>
-<p>Use ODE accumulator compartments when the accumulated value <strong>feeds back into the ODE dynamics</strong> (e.g.&nbsp;receptor occupancy driving PD). For post-fit reporting only, prefer <code>[derived] integral(...)</code>.</p>
+[odes]
+  d/dt(depot)   = -KA * depot
+  d/dt(central) =  KA * depot - CL / V * central
+
+  # Accumulate day-1 AUC: integrand is central/V only while TIME &lt; 24
+  d/dt(AUC_D1)  = if (TIME &lt; 24) central / V else 0.0
+
+  # Accumulate time above 0.5 mg/L within the current dosing interval
+  # TAD resets at each dose, so this gives a per-interval running total
+  d/dt(TAM_INT) = if (central / V &gt; 0.5 &amp;&amp; TAD &lt; 24) 1.0 else 0.0</code></pre>
+<p><strong><code>if</code> syntax in <code>[odes]</code></strong> — the inline form is <code>if (condition) value else value</code>. The block form <code>if (cond) { ... } else { ... }</code> is also accepted when multiple states need to branch together. Conditions support <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>, and all comparison operators.</p>
+<p>The ODE solver evaluates the RHS at every adaptive step, so the accumulator is exact (no grid approximation). This makes the ODE approach well-suited for:</p>
+<ul>
+<li>Conditional integration over arbitrary time windows (day 1, last interval, windows defined by TIME, TAFD, or TAD)</li>
+<li>Any accumulated quantity that <strong>feeds back into the ODE dynamics</strong> — for example, cumulative drug exposure driving tolerance, or receptor occupancy accumulating and reducing the remaining free receptor</li>
+</ul>
+</section>
+<section id="reporting-ode-accumulator-values" class="level4">
+<h4 class="anchored" data-anchor-id="reporting-ode-accumulator-values">Reporting ODE accumulator values</h4>
+<p>The ODE state vector is not automatically written to sdtab. To report accumulated values in <code>fit$sdtab</code> for post-fit analysis, choose one of:</p>
+<p><strong>Option A — <code>[derived] integral()</code></strong>: re-computes the integral from the predicted curve after the fit. Does not require an extra ODE state and appears in sdtab. Works for the vast majority of AUC/TAT use cases:</p>
+<pre><code>[derived]
+  AUC_72  = integral(IPRED, from=0, to=72, step=0.2)
+  TAT_24  = integral(1.0, IPRED &gt; 0.5, from=0, to=24, step=0.1)</code></pre>
+<p><strong>Option B — observe the accumulator directly</strong>: set <code>obs_cmt</code> to the accumulator state. The accumulator value at each observation time then becomes <code>IPRED</code>. This is only practical when AUC (not concentration) is the modelled endpoint.</p>
+<p>For feedback-driven dynamics where <code>AUC_D1</code> or <code>TAM_INT</code> feeds into another ODE equation, the accumulator must stay in <code>[odes]</code>; pair it with <code>[derived] integral()</code> if you also want the value in sdtab.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -897,7 +918,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For a worked example with TIME, TAFD, and TAD inside <code>[odes]</code> alongside <code>[derived]</code> see <a href="../examples/warfarin-ode-time.html">Example: ODE with TIME, TAFD, and TAD</a>.</p>
+<p>For a full worked example of TIME, TAFD, TAD, and ODE accumulators alongside <code>[derived]</code> see <a href="../examples/warfarin-ode-time.html">Example: ODE with TIME, TAFD, and TAD</a>.</p>
 </div>
 </div>
 <hr>
