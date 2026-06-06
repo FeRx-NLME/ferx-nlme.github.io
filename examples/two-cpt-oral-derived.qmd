@@ -1,0 +1,88 @@
+---
+title: "Example: Two-cpt oral with derived AUC"
+---
+
+A two-compartment oral PK model with `[derived]` columns for micro-rate
+constants and NCA-style summaries: peak (`CMAX`, `TMAX`), first-week AUC
+(`AUC_0_168`), and a periodic 24-h AUC (`AUC_TAU`).
+
+## Model
+
+```{r}
+#| label: setup
+#| message: false
+library(ferx)
+
+ex  <- ferx_example("two_cpt_oral_derived")
+ferx_model_show(ex$model)
+```
+
+The `[derived]` block computes:
+
+| Column | Expression | Description |
+|---|---|---|
+| `K10` | `CL / V1` | Elimination micro-rate constant |
+| `K12` | `Q / V1` | Central→peripheral micro-rate |
+| `K21` | `Q / V2` | Peripheral→central micro-rate |
+| `CMAX` | `max(IPRED)` | Subject peak concentration |
+| `TMAX` | `tmax(IPRED)` | Time of peak |
+| `AUC_0_168` | `integral(IPRED, from=0, to=168, step=0.2)` | Week-1 AUC |
+| `AUC_TAU` | `integral(IPRED, window=24, anchor=0, step=0.2)` | Periodic 24-h AUC |
+
+`[output]` echoes `CL`, `V1`, `Q`, `V2`, `KA` into sdtab.
+
+::: {.callout-note}
+This example uses the `two_cpt_oral_cov` dataset (which has `WT` and `CRCL`
+covariate columns). The model does not use these covariates — they are present
+in the dataset but ignored by the structural and individual-parameter blocks.
+:::
+
+## Fit
+
+```{r}
+#| label: fit
+#| cache: true
+fit <- ferx_fit(ex$model, ex$data, verbose = FALSE)
+print(fit)
+```
+
+## Derived columns
+
+```{r}
+#| label: columns
+names(fit$sdtab)
+```
+
+### Micro-rate constants
+
+`K10`, `K12`, `K21` are per-row (constant per subject, dependent on EBE
+parameters):
+
+```{r}
+#| label: micro-rates
+head(unique(fit$sdtab[, c("ID", "CL", "V1", "Q", "V2", "K10", "K12", "K21")]))
+```
+
+### Peak and AUC summaries
+
+```{r}
+#| label: nca-summary
+head(unique(fit$sdtab[, c("ID", "CMAX", "TMAX", "AUC_0_168")]))
+```
+
+### Periodic AUC
+
+`AUC_TAU` changes from interval to interval as the concentration profile
+accumulates or washes out:
+
+```{r}
+#| label: auc-tau
+fit$sdtab[fit$sdtab$ID == fit$sdtab$ID[1],
+          c("TIME", "TAFD", "AUC_TAU")]
+```
+
+## See also
+
+- [Model DSL: Derived columns](../model-dsl/derived.qmd)
+- [Example: derived columns](warfarin-derived.qmd)
+- [Example: covariate model](covariates.qmd) — same dataset, with covariates

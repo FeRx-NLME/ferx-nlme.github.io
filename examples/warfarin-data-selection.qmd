@@ -1,0 +1,114 @@
+---
+title: "Example: Data selection (LLOQ filtering)"
+---
+
+The `[data_selection]` block excludes records from the dataset at read time
+without modifying the CSV. It is the ferx equivalent of NONMEM's
+`$DATA IGNORE=`. This example drops observations below a surrogate LLOQ of
+1.0 mg/L.
+
+## Model
+
+```{r}
+#| label: setup
+#| message: false
+library(ferx)
+
+ex  <- ferx_example("warfarin_data_selection")
+ferx_model_show(ex$model)
+```
+
+The relevant block is:
+
+```
+[data_selection]
+  ignore = DV < 1.0
+```
+
+## R-side preview
+
+Before fitting, use `ferx_selection()` to inspect which records the filter
+would drop:
+
+```{r}
+#| label: preview
+sel <- ferx_selection(ex$data, ignore = "DV < 1.0")
+
+cat("Total records:", nrow(read.csv(ex$data)), "\n")
+cat("Retained:     ", nrow(sel), "\n")
+cat("Excluded obs: ", sel$exclusions$n_obs_excluded, "\n")
+```
+
+The excluded rows carry a `.exclude_reason` column:
+
+```{r}
+#| label: excluded-rows
+ferx_selection_excluded(sel)[, c("ID", "TIME", "DV", ".exclude_reason")]
+```
+
+## Fit
+
+```{r}
+#| label: fit
+#| cache: true
+fit <- ferx_fit(ex$model, ex$data, verbose = FALSE)
+print(fit)
+```
+
+The `DATA SELECTION` section of the print output confirms:
+
+```
+DATA SELECTION
+  Records read: 120    Obs excl.: 2    Doses excl.: 0    Other excl.: 0
+  Fired ignore: DV < 1.0
+```
+
+## Exclusion details in `fit$exclusions`
+
+```{r}
+#| label: exclusions
+fit$exclusions$n_records_total    # total records read
+fit$exclusions$n_obs_excluded     # excluded observations
+fit$exclusions$fired_ignore       # which ignore conditions fired
+```
+
+## Comparison with the unfiltered fit
+
+The two records at `TIME = 120` (the latest time point) are removed. Since
+these are the lowest-concentration samples, the effect on estimates is small
+but measurable:
+
+```{r}
+#| label: compare
+#| cache: true
+fit_all <- ferx_fit(ferx_example("warfarin")$model,
+                    ferx_example("warfarin")$data,
+                    verbose = FALSE)
+
+rbind(
+  unfiltered = round(c(TVCL = fit_all$theta["TVCL"],
+                       TVV  = fit_all$theta["TVV"]), 4),
+  filtered   = round(c(TVCL = fit$theta["TVCL"],
+                       TVV  = fit$theta["TVV"]), 4)
+)
+```
+
+## R-side filtering as an alternative to `[data_selection]`
+
+Pass a `ferx_selection()` result directly to `ferx_fit()` instead of writing
+a `[data_selection]` block. Both approaches produce the same fit:
+
+```{r}
+#| label: r-side
+#| eval: false
+filtered_data <- ferx_selection(ex$data, ignore = "DV < 1.0")
+fit2 <- ferx_fit(ex$model, filtered_data)
+```
+
+When both sources supply conditions they are merged — duplicate expressions
+are deduplicated automatically.
+
+## See also
+
+- [Model DSL: Data selection](../model-dsl/data-selection.qmd)
+- [Fit options](../model-dsl/fit-options.qmd)

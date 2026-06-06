@@ -1,0 +1,106 @@
+---
+title: "Example: ODE with TIME, TAFD, and TAD"
+---
+
+Inside `[odes]` RHS expressions four time variables are available:
+`TIME` (= `T`) is the ODE solver clock, `TAFD` is time after first dose,
+and `TAD` is time after the most recent dose. This example uses them to
+build conditional accumulator compartments alongside a standard 1-cpt oral
+ODE, and then computes post-fit summaries with `[derived]`.
+
+## Model
+
+```{r}
+#| label: setup
+#| message: false
+library(ferx)
+
+ex  <- ferx_example("warfarin_ode_time")
+ferx_model_show(ex$model)
+```
+
+Key points:
+
+- `TIME` and `T` are synonymous — both track the ODE solver time axis (same
+  as the `TIME` column in the dataset).
+- `TAFD` and `TAD` have the same steady-state-aware semantics as in
+  `[derived]`: `TAFD` resets at the first dose and counts forward; `TAD`
+  resets at each dose event.
+- `d/dt(AUC_D1) = if (TIME < 24) central/V else 0.0` accumulates
+  concentration only during the first 24 h.
+- `d/dt(TAM_INT) = if (central/V > 0.5 && TAD < 24) 1.0 else 0.0` counts
+  hours above 0.5 mg/L within the dosing interval.
+- `[scaling] obs_scale = V` maps the `central` amount to a concentration for
+  the residual error step.
+- `[derived]` provides `KE`, `T_HALF`, `CMAX`, and `AUC_72` in sdtab.
+
+::: {.callout-note}
+**ODE accumulator states are not accessible in sdtab.** The states
+`AUC_D1` and `TAM_INT` accumulate during integration and correctly influence
+the ODE trajectory, but ferx does not expose raw ODE state values at
+observation times in sdtab. To get a post-fit integral in sdtab, use
+`[derived] integral(...)` instead. The accumulator approach is useful when
+the accumulated value feeds back into the ODE dynamics (e.g., receptor
+occupancy driving PD), not just for reporting.
+:::
+
+## Fit
+
+```{r}
+#| label: fit
+#| cache: true
+fit <- ferx_fit(ex$model, ex$data, verbose = FALSE)
+print(fit)
+```
+
+## Derived columns
+
+The `[derived]` columns `KE`, `T_HALF`, `CMAX`, and `AUC_72` appear in
+sdtab alongside the mandatory minimum:
+
+```{r}
+#| label: columns
+names(fit$sdtab)
+```
+
+```{r}
+#| label: derived-vals
+head(unique(fit$sdtab[, c("ID", "KE", "T_HALF", "CMAX", "AUC_72")]))
+```
+
+## TIME vs TAFD vs TAD in ODE expressions
+
+All three variables are available in `[odes]`. Choosing between them:
+
+| Variable | Resets at | Use for |
+|---|---|---|
+| `TIME` / `T` | Never | Absolute clock; calendar-time conditions |
+| `TAFD` | First dose | Duration since study start |
+| `TAD` | Every dose | Within-interval conditions; trough detection |
+
+A common pattern using `TAD` for within-interval integration:
+
+```
+d/dt(AUC_interval) = if (TAD < 24) central/V else 0.0
+```
+
+And using `TIME` for day-1 vs later conditions:
+
+```
+d/dt(AUC_D1) = if (TIME < 24) central/V else 0.0
+```
+
+## [scaling] with ODE models
+
+The `obs_scale = V` declaration divides every model prediction by `V` before
+the residual error is applied, so the `DV` column should be in
+concentration units (amount/volume) while the ODE state `central` is in
+amount units. This avoids putting `V` in the ODE RHS for the prediction
+step, keeping the ODE equations simpler.
+
+## See also
+
+- [Model DSL: ODE models](../model-dsl/odes.qmd)
+- [Model DSL: Derived columns](../model-dsl/derived.qmd)
+- [Model DSL: Scaling](../model-dsl/scaling.qmd)
+- [Example: ODE model (Michaelis-Menten)](ode-model.qmd)

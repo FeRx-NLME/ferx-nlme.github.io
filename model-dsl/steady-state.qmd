@@ -103,10 +103,83 @@ structure to the single-dose warfarin example; the dataset
 (`warfarin_ss.csv`) records once-daily dosing at steady state
 (`SS=1`, `II=24`).
 
+---
+
+## ADDL — multiple additional doses
+
+The `ADDL` column is the NONMEM-compatible way to record repeated identical
+doses without listing each one as a separate row. A single dose row with
+`ADDL=N` and `II=interval` expands to `N + 1` explicit dose events at
+`II`-unit spacings.
+
+```
+ID,TIME,DV,EVID,AMT,CMT,RATE,MDV,II,ADDL
+1,0,.,1,70,1,0,1,24,6     # dose on day 1 + 6 more = 7 total, q24h
+1,2,5.1,0,.,1,0,0,.,.
+1,4,4.8,0,.,1,0,0,.,.
+...
+1,168,1.4,0,.,1,0,0,.,.   # observation on day 8
+```
+
+The expansion happens at read time: ferx converts the single dose record into
+7 explicit `DoseEvent` objects internally. `TAD` resets to zero at each of the
+7 expanded doses.
+
+### Model file
+
+No special syntax is required. The model file is identical to a single-dose
+model — the multi-dose structure comes from the dataset, not from the `.ferx`
+file:
+
+```
+[structural_model]
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
+```
+
+### Trough detection with ADDL
+
+Because TAD resets at each expanded dose, the standard `TAD < 1e-10` guard
+correctly identifies trough time points for any dose in the sequence:
+
+```
+[derived]
+  CMIN_TAU = min(IPRED, TAD < 1e-10)
+```
+
+The `1e-10` tolerance absorbs floating-point residuals that can make TAD
+equal `1e-13` rather than `0` at a dose time. Do **not** use `TAD == 0`.
+
+### Bundled model
+
+The `warfarin_addl` model file demonstrates this design. It uses a 7-dose
+ADDL scheme and shows trough detection and periodic AUC in `[derived]`:
+
+```r
+library(ferx)
+ferx_model_show(ferx_example("warfarin_addl")$model)
+```
+
+::: {.callout-warning}
+**The `warfarin_addl` dataset is not yet bundled.** The model file exists in
+the package but `ferx_example("warfarin_addl")` does not return a data path.
+Supply your own ADDL-format dataset that matches the schema above.
+:::
+
+### NONMEM equivalent
+
+| NONMEM | ferx |
+|---|---|
+| `$DATA ADDL` column | `ADDL` column (same semantics) |
+| `II` column (inter-dose interval) | `II` column (same) |
+| Multiple explicit dose records | Single record + `ADDL=N, II=interval` |
+
+---
+
 ## See also
 
 - [Steady-State Doses — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/steady-state.html)
   — full algorithm details, NONMEM equivalence, and validation notes
 - [Data Format (ferx-core book)](https://ferx-nlme.github.io/ferx-core/data-format.html)
-  — `SS` and `II` column reference
+  — `SS`, `II`, and `ADDL` column reference
 - [Lag time](lag-time.qmd) — interaction with `lagtime`
+- [Derived columns](derived.qmd) — `TAD`-based trough detection in `[derived]`
