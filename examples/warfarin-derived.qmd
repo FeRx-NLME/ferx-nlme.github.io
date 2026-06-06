@@ -18,12 +18,12 @@ ex  <- ferx_example("warfarin_derived")
 ferx_model_show(ex$model)
 ```
 
-The model adds eleven derived columns covering all three computation kinds:
+The model adds twelve derived columns covering all three computation kinds:
 
 | Column | Kind | Description |
 |---|---|---|
 | `KE`, `T_HALF`, `DAY`, `TAU_TIME` | Per-row | Evaluated at each observation time |
-| `CMAX`, `TMAX`, `CTROUGH`, `CMAX_D1`, `CMAX_D14` | Aggregate | One value per subject, broadcast to all rows |
+| `CMAX`, `TMAX`, `CTROUGH`, `CMAX_D1`, `CMAX_D14` | Aggregate | One value per subject (last two NaN for single-dose data) |
 | `AUC_0_72`, `AUC_TAU`, `AUC_DV_72` | Integral | Trapezoidal / periodic / DV-based AUC |
 
 `[output]` then adds `CL`, `V`, and `KA` (individual EBE parameter values).
@@ -64,17 +64,24 @@ head(fit$sdtab[, c("ID", "TIME", "TAFD", "KE", "T_HALF", "DAY")], 12)
 unique(fit$sdtab[, c("ID", "CMAX", "TMAX", "AUC_0_72")])
 ```
 
-## Trough with `TAD < 1e-10`
+## Filtered aggregates — `CMAX_D1` vs `CMAX`
 
-`CTROUGH = min(IPRED, TAD < 1e-10)` selects the individual prediction at
-dose time. The `1e-10` guard is necessary because floating-point modular
-arithmetic can produce `TAD = 1e-13` rather than exactly `0`, so `TAD == 0`
-is unreliable:
+`CMAX_D1 = max(IPRED, TAFD < 24)` restricts the maximum to day-1 observations
+only. Comparing it against the overall `CMAX` shows how the peak shifts as the
+drug distributes:
 
 ```{r}
-#| label: ctrough
-unique(fit$sdtab[, c("ID", "CTROUGH")])
+#| label: cmax-d1
+unique(fit$sdtab[, c("ID", "CMAX", "CMAX_D1", "TMAX")])
 ```
+
+The model also declares `CTROUGH = min(IPRED, TAD < 1e-10)` to capture the
+pre-dose trough, and `CMAX_D14 = max(IPRED, TAFD >= 312 && TAFD < 336)` for
+the steady-state day-14 peak. Both are `NaN` here because the warfarin dataset
+is a single-dose study (no repeated doses, data ends at 120 h) — `TAD` never
+resets to ≈ 0 at an observation time, and no observations fall in the 312–336 h
+window. These columns are designed for **multi-dose designs**. For a working
+trough example see [Example: ADDL/multiple-dose](warfarin-addl.qmd).
 
 ## Periodic AUC (`AUC_TAU`)
 
