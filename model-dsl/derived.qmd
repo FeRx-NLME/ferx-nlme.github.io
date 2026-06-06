@@ -130,8 +130,8 @@ references are not allowed.
 ```
 [derived]
   KE   = CL / V
-  VDSS = KE / 0.693    # ok — KE defined above
-  # CL2 = VDSS + CL    # would be fine
+  T_HALF = 0.6931472 / KE    # ok — KE defined above
+  # CL2 = KE * V             # would be fine
   # BAD = FUTURE + 1   # FUTURE not defined yet → parse error
 ```
 
@@ -206,9 +206,6 @@ individual parameters:
 
 ```r
 names(fit$sdtab)
-#> ID TIME DV PRED IPRED CWRES IWRES EBE_OFV N_OBS TAFD TAD CL V KA
-#> KE T_HALF DAY TAU_TIME CMAX TMAX CTROUGH CMAX_D1 CMAX_D14
-#> AUC_0_72 AUC_TAU AUC_DV_72
 
 # Aggregate columns: one value per subject (broadcast across rows)
 unique(fit$sdtab[, c("ID", "CMAX", "AUC_0_72")])

@@ -55,13 +55,8 @@ fit <- ferx_fit(ex$model, ex$data, verbose = FALSE)
 print(fit)
 ```
 
-The `DATA SELECTION` section of the print output confirms:
-
-```
-DATA SELECTION
-  Records read: 120    Obs excl.: 2    Doses excl.: 0    Other excl.: 0
-  Fired ignore: DV < 1.0
-```
+The print output includes a `DATA SELECTION` section showing how many records
+were excluded and which conditions fired.
 
 ## Exclusion details in `fit$exclusions`
 
