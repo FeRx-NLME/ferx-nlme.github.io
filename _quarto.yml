@@ -62,6 +62,10 @@ website:
             href: model-dsl/steady-state.qmd
           - text: "Scaling"
             href: model-dsl/scaling.qmd
+          - text: "Derived columns"
+            href: model-dsl/derived.qmd
+          - text: "Data selection"
+            href: model-dsl/data-selection.qmd
           - text: "BLOQ (M3 method)"
             href: model-dsl/bloq.qmd
           - text: "IOV (inter-occasion variability)"
@@ -120,6 +124,16 @@ website:
             href: examples/warfarin-iov-saem.qmd
           - text: "Multi-start fitting"
             href: examples/multistart.qmd
+          - text: "Derived columns ([derived])"
+            href: examples/warfarin-derived.qmd
+          - text: "Derived PK/PD quantities"
+            href: examples/warfarin-derived-pkpd.qmd
+          - text: "Two-cpt oral with derived AUC"
+            href: examples/two-cpt-oral-derived.qmd
+          - text: "Data selection (LLOQ filtering)"
+            href: examples/warfarin-data-selection.qmd
+          - text: "ODE with TIME, TAFD, and TAD"
+            href: examples/warfarin-ode-time.qmd
     right:
       - text: "ferx-r"
         href: https://ferx-nlme.github.io/ferx-book/

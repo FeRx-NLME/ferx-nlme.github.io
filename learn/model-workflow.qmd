@@ -378,17 +378,24 @@ See [parameter transforms](parameter-transforms.qmd) for worked examples with bu
 ## Saving and reloading fits
 
 Long estimation runs can be saved to disk and reloaded in a later session with
-`ferx_save_fit()` / `ferx_load_fit()`. The saved file is a compressed RDS and
-preserves the full `ferx_fit` object including `sdtab`, `ebe_etas`, trace path,
-and all metadata.
+`ferx_save_fit()` / `ferx_load_fit()`. The file format is `.fitrx` — a
+cross-language zip archive of JSON metadata and CSV diagnostics (sdtab, ebes).
+It preserves the full `ferx_fit` object including `sdtab`, `ebe_etas`, trace
+path, and all metadata.
 
 ```r
 # Save after a long run
 fit <- ferx_fit(ex$model, ex$data, method = "focei", covariance = TRUE)
-ferx_save_fit(fit, "warfarin_focei.rds")
+ferx_save_fit(fit, "warfarin_focei.fitrx")
+
+# Or auto-save inside ferx_fit() via the output argument:
+fit <- ferx_fit(ex$model, ex$data, output = "warfarin_focei.fitrx")
+
+# Embed the input CSV so the bundle is fully self-contained:
+ferx_save_fit(fit, "warfarin_focei.fitrx", include_data = TRUE)
 
 # Later — restore and continue working
-fit2 <- ferx_load_fit("warfarin_focei.rds")
+fit2 <- ferx_load_fit("warfarin_focei.fitrx")
 identical(fit$theta, fit2$theta)   # TRUE
 ferx_estimates(fit2)
 ```
@@ -402,7 +409,7 @@ lose results. Use a naming convention that records the run number, method, and
 date:
 
 ```r
-ferx_save_fit(fit, sprintf("run%02d_focei_%s.rds", run_number, Sys.Date()))
+ferx_save_fit(fit, sprintf("run%02d_focei_%s.fitrx", run_number, Sys.Date()))
 ```
 
 ---

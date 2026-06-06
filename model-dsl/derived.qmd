@@ -1,0 +1,225 @@
+---
+title: "Derived columns and output"
+---
+
+The optional `[derived]` and `[output]` blocks extend the sdtab with extra
+columns computed after the fit. Use them to add NCA-style summaries, PD
+metrics, unit-converted readouts, or any expression the optimiser does not
+need to see.
+
+## `[derived]` — computed columns
+
+Each line in `[derived]` has the form `name = expression`. The name becomes a
+new sdtab column; the expression is evaluated for every observation row.
+
+```
+[derived]
+  KE     = CL / V
+  T_HALF = 0.6931472 / KE
+  CMAX   = max(IPRED)
+  AUC_24 = integral(IPRED, from=0, to=24)
+```
+
+### Available variables
+
+| Name | Value |
+|---|---|
+| Individual-parameter names (`CL`, `V`, …) | EBE-derived value for the subject |
+| Theta names (`TVCL`, `TVV`, …) | Final population estimate |
+| Eta names (`ETA_CL`, …) | Subject EBE |
+| Covariate names (`WT`, `AGE`, …) | Subject covariate (constant per row) |
+| `IPRED` | Individual prediction at the row's time |
+| `DV` | Observed value |
+| `TAFD` | Time after first dose |
+| `TAD` | Time after most recent dose |
+| `TIME` | Nominal time |
+| `MACHEPS` | Machine epsilon (≈ 2.22 × 10⁻¹⁶) |
+
+### Operators and functions
+
+Standard arithmetic (`+`, `-`, `*`, `/`), comparison (`<`, `>`, `<=`, `>=`,
+`==`, `!=`), logical (`&&`, `||`, `!`), `mod` for modulo, `^` for power.
+
+| Function | Description |
+|---|---|
+| `exp(x)`, `log(x)`, `sqrt(x)`, `abs(x)` | Standard math |
+| `floor(x)`, `ceil(x)`, `round(x)` | Rounding |
+| `max(expr)` | Subject-level maximum |
+| `min(expr)` | Subject-level minimum |
+| `tmax(expr)` | Time at which `expr` is maximum |
+| `integral(expr, from=t0, to=t1)` | Trapezoidal AUC |
+| `integral(expr, from=t0, to=t1, step=dt)` | Grid-based AUC (IPRED only) |
+| `integral(expr, window=W, anchor=A, step=dt)` | Periodic AUC |
+| `integral(1.0, condition, window=W, anchor=A, step=dt)` | Time-above-threshold |
+
+---
+
+### Computation kinds
+
+#### Per-row (default)
+
+The expression is evaluated independently at each observation row.
+
+```
+KE     = CL / V
+T_HALF = 0.6931472 / KE
+DAY    = floor(TAFD / 24) + 1
+```
+
+`KE` and `T_HALF` are constant per subject (they depend only on EBE
+parameters), but they still appear on every row. `DAY` varies across rows.
+
+#### Aggregate
+
+`max(expr)`, `min(expr)`, or `tmax(expr)` produce a single value per subject
+broadcast to all rows. An optional filter is the second argument:
+
+```
+CMAX      = max(IPRED)
+TMAX      = tmax(IPRED)
+CTROUGH   = min(IPRED, TAD < 1e-10)    # trough at dose time
+CMAX_D1   = max(IPRED, TAFD < 24)      # day-1 peak
+CMAX_D14  = max(IPRED, TAFD >= 312 && TAFD < 336)
+```
+
+::: {.callout-note}
+**`1e-10` for troughs.** `TAD == 0` is mathematically true at dose rows, but
+floating-point residuals from modular arithmetic can produce `TAD = 1e-13`
+instead of `0`. The guard `TAD < 1e-10` is the standard idiom to reliably
+capture the trough without false positives.
+:::
+
+If no row passes the filter the result is `NaN`.
+
+#### Integral
+
+`integral(expr, from=t0, to=t1)` computes the area under `expr` over
+`[t0, t1)` using the trapezoidal rule at observation times.
+
+Add `step=dt` to force evaluation on a uniform grid — useful when the
+observation design is sparse or when computing time-above-threshold:
+
+```
+AUC_24     = integral(IPRED, from=0, to=24)
+AUC_GRID   = integral(IPRED, from=0, to=24, step=0.5)
+AUC_DV_24  = integral(DV,    from=0, to=24)           # observation times only
+```
+
+`window=W, anchor=A` yields a periodic AUC: one value per `W`-unit window,
+starting at `A`:
+
+```
+AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)
+```
+
+**Time-above-threshold.** Use `integral(1.0, condition, ...)` to measure hours
+above a threshold. Always include `step=` here — without it, only observation
+time points are evaluated and sparse sampling can miss brief threshold crossings:
+
+```
+TAM_TAU = integral(1.0, IPRED > MEC, window=24, anchor=0, step=0.1)
+```
+
+---
+
+### Sequential scoping
+
+A derived column may reference earlier columns in the same block. Forward
+references are not allowed.
+
+```
+[derived]
+  KE   = CL / V
+  T_HALF = 0.6931472 / KE    # ok — KE defined above
+  # CL2 = KE * V             # would be fine
+  # BAD = FUTURE + 1   # FUTURE not defined yet → parse error
+```
+
+### Naming rules
+
+A `[derived]` name must **not** clash with the mandatory sdtab columns
+(`ID`, `TIME`, `DV`, `IPRED`, `CWRES`, `IWRES`, `ETA1`, `ETA2`, …,
+`TAFD`, `TAD`) or with any theta, eta, or individual-parameter name.
+Shadowing a covariate name is allowed but emits a warning.
+
+---
+
+## `[output]` — echo individual parameters and covariates
+
+The `[output]` block lists extra columns to write to sdtab beyond the
+mandatory minimum. Each entry is a bare name:
+
+```
+[output]
+  CL V KA WT
+```
+
+| Can list | Example |
+|---|---|
+| Covariates | `WT`, `AGE`, `SEX` |
+| Individual parameters | `CL`, `V`, `KA` |
+| Names already in `[derived]` | redundant but harmless |
+| Eta names | already in mandatory minimum; emits a warning |
+
+### Mandatory sdtab minimum (always present)
+
+`ID`, `TIME`, `DV`, `CENS`, `OCC`, `CMT`, `PRED`, `IPRED`, `CWRES`,
+`IWRES`, `EBE_OFV`, `N_OBS`, `TAFD`, `TAD`
+
+::: {.callout-tip}
+**`[derived]` vs `[output]`.** Names in `[derived]` are automatically in
+sdtab. Use `[output]` only for individual parameters and covariates that
+`[derived]` does not already compute.
+:::
+
+---
+
+## Full example
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_derived")
+fit <- ferx_fit(ex$model, ex$data)
+```
+
+The bundled `warfarin_derived` model demonstrates all three computation kinds
+plus `[output]`:
+
+```
+[derived]
+  KE        = CL / V
+  T_HALF    = 0.6931472 / KE
+  DAY       = floor(TAFD / 24) + 1
+  CMAX      = max(IPRED)
+  CTROUGH   = min(IPRED, TAD < 1e-10)
+  CMAX_D1   = max(IPRED, TAFD < 24)
+  AUC_0_72  = integral(IPRED, from=0, to=72)
+  AUC_TAU   = integral(IPRED, window=24, anchor=0, step=0.1)
+  AUC_DV_72 = integral(DV,    from=0, to=72)
+
+[output]
+  CL V KA
+```
+
+After fitting, `fit$sdtab` contains all derived columns plus the echoed
+individual parameters:
+
+```r
+names(fit$sdtab)
+
+# Aggregate columns: one value per subject (broadcast across rows)
+unique(fit$sdtab[, c("ID", "CMAX", "AUC_0_72")])
+```
+
+See also [Example: derived columns](../examples/warfarin-derived.qmd) for a
+full worked example.
+
+---
+
+## See also
+
+- [Example: derived columns](../examples/warfarin-derived.qmd)
+- [Example: derived PK/PD quantities](../examples/warfarin-derived-pkpd.qmd)
+- [Example: two-cpt oral with derived AUC](../examples/two-cpt-oral-derived.qmd)
+- [Structural model](structural-model.qmd)
+- [ODE models](odes.qmd)

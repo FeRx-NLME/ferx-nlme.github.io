@@ -1,0 +1,117 @@
+---
+title: "Example: Derived columns ([derived] and [output])"
+---
+
+The `[derived]` block adds computed columns to `sdtab` after the fit.
+The `[output]` block echoes individual PK parameters and covariates into
+`sdtab` that would not be there otherwise. Neither block affects estimation —
+they are pure post-processing.
+
+## Model
+
+```{r}
+#| label: setup
+#| message: false
+library(ferx)
+
+ex  <- ferx_example("warfarin_derived")
+ferx_model_show(ex$model)
+```
+
+The model adds eleven derived columns covering all three computation kinds:
+
+| Column | Kind | Description |
+|---|---|---|
+| `KE`, `T_HALF`, `DAY`, `TAU_TIME` | Per-row | Evaluated at each observation time |
+| `CMAX`, `TMAX`, `CTROUGH`, `CMAX_D1`, `CMAX_D14` | Aggregate | One value per subject, broadcast to all rows |
+| `AUC_0_72`, `AUC_TAU`, `AUC_DV_72` | Integral | Trapezoidal / periodic / DV-based AUC |
+
+`[output]` then adds `CL`, `V`, and `KA` (individual EBE parameter values).
+
+## Fit
+
+```{r}
+#| label: fit
+#| cache: true
+fit <- ferx_fit(ex$model, ex$data, verbose = FALSE)
+print(fit)
+```
+
+## sdtab columns
+
+```{r}
+#| label: columns
+names(fit$sdtab)
+```
+
+## Per-row columns
+
+`KE` and `T_HALF` depend only on the subject's EBE `CL`/`V`, so they are
+constant per subject but appear on every row. `DAY` increments with each
+24-h window.
+
+```{r}
+#| label: perrow
+head(fit$sdtab[, c("ID", "TIME", "TAFD", "KE", "T_HALF", "DAY")], 12)
+```
+
+## Aggregate columns
+
+`CMAX`, `TMAX`, and `AUC_0_72` are the same on every row of a subject:
+
+```{r}
+#| label: aggregate
+unique(fit$sdtab[, c("ID", "CMAX", "TMAX", "AUC_0_72")])
+```
+
+## Trough with `TAD < 1e-10`
+
+`CTROUGH = min(IPRED, TAD < 1e-10)` selects the individual prediction at
+dose time. The `1e-10` guard is necessary because floating-point modular
+arithmetic can produce `TAD = 1e-13` rather than exactly `0`, so `TAD == 0`
+is unreliable:
+
+```{r}
+#| label: ctrough
+unique(fit$sdtab[, c("ID", "CTROUGH")])
+```
+
+## Periodic AUC (`AUC_TAU`)
+
+`AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)` produces one
+value per 24-h dosing window. It changes across windows as the concentration
+profile evolves:
+
+```{r}
+#| label: auc-tau
+fit$sdtab[fit$sdtab$ID == fit$sdtab$ID[1],
+          c("TIME", "TAFD", "AUC_TAU")]
+```
+
+## DV-based AUC (`AUC_DV_72`)
+
+`AUC_DV_72 = integral(DV, from=0, to=72)` uses the **observed values** at
+each observation time rather than IPRED. The `step=` argument is ignored for
+DV-based integrals (no interpolation between observations):
+
+```{r}
+#| label: auc-dv
+unique(fit$sdtab[, c("ID", "AUC_0_72", "AUC_DV_72")])
+```
+
+## [output] — individual parameter columns
+
+`CL`, `V`, and `KA` appear in `sdtab` because of the `[output]` block.
+Without it, only the mandatory minimum columns plus `[derived]` names would
+be present:
+
+```{r}
+#| label: output-cols
+unique(fit$sdtab[, c("ID", "CL", "V", "KA")])
+```
+
+## See also
+
+- [Model DSL: Derived columns](../model-dsl/derived.qmd)
+- [Example: derived PK/PD quantities](warfarin-derived-pkpd.qmd)
+- [Example: two-cpt oral with derived AUC](two-cpt-oral-derived.qmd)

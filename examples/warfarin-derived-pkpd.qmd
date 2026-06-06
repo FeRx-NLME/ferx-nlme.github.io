@@ -1,0 +1,93 @@
+---
+title: "Example: Derived PK/PD quantities"
+---
+
+This example uses `[derived]` to compute pharmacodynamic metrics from PK
+predictions after the fit: an Emax response, a TAD-gated Cmax, and
+time-above-MEC per dosing interval.
+
+The PD parameters (`MEC`, `EMAX`, `EC50`) are **fixed** at assumed values —
+they do not enter the PK likelihood and cannot be estimated from PK-only
+data. Only `TVCL`, `TVV`, `TVKA`, and the random effects are estimated.
+
+For a model where PD observations are also fitted jointly, see
+[Example: simultaneous PK/PD (Emax)](emax-pkpd.qmd).
+
+## Model
+
+```{r}
+#| label: setup
+#| message: false
+library(ferx)
+
+ex  <- ferx_example("warfarin_derived_pkpd")
+ferx_model_show(ex$model)
+```
+
+The fixed PD thetas appear with `fix` in the `[parameters]` block:
+
+```
+theta MEC(0.5)    fix
+theta EMAX(80.0)  fix
+theta EC50(3.0)   fix
+```
+
+The `[derived]` block then uses them to compute:
+
+| Column | Expression | Description |
+|---|---|---|
+| `EFF` | `EMAX * IPRED / (EC50 + IPRED)` | Emax response at each time point |
+| `CMAX_INTERVAL` | `max(IPRED, TAD < 24)` | Peak in current dosing interval |
+| `TAM_TAU` | `integral(1.0, IPRED > MEC, window=24, anchor=0, step=0.1)` | Hours above MEC per 24-h interval |
+| `TAM_D1` | `integral(1.0, IPRED > MEC, from=0, to=24, step=0.1)` | Hours above MEC on day 1 |
+
+## Fit
+
+```{r}
+#| label: fit
+#| cache: true
+fit <- ferx_fit(ex$model, ex$data, verbose = FALSE)
+print(fit)
+```
+
+The PK thetas have proper SEs; `MEC`, `EMAX`, and `EC50` show `SE = 0`
+because they are fixed:
+
+```{r}
+#| label: estimates
+ferx_estimates(fit)
+```
+
+## PD derived columns
+
+```{r}
+#| label: pd-cols
+head(fit$sdtab[, c("ID", "TIME", "IPRED", "EFF", "TAM_TAU", "TAM_D1",
+                   "CMAX_INTERVAL")], 12)
+```
+
+`EFF` varies per time point (it depends on `IPRED`). `CMAX_INTERVAL`,
+`TAM_TAU`, and `TAM_D1` are aggregate quantities — constant per 24-h window
+or per subject.
+
+## Why `step=` for time-above-threshold
+
+`TAM_TAU` uses `step=0.1` to force grid evaluation at 0.1-hour intervals.
+Without `step=`, only observation time points are evaluated. If the
+observation design is sparse (large gaps between samples), the trapezoidal
+rule can miss brief periods above threshold between those times. The `step=`
+argument fills in the gaps:
+
+```
+# Without step= (observation-time only -- can miss threshold crossings):
+TAM_approx = integral(1.0, IPRED > MEC, window=24, anchor=0)
+
+# With step=0.1 (fine grid -- catches brief excursions):
+TAM_TAU    = integral(1.0, IPRED > MEC, window=24, anchor=0, step=0.1)
+```
+
+## See also
+
+- [Model DSL: Derived columns](../model-dsl/derived.qmd)
+- [Example: derived columns](warfarin-derived.qmd) — full [derived] syntax tour
+- [Example: simultaneous PK/PD (Emax)](emax-pkpd.qmd) — jointly estimated PD

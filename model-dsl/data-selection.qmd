@@ -1,0 +1,199 @@
+---
+title: "Data selection"
+---
+
+The optional `[data_selection]` block excludes records from the dataset at
+read time without modifying the CSV. It is the ferx equivalent of NONMEM's
+`$DATA IGNORE=` / `$DATA ACCEPT=`.
+
+## Syntax
+
+```
+[data_selection]
+  ignore = <expression>
+  accept = <expression>
+  ignore_subjects = [<id>, ...]
+```
+
+All three keys are optional. Omitting the block entirely means "use all
+records."
+
+---
+
+## `ignore`
+
+A record is **excluded** when the expression is true.
+
+```
+[data_selection]
+  ignore = DV < 0.001
+```
+
+Multiple `ignore` lines are independent: a record is excluded when **any**
+one of them matches. Each line is a separate reason to drop the record.
+
+Within a single line, join sub-conditions with `&&`:
+
+```
+[data_selection]
+  ignore = EVID == 0 && DV < 0.001
+```
+
+::: {.callout-note}
+`||` within a single expression is **not** supported. Use multiple lines
+instead — each line already acts as an independent OR condition.
+:::
+
+---
+
+## `accept`
+
+A record is **kept** only when the expression is true; excluded otherwise.
+
+```
+[data_selection]
+  accept = BW >= 30 && BW < 48
+```
+
+Multiple `accept` lines are independent: a record is excluded when **any**
+accept condition fails.
+
+---
+
+## `ignore_subjects`
+
+Exclude all records for one or more subjects by ID value:
+
+```
+[data_selection]
+  ignore_subjects = [3, 17]
+```
+
+Single-subject shorthand (no brackets):
+
+```
+[data_selection]
+  ignore_subjects = 3
+```
+
+---
+
+## Evaluation order
+
+For each record:
+
+1. `ignore_subjects` — exclude immediately if the ID is listed.
+2. `ignore` — exclude if any clause matches.
+3. `accept` — exclude if any clause fails.
+
+A record must pass all three stages to be included.
+
+---
+
+## Supported columns
+
+Column names are case-insensitive.
+
+| Column | Type |
+|---|---|
+| `ID` | String — only `==` and `!=` (no ordered comparisons) |
+| `TIME`, `DV`, `EVID`, `AMT`, `CMT`, `RATE`, `MDV`, `CENS`, `II`, `SS` | Numeric |
+| Any covariate column | Numeric |
+
+**Missing values:** a comparison against a column whose value is missing (`.`,
+blank, `NA`) never fires. For example, `ignore = DV < 0.001` does **not**
+exclude dose rows — their `DV` is missing. Only observation rows with a
+real `DV` below the threshold are dropped.
+
+`ADDL` and `OCC` are **not** filter targets.
+
+---
+
+## Exclusion summary
+
+After reading the data, ferx prints and stores exclusion counts:
+
+```
+DATA SELECTION
+  Records read: 120    Obs excl.: 2    Doses excl.: 0    Other excl.: 0
+  Fired ignore: DV < 1.0
+```
+
+The same information is in `fit$exclusions`:
+
+```r
+fit$exclusions$n_records_total   # 120
+fit$exclusions$n_obs_excluded    # 2
+fit$exclusions$fired_ignore      # "ignore: DV < 1.0"
+```
+
+---
+
+## R companion: `ferx_selection()`
+
+`ferx_selection()` applies the same filtering logic in pure R before
+committing to a fit, so you can inspect which records would be excluded:
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_data_selection")
+
+sel <- ferx_selection(ex$data, ignore = "DV < 1.0")
+nrow(sel)                           # retained records
+sel$exclusions$n_obs_excluded       # number of excluded obs
+
+# Inspect excluded rows and the matched rule:
+ferx_selection_excluded(sel)[, c("ID", "TIME", "DV", ".exclude_reason")]
+```
+
+The returned `ferx_data` object can be passed directly to `ferx_fit()`:
+
+```r
+fit <- ferx_fit(model = ex$model,
+                data  = ferx_selection(ex$data, ignore = "DV < 1.0"))
+```
+
+When both a `[data_selection]` block in the model file and a `ferx_selection()`
+call supply conditions, they are **merged**: duplicate expressions are
+deduplicated automatically.
+
+---
+
+## NONMEM equivalents
+
+| NONMEM | ferx |
+|---|---|
+| `$DATA IGNORE=C` | `ignore = C == 1` |
+| `$DATA IGNORE=(BW.GT.80)` | `ignore = BW > 80` |
+| `$DATA ACCEPT=(DV.GE.0.001)` | `accept = DV >= 0.001` |
+| `$DATA IGNORE=(ID.EQ.3) IGNORE=(ID.EQ.17)` | `ignore_subjects = [3, 17]` |
+
+---
+
+## Example
+
+```r
+library(ferx)
+ex  <- ferx_example("warfarin_data_selection")
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
+```
+
+The `warfarin_data_selection` model drops observations below a surrogate
+LLOQ of 1.0 mg/L (`ignore = DV < 1.0`). The print output shows:
+
+```
+DATA SELECTION
+  Records read: 120    Obs excl.: 2    Doses excl.: 0    Other excl.: 0
+  Fired ignore: DV < 1.0
+```
+
+See also [Example: data selection](../examples/warfarin-data-selection.qmd)
+for a full worked example including the R-side preview with `ferx_selection()`.
+
+---
+
+## See also
+
+- [Example: data selection (LLOQ filtering)](../examples/warfarin-data-selection.qmd)
+- [Fit options](fit-options.qmd)
