@@ -29,7 +29,8 @@ and rich steady-state sampling on day 7.
 
 ```{r data}
 ferx_columns(ex)
-head(ex$data[ex$data$EVID == 1, ])   # dose rows: ADDL=6, II=24
+dat <- read.csv(ex$data)
+head(dat[dat$EVID == 1, ])   # dose rows: ADDL=6, II=24
 ```
 
 ## Fit
