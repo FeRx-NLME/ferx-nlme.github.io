@@ -1,0 +1,62 @@
+---
+title: "Neural networks overview"
+---
+
+ferx-core provides two complementary neural-network extensions. Both are
+gated behind the `nn` cargo feature and are being built incrementally.
+
+## Which extension do I need?
+
+| Known PK/PD structure? | Known covariate model? | Use |
+|---|---|---|
+| Yes (e.g. 2-cpt oral) | Yes | Classical analytical — no NN needed |
+| Yes | No / partial | [`[covariate_nn]`](covariate-nn.qmd) — Deep Compartment Model |
+| No / partial | Yes | `[dynamics_nn]` — low-dim Neural ODE (Phase B, pending) |
+| No | No | Both — they coexist in the same model |
+
+If you also need *structural uncertainty* — system noise that accumulates
+between observations — see [`[diffusion]`](diffusion.qmd) (SDE / Extended
+Kalman Filter). It is orthogonal to either neural-network mechanism.
+
+## `[covariate_nn]` — Deep Compartment Models
+
+A neural network replaces the typical-value covariate model. Instead of
+writing explicit power-law or linear covariate effects, a network maps
+subject covariates (WT, CRCL, …) to the typical PK parameters (CL, V, …),
+which then combine with ETAs in `[individual_parameters]` as usual.
+
+The compartmental structure downstream is unchanged; inner FOCEI runs exactly
+as for a classical model.
+
+Reference: Janssen et al. 2022 — *Deep compartment models.* CPT
+Pharmacometrics Syst Pharmacol 11:934–945.
+DOI [10.1002/psp4.12808](https://doi.org/10.1002/psp4.12808).
+
+→ See [`[covariate_nn]` reference](covariate-nn.qmd) for full syntax and examples.
+
+## `[dynamics_nn]` — Low-dimensional Neural ODEs
+
+::: {.callout-note}
+**Phase B — pending.** The `[dynamics_nn]` block is not yet available in
+released ferx builds. See the
+[ferx-core roadmap](https://ferx-nlme.github.io/ferx-core/model-file/neural-networks.html)
+for milestone status.
+:::
+
+A small neural network appears on the right-hand side of an ODE, replacing
+mechanistic terms (Michaelis–Menten, linear elimination) when the dynamics
+are unknown. The compartmental topology and random effects structure are still
+specified by the modeler.
+
+Reference: Bräm et al. 2025 — *Low-dimensional neural ordinary differential
+equations.* CPT Pharmacometrics Syst Pharmacol 14:5–16.
+DOI [10.1002/psp4.13265](https://doi.org/10.1002/psp4.13265).
+
+## Status
+
+| Component | Status |
+|---|---|
+| `[covariate_nn]` block — Deep Compartment Models | Phase A (available in `nn`-feature builds) |
+| `[dynamics_nn]` block — low-dim Neural ODEs | Phase B (pending) |
+| Covariance estimation for `[covariate_nn]` weights | Enabled |
+| Covariance estimation for `[dynamics_nn]` weights | Disabled (auto-overridden) |

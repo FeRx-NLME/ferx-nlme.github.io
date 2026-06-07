@@ -74,6 +74,8 @@ website:
             href: model-dsl/iov.qmd
           - text: "Diffusion (SDE)"
             href: model-dsl/diffusion.qmd
+          - text: "Neural networks"
+            href: model-dsl/neural-networks.qmd
           - text: "Covariate NN (DCM)"
             href: model-dsl/covariate-nn.qmd
           - text: "Simulation"
