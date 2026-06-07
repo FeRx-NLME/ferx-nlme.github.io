@@ -75,7 +75,7 @@ pak::pak("FeRx-NLME/ferx-r")
 
 ### Windows
 
-Install [Rtools44](https://cran.r-project.org/bin/windows/Rtools/rtools44/rtools.html) and [Rust via rustup](https://rustup.rs) (cmake ships with Rtools44), then in R:
+Install [Rtools45](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html) and [Rust via rustup](https://rustup.rs) (cmake ships with Rtools45), then in R:
 
 ```r
 Sys.setenv(FERX_NO_AUTODIFF = "1")
@@ -120,23 +120,25 @@ For shared servers, see [multi-user installs](https://ferx-nlme.github.io/ferx-c
 
 ### 2. Install the R package
 
-Once `rustc +enzyme` is verified working:
+Once the `enzyme` toolchain is registered with rustup:
 
 ```r
 pak::pak("FeRx-NLME/ferx-r")
 ```
 
-The package's `src/Makevars` auto-detects the `enzyme` toolchain and builds the autodiff path. To confirm afterwards:
+The package auto-detects the `enzyme` toolchain and builds the autodiff path. Before the long fat-LTO link it runs the same `#[autodiff_forward]` compile-and-run self-test as the manual verify step above — under a timeout watchdog — and aborts with a clear message if the toolchain is broken, so a misconfigured toolchain fails in seconds rather than wedging `rustc` deep into the build. To confirm the path taken afterwards:
 
 ```r
 ferx:::ferx_rust_autodiff_enabled()
 # [1] TRUE
 ```
 
-To force one path or the other, set before installing:
+To force one path or the other, or to control the preflight, set before installing:
 
 - `FERX_NO_AUTODIFF=1` — force the simple build even if Enzyme is installed
 - `FERX_NO_AUTODIFF=0` — force the full build, erroring out if Enzyme isn't found
+- `FERX_AD_PREFLIGHT_SKIP=1` — skip the autodiff self-test (useful when reinstalling a verified toolchain; results are also cached per toolchain fingerprint)
+- `FERX_AD_PREFLIGHT_TIMEOUT=<seconds>` — preflight timeout budget (default: 90)
 
 ---
 
