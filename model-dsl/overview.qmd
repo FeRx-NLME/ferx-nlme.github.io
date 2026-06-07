@@ -11,6 +11,7 @@ sections are parsed top-to-bottom; their order within the file does not matter.
 |---|---|---|
 | `[parameters]` | Yes | Fixed effects (theta), BSV (omega), residual error (sigma), IOV (kappa) |
 | `[individual_parameters]` | Yes | Expressions mapping thetas + ETAs + covariates → PK parameters |
+| `[covariates]` | No | Declare covariate columns and types (continuous / categorical) |
 | `[structural_model]` | Yes | Selects an analytical PK model or declares an ODE system |
 | `[error_model]` | Yes | Residual error structure (`additive`, `proportional`, `combined`) |
 | `[odes]` | ODE models only | Right-hand side of the ODE system |
@@ -78,6 +79,7 @@ See [Data Format](https://ferx-nlme.github.io/ferx-core/data-format.html) for th
 
 - [Parameters](parameters.qmd) — theta, omega, sigma, kappa, block\_omega
 - [Individual Parameters](individual-parameters.qmd) — expressions, covariates, conditionals, mu-referencing
+- [Covariates](covariates.qmd) — `[covariates]` block, types, covariate table
 - [Structural Model](structural-model.qmd) — analytical PK model functions
 - [ODE Models](odes.qmd) — ODE syntax, solver settings, dose handling
 - [Error Model](error-model.qmd) — additive, proportional, combined; sigma scale

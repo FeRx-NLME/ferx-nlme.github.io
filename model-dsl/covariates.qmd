@@ -1,0 +1,136 @@
+---
+title: "Covariates ([covariates])"
+---
+
+The optional `[covariates]` block declares which dataset columns are covariates
+and whether each is **continuous** or **categorical**. It is a declaration of
+*availability*, not usage — a covariate can be declared without being referenced
+in `[individual_parameters]`, and vice versa.
+
+When the block is present, ferx validates the declared columns against the data
+and echoes them into the fit's covariate table (`fit$covtab`), enabling
+downstream covariate-search and summary workflows.
+
+## Syntax
+
+Two forms are accepted and may be mixed:
+
+```
+[covariates]
+  WT   continuous
+  HT   continuous
+  CRCL continuous
+  SEX  categorical
+  RACE categorical
+```
+
+Or the terser `TYPE: NAME, ...` form:
+
+```
+[covariates]
+  continuous: WT, HT, CRCL
+  categorical: SEX, RACE
+```
+
+Type keywords are case-insensitive (`continuous`, `cont`, `categorical`, `cat`).
+Column names are **case-sensitive** and must match the CSV header exactly.
+
+## Behaviour
+
+| Situation | Effect |
+|---|---|
+| Block absent | All non-standard CSV columns are auto-detected as covariates (backward-compatible) |
+| Column declared, not used in model | Valid — declares type for the covariate table |
+| Column used in model, not declared | Model still fits; ferx emits a warning recommending declaration |
+| Column declared, absent from data | Hard error: `E_MISSING_COVARIATE` |
+
+## Categorical covariates must be numerically coded
+
+Covariate values are stored as floating-point numbers, so categorical covariates
+must be encoded as integer levels in the data (e.g. `SEX` as `0`/`1`, not
+`"M"`/`"F"`). When a `[covariates]` block is present this is enforced — a
+non-numeric value in a declared covariate is an error (`E_COVARIATE_NOT_NUMERIC`).
+
+Missing values (blank, `.`, `NA`) are permitted and recorded as missing.
+
+## The covariate table (`fit$covtab`)
+
+When `[covariates]` is declared, the fit result carries a covariate table:
+
+```r
+fit$covtab          # data frame with ID, TIME, EVID, <declared covariates>
+fit$covariate_types # named vector: "continuous" or "categorical" per column
+```
+
+Unlike `fit$sdtab` (observation rows only), `fit$covtab` has **one row per
+input dataset record**, including dose and other-event rows. Missing values
+appear as `NA`. The CLI writes `{model}-covtab.csv` alongside `{model}-sdtab.csv`.
+
+## Example
+
+The bundled `two_cpt_oral_cov` model declares two continuous covariates used
+for allometric scaling:
+
+```{r}
+#| label: setup
+#| message: false
+library(ferx)
+
+ex <- ferx_example("two_cpt_oral_cov")
+ferx_model_show(ex$model)
+```
+
+The relevant block is:
+
+```
+[covariates]
+  WT   continuous
+  CRCL continuous
+```
+
+After fitting, inspect the covariate table:
+
+```{r}
+#| label: fit
+#| cache: true
+#| eval: false
+fit <- ferx_fit(ex$model, ex$data, verbose = FALSE)
+
+# One row per dataset record (doses + observations)
+head(fit$covtab)
+
+# Declared types
+fit$covariate_types
+```
+
+## Checking dataset columns with `ferx_columns()`
+
+Before writing a model, inspect the CSV header to confirm column names:
+
+```{r}
+#| label: columns
+ferx_columns(ex)         # pass the ferx_example() list directly
+ferx_columns(ex$data)    # or pass the CSV path
+```
+
+Use the column names exactly (case-sensitive) in the `[covariates]` block.
+
+## Why declare covariates explicitly?
+
+Without `[covariates]`, every non-standard column is auto-detected, which means:
+
+- Type (continuous vs. categorical) is unknown, so covariate-search tools that
+  need to know how to scale a covariate cannot proceed automatically.
+- Non-covariate administrative columns (`STUDY`, `DATE`, `SITE`) also appear in
+  the covariate table, polluting downstream summaries.
+- A typo in `[individual_parameters]` (wrong covariate name) silently evaluates
+  to zero rather than raising an error.
+
+Declaring `[covariates]` explicitly gives validation, clean typing, and a focused
+covariate table for downstream use.
+
+## See also
+
+- [Individual parameters](individual-parameters.qmd) — using covariates in PK expressions
+- [Data selection](data-selection.qmd) — filtering records using covariate columns
+- [Example: two-cpt oral with derived AUC](../examples/two-cpt-oral-derived.qmd)

@@ -50,6 +50,8 @@ website:
             href: model-dsl/parameters.qmd
           - text: "Individual parameters"
             href: model-dsl/individual-parameters.qmd
+          - text: "Covariates"
+            href: model-dsl/covariates.qmd
           - text: "Structural model"
             href: model-dsl/structural-model.qmd
           - text: "ODE models"
