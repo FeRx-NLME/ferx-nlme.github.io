@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.38">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
-<title>Example: Two-compartment IV – ferx</title>
+<title>ADDL/multiple-dose (warfarin) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -60,7 +57,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
@@ -82,8 +78,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -109,12 +104,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-
-<link rel="stylesheet" href="../styles.css">
+}</script><link rel="stylesheet" href="../styles.css">
 </head>
-
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -280,14 +271,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
-    </a>
+    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content"><img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content"></a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">ferx</span>
     </a>
@@ -298,7 +285,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link" href="../get-started.html"> 
 <span class="menu-text">Get started</span></a>
   </li>  
@@ -306,8 +293,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-learn" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Learn</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-learn">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-learn">
+<li>
     <a class="dropdown-item" href="../learn/model-workflow.html">
  <span class="dropdown-text">Model workflow</span></a>
   </li>  
@@ -344,13 +331,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Robust fitting</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-model-dsl" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Model DSL</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-model-dsl">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-model-dsl">
+<li>
     <a class="dropdown-item" href="../model-dsl/overview.html">
  <span class="dropdown-text">Overview</span></a>
   </li>  
@@ -427,13 +414,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Fit options</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Examples</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">
+<li>
     <a class="dropdown-item" href="../examples/warfarin.html">
  <span class="dropdown-text">One-compartment oral (warfarin)</span></a>
   </li>  
@@ -546,10 +533,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">ADDL/multiple-dose</span></a>
   </li>  
     </ul>
-  </li>
+</li>
 </ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
     <a class="nav-link" href="https://ferx-nlme.github.io/ferx-book/"> 
 <span class="menu-text">ferx-r</span></a>
   </li>  
@@ -575,37 +562,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset">Dataset</a></li>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
+<li><a href="#model" id="toc-model" class="nav-link active" data-scroll-target="#model">Model</a></li>
+  <li><a href="#data-structure" id="toc-data-structure" class="nav-link" data-scroll-target="#data-structure">Data structure</a></li>
+  <li><a href="#fit" id="toc-fit" class="nav-link" data-scroll-target="#fit">Fit</a></li>
+  <li><a href="#derived-columns" id="toc-derived-columns" class="nav-link" data-scroll-target="#derived-columns">Derived columns</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Example: Two-compartment IV</h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">ADDL/multiple-dose (warfarin)</h1>
 </div>
 
 
@@ -619,84 +597,274 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header>
+</header><p>Demonstrates the <code>ADDL</code> column for multiple-dose designs. A single dose row per subject (<code>ADDL=6, II=24</code>) is expanded to seven daily doses at read time; <code>TAD</code> resets to 0 at each expanded dose automatically. The <a href="../model-dsl/derived.html"><code>[derived]</code></a> block computes daily trough (<code>CMIN_TAU</code>), peak (<code>CMAX</code>), and periodic AUC (<code>AUC_TAU</code>).</p>
+<section id="model" class="level2"><h2 class="anchored" data-anchor-id="model">Model</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ferx-nlme.github.io/reference/">ferx</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ferx: built WITHOUT autodiff (finite-difference gradients only).
+All estimation methods (FOCE/FOCEI/SAEM/IMP) work.
+Limitations vs. the full Enzyme build:
+  - gradient = ad in model files falls back to fd (slower, may be less accurate)
+  - SAEM HMC proposals (n_leapfrog &gt; 0) are unavailable; MH is used instead
+  - saem_n_subjects_hmc is always NA
+To enable autodiff: install the Enzyme Rust toolchain and reinstall ferx.
+See: https://ferx-nlme.github.io/ferx-core/installation.html</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin_addl"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_model_show.html">ferx_model_show</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># model: warfarin_addl.ferx 
+# Warfarin: multiple-dose design using ADDL column.
+# The dataset has a single EVID=1 row per subject: ADDL=6, II=24
+# (dose on day 1 + 6 additional doses = 7 daily doses).
+# After ADDL expansion, subject.doses contains 7 explicit DoseEvents
+# and TAD resets to 0 at each one automatically.
 
+[parameters]
+  theta TVCL(0.2, 0.001, 10.0)
+  theta TVV(10.0, 0.1, 500.0)
+  theta TVKA(1.5, 0.01, 50.0)
 
-<p>This example fits a two-compartment IV bolus model — the standard starting point for drugs that show a bi-exponential concentration-time profile after intravenous dosing (rapid initial distribution followed by slower elimination).</p>
-<p>Typical candidates: monoclonal antibodies, aminoglycosides, vancomycin, and any drug where a one-compartment model leaves systematic curvature in the terminal phase.</p>
-<section id="dataset" class="level2">
-<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<p>IV bolus dosing uses the standard NONMEM CSV format. Dose rows have <code>EVID=1</code> and a non-zero <code>AMT</code>; observation rows have <code>EVID=0</code> and <code>DV</code>. No <code>KA</code> column is needed — the drug enters the central compartment instantaneously:</p>
-<pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,RATE,MDV
-1,0,.,1,100,1,0,1
-1,0.5,12.3,0,.,1,0,0
-1,1,9.8,0,.,1,0,0
-1,2,7.4,0,.,1,0,0
-1,4,5.1,0,.,1,0,0
-1,8,3.6,0,.,1,0,0
-1,12,2.9,0,.,1,0,0</code></pre>
-</section>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code>[parameters]
-  theta TVCL(5.0, 0.1, 100.0)
-  theta TVV1(15.0, 1.0, 500.0)
-  theta TVQ(3.0, 0.01, 100.0)
-  theta TVV2(30.0, 1.0, 500.0)
+  omega ETA_CL ~ 0.09
+  omega ETA_V  ~ 0.04
+  omega ETA_KA ~ 0.30
 
-  omega ETA_CL ~ 0.10
-  omega ETA_V1 ~ 0.10
-  omega ETA_Q  ~ 0.10
-  omega ETA_V2 ~ 0.10
-
-  sigma PROP_ERR ~ 0.01
+  sigma PROP_ERR ~ 0.02 (sd)
 
 [individual_parameters]
   CL = TVCL * exp(ETA_CL)
-  V1 = TVV1 * exp(ETA_V1)
-  Q  = TVQ  * exp(ETA_Q)
-  V2 = TVV2 * exp(ETA_V2)
+  V  = TVV  * exp(ETA_V)
+  KA = TVKA * exp(ETA_KA)
 
 [structural_model]
-  pk two_cpt_iv_bolus(cl=CL, v1=V1, q=Q, v2=V2)
+  pk one_cpt_oral(cl=CL, v=V, ka=KA)
 
 [error_model]
   DV ~ proportional(PROP_ERR)
 
+[derived]
+  KE     = CL / V
+  T_HALF = 0.6931472 / KE
+
+  # TAFD uses the first dose time; TAD resets at each expanded dose
+  DAY    = floor(TAFD / 24) + 1
+
+  CMAX   = max(IPRED)
+
+  # Trough: minimum IPRED at dose time (TAD ~= 0 after ADDL expansion).
+  # 1e-10 absorbs floating-point residuals from modular arithmetic.
+  CMIN_TAU = min(IPRED, TAD &lt; 1e-10)
+
+  # Trough via window: last 4 h of the interval (no precision concern)
+  CMIN_LATE = min(IPRED, TAD &gt; 20)
+
+  AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)
+
+[output]
+  CL V KA
+
 [fit_options]
-  method     = foce
-  maxiter    = 500
-  covariance = true</code></pre>
-<p>The <code>two_cpt_iv_bolus</code> built-in solves the two-compartment system analytically. All four macro parameters (CL, V1, Q, V2) are estimated; BSV is placed on all four.</p>
-</section>
-<section id="running" class="level2">
-<h2 class="anchored" data-anchor-id="running">Running</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_iv"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="tips" class="level2">
-<h2 class="anchored" data-anchor-id="tips">Tips</h2>
+  method  = foce
+  maxiter = 300</code></pre>
+</div>
+</div>
+</section><section id="data-structure" class="level2"><h2 class="anchored" data-anchor-id="data-structure">Data structure</h2>
+<p>The dataset has one dose row per subject with <code>ADDL=6, II=24</code> and observations spread across seven days: rich sampling on day 1, daily troughs at t = 24, 72, 120, 144 h (where <code>TAD</code> resets to 0 at each expanded dose), and rich steady-state sampling on day 7.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_columns.html">ferx_columns</a></span><span class="op">(</span><span class="va">ex</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data file: /home/runner/work/_temp/Library/ferx/examples/data/warfarin_addl.csv
+10 columns
+
+ Required NONMEM:      [1] ID  [2] TIME  [3] DV  [4] EVID  [5] AMT  [6] CMT
+ Optional NONMEM:      [7] RATE  [8] MDV  [9] II
+ Covariates / other:   [10] ADDL</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">EVID</span> <span class="op">==</span> <span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>   <span class="co"># dose rows: ADDL=6, II=24</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   ID TIME DV EVID AMT CMT RATE MDV II ADDL
+1   1    0  .    1 100   1    0   1 24    6
+18  2    0  .    1 100   1    0   1 24    6
+35  3    0  .    1 100   1    0   1 24    6
+52  4    0  .    1 100   1    0   1 24    6
+69  5    0  .    1 100   1    0   1 24    6
+86  6    0  .    1 100   1    0   1 24    6</code></pre>
+</div>
+</div>
+</section><section id="fit" class="level2"><h2 class="anchored" data-anchor-id="fit">Fit</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>============================================================
+ NONLINEAR MIXED EFFECTS MODEL ESTIMATION
+============================================================
+ Model: warfarin_addl            Dataset: warfarin_addl
+ Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 160
+
+ STATUS: CONVERGED   392 iterations   0.6s
+ OFV: 434.4107    AIC: 448.4107    BIC: 469.9369
+
+MODEL STRUCTURE (auto-derived)
+------------------------------------------------------------
+  Structural:  1-cpt oral  (TVCL, TVV, TVKA)
+  IIV:         ETA_CL, ETA_V, ETA_KA
+  IOV:         none
+  Residual:    proportional
+
+THETA
+------------------------------------------------------------
+Parameter            Estimate           SE       %RSE
+----------------------------------------------------
+TVCL                 0.225243     0.003047        1.4
+TVV                 10.475267     0.193445        1.8
+TVKA                 1.673447     0.089371        5.3
+
+OMEGA  (between-subject variability)
+------------------------------------------------------------
+  ETA_CL                   [log-normal]  = 0.045215  CV% = 21.5  SE = 0.010497
+  ETA_V                    [log-normal]  = 0.044614  CV% = 21.4  SE = 0.010432
+  ETA_KA                   [log-normal]  = 0.313208  CV% = 60.6  SE = 0.076717
+
+SIGMA  (residual error)
+------------------------------------------------------------
+  PROP_ERR         [proportional] = 0.162995  (var = 0.026567, CV% = 16.3)  SE = 0.007107  [initial specified as SD]
+
+SHRINKAGE
+------------------------------------------------------------
+ ETA_CL: 5.6%   ETA_V: 7.4%   ETA_KA: 12.8%   EPS: 7.7%
+
+DIAGNOSTICS
+------------------------------------------------------------
+ Covariance: computed   Cond: 4.5   DW: 2.06 [no autocorrelation]   IWRES lag-1 r: -0.097
+
+RUN INFO
+------------------------------------------------------------
+ Gradient (requested): auto   (used: fd)
+ ferx v0.1.5 (core v0.1.5)
+
+SETTINGS  (model file / call-time override)
+------------------------------------------------------------
+  method                       foce  [model only]
+  maxiter                      300  [model only]
+
+------------------------------------------------------------
+ 1 info  --  call ferx_warnings(fit) for details
+============================================================</code></pre>
+</div>
+</div>
+</section><section id="derived-columns" class="level2"><h2 class="anchored" data-anchor-id="derived-columns">Derived columns</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Per-subject summary (scalar derived quantities broadcast to all rows)</span></span>
+<span><span class="va">subj_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"KE"</span>, <span class="st">"T_HALF"</span>, <span class="st">"CMAX"</span>, <span class="st">"CMIN_TAU"</span>,</span>
+<span>                                      <span class="st">"CMIN_LATE"</span>, <span class="st">"AUC_TAU"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">subj_summary</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> ID         KE   T_HALF     CMAX CMIN_TAU CMIN_LATE  AUC_TAU
+  1 0.02114334 32.78325 21.78293 5.691392 13.891286 174.1039
+  1 0.02114334 32.78325 21.78293 5.691392 13.891286 296.8348
+  1 0.02114334 32.78325 21.78293 5.691392 13.891286 268.3351
+  1 0.02114334 32.78325 21.78293 5.691392 13.891286 321.4633
+  1 0.02114334 32.78325 21.78293 5.691392 13.891286 429.8160
+  1 0.02114334 32.78325 21.78293 5.691392 13.891286 333.3909
+  2 0.02761495 25.10043 19.40233 5.240866 10.710917 175.5983
+  2 0.02761495 25.10043 19.40233 5.240866 10.710917 287.6705
+  2 0.02761495 25.10043 19.40233 5.240866 10.710917 224.0273
+  2 0.02761495 25.10043 19.40233 5.240866 10.710917 252.4062
+  2 0.02761495 25.10043 19.40233 5.240866 10.710917 361.0930
+  2 0.02761495 25.10043 19.40233 5.240866 10.710917 257.0620
+  3 0.02528935 27.40866 24.76702 6.585047 14.266330 215.4212
+  3 0.02528935 27.40866 24.76702 6.585047 14.266330 354.6863
+  3 0.02528935 27.40866 24.76702 6.585047 14.266330 291.1202
+  3 0.02528935 27.40866 24.76702 6.585047 14.266330 334.4341
+  3 0.02528935 27.40866 24.76702 6.585047 14.266330 467.4335
+  3 0.02528935 27.40866 24.76702 6.585047 14.266330 342.3919
+  4 0.01338913 51.76941 27.99776 6.618221 21.541995 178.8007
+  4 0.01338913 51.76941 27.99776 6.618221 21.541995 326.4840
+  4 0.01338913 51.76941 27.99776 6.618221 21.541995 357.5522
+  4 0.01338913 51.76941 27.99776 6.618221 21.541995 477.9139
+  4 0.01338913 51.76941 27.99776 6.618221 21.541995 600.9972
+  4 0.01338913 51.76941 27.99776 6.618221 21.541995 517.0079
+  5 0.02661056 26.04782 23.23811 6.524594 13.665228 210.5550
+  5 0.02661056 26.04782 23.23811 6.524594 13.665228 354.6379
+  5 0.02661056 26.04782 23.23811 6.524594 13.665228 282.9257
+  5 0.02661056 26.04782 23.23811 6.524594 13.665228 321.3461
+  5 0.02661056 26.04782 23.23811 6.524594 13.665228 450.6844
+  5 0.02661056 26.04782 23.23811 6.524594 13.665228 327.9655
+  6 0.01413776 49.02809 21.15903 4.930616 15.542263 139.2471
+  6 0.01413776 49.02809 21.15903 4.930616 15.542263 244.9212
+  6 0.01413776 49.02809 21.15903 4.930616 15.542263 262.6541
+  6 0.01413776 49.02809 21.15903 4.930616 15.542263 346.6715
+  6 0.01413776 49.02809 21.15903 4.930616 15.542263 441.1356
+  6 0.01413776 49.02809 21.15903 4.930616 15.542263 373.0143
+  7 0.02161014 32.07509 21.65747 5.773236 13.888345 175.8940
+  7 0.02161014 32.07509 21.65747 5.773236 13.888345 302.0088
+  7 0.02161014 32.07509 21.65747 5.773236 13.888345 270.1518
+  7 0.02161014 32.07509 21.65747 5.773236 13.888345 321.9498
+  7 0.02161014 32.07509 21.65747 5.773236 13.888345 430.9445
+  7 0.02161014 32.07509 21.65747 5.773236 13.888345 333.3203
+  8 0.02658519 26.07268 14.91205 4.332787  9.080405 134.1418
+  8 0.02658519 26.07268 14.91205 4.332787  9.080405 233.0315
+  8 0.02658519 26.07268 14.91205 4.332787  9.080405 187.9512
+  8 0.02658519 26.07268 14.91205 4.332787  9.080405 213.5192
+  8 0.02658519 26.07268 14.91205 4.332787  9.080405 294.3191
+  8 0.02658519 26.07268 14.91205 4.332787  9.080405 217.9297
+  9 0.01988706 34.85419 20.33032 5.093344 12.944814 156.7669
+  9 0.01988706 34.85419 20.33032 5.093344 12.944814 263.2372
+  9 0.01988706 34.85419 20.33032 5.093344 12.944814 245.1452
+  9 0.01988706 34.85419 20.33032 5.093344 12.944814 298.0573
+  9 0.01988706 34.85419 20.33032 5.093344 12.944814 396.0214
+  9 0.01988706 34.85419 20.33032 5.093344 12.944814 310.6755
+ 10 0.02723877 25.44708 25.65989 6.957598 14.348820 231.1177
+ 10 0.02723877 25.44708 25.65989 6.957598 14.348820 380.6834
+ 10 0.02723877 25.44708 25.65989 6.957598 14.348820 298.9999
+ 10 0.02723877 25.44708 25.65989 6.957598 14.348820 337.8757
+ 10 0.02723877 25.44708 25.65989 6.957598 14.348820 480.7685
+ 10 0.02723877 25.44708 25.65989 6.957598 14.348820 344.3717</code></pre>
+</div>
+</div>
+<p><code>CMIN_TAU</code> uses <code>TAD &lt; 1e-10</code> to locate the observation at the exact start of each dosing interval (where <code>TAD</code> resets to 0 after ADDL expansion). <code>CMIN_LATE</code> uses <code>TAD &gt; 20</code> as an alternative window-based trough — less precise but avoids the floating-point boundary.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># DAY = floor(TAFD / 24) + 1; shows which dosing day each observation belongs to</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"TAFD"</span>, <span class="st">"TAD"</span>, <span class="st">"DAY"</span>, <span class="st">"IPRED"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">20</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   ID  TIME  TAFD  TAD DAY     IPRED
+1   1   0.5   0.5  0.5   1  5.250737
+2   1   1.0   1.0  1.0   1  7.474664
+3   1   2.0   2.0  2.0   1  8.726582
+4   1   4.0   4.0  4.0   1  8.675035
+5   1   8.0   8.0  8.0   1  7.982458
+6   1  24.0  24.0  0.0   2  5.691392
+7   1  28.0  28.0  4.0   2 13.904879
+8   1  32.0  32.0  8.0   2 12.788184
+9   1  72.0  72.0  0.0   4 11.180630
+10  1 120.0 120.0  0.0   6 13.170181
+11  1 144.0 144.0  0.0   7 13.620299
+12  1 145.0 145.0  1.0   7 20.810007
+13  1 146.0 146.0  2.0   7 21.782931
+14  1 148.0 148.0  4.0   7 21.190785
+15  1 152.0 152.0  8.0   7 19.483235
+16  1 168.0 168.0 24.0   8 13.891286
+17  2   0.5   0.5  0.5   1  5.955832
+18  2   1.0   1.0  1.0   1  8.259739
+19  2   2.0   2.0  2.0   1  9.359928
+20  2   4.0   4.0  4.0   1  9.097919</code></pre>
+</div>
+</div>
+</section><section id="see-also" class="level2"><h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><strong>Model selection</strong>: compare OFV of the two-compartment model with a one-compartment fit using a likelihood-ratio test (ΔOFV ≥ 3.84 for p &lt; 0.05 with 2 additional parameters: Q and V2).</li>
-<li><strong>Identifiability</strong>: Q and V2 are often weakly identified unless sampling extends well into the terminal phase. Collect at least 3–4 samples per subject after Cmax.</li>
-<li><strong>BSV on Q</strong>: if <code>ETA_Q</code> shrinkage is high (&gt; 40 %), consider fixing Q to its population value or dropping BSV on Q.</li>
-</ul>
-</section>
-<section id="see-also" class="level2">
-<h2 class="anchored" data-anchor-id="see-also">See also</h2>
-<ul>
-<li><a href="../examples/three-cpt-iv.html">Example: Three-compartment IV</a></li>
-<li><a href="../examples/covariates.html">Example: Covariate model</a></li>
-<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/structural-model.html">Analytical PK models — two_cpt_iv_bolus (ferx-core book)</a></li>
+<li><a href="../model-dsl/steady-state.html#addl-multiple-additional-doses">Model DSL: ADDL — multiple additional doses</a></li>
+<li><a href="../model-dsl/derived.html">Model DSL: Derived columns</a></li>
+<li><a href="../examples/warfarin-derived.html">Example: Derived columns (warfarin)</a></li>
 </ul>
 
 
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1110,8 +1278,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p>© 2026 FeRx-NLME · MIT licensed</p>
 </div>   
@@ -1123,8 +1290,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
   </div>
 </footer>
-
-
 
 
 </body></html>

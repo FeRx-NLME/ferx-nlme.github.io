@@ -201,10 +201,8 @@ Demonstrates <code>integral(IPRED, from=0, to=168)</code> and periodic AUC.</p><
 <dd><p>One-compartment oral (warfarin) with ADDL-column
 dosing. A single EVID=1 row with ADDL=6, II=24 is expanded to seven
 daily doses at read time; TAD resets at each expanded dose automatically.
-Demonstrates CMIN_TAU using <code>1e-10</code> tolerance for floating-point
-boundary comparisons. Note: a matching ADDL-format dataset
-(<code>warfarin_addl.csv</code>) is not yet bundled; supply your own
-ADDL-format data file when using this model.</p></dd>
+Demonstrates daily trough accumulation over seven doses and CMIN_TAU
+using <code>TAD &lt; 1e-10</code> for floating-point-safe trough detection.</p></dd>
 
 <dt>warfarin_ode_time</dt>
 <dd><p>One-compartment oral (warfarin) as an ODE model
@@ -274,14 +272,15 @@ list.files(system.file("examples", package = "ferx"), pattern = "\.R$")
 <span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ex_emax_pkpd.R"               "ex_optimizer_tuning.R"       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15] "ex_robust_fit.R"              "ex_save_load_fit.R"          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [17] "ex_transit_2cpt.R"            "ex_two_cpt_oral_derived.R"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ex_warfarin_additive_eta.R"   "ex_warfarin_chains.R"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "ex_warfarin_data_selection.R" "ex_warfarin_dcm.R"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "ex_warfarin_derived.R"        "ex_warfarin_derived_pkpd.R"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "ex_warfarin_if.R"             "ex_warfarin_iov_saem.R"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "ex_warfarin_logit_f.R"        "ex_warfarin_ltbs.R"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "ex_warfarin_ode_time.R"       "ex_warfarin_saem.R"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "ex_warfarin_saem_hmc.R"       "ex_warfarin_scaled.R"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "ex_warfarin_sir.R"            "ex_warfarin_ss.R"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ex_warfarin_additive_eta.R"   "ex_warfarin_addl.R"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "ex_warfarin_chains.R"         "ex_warfarin_data_selection.R"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "ex_warfarin_dcm.R"            "ex_warfarin_derived.R"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "ex_warfarin_derived_pkpd.R"   "ex_warfarin_if.R"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "ex_warfarin_iov_saem.R"       "ex_warfarin_logit_f.R"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "ex_warfarin_ltbs.R"           "ex_warfarin_ode_time.R"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "ex_warfarin_saem.R"           "ex_warfarin_saem_hmc.R"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "ex_warfarin_scaled.R"         "ex_warfarin_sir.R"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "ex_warfarin_ss.R"            </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Open a script in RStudio to read or run it:</span></span></span>

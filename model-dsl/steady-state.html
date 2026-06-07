@@ -541,6 +541,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../examples/warfarin-ode-time.html">
  <span class="dropdown-text">ODE with TIME, TAFD, and TAD</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/warfarin-addl.html">
+ <span class="dropdown-text">ADDL/multiple-dose</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -728,19 +732,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The <code>warfarin_addl</code> model file demonstrates this design. It uses a 7-dose ADDL scheme and shows trough detection and periodic AUC in <code>[derived]</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_show</span>(<span class="fu">ferx_example</span>(<span class="st">"warfarin_addl"</span>)<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>The <code>warfarin_addl</code> dataset is not yet bundled.</strong> The model file exists in the package but <code>ferx_example("warfarin_addl")</code> does not return a data path. Supply your own ADDL-format dataset that matches the schema above.</p>
-</div>
-</div>
+<p>See the <a href="../examples/warfarin-addl.html">ADDL/multiple-dose example</a> for a full worked fit with sdtab output.</p>
 </section>
 <section id="nonmem-equivalent" class="level3">
 <h3 class="anchored" data-anchor-id="nonmem-equivalent">NONMEM equivalent</h3>
