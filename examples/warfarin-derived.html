@@ -567,7 +567,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sdtab-columns" id="toc-sdtab-columns" class="nav-link" data-scroll-target="#sdtab-columns">sdtab columns</a></li>
   <li><a href="#per-row-columns" id="toc-per-row-columns" class="nav-link" data-scroll-target="#per-row-columns">Per-row columns</a></li>
   <li><a href="#aggregate-columns" id="toc-aggregate-columns" class="nav-link" data-scroll-target="#aggregate-columns">Aggregate columns</a></li>
-  <li><a href="#trough-with-tad-1e-10" id="toc-trough-with-tad-1e-10" class="nav-link" data-scroll-target="#trough-with-tad-1e-10">Trough with <code>TAD &lt; 1e-10</code></a></li>
+  <li><a href="#filtered-aggregates-cmax_d1-vs-cmax" id="toc-filtered-aggregates-cmax_d1-vs-cmax" class="nav-link" data-scroll-target="#filtered-aggregates-cmax_d1-vs-cmax">Filtered aggregates — <code>CMAX_D1</code> vs <code>CMAX</code></a></li>
   <li><a href="#periodic-auc-auc_tau" id="toc-periodic-auc-auc_tau" class="nav-link" data-scroll-target="#periodic-auc-auc_tau">Periodic AUC (<code>AUC_TAU</code>)</a></li>
   <li><a href="#dv-based-auc-auc_dv_72" id="toc-dv-based-auc-auc_dv_72" class="nav-link" data-scroll-target="#dv-based-auc-auc_dv_72">DV-based AUC (<code>AUC_DV_72</code>)</a></li>
   <li><a href="#output-individual-parameter-columns" id="toc-output-individual-parameter-columns" class="nav-link" data-scroll-target="#output-individual-parameter-columns">[output] — individual parameter columns</a></li>
@@ -659,7 +659,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   covariance = true</code></pre>
 </div>
 </div>
-<p>The model adds eleven derived columns covering all three computation kinds:</p>
+<p>The model adds twelve derived columns covering all three computation kinds:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -684,7 +684,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code>CMAX</code>, <code>TMAX</code>, <code>CTROUGH</code>, <code>CMAX_D1</code>, <code>CMAX_D14</code>
 </td>
 <td>Aggregate</td>
-<td>One value per subject, broadcast to all rows</td>
+<td>One value per subject (last two NaN for single-dose data)</td>
 </tr>
 <tr class="odd">
 <td>
@@ -811,25 +811,26 @@ SETTINGS  (model file / call-time override)
 100 10 11.09353    8 533.1557</code></pre>
 </div>
 </div>
-</section><section id="trough-with-tad-1e-10" class="level2"><h2 class="anchored" data-anchor-id="trough-with-tad-1e-10">Trough with <code>TAD &lt; 1e-10</code>
+</section><section id="filtered-aggregates-cmax_d1-vs-cmax" class="level2"><h2 class="anchored" data-anchor-id="filtered-aggregates-cmax_d1-vs-cmax">Filtered aggregates — <code>CMAX_D1</code> vs <code>CMAX</code>
 </h2>
-<p><code>CTROUGH = min(IPRED, TAD &lt; 1e-10)</code> selects the individual prediction at dose time. The <code>1e-10</code> guard is necessary because floating-point modular arithmetic can produce <code>TAD = 1e-13</code> rather than exactly <code>0</code>, so <code>TAD == 0</code> is unreliable:</p>
+<p><code>CMAX_D1 = max(IPRED, TAFD &lt; 24)</code> restricts the maximum to day-1 observations only. Comparing it against the overall <code>CMAX</code> shows how the peak shifts as the drug distributes:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"CTROUGH"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"CMAX_D1"</span>, <span class="st">"TMAX"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    ID CTROUGH
-1    1     NaN
-12   2     NaN
-23   3     NaN
-34   4     NaN
-45   5     NaN
-56   6     NaN
-67   7     NaN
-78   8     NaN
-89   9     NaN
-100 10     NaN</code></pre>
+<pre><code>    ID     CMAX  CMAX_D1 TMAX
+1    1 11.38307 11.38307    4
+12   2 12.10567 12.10567    8
+23   3 11.01622 11.01622    4
+34   4 13.56205 13.56205    8
+45   5 13.82107 13.82107    4
+56   6 11.70218 11.70218    2
+67   7 10.32389 10.32389    8
+78   8 11.77883 11.77883    4
+89   9 11.04420 11.04420    4
+100 10 11.09353 11.09353    8</code></pre>
 </div>
 </div>
+<p>The model also declares <code>CTROUGH = min(IPRED, TAD &lt; 1e-10)</code> to capture the pre-dose trough, and <code>CMAX_D14 = max(IPRED, TAFD &gt;= 312 &amp;&amp; TAFD &lt; 336)</code> for the steady-state day-14 peak. Both are <code>NaN</code> here because the warfarin dataset is a single-dose study (no repeated doses, data ends at 120 h) — <code>TAD</code> never resets to ≈ 0 at an observation time, and no observations fall in the 312–336 h window. These columns are designed for <strong>multi-dose designs</strong>. For a working trough example see <a href="warfarin-addl.qmd">Example: ADDL/multiple-dose</a>.</p>
 </section><section id="periodic-auc-auc_tau" class="level2"><h2 class="anchored" data-anchor-id="periodic-auc-auc_tau">Periodic AUC (<code>AUC_TAU</code>)</h2>
 <p><code>AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)</code> produces one value per 24-h dosing window. It changes across windows as the concentration profile evolves:</p>
 <div class="cell">
