@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Scaling – ferx</title>
+<title>Neural networks overview – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,41 +22,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -587,16 +552,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#form-a-scalar-divisor" id="toc-form-a-scalar-divisor" class="nav-link active" data-scroll-target="#form-a-scalar-divisor">Form A — scalar divisor</a></li>
-  <li><a href="#form-b-expression-divisor" id="toc-form-b-expression-divisor" class="nav-link" data-scroll-target="#form-b-expression-divisor">Form B — expression divisor</a></li>
-  <li><a href="#form-c-explicit-output-expression-ode-only" id="toc-form-c-explicit-output-expression-ode-only" class="nav-link" data-scroll-target="#form-c-explicit-output-expression-ode-only">Form C — explicit output expression (ODE only)</a></li>
-  <li><a href="#multi-analyte-per-cmt-scaling" id="toc-multi-analyte-per-cmt-scaling" class="nav-link" data-scroll-target="#multi-analyte-per-cmt-scaling">Multi-analyte / per-CMT scaling</a></li>
-  <li><a href="#runtime-behaviour-on-bad-scales" id="toc-runtime-behaviour-on-bad-scales" class="nav-link" data-scroll-target="#runtime-behaviour-on-bad-scales">Runtime behaviour on bad scales</a></li>
-  <li><a href="#gradients-ad-vs-fd" id="toc-gradients-ad-vs-fd" class="nav-link" data-scroll-target="#gradients-ad-vs-fd">Gradients (AD vs FD)</a></li>
-  <li><a href="#interaction-with-diffusion" id="toc-interaction-with-diffusion" class="nav-link" data-scroll-target="#interaction-with-diffusion">Interaction with <code>[diffusion]</code></a></li>
-  <li><a href="#nonmem-and-nlmixr2-mapping" id="toc-nonmem-and-nlmixr2-mapping" class="nav-link" data-scroll-target="#nonmem-and-nlmixr2-mapping">NONMEM and nlmixr2 mapping</a></li>
-  <li><a href="#runnable-example" id="toc-runnable-example" class="nav-link" data-scroll-target="#runnable-example">Runnable example</a></li>
-  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
+  <li><a href="#which-extension-do-i-need" id="toc-which-extension-do-i-need" class="nav-link active" data-scroll-target="#which-extension-do-i-need">Which extension do I need?</a></li>
+  <li><a href="#covariate_nn-deep-compartment-models" id="toc-covariate_nn-deep-compartment-models" class="nav-link" data-scroll-target="#covariate_nn-deep-compartment-models"><code>[covariate_nn]</code> — Deep Compartment Models</a></li>
+  <li><a href="#dynamics_nn-low-dimensional-neural-odes" id="toc-dynamics_nn-low-dimensional-neural-odes" class="nav-link" data-scroll-target="#dynamics_nn-low-dimensional-neural-odes"><code>[dynamics_nn]</code> — Low-dimensional Neural ODEs</a></li>
+  <li><a href="#status" id="toc-status" class="nav-link" data-scroll-target="#status">Status</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -606,7 +565,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Scaling</h1>
+<h1 class="title">Neural networks overview</h1>
 </div>
 
 
@@ -623,157 +582,99 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The optional <code>[scaling]</code> block declares how the structural model’s raw output maps to the observed <code>DV</code>. It exists so unit conversions and amount-to-concentration arithmetic don’t have to be folded into <code>[structural_model]</code> or <code>[odes]</code> — keeping the model readable, and making mixed-unit data (e.g.&nbsp;data in ng/mL when the model thinks in mg/L) straightforward.</p>
-<p>The convention is <strong>divisive</strong>: <code>pred_scaled = pred_raw / scale</code>. <code>obs_scale = V/1000</code> reads as <em>“divide raw prediction by V/1000 to get the observation.”</em></p>
-<p>Three forms are supported. Each is optional; omitting <code>[scaling]</code> keeps the historical “raw prediction equals DV” behaviour.</p>
-<section id="form-a-scalar-divisor" class="level2">
-<h2 class="anchored" data-anchor-id="form-a-scalar-divisor">Form A — scalar divisor</h2>
-<p>For fixed unit conversion (e.g.&nbsp;mg/L → ng/mL is a constant 1000):</p>
-<pre><code>[scaling]
-  obs_scale = 1000</code></pre>
-<p>Works on analytical PK and ODE models alike: every prediction is divided by the constant before reaching the residual error model.</p>
+<p>ferx-core provides two complementary neural-network extensions. Both are gated behind the <code>nn</code> cargo feature and are being built incrementally.</p>
+<section id="which-extension-do-i-need" class="level2">
+<h2 class="anchored" data-anchor-id="which-extension-do-i-need">Which extension do I need?</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Known PK/PD structure?</th>
+<th>Known covariate model?</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Yes (e.g.&nbsp;2-cpt oral)</td>
+<td>Yes</td>
+<td>Classical analytical — no NN needed</td>
+</tr>
+<tr class="even">
+<td>Yes</td>
+<td>No / partial</td>
+<td><a href="../model-dsl/covariate-nn.html"><code>[covariate_nn]</code></a> — Deep Compartment Model</td>
+</tr>
+<tr class="odd">
+<td>No / partial</td>
+<td>Yes</td>
+<td><code>[dynamics_nn]</code> — low-dim Neural ODE (Phase B, pending)</td>
+</tr>
+<tr class="even">
+<td>No</td>
+<td>No</td>
+<td>Both — they coexist in the same model</td>
+</tr>
+</tbody>
+</table>
+<p>If you also need <em>structural uncertainty</em> — system noise that accumulates between observations — see <a href="../model-dsl/diffusion.html"><code>[diffusion]</code></a> (SDE / Extended Kalman Filter). It is orthogonal to either neural-network mechanism.</p>
 </section>
-<section id="form-b-expression-divisor" class="level2">
-<h2 class="anchored" data-anchor-id="form-b-expression-divisor">Form B — expression divisor</h2>
-<p>For scales that depend on theta, eta, or a covariate:</p>
-<pre><code>[scaling]
-  obs_scale = WT / 70</code></pre>
-<p>Expressions may reference thetas, etas, covariates, and individual parameters declared in <code>[individual_parameters]</code> (e.g.&nbsp;<code>V</code>, <code>CL</code>). Individual parameters are resolved from a subject-static evaluation at scale-evaluation time, so <code>obs_scale = 1000 / V</code> uses the per-subject <code>V</code> (typical value times the EBE eta).</p>
-<p>The scale is evaluated <strong>once per subject</strong> with subject-level covariates. Time-varying-covariate support for expression scales is deferred to a future phase.</p>
+<section id="covariate_nn-deep-compartment-models" class="level2">
+<h2 class="anchored" data-anchor-id="covariate_nn-deep-compartment-models"><code>[covariate_nn]</code> — Deep Compartment Models</h2>
+<p>A neural network replaces the typical-value covariate model. Instead of writing explicit power-law or linear covariate effects, a network maps subject covariates (WT, CRCL, …) to the typical PK parameters (CL, V, …), which then combine with ETAs in <code>[individual_parameters]</code> as usual.</p>
+<p>The compartmental structure downstream is unchanged; inner FOCEI runs exactly as for a classical model.</p>
+<p>Reference: Janssen et al.&nbsp;2022 — <em>Deep compartment models.</em> CPT Pharmacometrics Syst Pharmacol 11:934–945. DOI <a href="https://doi.org/10.1002/psp4.12808">10.1002/psp4.12808</a>.</p>
+<p>→ See <a href="../model-dsl/covariate-nn.html"><code>[covariate_nn]</code> reference</a> for full syntax and examples.</p>
 </section>
-<section id="form-c-explicit-output-expression-ode-only" class="level2">
-<h2 class="anchored" data-anchor-id="form-c-explicit-output-expression-ode-only">Form C — explicit output expression (ODE only)</h2>
-<p>For ODE models where the state is held as an amount and the observation is a concentration. Form C replaces the default <code>obs_cmt</code> readout entirely.</p>
-<pre><code>[structural_model]
-  ode(states=[depot, central])     # no obs_cmt — Form C provides it
-
-[odes]
-  d/dt(depot)   = -KA * depot
-  d/dt(central) = KA * depot - CL/V * central   # central holds amount
-
-[scaling]
-  y = central / V</code></pre>
-<p>The right-hand side may reference state names (<code>depot</code>, <code>central</code>), individual parameters (<code>CL</code>, <code>V</code>, <code>KA</code>), thetas, etas, and covariates. Form C is rejected on analytical models with a clear error.</p>
+<section id="dynamics_nn-low-dimensional-neural-odes" class="level2">
+<h2 class="anchored" data-anchor-id="dynamics_nn-low-dimensional-neural-odes"><code>[dynamics_nn]</code> — Low-dimensional Neural ODEs</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Phase B — pending.</strong> The <code>[dynamics_nn]</code> block is not yet available in released ferx builds. See the <a href="https://ferx-nlme.github.io/ferx-core/model-file/neural-networks.html">ferx-core roadmap</a> for milestone status.</p>
+</div>
+</div>
+<p>A small neural network appears on the right-hand side of an ODE, replacing mechanistic terms (Michaelis–Menten, linear elimination) when the dynamics are unknown. The compartmental topology and random effects structure are still specified by the modeler.</p>
+<p>Reference: Bräm et al.&nbsp;2025 — <em>Low-dimensional neural ordinary differential equations.</em> CPT Pharmacometrics Syst Pharmacol 14:5–16. DOI <a href="https://doi.org/10.1002/psp4.13265">10.1002/psp4.13265</a>.</p>
 </section>
-<section id="multi-analyte-per-cmt-scaling" class="level2">
-<h2 class="anchored" data-anchor-id="multi-analyte-per-cmt-scaling">Multi-analyte / per-CMT scaling</h2>
-<p>For models that observe multiple compartments (parent + metabolite, free vs.&nbsp;total, …), specify a separate scale per observed CMT:</p>
-<pre><code>[scaling]
-  obs_scale[CMT=1] = 1000    # parent in mg/L → mg/mL
-  obs_scale[CMT=2] = 1       # metabolite already in target units</code></pre>
-<p>Form C per-CMT (ODE):</p>
-<pre><code>[structural_model]
-  ode(states=[depot, parent, metab])
-
-[scaling]
-  y[CMT=1] = parent / V_parent
-  y[CMT=2] = metab  / V_metab</code></pre>
-<p><code>N</code> in <code>[CMT=N]</code> is the 1-based CMT index from the data file’s <code>CMT</code> column.</p>
-<p><strong>Coverage rule</strong> — every CMT that has at least one observation in the data must have a matching <code>[CMT=N]</code> entry. The fit-time validation errors with a list of the missing CMTs.</p>
-<p><strong>Mixing rule</strong> — the uniform form (<code>obs_scale = K</code>) and the per-CMT form (<code>obs_scale[CMT=N] = K</code>) are mutually exclusive within the same group. The same rule applies to <code>y</code> and <code>y[CMT=N]</code>.</p>
-</section>
-<section id="runtime-behaviour-on-bad-scales" class="level2">
-<h2 class="anchored" data-anchor-id="runtime-behaviour-on-bad-scales">Runtime behaviour on bad scales</h2>
-<p>If an expression scale (Form B or C) evaluates to non-positive or non-finite at runtime — e.g.&nbsp;<code>WT / 70</code> with missing <code>WT</code> (reads <code>0</code>), or <code>1 / (TVV - x)</code> near a singularity — every prediction for that subject is set to <code>NaN</code>. The outer NLL then evaluates to <code>NaN</code> and the optimizer rejects the step. This matches NONMEM’s <code>OBJFN = NaN → step rejection</code> convention and surfaces bad scales in the per-subject diagnostics rather than silently producing a mis-scaled fit.</p>
-</section>
-<section id="gradients-ad-vs-fd" class="level2">
-<h2 class="anchored" data-anchor-id="gradients-ad-vs-fd">Gradients (AD vs FD)</h2>
-<p>All <code>[scaling]</code> variants on the <strong>analytical PK path</strong> support both <code>gradient = ad</code> and <code>gradient = fd</code>:</p>
+<section id="status" class="level2">
+<h2 class="anchored" data-anchor-id="status">Status</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
-<col style="width: 27%">
-<col style="width: 11%">
-<col style="width: 10%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Form</th>
-<th>AD</th>
-<th>FD</th>
-<th>Notes</th>
+<th>Component</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Scalar <code>obs_scale = K</code></td>
-<td>✓ exact</td>
-<td>✓ exact</td>
-<td>Threads as a <code>Const</code> slice (one entry per obs)</td>
+<td><code>[covariate_nn]</code> block — Deep Compartment Models</td>
+<td>Phase A (available in <code>nn</code>-feature builds)</td>
 </tr>
 <tr class="even">
-<td>Expression <code>obs_scale = &lt;expr&gt;</code></td>
-<td>✓ subject-static</td>
-<td>✓ exact</td>
-<td>See subject-static caveat below</td>
+<td><code>[dynamics_nn]</code> block — low-dim Neural ODEs</td>
+<td>Phase B (pending)</td>
 </tr>
 <tr class="odd">
-<td>Per-CMT <code>obs_scale[CMT=N]</code></td>
-<td>✓ subject-static</td>
-<td>✓ exact</td>
-<td>Dispatched per observation by <code>CMT</code></td>
+<td>Covariance estimation for <code>[covariate_nn]</code> weights</td>
+<td>Enabled</td>
 </tr>
 <tr class="even">
-<td>Form C <code>y[…] = &lt;expr&gt;</code> (ODE only)</td>
-<td>✗ — forces <code>fd</code></td>
-<td>✓</td>
-<td>Form C only exists on ODE models, where the AD path isn’t available regardless of scaling</td>
+<td>Covariance estimation for <code>[dynamics_nn]</code> weights</td>
+<td>Disabled (auto-overridden)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Subject-static caveat.</strong> The per-observation scale array passed to AD is materialised from a single subject-static evaluation. AD treats the scale as constant w.r.t. eta. For the common eta-independent scale (<code>WT/70</code>, <code>TVV/1000</code>, or <code>V</code> reading the EBE value) AD and FD gradients are identical. If the scale expression explicitly references eta (e.g.&nbsp;<code>obs_scale = exp(ETA_V)</code>), the AD gradient ignores that dependence while FD captures it — set <code>gradient = fd</code> for that case.</p>
-</section>
-<section id="interaction-with-diffusion" class="level2">
-<h2 class="anchored" data-anchor-id="interaction-with-diffusion">Interaction with <code>[diffusion]</code></h2>
-<p><code>[scaling]</code> is <strong>not supported</strong> on SDE models. The parser rejects any <code>[scaling]</code> block on a model that also has a <code>[diffusion]</code> block (all three forms). A correct SDE+scaling integration needs the scale factor threaded into both the EKF observation-covariance propagation and the residual variance callback — deferred to a future phase.</p>
-</section>
-<section id="nonmem-and-nlmixr2-mapping" class="level2">
-<h2 class="anchored" data-anchor-id="nonmem-and-nlmixr2-mapping">NONMEM and nlmixr2 mapping</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 28%">
-<col style="width: 19%">
-<col style="width: 25%">
-<col style="width: 26%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Need</th>
-<th>NONMEM</th>
-<th>nlmixr2</th>
-<th>ferx</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Scalar unit conversion</td>
-<td><code>S1 = 1000</code></td>
-<td>(multiplier in <code>cmt</code>/<code>f</code>)</td>
-<td><code>[scaling] obs_scale = 1000</code></td>
-</tr>
-<tr class="even">
-<td>Amount-state ODE with concentration DV</td>
-<td><code>S2 = V/1000</code> plus <code>Y = A(2)/S2</code></td>
-<td><code>cmt(central); f = central/V/1000</code></td>
-<td><code>[scaling] y = central / (V/1000)</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="runnable-example" class="level2">
-<h2 class="anchored" data-anchor-id="runnable-example">Runnable example</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_scaled"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The bundled <code>warfarin_scaled</code> model demonstrates Form A. The dataset records <code>AMT</code> in micrograms while <code>DV</code> is in mg/L, so the model predicts in µg/L; <code>obs_scale = 1000</code> divides every prediction by 1000 before the residual is computed. The fit converges to the same estimates as the standard <code>warfarin</code> example.</p>
-</section>
-<section id="see-also" class="level2">
-<h2 class="anchored" data-anchor-id="see-also">See also</h2>
-<ul>
-<li><a href="https://ferx-nlme.github.io/ferx-core/model-file/scaling.html">Scaling — ferx-core book</a> — full reference including the subject-static caveat derivation</li>
-<li><a href="../model-dsl/structural-model.html">Structural model</a> — <code>pk</code> line, ODE <code>states=</code></li>
-</ul>
 
 
 </section>
