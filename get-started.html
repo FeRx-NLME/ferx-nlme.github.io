@@ -739,7 +739,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="windows" class="level3">
 <h3 class="anchored" data-anchor-id="windows">Windows</h3>
-<p>Install <a href="https://cran.r-project.org/bin/windows/Rtools/rtools44/rtools.html">Rtools44</a> and <a href="https://rustup.rs">Rust via rustup</a> (cmake ships with Rtools44), then in R:</p>
+<p>Install <a href="https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html">Rtools45</a> and <a href="https://rustup.rs">Rust via rustup</a> (cmake ships with Rtools45), then in R:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">FERX_NO_AUTODIFF =</span> <span class="st">"1"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
@@ -782,15 +782,17 @@ Important
 </section>
 <section id="install-the-r-package" class="level3">
 <h3 class="anchored" data-anchor-id="install-the-r-package">2. Install the R package</h3>
-<p>Once <code>rustc +enzyme</code> is verified working:</p>
+<p>Once the <code>enzyme</code> toolchain is registered with rustup:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"FeRx-NLME/ferx-r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The package’s <code>src/Makevars</code> auto-detects the <code>enzyme</code> toolchain and builds the autodiff path. To confirm afterwards:</p>
+<p>The package auto-detects the <code>enzyme</code> toolchain and builds the autodiff path. Before the long fat-LTO link it runs the same <code>#[autodiff_forward]</code> compile-and-run self-test as the manual verify step above — under a timeout watchdog — and aborts with a clear message if the toolchain is broken, so a misconfigured toolchain fails in seconds rather than wedging <code>rustc</code> deep into the build. To confirm the path taken afterwards:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ferx<span class="sc">:::</span><span class="fu">ferx_rust_autodiff_enabled</span>()</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>To force one path or the other, set before installing:</p>
+<p>To force one path or the other, or to control the preflight, set before installing:</p>
 <ul>
 <li><code>FERX_NO_AUTODIFF=1</code> — force the simple build even if Enzyme is installed</li>
 <li><code>FERX_NO_AUTODIFF=0</code> — force the full build, erroring out if Enzyme isn’t found</li>
+<li><code>FERX_AD_PREFLIGHT_SKIP=1</code> — skip the autodiff self-test (useful when reinstalling a verified toolchain; results are also cached per toolchain fingerprint)</li>
+<li><code>FERX_AD_PREFLIGHT_TIMEOUT=&lt;seconds&gt;</code> — preflight timeout budget (default: 90)</li>
 </ul>
 <hr>
 </section>

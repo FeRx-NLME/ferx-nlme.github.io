@@ -56,7 +56,10 @@ progress.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferx_fit_async</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, tail_n <span class="op">=</span> <span class="fl">6L</span>, poll_interval <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ferx_fit_async</span><span class="op">(</span><span class="va">model</span>, data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, tail_n <span class="op">=</span> <span class="fl">6L</span>, poll_interval <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'ferx_job'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -68,6 +71,10 @@ progress.</p>
 documentation for the full argument list.</p></dd>
 
 
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Ignored.</p></dd>
+
+
 <dt id="arg-tail-n">tail_n<a class="anchor" aria-label="anchor" href="#arg-tail-n"></a></dt>
 <dd><p>Integer. Number of recent trace rows to keep visible per
 poll in <code><a href="ferx_collect.html">ferx_collect</a></code>. Default 6.</p></dd>
@@ -76,6 +83,10 @@ poll in <code><a href="ferx_collect.html">ferx_collect</a></code>. Default 6.</p
 <dt id="arg-poll-interval">poll_interval<a class="anchor" aria-label="anchor" href="#arg-poll-interval"></a></dt>
 <dd><p>Numeric. Seconds between polls in
 <code><a href="ferx_collect.html">ferx_collect</a></code>. Default 0.5.</p></dd>
+
+
+<dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
+<dd><p>A <code>ferx_job</code> handle returned by <code>ferx_fit_async()</code>.</p></dd>
 
 </dl></div>
     <div id="value">
