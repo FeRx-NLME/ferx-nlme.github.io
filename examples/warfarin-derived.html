@@ -838,7 +838,7 @@ SETTINGS  (model file / call-time override)
 100 10 11.09353 11.09353    8</code></pre>
 </div>
 </div>
-<p>The model also declares <code>CTROUGH = min(IPRED, TAD &lt; 1e-10)</code> to capture the pre-dose trough, and <code>CMAX_D14 = max(IPRED, TAFD &gt;= 312 &amp;&amp; TAFD &lt; 336)</code> for the steady-state day-14 peak. Both are <code>NaN</code> here because the warfarin dataset is a single-dose study (no repeated doses, data ends at 120 h) — <code>TAD</code> never resets to ≈ 0 at an observation time, and no observations fall in the 312–336 h window. These columns are designed for <strong>multi-dose designs</strong>. For a working trough example see <a href="warfarin-addl.qmd">Example: ADDL/multiple-dose</a>.</p>
+<p>The model also declares <code>CTROUGH = min(IPRED, TAD &lt; 1e-10)</code> to capture the pre-dose trough, and <code>CMAX_D14 = max(IPRED, TAFD &gt;= 312 &amp;&amp; TAFD &lt; 336)</code> for the steady-state day-14 peak. Both are <code>NaN</code> here because the warfarin dataset is a single-dose study (no repeated doses, data ends at 120 h) — <code>TAD</code> never resets to ≈ 0 at an observation time, and no observations fall in the 312–336 h window. These columns are designed for <strong>multi-dose designs</strong>.</p>
 </section><section id="periodic-auc-auc_tau" class="level2"><h2 class="anchored" data-anchor-id="periodic-auc-auc_tau">Periodic AUC (<code>AUC_TAU</code>)</h2>
 <p><code>AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)</code> produces one value per 24-h dosing window. It changes across windows as the concentration profile evolves:</p>
 <div class="cell">
