@@ -80,7 +80,8 @@ pre-dose trough, and `CMAX_D14 = max(IPRED, TAFD >= 312 && TAFD < 336)` for
 the steady-state day-14 peak. Both are `NaN` here because the warfarin dataset
 is a single-dose study (no repeated doses, data ends at 120 h) — `TAD` never
 resets to ≈ 0 at an observation time, and no observations fall in the 312–336 h
-window. These columns are designed for **multi-dose designs**.
+window. These columns are designed for **multi-dose designs**. For a working
+trough example see [Example: ADDL/multiple-dose](warfarin-addl.qmd).
 
 ## Periodic AUC (`AUC_TAU`)
 

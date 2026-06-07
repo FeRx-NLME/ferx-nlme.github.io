@@ -1,0 +1,65 @@
+---
+title: "ADDL/multiple-dose (warfarin)"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Demonstrates the `ADDL` column for multiple-dose designs. A single dose row
+per subject (`ADDL=6, II=24`) is expanded to seven daily doses at read time;
+`TAD` resets to 0 at each expanded dose automatically. The
+[`[derived]`](../model-dsl/derived.qmd) block computes daily trough
+(`CMIN_TAU`), peak (`CMAX`), and periodic AUC (`AUC_TAU`).
+
+## Model
+
+```{r model}
+library(ferx)
+ex <- ferx_example("warfarin_addl")
+ferx_model_show(ex$model)
+```
+
+## Data structure
+
+The dataset has one dose row per subject with `ADDL=6, II=24` and
+observations spread across seven days: rich sampling on day 1, daily troughs
+at t = 24, 72, 120, 144 h (where `TAD` resets to 0 at each expanded dose),
+and rich steady-state sampling on day 7.
+
+```{r data}
+ferx_columns(ex)
+head(ex$data[ex$data$EVID == 1, ])   # dose rows: ADDL=6, II=24
+```
+
+## Fit
+
+```{r fit}
+fit <- ferx_fit(ex$model, ex$data)
+print(fit)
+```
+
+## Derived columns
+
+```{r sdtab}
+# Per-subject summary (scalar derived quantities broadcast to all rows)
+subj_summary <- unique(fit$sdtab[, c("ID", "KE", "T_HALF", "CMAX", "CMIN_TAU",
+                                      "CMIN_LATE", "AUC_TAU")])
+print(subj_summary, row.names = FALSE)
+```
+
+`CMIN_TAU` uses `TAD < 1e-10` to locate the observation at the exact start
+of each dosing interval (where `TAD` resets to 0 after ADDL expansion).
+`CMIN_LATE` uses `TAD > 20` as an alternative window-based trough — less
+precise but avoids the floating-point boundary.
+
+```{r day}
+# DAY = floor(TAFD / 24) + 1; shows which dosing day each observation belongs to
+head(fit$sdtab[, c("ID", "TIME", "TAFD", "TAD", "DAY", "IPRED")], 20)
+```
+
+## See also
+
+- [Model DSL: ADDL — multiple additional doses](../model-dsl/steady-state.qmd#addl-multiple-additional-doses)
+- [Model DSL: Derived columns](../model-dsl/derived.qmd)
+- [Example: Derived columns (warfarin)](warfarin-derived.qmd)

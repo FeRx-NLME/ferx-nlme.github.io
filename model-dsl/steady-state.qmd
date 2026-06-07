@@ -159,11 +159,8 @@ library(ferx)
 ferx_model_show(ferx_example("warfarin_addl")$model)
 ```
 
-::: {.callout-warning}
-**The `warfarin_addl` dataset is not yet bundled.** The model file exists in
-the package but `ferx_example("warfarin_addl")` does not return a data path.
-Supply your own ADDL-format dataset that matches the schema above.
-:::
+See the [ADDL/multiple-dose example](../examples/warfarin-addl.qmd) for a full
+worked fit with sdtab output.
 
 ### NONMEM equivalent
 

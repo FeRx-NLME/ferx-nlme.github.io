@@ -138,6 +138,8 @@ website:
             href: examples/warfarin-data-selection.qmd
           - text: "ODE with TIME, TAFD, and TAD"
             href: examples/warfarin-ode-time.qmd
+          - text: "ADDL/multiple-dose"
+            href: examples/warfarin-addl.qmd
     right:
       - text: "ferx-r"
         href: https://ferx-nlme.github.io/ferx-book/
