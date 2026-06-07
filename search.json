@@ -1061,7 +1061,7 @@
     "href": "model-dsl/overview.html#section-reference",
     "title": "Model DSL Overview",
     "section": "Section reference",
-    "text": "Section reference\n\n\n\n\n\n\n\n\nSection\nRequired\nPurpose\n\n\n\n\n[parameters]\nYes\nFixed effects (theta), BSV (omega), residual error (sigma), IOV (kappa)\n\n\n[individual_parameters]\nYes\nExpressions mapping thetas + ETAs + covariates → PK parameters\n\n\n[structural_model]\nYes\nSelects an analytical PK model or declares an ODE system\n\n\n[error_model]\nYes\nResidual error structure (additive, proportional, combined)\n\n\n[odes]\nODE models only\nRight-hand side of the ODE system\n\n\n[fit_options]\nNo\nEstimation method, optimizer, convergence settings\n\n\n[simulation]\nNo\nVirtual trial design for --simulate runs"
+    "text": "Section reference\n\n\n\n\n\n\n\n\nSection\nRequired\nPurpose\n\n\n\n\n[parameters]\nYes\nFixed effects (theta), BSV (omega), residual error (sigma), IOV (kappa)\n\n\n[individual_parameters]\nYes\nExpressions mapping thetas + ETAs + covariates → PK parameters\n\n\n[covariates]\nNo\nDeclare covariate columns and types (continuous / categorical)\n\n\n[structural_model]\nYes\nSelects an analytical PK model or declares an ODE system\n\n\n[error_model]\nYes\nResidual error structure (additive, proportional, combined)\n\n\n[odes]\nODE models only\nRight-hand side of the ODE system\n\n\n[fit_options]\nNo\nEstimation method, optimizer, convergence settings\n\n\n[simulation]\nNo\nVirtual trial design for --simulate runs"
   },
   {
     "objectID": "model-dsl/overview.html#minimal-example",
@@ -1096,7 +1096,7 @@
     "href": "model-dsl/overview.html#further-reading",
     "title": "Model DSL Overview",
     "section": "Further reading",
-    "text": "Further reading\n\nParameters — theta, omega, sigma, kappa, block_omega\nIndividual Parameters — expressions, covariates, conditionals, mu-referencing\nStructural Model — analytical PK model functions\nODE Models — ODE syntax, solver settings, dose handling\nError Model — additive, proportional, combined; sigma scale\nLag time — lagtime / alag PK slot\nSteady-state doses (SS=1) — dataset-driven SS dosing\nScaling — [scaling] block: unit conversion, per-CMT, ODE output\nDiffusion (SDE) — [diffusion] block: system noise via EKF\nCovariate NN (DCM) — [covariate_nn] block: deep compartment models\nSimulation — [simulation] block: virtual trial design\nFit Options — complete settings reference"
+    "text": "Further reading\n\nParameters — theta, omega, sigma, kappa, block_omega\nIndividual Parameters — expressions, covariates, conditionals, mu-referencing\nCovariates — [covariates] block, types, covariate table\nStructural Model — analytical PK model functions\nODE Models — ODE syntax, solver settings, dose handling\nError Model — additive, proportional, combined; sigma scale\nLag time — lagtime / alag PK slot\nSteady-state doses (SS=1) — dataset-driven SS dosing\nScaling — [scaling] block: unit conversion, per-CMT, ODE output\nDiffusion (SDE) — [diffusion] block: system noise via EKF\nCovariate NN (DCM) — [covariate_nn] block: deep compartment models\nSimulation — [simulation] block: virtual trial design\nFit Options — complete settings reference"
   },
   {
     "objectID": "model-dsl/data-selection.html",
@@ -1477,6 +1477,307 @@
     "text": "Reference\nBeal, S.L. (2001). Ways to fit a PK model with some data below the quantification limit. Journal of Pharmacokinetics and Pharmacodynamics, 28(5), 481–504."
   },
   {
+    "objectID": "model-dsl/parameters.html",
+    "href": "model-dsl/parameters.html",
+    "title": "Parameters",
+    "section": "",
+    "text": "The [parameters] block defines all model parameters: fixed effects (theta), between-subject variability (omega), residual error (sigma), and inter-occasion variability (kappa)."
+  },
+  {
+    "objectID": "model-dsl/parameters.html#theta-fixed-effects",
+    "href": "model-dsl/parameters.html#theta-fixed-effects",
+    "title": "Parameters",
+    "section": "Theta (fixed effects)",
+    "text": "Theta (fixed effects)\ntheta NAME(initial_value, lower_bound, upper_bound)\n\nNAME — parameter name, referenced in [individual_parameters]\ninitial_value — starting value for estimation\nlower_bound — lower bound constraint (must be &gt; 0; parameters are log-transformed internally)\nupper_bound — optional; omit when there is no natural ceiling\n\ntheta TVCL(0.134, 0.001, 10.0)  # (initial, lower, upper)\ntheta TVV(8.1, 0.1, 500.0)\ntheta TVKA(1.0, 0.01, 50.0)\ntheta TVEMAX(0.8, 0.001)        # lower-bound only; no upper bound"
+  },
+  {
+    "objectID": "model-dsl/parameters.html#omega-between-subject-variability",
+    "href": "model-dsl/parameters.html#omega-between-subject-variability",
+    "title": "Parameters",
+    "section": "Omega (between-subject variability)",
+    "text": "Omega (between-subject variability)\n\nDiagonal omega\nomega NAME ~ value              # value is a variance (default)\nomega NAME ~ value (sd)         # value is a standard deviation\nomega NAME ~ value (variance)   # explicit — same as default\n\nNAME — random effect name, referenced as ETA_NAME in [individual_parameters]\nvalue — initial value; default scale is variance (diagonal element of Ω)\n\nThe (sd) annotation is convenient when setting initial values from expected CV%: omega ETA_CL ~ 0.30 (sd) is equivalent to omega ETA_CL ~ 0.09 (0.30²).\nomega ETA_CL ~ 0.09              # variance — ~30% CV for log-normal parameter\nomega ETA_CL ~ 0.30 (sd)        # same thing, SD coding\nThe coefficient of variation (CV%) is approximately sqrt(variance) * 100 for log-normally distributed parameters. For example, omega ETA_CL ~ 0.09 corresponds to ~30% CV.\nblock_omega is variance-only — (sd) is not accepted because the lower-triangle list mixes variances and covariances and a single tag would be ambiguous.\n\n\nBlock omega (correlated random effects)\nTo estimate correlations between random effects, use block_omega:\nblock_omega (NAME1, NAME2, ...) = [lower_triangle_values]\nThe values are the lower triangle of the covariance matrix, specified row-wise. For a 2×2 block:\nblock_omega (ETA_CL, ETA_V) = [var_CL, cov_CL_V, var_V]\nFor a 3×3 block:\nblock_omega (ETA_CL, ETA_V, ETA_KA) = [var_CL, cov_CL_V, var_V, cov_CL_KA, cov_V_KA, var_KA]\n\nVisualising the lower triangle\nFor an N×N block you supply N·(N+1)/2 values, walked row by row through the lower triangle (row 1 has 1 value, row 2 has 2, …, row N has N values):\n          ETA_1   ETA_2   ETA_3   ETA_4\n        ┌                                ┐\nETA_1   │  v[0]                          │\nETA_2   │  v[1]   v[2]                   │\nETA_3   │  v[3]   v[4]    v[5]           │\nETA_4   │  v[6]   v[7]    v[8]    v[9]   │\n        └                                ┘\nDiagonal entries are variances; off-diagonals are covariances. Set off-diagonals to 0.0 as initial values — the fit will recover correlations from the data.\n\n\nConverting diagonal omegas to a block\nA common pattern: replace all-diagonal omegas with a single correlated block. Each omega variance becomes a diagonal entry; off-diagonals start at 0.0:\n# Before: four diagonal omegas\nomega ETA_CL ~ 0.1\nomega ETA_V1 ~ 0.1\nomega ETA_Q  ~ 0.1\nomega ETA_V2 ~ 0.1\n\n# After: 4×4 block (10 values: 1+2+3+4)\nblock_omega (ETA_CL, ETA_V1, ETA_Q, ETA_V2) = [\n  0.1,\n  0.0, 0.1,\n  0.0, 0.0, 0.1,\n  0.0, 0.0, 0.0, 0.1\n]\nMulti-line and single-line layouts are equivalent — line breaks inside [...] are ignored. Row 2 is cov(CL,V1) var(V1), row 3 is cov(CL,Q) cov(V1,Q) var(Q), etc.\n\n\nMixing diagonal and block\nYou can mix omega (uncorrelated) and block_omega (correlated) declarations:\nblock_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]\nomega ETA_KA ~ 0.40\nThis estimates a 3×3 omega where ETA_CL and ETA_V are correlated (2×2 block), but ETA_KA is independent.\n\n\n\nDeclaration order\nThe order of omega and block_omega lines determines ETA indexing throughout the model: in the omega matrix and all output. For example:\nblock_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]\nomega ETA_KA ~ 0.40\nproduces ETA order [ETA_CL, ETA_V, ETA_KA] (indices 1, 2, 3)."
+  },
+  {
+    "objectID": "model-dsl/parameters.html#kappa-inter-occasion-variability",
+    "href": "model-dsl/parameters.html#kappa-inter-occasion-variability",
+    "title": "Parameters",
+    "section": "Kappa (inter-occasion variability)",
+    "text": "Kappa (inter-occasion variability)\nIOV is declared with kappa (independent per-parameter) or block_kappa (correlated across parameters). Kappa parameters must be paired with iov_column in [fit_options] and an occasion column in the dataset.\nSee also: Estimation — IOV (ferx-core book).\n\nDiagonal kappa — Option A\nkappa NAME ~ value              # value is a variance (default)\nkappa NAME ~ value (sd)         # value is a standard deviation\nkappa NAME ~ value FIX\nEach kappa line adds one diagonal element to the IOV omega matrix. Occasions are independent. The (sd) annotation has the same semantics as for omega. block_kappa is variance-only.\nkappa KAPPA_CL ~ 0.05\nkappa KAPPA_V  ~ 0.03\n\n\nBlock kappa — Option B (correlated IOV)\nblock_kappa (NAME1, NAME2, ...) = [lower_triangle_values]\nblock_kappa (NAME1, NAME2, ...) = [lower_triangle_values] FIX\nMirrors the block_omega syntax. For a 2×2 block:\nblock_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]\nwhere 0.05 = Var(KAPPA_CL), 0.01 = Cov(KAPPA_CL, KAPPA_V), 0.03 = Var(KAPPA_V).\n\n\nUsing kappas in individual parameters\nReference kappa names exactly like BSV etas:\n[individual_parameters]\n  CL = TVCL * exp(ETA_CL + KAPPA_CL)\n  V  = TVV  * exp(ETA_V  + KAPPA_V)\n  KA = TVKA * exp(ETA_KA)           # no IOV on absorption\nKappas can be combined freely — a parameter can carry BSV only, IOV only, or both.\n\n\nMixed diagonal and block kappa\nblock_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]\nkappa KAPPA_KA ~ 0.10\nA name may not appear in both kappa and block_kappa — this is a parse error."
+  },
+  {
+    "objectID": "model-dsl/parameters.html#sigma-residual-error",
+    "href": "model-dsl/parameters.html#sigma-residual-error",
+    "title": "Parameters",
+    "section": "Sigma (residual error)",
+    "text": "Sigma (residual error)\nsigma NAME ~ value              # value is a variance (default)\nsigma NAME ~ value (sd)         # value is a standard deviation\nsigma NAME ~ value (variance)   # explicit — same as default\n\nNAME — residual error parameter name, referenced in [error_model]\nvalue — initial value; default scale is variance, matching omega\n\nThe (sd) annotation tells the parser that the initial value is a standard deviation — it squares it before storing. This is the form used throughout the bundled examples because writing “I expect 2% CV” as ~ 0.02 (sd) is more readable than computing the variance 0.02² = 0.0004 and writing ~ 0.0004.\nsigma PROP_ERR ~ 0.0004          # variance 0.0004  →  SD 0.02  →  2% CV\nsigma PROP_ERR ~ 0.02 (sd)       # same thing, SD coding\nRegardless of how the initial value is written, estimates are always reported on the SD scale — both in print(fit) and in ferx_estimates().\nSee Error Model — Sigma scale for how each sigma is interpreted."
+  },
+  {
+    "objectID": "model-dsl/parameters.html#parameter-level-correlation-in-output",
+    "href": "model-dsl/parameters.html#parameter-level-correlation-in-output",
+    "title": "Parameters",
+    "section": "Parameter-level correlation in output",
+    "text": "Parameter-level correlation in output\nWhen a block_omega (or block_kappa) is estimated, ferx reports a parameter-level correlation for each off-diagonal pair:\n\n\n\n\n\n\n\nETA pair\nFormula\n\n\n\n\nBoth lognormal (THETA * exp(ETA))\n\\((e^{\\omega_{ij}} - 1) / \\sqrt{(e^{\\omega_{ii}} - 1)(e^{\\omega_{jj}} - 1)}\\)\n\n\nBoth additive (THETA + ETA)\n\\(\\omega_{ij} / \\sqrt{\\omega_{ii} \\cdot \\omega_{jj}}\\)\n\n\nMixed / complex\nFalls back to eta-level; warning added to FitResult.warnings\n\n\n\nThe lognormal formula reflects the correlation between the actual PK parameters (CL, V) rather than their underlying normal variates."
+  },
+  {
+    "objectID": "model-dsl/parameters.html#writing-individual-parameters-mu-referencing",
+    "href": "model-dsl/parameters.html#writing-individual-parameters-mu-referencing",
+    "title": "Parameters",
+    "section": "Writing individual parameters: mu-referencing",
+    "text": "Writing individual parameters: mu-referencing\nWhen an individual parameter combines IIV with covariate effects, both term orderings are detected correctly:\nCL = TVCL * exp(ETA_CL) * (WT/70)^0.75      # fine\nCL = TVCL * (WT/70)^0.75 * exp(ETA_CL)      # also fine\nBoth forms are mathematically identical in log-space. ferx detects the theta * exp(eta) mu-reference pattern regardless of where covariate multipliers appear in the expression. See the covariates example for a worked model.\n\nLog-normal detection with derived intermediates\nThe theta * exp(eta) pattern is detected even when the base is a derived intermediate rather than a directly declared theta:\nKTR = 4.0 / TVMTT\nKA  = KTR * exp(ETA_KA)        # detected as log-normal; CV% reported correctly\nferx traces through the intermediate assignment to identify the underlying log-normal structure."
+  },
+  {
+    "objectID": "model-dsl/parameters.html#fixing-parameters-fix",
+    "href": "model-dsl/parameters.html#fixing-parameters-fix",
+    "title": "Parameters",
+    "section": "Fixing parameters (FIX)",
+    "text": "Fixing parameters (FIX)\nAppend FIX to any theta, omega, sigma, or kappa declaration to hold the parameter at its initial value during estimation:\ntheta TVLAG(0.25, 0.0, 2.0) FIX       # theta fixed at 0.25\nomega ETA_KA ~ 0.40 FIX               # omega fixed at 0.40\nsigma PROP_ERR ~ 0.01 (sd) FIX        # sigma fixed at SD = 0.01\nkappa KAPPA_CL ~ 0.05 FIX             # kappa fixed at 0.05\nblock_omega (ETA_CL, ETA_V) = [0.09, 0.0, 0.04] FIX   # entire block fixed\nFIX can also appear as part of the initial-value triple for theta:\ntheta TVLAG(0.25, FIX)   # two-element form: value + FIX, no bounds\nPlacement is flexible: FIX may appear at the end of the line or, for theta, inside the parentheses. For omega/sigma/kappa it can also precede the ~:\ntheta TVLAG(0.25, 0.0, 2.0) FIX       # after closing paren\ntheta TVLAG(0.25, FIX)                 # inside parens (no bounds)\ntheta CL (FIX) (0.134, 0.001, 10.0)   # FIX anywhere before the bound triple\nomega ETA_CL (FIX) ~ 0.07             # FIX before the tilde\nomega ETA_CL ~ 0.07 FIX               # FIX after the value — both forms OK\nFixed parameters are shown in print(fit) and ferx_estimates() with SE = fixed and %RSE = fixed; they are excluded from the covariance matrix.\nTypical uses: - Fix a lag time or Hill coefficient to a literature value - Fix omega to zero to temporarily remove BSV from a parameter - Fix sigma during a two-stage estimation (fix PK error while fitting PD)"
+  },
+  {
+    "objectID": "model-dsl/parameters.html#complete-examples",
+    "href": "model-dsl/parameters.html#complete-examples",
+    "title": "Parameters",
+    "section": "Complete examples",
+    "text": "Complete examples\nDiagonal omega (no correlations):\n[parameters]\n  theta TVCL(0.134, 0.001, 10.0)\n  theta TVV(8.1, 0.1, 500.0)\n  theta TVKA(1.0, 0.01, 50.0)\n\n  omega ETA_CL ~ 0.07\n  omega ETA_V  ~ 0.02\n  omega ETA_KA ~ 0.40\n\n  sigma PROP_ERR ~ 0.01\nBlock omega (correlated CL and V):\n[parameters]\n  theta TVCL(0.134, 0.001, 10.0)\n  theta TVV(8.1, 0.1, 500.0)\n  theta TVKA(1.0, 0.01, 50.0)\n\n  block_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]\n  omega ETA_KA ~ 0.40\n\n  sigma PROP_ERR ~ 0.01"
+  },
+  {
+    "objectID": "model-dsl/derived.html",
+    "href": "model-dsl/derived.html",
+    "title": "Derived columns and output",
+    "section": "",
+    "text": "The optional [derived] and [output] blocks extend the sdtab with extra columns computed after the fit. Use them to add NCA-style summaries, PD metrics, unit-converted readouts, or any expression the optimiser does not need to see."
+  },
+  {
+    "objectID": "model-dsl/derived.html#derived-computed-columns",
+    "href": "model-dsl/derived.html#derived-computed-columns",
+    "title": "Derived columns and output",
+    "section": "[derived] — computed columns",
+    "text": "[derived] — computed columns\nEach line in [derived] has the form name = expression. The name becomes a new sdtab column; the expression is evaluated for every observation row.\n[derived]\n  KE     = CL / V\n  T_HALF = 0.6931472 / KE\n  CMAX   = max(IPRED)\n  AUC_24 = integral(IPRED, from=0, to=24)\n\nAvailable variables\n\n\n\n\n\n\n\nName\nValue\n\n\n\n\nIndividual-parameter names (CL, V, …)\nEBE-derived value for the subject\n\n\nTheta names (TVCL, TVV, …)\nFinal population estimate\n\n\nEta names (ETA_CL, …)\nSubject EBE\n\n\nCovariate names (WT, AGE, …)\nSubject covariate (constant per row)\n\n\nIPRED\nIndividual prediction at the row’s time\n\n\nDV\nObserved value\n\n\nTAFD\nTime after first dose\n\n\nTAD\nTime after most recent dose\n\n\nTIME\nNominal time\n\n\nMACHEPS\nMachine epsilon (≈ 2.22 × 10⁻¹⁶)\n\n\n\n\n\nOperators and functions\nStandard arithmetic (+, -, *, /), comparison (&lt;, &gt;, &lt;=, &gt;=, ==, !=), logical (&&, ||, !), mod for modulo, ^ for power.\n\n\n\n\n\n\n\nFunction\nDescription\n\n\n\n\nexp(x), log(x), sqrt(x), abs(x)\nStandard math\n\n\nfloor(x), ceil(x), round(x)\nRounding\n\n\nmax(expr)\nSubject-level maximum\n\n\nmin(expr)\nSubject-level minimum\n\n\ntmax(expr)\nTime at which expr is maximum\n\n\nintegral(expr, from=t0, to=t1)\nTrapezoidal AUC\n\n\nintegral(expr, from=t0, to=t1, step=dt)\nGrid-based AUC (IPRED only)\n\n\nintegral(expr, window=W, anchor=A, step=dt)\nPeriodic AUC\n\n\nintegral(1.0, condition, window=W, anchor=A, step=dt)\nTime-above-threshold\n\n\n\n\n\n\nComputation kinds\n\nPer-row (default)\nThe expression is evaluated independently at each observation row.\nKE     = CL / V\nT_HALF = 0.6931472 / KE\nDAY    = floor(TAFD / 24) + 1\nKE and T_HALF are constant per subject (they depend only on EBE parameters), but they still appear on every row. DAY varies across rows.\n\n\nAggregate\nmax(expr), min(expr), or tmax(expr) produce a single value per subject broadcast to all rows. An optional filter is the second argument:\nCMAX      = max(IPRED)\nTMAX      = tmax(IPRED)\nCTROUGH   = min(IPRED, TAD &lt; 1e-10)    # trough at dose time\nCMAX_D1   = max(IPRED, TAFD &lt; 24)      # day-1 peak\nCMAX_D14  = max(IPRED, TAFD &gt;= 312 && TAFD &lt; 336)\n\n\n\n\n\n\nNote\n\n\n\n1e-10 for troughs. TAD == 0 is mathematically true at dose rows, but floating-point residuals from modular arithmetic can produce TAD = 1e-13 instead of 0. The guard TAD &lt; 1e-10 is the standard idiom to reliably capture the trough without false positives.\n\n\nIf no row passes the filter the result is NaN.\n\n\nIntegral\nintegral(expr, from=t0, to=t1) computes the area under expr over [t0, t1) using the trapezoidal rule at observation times.\nAdd step=dt to force evaluation on a uniform grid — useful when the observation design is sparse or when computing time-above-threshold:\nAUC_24     = integral(IPRED, from=0, to=24)\nAUC_GRID   = integral(IPRED, from=0, to=24, step=0.5)\nAUC_DV_24  = integral(DV,    from=0, to=24)           # observation times only\nwindow=W, anchor=A yields a periodic AUC: one value per W-unit window, starting at A:\nAUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)\nTime-above-threshold. Use integral(1.0, condition, ...) to measure hours above a threshold. Always include step= here — without it, only observation time points are evaluated and sparse sampling can miss brief threshold crossings:\nTAM_TAU = integral(1.0, IPRED &gt; MEC, window=24, anchor=0, step=0.1)\n\n\n\n\nAUC calculations — recipe guide\nAll four common NCA-style AUC forms are supported. Choose by what you want to integrate and over which time window.\n\nFixed window — AUC from t₀ to t₁\nTrapezoidal rule at observation time points. Fast and exact when sampling is dense:\n[derived]\n  AUC_24  = integral(IPRED, from=0,  to=24)\n  AUC_72  = integral(IPRED, from=0,  to=72)\n  AUC_INF = integral(IPRED, from=0,  to=168)\n\n\nFixed window with fine grid — for sparse or uneven sampling\nForces a uniform evaluation grid so the trapezoid covers gaps between observation times. Use step in the same time units as TIME:\n[derived]\n  AUC_72_grid = integral(IPRED, from=0, to=72, step=0.5)\nA smaller step is more accurate but slower at render time. step=0.1–0.5 is usually sufficient for PK profiles.\n\n\nPeriodic AUC — one value per dosing interval\nwindow=W, anchor=A aligns the integration windows to the dosing schedule. Each observation row gets the AUC for its current W-unit window:\n[derived]\n  AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)\nThe window starting at anchor + n * window for integer n is chosen for each observation based on its TIME. For q24h dosing starting at TIME=0, anchor=0, window=24 gives one AUC value per day.\n\n\nNCA AUC from observed values\nintegral(DV, ...) uses observed DV values at the actual observation times — no IPRED interpolation. The step= argument is ignored for DV integrals:\n[derived]\n  AUC_DV_72 = integral(DV, from=0, to=72)\n\n\nTime-above-threshold (TAT)\nintegral(1.0, condition, ...) counts time units where the condition is true. Always add step= — without it only observation time points are evaluated, and sparse sampling misses crossings between samples:\n[derived]\n  TAT_0_5   = integral(1.0, IPRED &gt; 0.5,  from=0, to=72,   step=0.1)\n  TAT_MEC   = integral(1.0, IPRED &gt; MEC,  window=24, anchor=0, step=0.1)\n\n\nPartial AUC — subset of subjects or time points\nCombine a fixed window with an aggregate filter to scope the integral:\n[derived]\n  AUC_D1    = integral(IPRED, from=0,  to=24)\n  AUC_SS    = integral(IPRED, from=312, to=336)   # day 14 at steady state\n\n\n\n\nODE models\n[derived] works identically whether the structural model is an analytical PK shortcut or an ODE system. The same expression language, the same time variables, and the same integral forms are available in both cases.\n\nTIME, TAFD, TAD in ODE-based fits\nAll three time variables have the same steady-state-aware semantics in both [odes] and [derived]:\n\n\n\n\n\n\n\n\nVariable\nResets at\nTypical use\n\n\n\n\nTIME\nNever\nAbsolute-clock conditions (TIME &lt; 24 for day-1 only)\n\n\nTAFD\nFirst dose\nDay-number, study-elapsed conditions\n\n\nTAD\nEvery dose\nTrough detection, within-interval AUC/TAT\n\n\n\nAll four names TIME, T, TAFD, and TAD are injected into every ODE RHS evaluation at each solver step — not just at observation times.\n\n\nAUC and time-above-threshold as ODE accumulator states\nInside [odes] you can add extra states whose derivative accumulates AUC, time above threshold, or any other running integral. Use an inline if-expression to restrict when the integrand fires:\n[structural_model]\n  ode(obs_cmt=central, states=[depot, central, AUC_D1, TAM_INT])\n\n[odes]\n  d/dt(depot)   = -KA * depot\n  d/dt(central) =  KA * depot - CL / V * central\n\n  # Accumulate day-1 AUC: integrand is central/V only while TIME &lt; 24\n  d/dt(AUC_D1)  = if (TIME &lt; 24) central / V else 0.0\n\n  # Accumulate time above 0.5 mg/L within the current dosing interval\n  # TAD resets at each dose, so this gives a per-interval running total\n  d/dt(TAM_INT) = if (central / V &gt; 0.5 && TAD &lt; 24) 1.0 else 0.0\nif syntax in [odes] — the inline form is if (condition) value else value. The block form if (cond) { ... } else { ... } is also accepted when multiple states need to branch together. Conditions support &&, ||, !, and all comparison operators.\nThe ODE solver evaluates the RHS at every adaptive step, so the accumulator is exact (no grid approximation). This makes the ODE approach well-suited for:\n\nConditional integration over arbitrary time windows (day 1, last interval, windows defined by TIME, TAFD, or TAD)\nAny accumulated quantity that feeds back into the ODE dynamics — for example, cumulative drug exposure driving tolerance, or receptor occupancy accumulating and reducing the remaining free receptor\n\n\n\nReporting ODE accumulator values\nThe ODE state vector is not automatically written to sdtab. To report accumulated values in fit$sdtab for post-fit analysis, choose one of:\nOption A — [derived] integral(): re-computes the integral from the predicted curve after the fit. Does not require an extra ODE state and appears in sdtab. Works for the vast majority of AUC/TAT use cases:\n[derived]\n  AUC_72  = integral(IPRED, from=0, to=72, step=0.2)\n  TAT_24  = integral(1.0, IPRED &gt; 0.5, from=0, to=24, step=0.1)\nOption B — observe the accumulator directly: set obs_cmt to the accumulator state. The accumulator value at each observation time then becomes IPRED. This is only practical when AUC (not concentration) is the modelled endpoint.\nFor feedback-driven dynamics where AUC_D1 or TAM_INT feeds into another ODE equation, the accumulator must stay in [odes]; pair it with [derived] integral() if you also want the value in sdtab.\n\n\n\n\n\n\nNote\n\n\n\nFor a full worked example of TIME, TAFD, TAD, and ODE accumulators alongside [derived] see Example: ODE with TIME, TAFD, and TAD.\n\n\n\n\n\n\nSequential scoping\nA derived column may reference earlier columns in the same block. Forward references are not allowed.\n[derived]\n  KE   = CL / V\n  T_HALF = 0.6931472 / KE    # ok — KE defined above\n  # CL2 = KE * V             # would be fine\n  # BAD = FUTURE + 1   # FUTURE not defined yet → parse error\n\n\nNaming rules\nA [derived] name must not clash with the mandatory sdtab columns (ID, TIME, DV, IPRED, CWRES, IWRES, ETA1, ETA2, …, TAFD, TAD) or with any theta, eta, or individual-parameter name. Shadowing a covariate name is allowed but emits a warning."
+  },
+  {
+    "objectID": "model-dsl/derived.html#output-echo-individual-parameters-and-covariates",
+    "href": "model-dsl/derived.html#output-echo-individual-parameters-and-covariates",
+    "title": "Derived columns and output",
+    "section": "[output] — echo individual parameters and covariates",
+    "text": "[output] — echo individual parameters and covariates\nThe [output] block lists extra columns to write to sdtab beyond the mandatory minimum. Each entry is a bare name:\n[output]\n  CL V KA WT\n\n\n\nCan list\nExample\n\n\n\n\nCovariates\nWT, AGE, SEX\n\n\nIndividual parameters\nCL, V, KA\n\n\nNames already in [derived]\nredundant but harmless\n\n\nEta names\nalready in mandatory minimum; emits a warning\n\n\n\n\nMandatory sdtab minimum (always present)\nID, TIME, DV, CENS, OCC, CMT, PRED, IPRED, CWRES, IWRES, EBE_OFV, N_OBS, TAFD, TAD\n\n\n\n\n\n\nTip\n\n\n\n[derived] vs [output]. Names in [derived] are automatically in sdtab. Use [output] only for individual parameters and covariates that [derived] does not already compute.\n\n\n\n\nExample — what [output] adds to sdtab\nWithout [output], individual parameters like CL, V, and KA are used during estimation but do not appear in fit$sdtab. With [output] they are echoed as extra columns:\n# Without [output]: sdtab has IPRED, PRED, residuals — no CL/V/KA\n[structural_model]\n  pk one_cpt_oral(cl=CL, v=V, ka=KA)\n\n# With [output]: CL, V, KA are appended to every row in fit$sdtab\n[output]\n  CL V KA\nIn R:\nlibrary(ferx)\nex  &lt;- ferx_example(\"warfarin_derived\")\nfit &lt;- ferx_fit(ex$model, ex$data)\n\n# CL, V, KA appear because the model has [output] CL V KA\nhead(unique(fit$sdtab[, c(\"ID\", \"CL\", \"V\", \"KA\")]))\nCovariates work the same way — add them to [output] to carry them through to sdtab for downstream analysis:\n[output]\n  CL V KA WT AGE"
+  },
+  {
+    "objectID": "model-dsl/derived.html#full-example",
+    "href": "model-dsl/derived.html#full-example",
+    "title": "Derived columns and output",
+    "section": "Full example",
+    "text": "Full example\nlibrary(ferx)\nex  &lt;- ferx_example(\"warfarin_derived\")\nfit &lt;- ferx_fit(ex$model, ex$data)\nThe bundled warfarin_derived model demonstrates all three computation kinds plus [output]:\n[derived]\n  KE        = CL / V\n  T_HALF    = 0.6931472 / KE\n  DAY       = floor(TAFD / 24) + 1\n  CMAX      = max(IPRED)\n  CTROUGH   = min(IPRED, TAD &lt; 1e-10)\n  CMAX_D1   = max(IPRED, TAFD &lt; 24)\n  AUC_0_72  = integral(IPRED, from=0, to=72)\n  AUC_TAU   = integral(IPRED, window=24, anchor=0, step=0.1)\n  AUC_DV_72 = integral(DV,    from=0, to=72)\n\n[output]\n  CL V KA\nAfter fitting, fit$sdtab contains all derived columns plus the echoed individual parameters:\nnames(fit$sdtab)\n\n# Aggregate columns: one value per subject (broadcast across rows)\nunique(fit$sdtab[, c(\"ID\", \"CMAX\", \"AUC_0_72\")])\nSee also Example: derived columns for a full worked example."
+  },
+  {
+    "objectID": "model-dsl/derived.html#see-also",
+    "href": "model-dsl/derived.html#see-also",
+    "title": "Derived columns and output",
+    "section": "See also",
+    "text": "See also\n\nExample: derived columns\nExample: derived PK/PD quantities\nExample: two-cpt oral with derived AUC\nStructural model\nODE models"
+  },
+  {
+    "objectID": "get-started.html",
+    "href": "get-started.html",
+    "title": "Get started",
+    "section": "",
+    "text": "ferx has two builds. They produce the same parameter estimates — they differ in how gradients are computed and how fast fits run.\n\n\n\nBuild\nGradients\nCompile time\nFit speed\nWhen to use\n\n\n\n\nSimple (default)\nFinite differences\n~2 min\nBaseline\nTrying ferx out, Windows-native, no Rust nightly\n\n\nFull (Enzyme autodiff)\nExact via Enzyme\n~45–60 min one-time toolchain build\nFaster, more accurate Hessians\nProduction fits, large models, SIR / uncertainty quantification\n\n\n\nYou can start with the simple build and upgrade later — the R API is identical.\nFor a deeper walkthrough of either path, see the installation chapter of the ferx-r book.\n\n\nAlmost nothing is disabled — the simple build falls back to finite-difference (FD) gradients everywhere autodiff would be used:\n\n\n\n\n\n\n\nFeature\nSimple build\n\n\n\n\nferx_simulate(), ferx_predict()\nIdentical — no gradients used\n\n\nODE / SDE / EKF models\nIdentical — these always use FD, even in the full build\n\n\nSAEM\nIdentical — derivative-free E-step\n\n\nPopulation (outer-loop) optimizer\nIdentical — always FD in both builds\n\n\nFOCE / FOCEI inner loop with analytical 1-/2-cpt PK\nSlower — FD instead of Enzyme reverse-mode AD (≈ 2 × n_eta extra gradient calls per iteration); results match\n\n\nHessian-based standard errors\nSlightly less accurate (FD Hessian)\n\n\n\nIf you mostly fit ODE models or use SAEM, the full build buys you nothing. The full build’s main win is faster FOCEI on analytical-PK models and crisper SEs for SIR / uncertainty quantification work. Tracked in ferx-r#46."
+  },
+  {
+    "objectID": "get-started.html#two-install-paths",
+    "href": "get-started.html#two-install-paths",
+    "title": "Get started",
+    "section": "",
+    "text": "ferx has two builds. They produce the same parameter estimates — they differ in how gradients are computed and how fast fits run.\n\n\n\nBuild\nGradients\nCompile time\nFit speed\nWhen to use\n\n\n\n\nSimple (default)\nFinite differences\n~2 min\nBaseline\nTrying ferx out, Windows-native, no Rust nightly\n\n\nFull (Enzyme autodiff)\nExact via Enzyme\n~45–60 min one-time toolchain build\nFaster, more accurate Hessians\nProduction fits, large models, SIR / uncertainty quantification\n\n\n\nYou can start with the simple build and upgrade later — the R API is identical.\nFor a deeper walkthrough of either path, see the installation chapter of the ferx-r book.\n\n\nAlmost nothing is disabled — the simple build falls back to finite-difference (FD) gradients everywhere autodiff would be used:\n\n\n\n\n\n\n\nFeature\nSimple build\n\n\n\n\nferx_simulate(), ferx_predict()\nIdentical — no gradients used\n\n\nODE / SDE / EKF models\nIdentical — these always use FD, even in the full build\n\n\nSAEM\nIdentical — derivative-free E-step\n\n\nPopulation (outer-loop) optimizer\nIdentical — always FD in both builds\n\n\nFOCE / FOCEI inner loop with analytical 1-/2-cpt PK\nSlower — FD instead of Enzyme reverse-mode AD (≈ 2 × n_eta extra gradient calls per iteration); results match\n\n\nHessian-based standard errors\nSlightly less accurate (FD Hessian)\n\n\n\nIf you mostly fit ODE models or use SAEM, the full build buys you nothing. The full build’s main win is faster FOCEI on analytical-PK models and crisper SEs for SIR / uncertainty quantification work. Tracked in ferx-r#46."
+  },
+  {
+    "objectID": "get-started.html#pick-a-version",
+    "href": "get-started.html#pick-a-version",
+    "title": "Get started",
+    "section": "Pick a version",
+    "text": "Pick a version\nThe install snippets below default to main (development). For reproducible work, pin to the latest tagged release — currently v0.1.5:\n# Latest release (recommended for new users / reproducible work)\npak::pak(\"FeRx-NLME/ferx-r@v0.1.5\")\n\n# Latest development version (tracks main; picks up new features and fixes)\npak::pak(\"FeRx-NLME/ferx-r\")\n@v0.1.5 works with remotes::install_github() and devtools::install_github() too. See the ferx-r releases page for what each release ships and a link to the matching ferx-core engine release."
+  },
+  {
+    "objectID": "get-started.html#simple-build",
+    "href": "get-started.html#simple-build",
+    "title": "Get started",
+    "section": "Simple build",
+    "text": "Simple build\nThe simple build skips the Enzyme toolchain entirely. It works on plain stable Rust and falls back to finite-difference gradients. Estimates match the full build; fits are somewhat slower and standard errors from the FD Hessian are slightly less accurate.\nPrerequisites: R ≥ 4.2, cmake, and Rust stable (via rustup).\n\nmacOS\nbrew install cmake\ncurl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh\nRStudio on macOS does not inherit the Homebrew PATH. Add cmake explicitly before installing:\n# Apple Silicon (M1/M2/M3):\nSys.setenv(PATH = paste(\"/opt/homebrew/opt/cmake/bin\", Sys.getenv(\"PATH\"), sep = \":\"))\n# Intel Mac:\n# Sys.setenv(PATH = paste(\"/usr/local/opt/cmake/bin\", Sys.getenv(\"PATH\"), sep = \":\"))\n\nSys.setenv(FERX_NO_AUTODIFF = \"1\")\npak::pak(\"FeRx-NLME/ferx-r\")\n\n\nWindows\nInstall Rtools44 and Rust via rustup (cmake ships with Rtools44), then in R:\nSys.setenv(FERX_NO_AUTODIFF = \"1\")\npak::pak(\"FeRx-NLME/ferx-r\")\n\n\nLinux\nsudo apt-get install cmake   # Debian / Ubuntu\ncurl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh\nSys.setenv(FERX_NO_AUTODIFF = \"1\")\npak::pak(\"FeRx-NLME/ferx-r\")\nThe FERX_NO_AUTODIFF=1 flag tells the package build to skip the Enzyme probe and go straight to the stable, finite-difference path."
+  },
+  {
+    "objectID": "get-started.html#full-build-enzyme-autodiff",
+    "href": "get-started.html#full-build-enzyme-autodiff",
+    "title": "Get started",
+    "section": "Full build (Enzyme autodiff)",
+    "text": "Full build (Enzyme autodiff)\nThe full build uses Enzyme to compute exact gradients via automatic differentiation. This requires building a custom rustc from source with Enzyme integrated into its own LLVM — a one-time ~45–60 min setup that needs ~30 GB of free disk.\n\n\n\n\n\n\nImportant\n\n\n\nDo not build a standalone Enzyme plugin against a separately-installed LLVM and copy it into a prebuilt nightly’s sysroot. That setup looks like it works but causes Enzyme to hang silently in llvm::Constant::getNullValue the first time it actually differentiates anything. The full toolchain must be built from a single rust-lang/rust source tree with --enable-llvm-enzyme and --set llvm.download-ci-llvm=false. See the warning at the top of the ferx-core installation page.\n\n\n\n1. Build the Enzyme toolchain\nFollow the platform steps in the ferx-core book:\n\nLinux\nmacOS (Intel and Apple Silicon)\nWindows — not supported; use WSL2 or Docker\n\nThen verify the toolchain with a real #[autodiff_forward] test — the usual E0601 check is not sufficient and passes for broken toolchains.\nFor shared servers, see multi-user installs.\n\n\n2. Install the R package\nOnce rustc +enzyme is verified working:\npak::pak(\"FeRx-NLME/ferx-r\")\nThe package’s src/Makevars auto-detects the enzyme toolchain and builds the autodiff path. To confirm afterwards:\nferx:::ferx_rust_autodiff_enabled()\n# [1] TRUE\nTo force one path or the other, set before installing:\n\nFERX_NO_AUTODIFF=1 — force the simple build even if Enzyme is installed\nFERX_NO_AUTODIFF=0 — force the full build, erroring out if Enzyme isn’t found"
+  },
+  {
+    "objectID": "get-started.html#docker-full-autodiff-no-local-toolchain",
+    "href": "get-started.html#docker-full-autodiff-no-local-toolchain",
+    "title": "Get started",
+    "section": "Docker (full autodiff, no local toolchain)",
+    "text": "Docker (full autodiff, no local toolchain)\nThe ferx-r Docker image ships the Enzyme toolchain prebuilt — the fastest way to get a working full-autodiff setup, especially on Windows.\ndocker build -t ferx:latest https://github.com/FeRx-NLME/ferx-r.git#main\ndocker run --rm -p 8787:8787 -e PASSWORD=ferx ferx:latest\nOpen http://localhost:8787 — user: rstudio, password: ferx."
+  },
+  {
+    "objectID": "get-started.html#first-fit",
+    "href": "get-started.html#first-fit",
+    "title": "Get started",
+    "section": "First fit",
+    "text": "First fit\nAfter either install, run the bundled warfarin example:\nlibrary(ferx)\nex  &lt;- ferx_example(\"warfarin\")\nfit &lt;- ferx_fit(ex$model, ex$data)\nprint(fit)\nsummary(fit)\nList all bundled examples:\nferx_example()   # character vector of available example names\n?ferx_example    # full list with descriptions"
+  },
+  {
+    "objectID": "get-started.html#next-steps",
+    "href": "get-started.html#next-steps",
+    "title": "Get started",
+    "section": "Next steps",
+    "text": "Next steps\n\nferx-r — narrative guide to the R package with runnable examples\nferx-core — mdBook for the Rust engine, CLI, and .ferx DSL spec\nModel workflow — full fitting workflow\nModel DSL — write your own .ferx model files\nReference — function documentation\nferx-core installation — full toolchain detail and troubleshooting"
+  },
+  {
+    "objectID": "faq.html",
+    "href": "faq.html",
+    "title": "FAQ",
+    "section": "",
+    "text": "Do I need to write explicit MU-referencing like in NONMEM or nlmixr2?\nNo. You do not need to write an explicit MU_i intermediate variable. ferx detects the same structure automatically from the right-hand side of each [individual_parameters] line.\nIn NONMEM and nlmixr2, MU-referencing is required in SAEM because the conjugate-Gibbs E-step is only valid when the ETA→THETA relationship is strictly linear on a transformed scale. In ferx, you simply write the individual-parameter expression naturally:\nCL = TVCL * exp(ETA_CL)              # detected: multiplicative / log-normal\nCL = exp(log(TVCL) + ETA_CL)         # detected: canonical MU form\nCL = TVCL * (WT/70)^0.75 * exp(ETA_CL)  # detected: with covariate\nCL = TVCL + ETA_CL                   # detected: additive\nThe parser records the ETA→THETA mapping and re-centres the inner-loop ETA search at each outer iteration.\nPatterns not auto-detected (falls back to eta = 0 start):\n\nTwo or more free thetas in the product (TVCL * TVSCALE * exp(ETA_CL)) — ambiguous anchor\nCompound eta expressions inside exp (exp(ETA_CL + ETA_OCC))\n\nMu-referencing affects convergence speed and robustness, not the final MLE. Disable with mu_referencing = false in [fit_options] to reproduce pre-automatic behaviour."
+  },
+  {
+    "objectID": "faq.html#mu-referencing",
+    "href": "faq.html#mu-referencing",
+    "title": "FAQ",
+    "section": "",
+    "text": "Do I need to write explicit MU-referencing like in NONMEM or nlmixr2?\nNo. You do not need to write an explicit MU_i intermediate variable. ferx detects the same structure automatically from the right-hand side of each [individual_parameters] line.\nIn NONMEM and nlmixr2, MU-referencing is required in SAEM because the conjugate-Gibbs E-step is only valid when the ETA→THETA relationship is strictly linear on a transformed scale. In ferx, you simply write the individual-parameter expression naturally:\nCL = TVCL * exp(ETA_CL)              # detected: multiplicative / log-normal\nCL = exp(log(TVCL) + ETA_CL)         # detected: canonical MU form\nCL = TVCL * (WT/70)^0.75 * exp(ETA_CL)  # detected: with covariate\nCL = TVCL + ETA_CL                   # detected: additive\nThe parser records the ETA→THETA mapping and re-centres the inner-loop ETA search at each outer iteration.\nPatterns not auto-detected (falls back to eta = 0 start):\n\nTwo or more free thetas in the product (TVCL * TVSCALE * exp(ETA_CL)) — ambiguous anchor\nCompound eta expressions inside exp (exp(ETA_CL + ETA_OCC))\n\nMu-referencing affects convergence speed and robustness, not the final MLE. Disable with mu_referencing = false in [fit_options] to reproduce pre-automatic behaviour."
+  },
+  {
+    "objectID": "faq.html#conditional-logic",
+    "href": "faq.html#conditional-logic",
+    "title": "FAQ",
+    "section": "Conditional logic",
+    "text": "Conditional logic\nCan I use if / else statements like in NONMEM or nlmixr2?\nYes. Two forms are supported in [individual_parameters] and [odes]:\n# Block form\nif (WT &gt; 70) {\n  CL = TVCL * (WT / 70)^0.75 * exp(ETA_CL)\n} else if (SEX == 1) {\n  CL = TVCL * 1.2 * exp(ETA_CL)\n} else {\n  CL = TVCL * exp(ETA_CL)\n}\n\n# Inline (ternary) form\nCL = if (SEX == 1) TVCL * 1.5 else TVCL\nCompared to NONMEM: C-style {braces} and operators (&gt;, ==, &&) rather than Fortran-style IF THEN … ENDIF and .GT., .LE., etc.\nCompared to nlmixr2: near-verbatim match — replace &lt;- with =.\nCaveat: == and != do bitwise float comparison. They work for integer-coded covariates (SEX == 1) but are unreliable for continuous thresholds. Prefer WT &gt;= 70 && WT &lt; 80 over WT == 75.\nCaveat: when a parameter is assigned inside an if block, mu-reference detection is skipped for that parameter. See Individual Parameters."
+  },
+  {
+    "objectID": "faq.html#optimizer",
+    "href": "faq.html#optimizer",
+    "title": "FAQ",
+    "section": "Optimizer selection",
+    "text": "Optimizer selection\nWhich outer optimizer should I pick?\nbobyqa (the default) is the right choice for most models — derivative-free, robust on rough OFV surfaces, and requires no gradient from the outer loop.\nReach for a different optimizer when BOBYQA is too slow or stalls:\n\nslsqp — gradient-based NLopt SLSQP; faster per iteration on smooth, well-conditioned problems. Use with reconverge_gradient_interval = 1 on difficult surfaces.\ntrust_region — second-order Newton trust-region with BHHH Hessian. Can be faster near convergence. Override the CG budget with steihaug_max_iters if needed.\nlbfgs / bfgs — quasi-Newton; useful for moderate-sized parameter spaces.\n\nSee Fit Options — Optimizer choices."
+  },
+  {
+    "objectID": "faq.html#block-omega",
+    "href": "faq.html#block-omega",
+    "title": "FAQ",
+    "section": "Block omega",
+    "text": "Block omega\nHow do I switch from diagonal to block omega?\nEach omega variance becomes a diagonal entry; off-diagonals start at 0.0:\n# Before\nomega ETA_CL ~ 0.1\nomega ETA_V1 ~ 0.1\nomega ETA_Q  ~ 0.1\n\n# After (3×3 block, 6 values: 1+2+3)\nblock_omega (ETA_CL, ETA_V1, ETA_Q) = [\n  0.1,\n  0.0, 0.1,\n  0.0, 0.0, 0.1\n]\nBlock omega regularises poorly-identified parameters by letting them share variability. Starting all off-diagonals at 0.0 lets the fit recover the correlations from the data. See Parameters — Block omega."
+  },
+  {
+    "objectID": "faq.html#sigma-scale",
+    "href": "faq.html#sigma-scale",
+    "title": "FAQ",
+    "section": "Sigma scale",
+    "text": "Sigma scale\nIs sigma estimated on the SD scale or the variance scale?\nSD scale. sigma PROP_ERR ~ 0.1 for a proportional model is a 10% CV initial value.\nThe fit YAML emits both estimate (SD) and variance (SD²). For proportional components it also emits cv_pct = estimate * 100. See Error Model — Sigma scale."
+  },
+  {
+    "objectID": "faq.html#focei-vs-foce",
+    "href": "faq.html#focei-vs-foce",
+    "title": "FAQ",
+    "section": "FOCEI vs FOCE",
+    "text": "FOCEI vs FOCE\nWhen should I use FOCEI instead of FOCE?\nUse FOCEI (default) whenever the error model is proportional or combined. FOCE evaluates the residual variance at η = 0 (population mean); FOCEI evaluates it at the individual EBE η̂, capturing the dependence between residual error and individual predictions.\nFor a purely additive error model, FOCE and FOCEI are equivalent (the interaction term is zero). Using FOCE for additive-error models can save a small amount of computation."
+  },
+  {
+    "objectID": "faq.html#ode-vs-analytical",
+    "href": "faq.html#ode-vs-analytical",
+    "title": "FAQ",
+    "section": "ODE vs analytical",
+    "text": "ODE vs analytical\nWhen must I use an ODE model?\nUse an ODE model when the kinetics cannot be expressed as a sum of exponentials:\n\nSaturable (Michaelis-Menten) elimination\nTarget-mediated drug disposition (TMDD)\nTransit compartment absorption\nCustom multi-compartment structures\n\nFor standard first-order kinetics use the analytical models (one_cpt_oral, two_cpt_oral, etc.) — they are 10–100× faster and support Enzyme autodiff gradients. See ODE Models."
+  },
+  {
+    "objectID": "faq.html#porting-nonmem",
+    "href": "faq.html#porting-nonmem",
+    "title": "FAQ",
+    "section": "Porting from NONMEM",
+    "text": "Porting from NONMEM\nHow do I port a NONMEM model to ferx?\n\nDrop all $ABBR, $MU_i, $SIZE boilerplate — not needed in ferx.\nTranslate $PK assignments to [individual_parameters] expressions with = instead of =.\nReplace THETA(i), ETA(i), EPS(i) with descriptive names (TVCL, ETA_CL, PROP_ERR).\nIf the NONMEM model uses explicit MU_i = LOG(THETA(i)) lines, drop them — ferx detects the mu-reference automatically.\nMap $SUBROUTINE ADVAN to the equivalent ferx pk function:\n\nADVAN1 → one_cpt_iv_bolus\nADVAN2 → one_cpt_oral\nADVAN3 → two_cpt_iv_bolus\nADVAN4 → two_cpt_oral\nADVAN11 → three_cpt_iv_bolus\nADVAN12 → three_cpt_oral\n\nMap $ERROR to [error_model]. Remember sigma is on the SD scale in ferx (not variance)."
+  },
+  {
+    "objectID": "faq.html#gradient-methods",
+    "href": "faq.html#gradient-methods",
+    "title": "FAQ",
+    "section": "Gradient methods",
+    "text": "Gradient methods\nWhen does Enzyme autodiff kick in, and when does ferx fall back to finite differences?\nThe gradient path is resolved per-subject at runtime:\n\n\n\n\n\n\n\nPath\nWhen used\n\n\n\n\nAdSingleSnapshot (Enzyme reverse-mode)\nSubject has no time-varying covariates; analytical PK model\n\n\nAdEventDriven (Enzyme reverse-mode, event-driven)\nSubject has TV covariates; 1- or 2-cpt analytical model\n\n\nFd (central finite differences)\nFERX_NO_AUTODIFF=1 build, ODE model, or TV-cov on 3-cpt model\n\n\n\nfit$gradient_used (in R) shows which path was resolved. See the ferx-core book for details."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html",
+    "href": "model-dsl/covariate-nn.html",
+    "title": "Covariate NN (DCM)",
+    "section": "",
+    "text": "The [covariate_nn] block replaces the typical-value covariate model with a small feed-forward neural network. This is the Deep Compartment Model (DCM) approach of Janssen et al. (2022). The compartmental structure downstream is unchanged; etas attach to the final PK parameters, so the inner FOCEI loop runs exactly as it does for an analytical model."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#availability",
+    "href": "model-dsl/covariate-nn.html#availability",
+    "title": "Covariate NN (DCM)",
+    "section": "Availability",
+    "text": "Availability\n[covariate_nn] is gated behind the nn cargo feature in ferx-core. ferx-r enables this feature by default, so DCM works out of the box when you library(ferx). Users building ferx-core directly need:\ncargo build --release --features nn"
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#syntax",
+    "href": "model-dsl/covariate-nn.html#syntax",
+    "title": "Covariate NN (DCM)",
+    "section": "Syntax",
+    "text": "Syntax\n[covariate_nn NAME]\n  inputs     = [COV_1, COV_2, ...]\n  outputs    = [PK_PARAM_1, PK_PARAM_2, ...]\n  layers     = [hidden_1, hidden_2, ...]\n  activation = tanh | relu | sigmoid | softplus | exp | identity\n  output     = tanh | relu | sigmoid | softplus | exp | identity   # optional, default `identity`\n\n\n\n\n\n\n\n\nField\nRequired\nMeaning\n\n\n\n\nNAME\nyes\nBlock name; used as the dot-access prefix (NAME.CL) in [individual_parameters]\n\n\ninputs\nyes\nCovariate column names from the NONMEM CSV\n\n\noutputs\nyes\nPK parameter names: cl, v / v1, q / q2, v2, ka, f, q3, v3, lagtime / alag\n\n\nlayers\nyes\nHidden-layer widths, in order; at least one entry required\n\n\nactivation\nyes\nHidden-layer element-wise activation\n\n\noutput\nno\nOutput-layer activation (default identity)\n\n\n\nMultiple [covariate_nn] blocks per model are permitted; they’re keyed by NAME and ordered alphabetically when generating theta names."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#composing-with-etas",
+    "href": "model-dsl/covariate-nn.html#composing-with-etas",
+    "title": "Covariate NN (DCM)",
+    "section": "Composing with etas",
+    "text": "Composing with etas\nThe bundled DCM example uses a multiplicative modulator pattern: baseline thetas carry the absolute scale and the NN learns the covariate-driven deviation from baseline.\n[individual_parameters]\n  CL = TVCL * TYPICAL_PK.CL * exp(ETA_CL)\n  V1 = TVV1 * TYPICAL_PK.V1 * exp(ETA_V1)\n  Q  = TVQ  * TYPICAL_PK.Q  * exp(ETA_Q)\n  V2 = TVV2 * TYPICAL_PK.V2 * exp(ETA_V2)\n  KA = TVKA * TYPICAL_PK.KA * exp(ETA_KA)\nWith output = exp the NN outputs are exactly 1.0 at init (exp(0) = 1), so initial typical values fall back to the declared TVCL / TVV1 / … thetas. The NN then learns the multiplicative covariate effect over training.\nThe simpler “NN replaces typical values entirely” pattern (CL = TYPICAL_PK.CL * exp(ETA_CL) with output = softplus) is syntactically valid and recognised by the parser, but in practice struggles to span the 1–100× range across CL/V/Q/V2/KA from Glorot initialisation. Prefer the multiplicative form."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#auto-generated-parameters",
+    "href": "model-dsl/covariate-nn.html#auto-generated-parameters",
+    "title": "Covariate NN (DCM)",
+    "section": "Auto-generated parameters",
+    "text": "Auto-generated parameters\nFor each block, the parser generates one theta per weight and bias:\n\nW_&lt;NAME&gt;_&lt;l&gt;_&lt;i&gt;_&lt;j&gt; — weight from input unit j (layer l−1) to output unit i (layer l)\nB_&lt;NAME&gt;_&lt;l&gt;_&lt;i&gt; — bias of output unit i in layer l\n\nLayers are 1-indexed (input layer is layer 0, has no weights). For a 2 → 8 → 8 → 5 network: 2·8 + 8 + 8·8 + 8 + 8·5 + 5 = 141 thetas.\nInitial weights use a Glorot-style deterministic scheme seeded by the block NAME, so builds are reproducible without pulling rand into the parser. Weights are unbounded (identity-packed): the optimizer sees them on the natural scale, no log transform. Biases initialise to 0."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#activations",
+    "href": "model-dsl/covariate-nn.html#activations",
+    "title": "Covariate NN (DCM)",
+    "section": "Activations",
+    "text": "Activations\n\n\n\n\n\n\n\n\nValue\nBehavior\nTypical use\n\n\n\n\nidentity\nf(x) = x\nOutput layer when wrapping with a manual positivity head\n\n\nrelu\nf(x) = max(0, x)\nCheap hidden activation, but kinks reduce smoothness for FOCEI\n\n\ntanh\nf(x) = tanh(x)\nRecommended hidden default — smooth, bounded (−1, 1)\n\n\nsigmoid\nf(x) = 1 / (1 + exp(-x))\nBounded (0, 1); useful for F bioavailability outputs\n\n\nsoftplus\nf(x) = ln(1 + exp(x))\nSmooth positive output\n\n\nexp\nf(x) = exp(x)\nRecommended for multiplicative-modulator form — exp(0) = 1 at init\n\n\n\nThe bundled DCM example uses activation = tanh, output = exp."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#optimizer-caveat",
+    "href": "model-dsl/covariate-nn.html#optimizer-caveat",
+    "title": "Covariate NN (DCM)",
+    "section": "Optimizer caveat",
+    "text": "Optimizer caveat\nThe default outer optimizer (SLSQP) currently silently no-ops on mu-ref-active NN models (see ferx-core#55). Use optimizer = lbfgs, either in [fit_options] or via ferx_fit(..., settings = list(optimizer = \"lbfgs\")). The bundled example sets it in the model file."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#runnable-example",
+    "href": "model-dsl/covariate-nn.html#runnable-example",
+    "title": "Covariate NN (DCM)",
+    "section": "Runnable example",
+    "text": "Runnable example\nlibrary(ferx)\nex  &lt;- ferx_example(\"warfarin_dcm\")\nfit &lt;- ferx_fit(ex$model, ex$data)\nprint(fit)\nThis is a 2-cpt oral warfarin model whose typical PK values are modulated by a 2 → 8 → 8 → 5 MLP over WT and CRCL. Compare with ferx_example(\"two_cpt_oral_cov\") for the same data and structure using an analytical covariate model."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#fit-output",
+    "href": "model-dsl/covariate-nn.html#fit-output",
+    "title": "Covariate NN (DCM)",
+    "section": "Fit output",
+    "text": "Fit output\nThe fit object’s theta vector contains the NN weights at indices weights_offset .. weights_offset + n_weights. The corresponding .fitrx archive and {model}-fit.yaml emit a compact summary (shape, activations, weight count, weight-vector statistics) rather than dumping one row per weight."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#whats-not-yet-wired",
+    "href": "model-dsl/covariate-nn.html#whats-not-yet-wired",
+    "title": "Covariate NN (DCM)",
+    "section": "What’s not yet wired",
+    "text": "What’s not yet wired\n\nmethod = nn_mse — Janssen 2022’s original fixed-effects MSE objective. Not implemented; FOCEI is the default and works today.\nAD-aware mu-ref re-centering for NN-anchored etas. Fits work, but the inner-loop AD fast path skips NN-anchored etas — a performance issue, not a correctness issue.\n[dynamics_nn] block for neural-ODE-style RHS terms (Phase B / not shipped)."
+  },
+  {
+    "objectID": "model-dsl/covariate-nn.html#see-also",
+    "href": "model-dsl/covariate-nn.html#see-also",
+    "title": "Covariate NN (DCM)",
+    "section": "See also",
+    "text": "See also\n\nCovariate NN (DCM) — ferx-core book — full reference including fit-output YAML schema\nNeural Networks — landing page\nDCM example — runnable walkthrough"
+  },
+  {
     "objectID": "model-dsl/fit-options.html",
     "href": "model-dsl/fit-options.html",
     "title": "Fit options",
@@ -1589,305 +1890,67 @@
     "text": "See also\n\nLearn: Method chaining & optimizers\nLearn: Robust fitting\nExample: SAEM estimation\nExample: IOV\nBLOQ DSL reference\nIOV DSL reference\nferx-core fit options (full engine reference)"
   },
   {
-    "objectID": "model-dsl/covariate-nn.html",
-    "href": "model-dsl/covariate-nn.html",
-    "title": "Covariate NN (DCM)",
+    "objectID": "model-dsl/covariates.html",
+    "href": "model-dsl/covariates.html",
+    "title": "Covariates ([covariates])",
     "section": "",
-    "text": "The [covariate_nn] block replaces the typical-value covariate model with a small feed-forward neural network. This is the Deep Compartment Model (DCM) approach of Janssen et al. (2022). The compartmental structure downstream is unchanged; etas attach to the final PK parameters, so the inner FOCEI loop runs exactly as it does for an analytical model."
+    "text": "The optional [covariates] block declares which dataset columns are covariates and whether each is continuous or categorical. It is a declaration of availability, not usage — a covariate can be declared without being referenced in [individual_parameters], and vice versa.\nWhen the block is present, ferx validates the declared columns against the data and echoes them into the fit’s covariate table (fit$covtab), enabling downstream covariate-search and summary workflows."
   },
   {
-    "objectID": "model-dsl/covariate-nn.html#availability",
-    "href": "model-dsl/covariate-nn.html#availability",
-    "title": "Covariate NN (DCM)",
-    "section": "Availability",
-    "text": "Availability\n[covariate_nn] is gated behind the nn cargo feature in ferx-core. ferx-r enables this feature by default, so DCM works out of the box when you library(ferx). Users building ferx-core directly need:\ncargo build --release --features nn"
-  },
-  {
-    "objectID": "model-dsl/covariate-nn.html#syntax",
-    "href": "model-dsl/covariate-nn.html#syntax",
-    "title": "Covariate NN (DCM)",
+    "objectID": "model-dsl/covariates.html#syntax",
+    "href": "model-dsl/covariates.html#syntax",
+    "title": "Covariates ([covariates])",
     "section": "Syntax",
-    "text": "Syntax\n[covariate_nn NAME]\n  inputs     = [COV_1, COV_2, ...]\n  outputs    = [PK_PARAM_1, PK_PARAM_2, ...]\n  layers     = [hidden_1, hidden_2, ...]\n  activation = tanh | relu | sigmoid | softplus | exp | identity\n  output     = tanh | relu | sigmoid | softplus | exp | identity   # optional, default `identity`\n\n\n\n\n\n\n\n\nField\nRequired\nMeaning\n\n\n\n\nNAME\nyes\nBlock name; used as the dot-access prefix (NAME.CL) in [individual_parameters]\n\n\ninputs\nyes\nCovariate column names from the NONMEM CSV\n\n\noutputs\nyes\nPK parameter names: cl, v / v1, q / q2, v2, ka, f, q3, v3, lagtime / alag\n\n\nlayers\nyes\nHidden-layer widths, in order; at least one entry required\n\n\nactivation\nyes\nHidden-layer element-wise activation\n\n\noutput\nno\nOutput-layer activation (default identity)\n\n\n\nMultiple [covariate_nn] blocks per model are permitted; they’re keyed by NAME and ordered alphabetically when generating theta names."
+    "text": "Syntax\nTwo forms are accepted and may be mixed:\n[covariates]\n  WT   continuous\n  HT   continuous\n  CRCL continuous\n  SEX  categorical\n  RACE categorical\nOr the terser TYPE: NAME, ... form:\n[covariates]\n  continuous: WT, HT, CRCL\n  categorical: SEX, RACE\nType keywords are case-insensitive (continuous, cont, categorical, cat). Column names are case-sensitive and must match the CSV header exactly."
   },
   {
-    "objectID": "model-dsl/covariate-nn.html#composing-with-etas",
-    "href": "model-dsl/covariate-nn.html#composing-with-etas",
-    "title": "Covariate NN (DCM)",
-    "section": "Composing with etas",
-    "text": "Composing with etas\nThe bundled DCM example uses a multiplicative modulator pattern: baseline thetas carry the absolute scale and the NN learns the covariate-driven deviation from baseline.\n[individual_parameters]\n  CL = TVCL * TYPICAL_PK.CL * exp(ETA_CL)\n  V1 = TVV1 * TYPICAL_PK.V1 * exp(ETA_V1)\n  Q  = TVQ  * TYPICAL_PK.Q  * exp(ETA_Q)\n  V2 = TVV2 * TYPICAL_PK.V2 * exp(ETA_V2)\n  KA = TVKA * TYPICAL_PK.KA * exp(ETA_KA)\nWith output = exp the NN outputs are exactly 1.0 at init (exp(0) = 1), so initial typical values fall back to the declared TVCL / TVV1 / … thetas. The NN then learns the multiplicative covariate effect over training.\nThe simpler “NN replaces typical values entirely” pattern (CL = TYPICAL_PK.CL * exp(ETA_CL) with output = softplus) is syntactically valid and recognised by the parser, but in practice struggles to span the 1–100× range across CL/V/Q/V2/KA from Glorot initialisation. Prefer the multiplicative form."
+    "objectID": "model-dsl/covariates.html#behaviour",
+    "href": "model-dsl/covariates.html#behaviour",
+    "title": "Covariates ([covariates])",
+    "section": "Behaviour",
+    "text": "Behaviour\n\n\n\n\n\n\nSituation\nEffect\n\n\n\nBlock absent\nAll non-standard CSV columns are auto-detected as covariates (backward-compatible)\n\n\nColumn declared, not used in model\nValid — declares type for the covariate table\n\n\nColumn used in model, not declared\nModel still fits; ferx emits a warning recommending declaration\n\n\nColumn declared, absent from data\nHard error: E_MISSING_COVARIATE"
   },
   {
-    "objectID": "model-dsl/covariate-nn.html#auto-generated-parameters",
-    "href": "model-dsl/covariate-nn.html#auto-generated-parameters",
-    "title": "Covariate NN (DCM)",
-    "section": "Auto-generated parameters",
-    "text": "Auto-generated parameters\nFor each block, the parser generates one theta per weight and bias:\n\nW_&lt;NAME&gt;_&lt;l&gt;_&lt;i&gt;_&lt;j&gt; — weight from input unit j (layer l−1) to output unit i (layer l)\nB_&lt;NAME&gt;_&lt;l&gt;_&lt;i&gt; — bias of output unit i in layer l\n\nLayers are 1-indexed (input layer is layer 0, has no weights). For a 2 → 8 → 8 → 5 network: 2·8 + 8 + 8·8 + 8 + 8·5 + 5 = 141 thetas.\nInitial weights use a Glorot-style deterministic scheme seeded by the block NAME, so builds are reproducible without pulling rand into the parser. Weights are unbounded (identity-packed): the optimizer sees them on the natural scale, no log transform. Biases initialise to 0."
+    "objectID": "model-dsl/covariates.html#categorical-covariates-must-be-numerically-coded",
+    "href": "model-dsl/covariates.html#categorical-covariates-must-be-numerically-coded",
+    "title": "Covariates ([covariates])",
+    "section": "Categorical covariates must be numerically coded",
+    "text": "Categorical covariates must be numerically coded\nCovariate values are stored as floating-point numbers, so categorical covariates must be encoded as integer levels in the data (e.g. SEX as 0/1, not \"M\"/\"F\"). When a [covariates] block is present this is enforced — a non-numeric value in a declared covariate is an error (E_COVARIATE_NOT_NUMERIC).\nMissing values (blank, ., NA) are permitted and recorded as missing."
   },
   {
-    "objectID": "model-dsl/covariate-nn.html#activations",
-    "href": "model-dsl/covariate-nn.html#activations",
-    "title": "Covariate NN (DCM)",
-    "section": "Activations",
-    "text": "Activations\n\n\n\n\n\n\n\n\nValue\nBehavior\nTypical use\n\n\n\n\nidentity\nf(x) = x\nOutput layer when wrapping with a manual positivity head\n\n\nrelu\nf(x) = max(0, x)\nCheap hidden activation, but kinks reduce smoothness for FOCEI\n\n\ntanh\nf(x) = tanh(x)\nRecommended hidden default — smooth, bounded (−1, 1)\n\n\nsigmoid\nf(x) = 1 / (1 + exp(-x))\nBounded (0, 1); useful for F bioavailability outputs\n\n\nsoftplus\nf(x) = ln(1 + exp(x))\nSmooth positive output\n\n\nexp\nf(x) = exp(x)\nRecommended for multiplicative-modulator form — exp(0) = 1 at init\n\n\n\nThe bundled DCM example uses activation = tanh, output = exp."
+    "objectID": "model-dsl/covariates.html#the-covariate-table-fitcovtab",
+    "href": "model-dsl/covariates.html#the-covariate-table-fitcovtab",
+    "title": "Covariates ([covariates])",
+    "section": "The covariate table (fit$covtab)",
+    "text": "The covariate table (fit$covtab)\nWhen [covariates] is declared, the fit result carries a covariate table:\nfit$covtab          # data frame with ID, TIME, EVID, &lt;declared covariates&gt;\nfit$covariate_types # named vector: \"continuous\" or \"categorical\" per column\nUnlike fit$sdtab (observation rows only), fit$covtab has one row per input dataset record, including dose and other-event rows. Missing values appear as NA. The CLI writes {model}-covtab.csv alongside {model}-sdtab.csv."
   },
   {
-    "objectID": "model-dsl/covariate-nn.html#optimizer-caveat",
-    "href": "model-dsl/covariate-nn.html#optimizer-caveat",
-    "title": "Covariate NN (DCM)",
-    "section": "Optimizer caveat",
-    "text": "Optimizer caveat\nThe default outer optimizer (SLSQP) currently silently no-ops on mu-ref-active NN models (see ferx-core#55). Use optimizer = lbfgs, either in [fit_options] or via ferx_fit(..., settings = list(optimizer = \"lbfgs\")). The bundled example sets it in the model file."
+    "objectID": "model-dsl/covariates.html#example",
+    "href": "model-dsl/covariates.html#example",
+    "title": "Covariates ([covariates])",
+    "section": "Example",
+    "text": "Example\nThe bundled two_cpt_oral_cov model declares two continuous covariates used for allometric scaling:\n\nlibrary(ferx)\n\nex &lt;- ferx_example(\"two_cpt_oral_cov\")\nferx_model_show(ex$model)\n\n# model: two_cpt_oral_cov.ferx \n# Two-compartment oral PK model with covariates (WT, CRCL)\n\n[parameters]\n  theta TVCL(5.0, 0.1, 100.0)\n  theta TVV1(50.0, 1.0, 500.0)\n  theta TVQ(10.0, 0.1, 100.0)\n  theta TVV2(100.0, 1.0, 500.0)\n  theta TVKA(1.2, 0.01, 10.0)\n  theta THETA_WT(0.75, 0.01, 5.0)\n  theta THETA_CRCL(0.50, 0.01, 5.0)\n\n  omega ETA_CL ~ 0.10\n  omega ETA_V1 ~ 0.10\n  omega ETA_Q  ~ 0.05\n  omega ETA_V2 ~ 0.05\n  omega ETA_KA ~ 0.15\n\n  sigma PROP_ERR ~ 0.02 (sd)\n\n[individual_parameters]\n  CL = TVCL * (WT / 70)^THETA_WT * (CRCL / 100)^THETA_CRCL * exp(ETA_CL)\n  V1 = TVV1 * (WT / 70)^THETA_WT * exp(ETA_V1)\n  Q  = TVQ  * exp(ETA_Q)\n  V2 = TVV2 * exp(ETA_V2)\n  KA = TVKA * exp(ETA_KA)\n\n[structural_model]\n  pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)\n\n# Declare the dataset covariate columns and their type. Optional; when present,\n# declared columns are validated (must exist + be numerically coded) and echoed\n# in the fit's covariate table (`fit$covtab`).\n[covariates]\n  WT   continuous\n  CRCL continuous\n\n[error_model]\n  DV ~ proportional(PROP_ERR)\n\n[fit_options]\n  method     = focei\n  maxiter    = 500\n  covariance = true\n\n\nThe relevant block is:\n[covariates]\n  WT   continuous\n  CRCL continuous\nAfter fitting, inspect the covariate table:\n\nfit &lt;- ferx_fit(ex$model, ex$data, verbose = FALSE)\n\n# One row per dataset record (doses + observations)\nhead(fit$covtab)\n\n# Declared types\nfit$covariate_types"
   },
   {
-    "objectID": "model-dsl/covariate-nn.html#runnable-example",
-    "href": "model-dsl/covariate-nn.html#runnable-example",
-    "title": "Covariate NN (DCM)",
-    "section": "Runnable example",
-    "text": "Runnable example\nlibrary(ferx)\nex  &lt;- ferx_example(\"warfarin_dcm\")\nfit &lt;- ferx_fit(ex$model, ex$data)\nprint(fit)\nThis is a 2-cpt oral warfarin model whose typical PK values are modulated by a 2 → 8 → 8 → 5 MLP over WT and CRCL. Compare with ferx_example(\"two_cpt_oral_cov\") for the same data and structure using an analytical covariate model."
+    "objectID": "model-dsl/covariates.html#checking-dataset-columns-with-ferx_columns",
+    "href": "model-dsl/covariates.html#checking-dataset-columns-with-ferx_columns",
+    "title": "Covariates ([covariates])",
+    "section": "Checking dataset columns with ferx_columns()\n",
+    "text": "Checking dataset columns with ferx_columns()\n\nBefore writing a model, inspect the CSV header to confirm column names:\n\nferx_columns(ex)         # pass the ferx_example() list directly\n\nData file: /home/runner/work/_temp/Library/ferx/examples/data/two_cpt_oral_cov.csv\n10 columns\n\n Required NONMEM:      [1] ID  [2] TIME  [3] DV  [4] EVID  [5] AMT  [6] CMT\n Optional NONMEM:      [7] RATE  [8] MDV\n Covariates / other:   [9] WT  [10] CRCL\n\nferx_columns(ex$data)    # or pass the CSV path\n\nData file: /home/runner/work/_temp/Library/ferx/examples/data/two_cpt_oral_cov.csv\n10 columns\n\n Required NONMEM:      [1] ID  [2] TIME  [3] DV  [4] EVID  [5] AMT  [6] CMT\n Optional NONMEM:      [7] RATE  [8] MDV\n Covariates / other:   [9] WT  [10] CRCL\n\n\nUse the column names exactly (case-sensitive) in the [covariates] block."
   },
   {
-    "objectID": "model-dsl/covariate-nn.html#fit-output",
-    "href": "model-dsl/covariate-nn.html#fit-output",
-    "title": "Covariate NN (DCM)",
-    "section": "Fit output",
-    "text": "Fit output\nThe fit object’s theta vector contains the NN weights at indices weights_offset .. weights_offset + n_weights. The corresponding .fitrx archive and {model}-fit.yaml emit a compact summary (shape, activations, weight count, weight-vector statistics) rather than dumping one row per weight."
+    "objectID": "model-dsl/covariates.html#why-declare-covariates-explicitly",
+    "href": "model-dsl/covariates.html#why-declare-covariates-explicitly",
+    "title": "Covariates ([covariates])",
+    "section": "Why declare covariates explicitly?",
+    "text": "Why declare covariates explicitly?\nWithout [covariates], every non-standard column is auto-detected, which means:\n\nType (continuous vs. categorical) is unknown, so covariate-search tools that need to know how to scale a covariate cannot proceed automatically.\nNon-covariate administrative columns (STUDY, DATE, SITE) also appear in the covariate table, polluting downstream summaries.\nA typo in [individual_parameters] (wrong covariate name) silently evaluates to zero rather than raising an error.\n\nDeclaring [covariates] explicitly gives validation, clean typing, and a focused covariate table for downstream use."
   },
   {
-    "objectID": "model-dsl/covariate-nn.html#whats-not-yet-wired",
-    "href": "model-dsl/covariate-nn.html#whats-not-yet-wired",
-    "title": "Covariate NN (DCM)",
-    "section": "What’s not yet wired",
-    "text": "What’s not yet wired\n\nmethod = nn_mse — Janssen 2022’s original fixed-effects MSE objective. Not implemented; FOCEI is the default and works today.\nAD-aware mu-ref re-centering for NN-anchored etas. Fits work, but the inner-loop AD fast path skips NN-anchored etas — a performance issue, not a correctness issue.\n[dynamics_nn] block for neural-ODE-style RHS terms (Phase B / not shipped)."
-  },
-  {
-    "objectID": "model-dsl/covariate-nn.html#see-also",
-    "href": "model-dsl/covariate-nn.html#see-also",
-    "title": "Covariate NN (DCM)",
+    "objectID": "model-dsl/covariates.html#see-also",
+    "href": "model-dsl/covariates.html#see-also",
+    "title": "Covariates ([covariates])",
     "section": "See also",
-    "text": "See also\n\nCovariate NN (DCM) — ferx-core book — full reference including fit-output YAML schema\nNeural Networks — landing page\nDCM example — runnable walkthrough"
-  },
-  {
-    "objectID": "faq.html",
-    "href": "faq.html",
-    "title": "FAQ",
-    "section": "",
-    "text": "Do I need to write explicit MU-referencing like in NONMEM or nlmixr2?\nNo. You do not need to write an explicit MU_i intermediate variable. ferx detects the same structure automatically from the right-hand side of each [individual_parameters] line.\nIn NONMEM and nlmixr2, MU-referencing is required in SAEM because the conjugate-Gibbs E-step is only valid when the ETA→THETA relationship is strictly linear on a transformed scale. In ferx, you simply write the individual-parameter expression naturally:\nCL = TVCL * exp(ETA_CL)              # detected: multiplicative / log-normal\nCL = exp(log(TVCL) + ETA_CL)         # detected: canonical MU form\nCL = TVCL * (WT/70)^0.75 * exp(ETA_CL)  # detected: with covariate\nCL = TVCL + ETA_CL                   # detected: additive\nThe parser records the ETA→THETA mapping and re-centres the inner-loop ETA search at each outer iteration.\nPatterns not auto-detected (falls back to eta = 0 start):\n\nTwo or more free thetas in the product (TVCL * TVSCALE * exp(ETA_CL)) — ambiguous anchor\nCompound eta expressions inside exp (exp(ETA_CL + ETA_OCC))\n\nMu-referencing affects convergence speed and robustness, not the final MLE. Disable with mu_referencing = false in [fit_options] to reproduce pre-automatic behaviour."
-  },
-  {
-    "objectID": "faq.html#mu-referencing",
-    "href": "faq.html#mu-referencing",
-    "title": "FAQ",
-    "section": "",
-    "text": "Do I need to write explicit MU-referencing like in NONMEM or nlmixr2?\nNo. You do not need to write an explicit MU_i intermediate variable. ferx detects the same structure automatically from the right-hand side of each [individual_parameters] line.\nIn NONMEM and nlmixr2, MU-referencing is required in SAEM because the conjugate-Gibbs E-step is only valid when the ETA→THETA relationship is strictly linear on a transformed scale. In ferx, you simply write the individual-parameter expression naturally:\nCL = TVCL * exp(ETA_CL)              # detected: multiplicative / log-normal\nCL = exp(log(TVCL) + ETA_CL)         # detected: canonical MU form\nCL = TVCL * (WT/70)^0.75 * exp(ETA_CL)  # detected: with covariate\nCL = TVCL + ETA_CL                   # detected: additive\nThe parser records the ETA→THETA mapping and re-centres the inner-loop ETA search at each outer iteration.\nPatterns not auto-detected (falls back to eta = 0 start):\n\nTwo or more free thetas in the product (TVCL * TVSCALE * exp(ETA_CL)) — ambiguous anchor\nCompound eta expressions inside exp (exp(ETA_CL + ETA_OCC))\n\nMu-referencing affects convergence speed and robustness, not the final MLE. Disable with mu_referencing = false in [fit_options] to reproduce pre-automatic behaviour."
-  },
-  {
-    "objectID": "faq.html#conditional-logic",
-    "href": "faq.html#conditional-logic",
-    "title": "FAQ",
-    "section": "Conditional logic",
-    "text": "Conditional logic\nCan I use if / else statements like in NONMEM or nlmixr2?\nYes. Two forms are supported in [individual_parameters] and [odes]:\n# Block form\nif (WT &gt; 70) {\n  CL = TVCL * (WT / 70)^0.75 * exp(ETA_CL)\n} else if (SEX == 1) {\n  CL = TVCL * 1.2 * exp(ETA_CL)\n} else {\n  CL = TVCL * exp(ETA_CL)\n}\n\n# Inline (ternary) form\nCL = if (SEX == 1) TVCL * 1.5 else TVCL\nCompared to NONMEM: C-style {braces} and operators (&gt;, ==, &&) rather than Fortran-style IF THEN … ENDIF and .GT., .LE., etc.\nCompared to nlmixr2: near-verbatim match — replace &lt;- with =.\nCaveat: == and != do bitwise float comparison. They work for integer-coded covariates (SEX == 1) but are unreliable for continuous thresholds. Prefer WT &gt;= 70 && WT &lt; 80 over WT == 75.\nCaveat: when a parameter is assigned inside an if block, mu-reference detection is skipped for that parameter. See Individual Parameters."
-  },
-  {
-    "objectID": "faq.html#optimizer",
-    "href": "faq.html#optimizer",
-    "title": "FAQ",
-    "section": "Optimizer selection",
-    "text": "Optimizer selection\nWhich outer optimizer should I pick?\nbobyqa (the default) is the right choice for most models — derivative-free, robust on rough OFV surfaces, and requires no gradient from the outer loop.\nReach for a different optimizer when BOBYQA is too slow or stalls:\n\nslsqp — gradient-based NLopt SLSQP; faster per iteration on smooth, well-conditioned problems. Use with reconverge_gradient_interval = 1 on difficult surfaces.\ntrust_region — second-order Newton trust-region with BHHH Hessian. Can be faster near convergence. Override the CG budget with steihaug_max_iters if needed.\nlbfgs / bfgs — quasi-Newton; useful for moderate-sized parameter spaces.\n\nSee Fit Options — Optimizer choices."
-  },
-  {
-    "objectID": "faq.html#block-omega",
-    "href": "faq.html#block-omega",
-    "title": "FAQ",
-    "section": "Block omega",
-    "text": "Block omega\nHow do I switch from diagonal to block omega?\nEach omega variance becomes a diagonal entry; off-diagonals start at 0.0:\n# Before\nomega ETA_CL ~ 0.1\nomega ETA_V1 ~ 0.1\nomega ETA_Q  ~ 0.1\n\n# After (3×3 block, 6 values: 1+2+3)\nblock_omega (ETA_CL, ETA_V1, ETA_Q) = [\n  0.1,\n  0.0, 0.1,\n  0.0, 0.0, 0.1\n]\nBlock omega regularises poorly-identified parameters by letting them share variability. Starting all off-diagonals at 0.0 lets the fit recover the correlations from the data. See Parameters — Block omega."
-  },
-  {
-    "objectID": "faq.html#sigma-scale",
-    "href": "faq.html#sigma-scale",
-    "title": "FAQ",
-    "section": "Sigma scale",
-    "text": "Sigma scale\nIs sigma estimated on the SD scale or the variance scale?\nSD scale. sigma PROP_ERR ~ 0.1 for a proportional model is a 10% CV initial value.\nThe fit YAML emits both estimate (SD) and variance (SD²). For proportional components it also emits cv_pct = estimate * 100. See Error Model — Sigma scale."
-  },
-  {
-    "objectID": "faq.html#focei-vs-foce",
-    "href": "faq.html#focei-vs-foce",
-    "title": "FAQ",
-    "section": "FOCEI vs FOCE",
-    "text": "FOCEI vs FOCE\nWhen should I use FOCEI instead of FOCE?\nUse FOCEI (default) whenever the error model is proportional or combined. FOCE evaluates the residual variance at η = 0 (population mean); FOCEI evaluates it at the individual EBE η̂, capturing the dependence between residual error and individual predictions.\nFor a purely additive error model, FOCE and FOCEI are equivalent (the interaction term is zero). Using FOCE for additive-error models can save a small amount of computation."
-  },
-  {
-    "objectID": "faq.html#ode-vs-analytical",
-    "href": "faq.html#ode-vs-analytical",
-    "title": "FAQ",
-    "section": "ODE vs analytical",
-    "text": "ODE vs analytical\nWhen must I use an ODE model?\nUse an ODE model when the kinetics cannot be expressed as a sum of exponentials:\n\nSaturable (Michaelis-Menten) elimination\nTarget-mediated drug disposition (TMDD)\nTransit compartment absorption\nCustom multi-compartment structures\n\nFor standard first-order kinetics use the analytical models (one_cpt_oral, two_cpt_oral, etc.) — they are 10–100× faster and support Enzyme autodiff gradients. See ODE Models."
-  },
-  {
-    "objectID": "faq.html#porting-nonmem",
-    "href": "faq.html#porting-nonmem",
-    "title": "FAQ",
-    "section": "Porting from NONMEM",
-    "text": "Porting from NONMEM\nHow do I port a NONMEM model to ferx?\n\nDrop all $ABBR, $MU_i, $SIZE boilerplate — not needed in ferx.\nTranslate $PK assignments to [individual_parameters] expressions with = instead of =.\nReplace THETA(i), ETA(i), EPS(i) with descriptive names (TVCL, ETA_CL, PROP_ERR).\nIf the NONMEM model uses explicit MU_i = LOG(THETA(i)) lines, drop them — ferx detects the mu-reference automatically.\nMap $SUBROUTINE ADVAN to the equivalent ferx pk function:\n\nADVAN1 → one_cpt_iv_bolus\nADVAN2 → one_cpt_oral\nADVAN3 → two_cpt_iv_bolus\nADVAN4 → two_cpt_oral\nADVAN11 → three_cpt_iv_bolus\nADVAN12 → three_cpt_oral\n\nMap $ERROR to [error_model]. Remember sigma is on the SD scale in ferx (not variance)."
-  },
-  {
-    "objectID": "faq.html#gradient-methods",
-    "href": "faq.html#gradient-methods",
-    "title": "FAQ",
-    "section": "Gradient methods",
-    "text": "Gradient methods\nWhen does Enzyme autodiff kick in, and when does ferx fall back to finite differences?\nThe gradient path is resolved per-subject at runtime:\n\n\n\n\n\n\n\nPath\nWhen used\n\n\n\n\nAdSingleSnapshot (Enzyme reverse-mode)\nSubject has no time-varying covariates; analytical PK model\n\n\nAdEventDriven (Enzyme reverse-mode, event-driven)\nSubject has TV covariates; 1- or 2-cpt analytical model\n\n\nFd (central finite differences)\nFERX_NO_AUTODIFF=1 build, ODE model, or TV-cov on 3-cpt model\n\n\n\nfit$gradient_used (in R) shows which path was resolved. See the ferx-core book for details."
-  },
-  {
-    "objectID": "get-started.html",
-    "href": "get-started.html",
-    "title": "Get started",
-    "section": "",
-    "text": "ferx has two builds. They produce the same parameter estimates — they differ in how gradients are computed and how fast fits run.\n\n\n\nBuild\nGradients\nCompile time\nFit speed\nWhen to use\n\n\n\n\nSimple (default)\nFinite differences\n~2 min\nBaseline\nTrying ferx out, Windows-native, no Rust nightly\n\n\nFull (Enzyme autodiff)\nExact via Enzyme\n~45–60 min one-time toolchain build\nFaster, more accurate Hessians\nProduction fits, large models, SIR / uncertainty quantification\n\n\n\nYou can start with the simple build and upgrade later — the R API is identical.\nFor a deeper walkthrough of either path, see the installation chapter of the ferx-r book.\n\n\nAlmost nothing is disabled — the simple build falls back to finite-difference (FD) gradients everywhere autodiff would be used:\n\n\n\n\n\n\n\nFeature\nSimple build\n\n\n\n\nferx_simulate(), ferx_predict()\nIdentical — no gradients used\n\n\nODE / SDE / EKF models\nIdentical — these always use FD, even in the full build\n\n\nSAEM\nIdentical — derivative-free E-step\n\n\nPopulation (outer-loop) optimizer\nIdentical — always FD in both builds\n\n\nFOCE / FOCEI inner loop with analytical 1-/2-cpt PK\nSlower — FD instead of Enzyme reverse-mode AD (≈ 2 × n_eta extra gradient calls per iteration); results match\n\n\nHessian-based standard errors\nSlightly less accurate (FD Hessian)\n\n\n\nIf you mostly fit ODE models or use SAEM, the full build buys you nothing. The full build’s main win is faster FOCEI on analytical-PK models and crisper SEs for SIR / uncertainty quantification work. Tracked in ferx-r#46."
-  },
-  {
-    "objectID": "get-started.html#two-install-paths",
-    "href": "get-started.html#two-install-paths",
-    "title": "Get started",
-    "section": "",
-    "text": "ferx has two builds. They produce the same parameter estimates — they differ in how gradients are computed and how fast fits run.\n\n\n\nBuild\nGradients\nCompile time\nFit speed\nWhen to use\n\n\n\n\nSimple (default)\nFinite differences\n~2 min\nBaseline\nTrying ferx out, Windows-native, no Rust nightly\n\n\nFull (Enzyme autodiff)\nExact via Enzyme\n~45–60 min one-time toolchain build\nFaster, more accurate Hessians\nProduction fits, large models, SIR / uncertainty quantification\n\n\n\nYou can start with the simple build and upgrade later — the R API is identical.\nFor a deeper walkthrough of either path, see the installation chapter of the ferx-r book.\n\n\nAlmost nothing is disabled — the simple build falls back to finite-difference (FD) gradients everywhere autodiff would be used:\n\n\n\n\n\n\n\nFeature\nSimple build\n\n\n\n\nferx_simulate(), ferx_predict()\nIdentical — no gradients used\n\n\nODE / SDE / EKF models\nIdentical — these always use FD, even in the full build\n\n\nSAEM\nIdentical — derivative-free E-step\n\n\nPopulation (outer-loop) optimizer\nIdentical — always FD in both builds\n\n\nFOCE / FOCEI inner loop with analytical 1-/2-cpt PK\nSlower — FD instead of Enzyme reverse-mode AD (≈ 2 × n_eta extra gradient calls per iteration); results match\n\n\nHessian-based standard errors\nSlightly less accurate (FD Hessian)\n\n\n\nIf you mostly fit ODE models or use SAEM, the full build buys you nothing. The full build’s main win is faster FOCEI on analytical-PK models and crisper SEs for SIR / uncertainty quantification work. Tracked in ferx-r#46."
-  },
-  {
-    "objectID": "get-started.html#pick-a-version",
-    "href": "get-started.html#pick-a-version",
-    "title": "Get started",
-    "section": "Pick a version",
-    "text": "Pick a version\nThe install snippets below default to main (development). For reproducible work, pin to the latest tagged release — currently v0.1.5:\n# Latest release (recommended for new users / reproducible work)\npak::pak(\"FeRx-NLME/ferx-r@v0.1.5\")\n\n# Latest development version (tracks main; picks up new features and fixes)\npak::pak(\"FeRx-NLME/ferx-r\")\n@v0.1.5 works with remotes::install_github() and devtools::install_github() too. See the ferx-r releases page for what each release ships and a link to the matching ferx-core engine release."
-  },
-  {
-    "objectID": "get-started.html#simple-build",
-    "href": "get-started.html#simple-build",
-    "title": "Get started",
-    "section": "Simple build",
-    "text": "Simple build\nThe simple build skips the Enzyme toolchain entirely. It works on plain stable Rust and falls back to finite-difference gradients. Estimates match the full build; fits are somewhat slower and standard errors from the FD Hessian are slightly less accurate.\nPrerequisites: R ≥ 4.2, cmake, and Rust stable (via rustup).\n\nmacOS\nbrew install cmake\ncurl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh\nRStudio on macOS does not inherit the Homebrew PATH. Add cmake explicitly before installing:\n# Apple Silicon (M1/M2/M3):\nSys.setenv(PATH = paste(\"/opt/homebrew/opt/cmake/bin\", Sys.getenv(\"PATH\"), sep = \":\"))\n# Intel Mac:\n# Sys.setenv(PATH = paste(\"/usr/local/opt/cmake/bin\", Sys.getenv(\"PATH\"), sep = \":\"))\n\nSys.setenv(FERX_NO_AUTODIFF = \"1\")\npak::pak(\"FeRx-NLME/ferx-r\")\n\n\nWindows\nInstall Rtools44 and Rust via rustup (cmake ships with Rtools44), then in R:\nSys.setenv(FERX_NO_AUTODIFF = \"1\")\npak::pak(\"FeRx-NLME/ferx-r\")\n\n\nLinux\nsudo apt-get install cmake   # Debian / Ubuntu\ncurl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh\nSys.setenv(FERX_NO_AUTODIFF = \"1\")\npak::pak(\"FeRx-NLME/ferx-r\")\nThe FERX_NO_AUTODIFF=1 flag tells the package build to skip the Enzyme probe and go straight to the stable, finite-difference path."
-  },
-  {
-    "objectID": "get-started.html#full-build-enzyme-autodiff",
-    "href": "get-started.html#full-build-enzyme-autodiff",
-    "title": "Get started",
-    "section": "Full build (Enzyme autodiff)",
-    "text": "Full build (Enzyme autodiff)\nThe full build uses Enzyme to compute exact gradients via automatic differentiation. This requires building a custom rustc from source with Enzyme integrated into its own LLVM — a one-time ~45–60 min setup that needs ~30 GB of free disk.\n\n\n\n\n\n\nImportant\n\n\n\nDo not build a standalone Enzyme plugin against a separately-installed LLVM and copy it into a prebuilt nightly’s sysroot. That setup looks like it works but causes Enzyme to hang silently in llvm::Constant::getNullValue the first time it actually differentiates anything. The full toolchain must be built from a single rust-lang/rust source tree with --enable-llvm-enzyme and --set llvm.download-ci-llvm=false. See the warning at the top of the ferx-core installation page.\n\n\n\n1. Build the Enzyme toolchain\nFollow the platform steps in the ferx-core book:\n\nLinux\nmacOS (Intel and Apple Silicon)\nWindows — not supported; use WSL2 or Docker\n\nThen verify the toolchain with a real #[autodiff_forward] test — the usual E0601 check is not sufficient and passes for broken toolchains.\nFor shared servers, see multi-user installs.\n\n\n2. Install the R package\nOnce rustc +enzyme is verified working:\npak::pak(\"FeRx-NLME/ferx-r\")\nThe package’s src/Makevars auto-detects the enzyme toolchain and builds the autodiff path. To confirm afterwards:\nferx:::ferx_rust_autodiff_enabled()\n# [1] TRUE\nTo force one path or the other, set before installing:\n\nFERX_NO_AUTODIFF=1 — force the simple build even if Enzyme is installed\nFERX_NO_AUTODIFF=0 — force the full build, erroring out if Enzyme isn’t found"
-  },
-  {
-    "objectID": "get-started.html#docker-full-autodiff-no-local-toolchain",
-    "href": "get-started.html#docker-full-autodiff-no-local-toolchain",
-    "title": "Get started",
-    "section": "Docker (full autodiff, no local toolchain)",
-    "text": "Docker (full autodiff, no local toolchain)\nThe ferx-r Docker image ships the Enzyme toolchain prebuilt — the fastest way to get a working full-autodiff setup, especially on Windows.\ndocker build -t ferx:latest https://github.com/FeRx-NLME/ferx-r.git#main\ndocker run --rm -p 8787:8787 -e PASSWORD=ferx ferx:latest\nOpen http://localhost:8787 — user: rstudio, password: ferx."
-  },
-  {
-    "objectID": "get-started.html#first-fit",
-    "href": "get-started.html#first-fit",
-    "title": "Get started",
-    "section": "First fit",
-    "text": "First fit\nAfter either install, run the bundled warfarin example:\nlibrary(ferx)\nex  &lt;- ferx_example(\"warfarin\")\nfit &lt;- ferx_fit(ex$model, ex$data)\nprint(fit)\nsummary(fit)\nList all bundled examples:\nferx_example()   # character vector of available example names\n?ferx_example    # full list with descriptions"
-  },
-  {
-    "objectID": "get-started.html#next-steps",
-    "href": "get-started.html#next-steps",
-    "title": "Get started",
-    "section": "Next steps",
-    "text": "Next steps\n\nferx-r — narrative guide to the R package with runnable examples\nferx-core — mdBook for the Rust engine, CLI, and .ferx DSL spec\nModel workflow — full fitting workflow\nModel DSL — write your own .ferx model files\nReference — function documentation\nferx-core installation — full toolchain detail and troubleshooting"
-  },
-  {
-    "objectID": "model-dsl/derived.html",
-    "href": "model-dsl/derived.html",
-    "title": "Derived columns and output",
-    "section": "",
-    "text": "The optional [derived] and [output] blocks extend the sdtab with extra columns computed after the fit. Use them to add NCA-style summaries, PD metrics, unit-converted readouts, or any expression the optimiser does not need to see."
-  },
-  {
-    "objectID": "model-dsl/derived.html#derived-computed-columns",
-    "href": "model-dsl/derived.html#derived-computed-columns",
-    "title": "Derived columns and output",
-    "section": "[derived] — computed columns",
-    "text": "[derived] — computed columns\nEach line in [derived] has the form name = expression. The name becomes a new sdtab column; the expression is evaluated for every observation row.\n[derived]\n  KE     = CL / V\n  T_HALF = 0.6931472 / KE\n  CMAX   = max(IPRED)\n  AUC_24 = integral(IPRED, from=0, to=24)\n\nAvailable variables\n\n\n\n\n\n\n\nName\nValue\n\n\n\n\nIndividual-parameter names (CL, V, …)\nEBE-derived value for the subject\n\n\nTheta names (TVCL, TVV, …)\nFinal population estimate\n\n\nEta names (ETA_CL, …)\nSubject EBE\n\n\nCovariate names (WT, AGE, …)\nSubject covariate (constant per row)\n\n\nIPRED\nIndividual prediction at the row’s time\n\n\nDV\nObserved value\n\n\nTAFD\nTime after first dose\n\n\nTAD\nTime after most recent dose\n\n\nTIME\nNominal time\n\n\nMACHEPS\nMachine epsilon (≈ 2.22 × 10⁻¹⁶)\n\n\n\n\n\nOperators and functions\nStandard arithmetic (+, -, *, /), comparison (&lt;, &gt;, &lt;=, &gt;=, ==, !=), logical (&&, ||, !), mod for modulo, ^ for power.\n\n\n\n\n\n\n\nFunction\nDescription\n\n\n\n\nexp(x), log(x), sqrt(x), abs(x)\nStandard math\n\n\nfloor(x), ceil(x), round(x)\nRounding\n\n\nmax(expr)\nSubject-level maximum\n\n\nmin(expr)\nSubject-level minimum\n\n\ntmax(expr)\nTime at which expr is maximum\n\n\nintegral(expr, from=t0, to=t1)\nTrapezoidal AUC\n\n\nintegral(expr, from=t0, to=t1, step=dt)\nGrid-based AUC (IPRED only)\n\n\nintegral(expr, window=W, anchor=A, step=dt)\nPeriodic AUC\n\n\nintegral(1.0, condition, window=W, anchor=A, step=dt)\nTime-above-threshold\n\n\n\n\n\n\nComputation kinds\n\nPer-row (default)\nThe expression is evaluated independently at each observation row.\nKE     = CL / V\nT_HALF = 0.6931472 / KE\nDAY    = floor(TAFD / 24) + 1\nKE and T_HALF are constant per subject (they depend only on EBE parameters), but they still appear on every row. DAY varies across rows.\n\n\nAggregate\nmax(expr), min(expr), or tmax(expr) produce a single value per subject broadcast to all rows. An optional filter is the second argument:\nCMAX      = max(IPRED)\nTMAX      = tmax(IPRED)\nCTROUGH   = min(IPRED, TAD &lt; 1e-10)    # trough at dose time\nCMAX_D1   = max(IPRED, TAFD &lt; 24)      # day-1 peak\nCMAX_D14  = max(IPRED, TAFD &gt;= 312 && TAFD &lt; 336)\n\n\n\n\n\n\nNote\n\n\n\n1e-10 for troughs. TAD == 0 is mathematically true at dose rows, but floating-point residuals from modular arithmetic can produce TAD = 1e-13 instead of 0. The guard TAD &lt; 1e-10 is the standard idiom to reliably capture the trough without false positives.\n\n\nIf no row passes the filter the result is NaN.\n\n\nIntegral\nintegral(expr, from=t0, to=t1) computes the area under expr over [t0, t1) using the trapezoidal rule at observation times.\nAdd step=dt to force evaluation on a uniform grid — useful when the observation design is sparse or when computing time-above-threshold:\nAUC_24     = integral(IPRED, from=0, to=24)\nAUC_GRID   = integral(IPRED, from=0, to=24, step=0.5)\nAUC_DV_24  = integral(DV,    from=0, to=24)           # observation times only\nwindow=W, anchor=A yields a periodic AUC: one value per W-unit window, starting at A:\nAUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)\nTime-above-threshold. Use integral(1.0, condition, ...) to measure hours above a threshold. Always include step= here — without it, only observation time points are evaluated and sparse sampling can miss brief threshold crossings:\nTAM_TAU = integral(1.0, IPRED &gt; MEC, window=24, anchor=0, step=0.1)\n\n\n\n\nAUC calculations — recipe guide\nAll four common NCA-style AUC forms are supported. Choose by what you want to integrate and over which time window.\n\nFixed window — AUC from t₀ to t₁\nTrapezoidal rule at observation time points. Fast and exact when sampling is dense:\n[derived]\n  AUC_24  = integral(IPRED, from=0,  to=24)\n  AUC_72  = integral(IPRED, from=0,  to=72)\n  AUC_INF = integral(IPRED, from=0,  to=168)\n\n\nFixed window with fine grid — for sparse or uneven sampling\nForces a uniform evaluation grid so the trapezoid covers gaps between observation times. Use step in the same time units as TIME:\n[derived]\n  AUC_72_grid = integral(IPRED, from=0, to=72, step=0.5)\nA smaller step is more accurate but slower at render time. step=0.1–0.5 is usually sufficient for PK profiles.\n\n\nPeriodic AUC — one value per dosing interval\nwindow=W, anchor=A aligns the integration windows to the dosing schedule. Each observation row gets the AUC for its current W-unit window:\n[derived]\n  AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)\nThe window starting at anchor + n * window for integer n is chosen for each observation based on its TIME. For q24h dosing starting at TIME=0, anchor=0, window=24 gives one AUC value per day.\n\n\nNCA AUC from observed values\nintegral(DV, ...) uses observed DV values at the actual observation times — no IPRED interpolation. The step= argument is ignored for DV integrals:\n[derived]\n  AUC_DV_72 = integral(DV, from=0, to=72)\n\n\nTime-above-threshold (TAT)\nintegral(1.0, condition, ...) counts time units where the condition is true. Always add step= — without it only observation time points are evaluated, and sparse sampling misses crossings between samples:\n[derived]\n  TAT_0_5   = integral(1.0, IPRED &gt; 0.5,  from=0, to=72,   step=0.1)\n  TAT_MEC   = integral(1.0, IPRED &gt; MEC,  window=24, anchor=0, step=0.1)\n\n\nPartial AUC — subset of subjects or time points\nCombine a fixed window with an aggregate filter to scope the integral:\n[derived]\n  AUC_D1    = integral(IPRED, from=0,  to=24)\n  AUC_SS    = integral(IPRED, from=312, to=336)   # day 14 at steady state\n\n\n\n\nODE models\n[derived] works identically whether the structural model is an analytical PK shortcut or an ODE system. The same expression language, the same time variables, and the same integral forms are available in both cases.\n\nTIME, TAFD, TAD in ODE-based fits\nAll three time variables have the same steady-state-aware semantics in both [odes] and [derived]:\n\n\n\n\n\n\n\n\nVariable\nResets at\nTypical use\n\n\n\n\nTIME\nNever\nAbsolute-clock conditions (TIME &lt; 24 for day-1 only)\n\n\nTAFD\nFirst dose\nDay-number, study-elapsed conditions\n\n\nTAD\nEvery dose\nTrough detection, within-interval AUC/TAT\n\n\n\nAll four names TIME, T, TAFD, and TAD are injected into every ODE RHS evaluation at each solver step — not just at observation times.\n\n\nAUC and time-above-threshold as ODE accumulator states\nInside [odes] you can add extra states whose derivative accumulates AUC, time above threshold, or any other running integral. Use an inline if-expression to restrict when the integrand fires:\n[structural_model]\n  ode(obs_cmt=central, states=[depot, central, AUC_D1, TAM_INT])\n\n[odes]\n  d/dt(depot)   = -KA * depot\n  d/dt(central) =  KA * depot - CL / V * central\n\n  # Accumulate day-1 AUC: integrand is central/V only while TIME &lt; 24\n  d/dt(AUC_D1)  = if (TIME &lt; 24) central / V else 0.0\n\n  # Accumulate time above 0.5 mg/L within the current dosing interval\n  # TAD resets at each dose, so this gives a per-interval running total\n  d/dt(TAM_INT) = if (central / V &gt; 0.5 && TAD &lt; 24) 1.0 else 0.0\nif syntax in [odes] — the inline form is if (condition) value else value. The block form if (cond) { ... } else { ... } is also accepted when multiple states need to branch together. Conditions support &&, ||, !, and all comparison operators.\nThe ODE solver evaluates the RHS at every adaptive step, so the accumulator is exact (no grid approximation). This makes the ODE approach well-suited for:\n\nConditional integration over arbitrary time windows (day 1, last interval, windows defined by TIME, TAFD, or TAD)\nAny accumulated quantity that feeds back into the ODE dynamics — for example, cumulative drug exposure driving tolerance, or receptor occupancy accumulating and reducing the remaining free receptor\n\n\n\nReporting ODE accumulator values\nThe ODE state vector is not automatically written to sdtab. To report accumulated values in fit$sdtab for post-fit analysis, choose one of:\nOption A — [derived] integral(): re-computes the integral from the predicted curve after the fit. Does not require an extra ODE state and appears in sdtab. Works for the vast majority of AUC/TAT use cases:\n[derived]\n  AUC_72  = integral(IPRED, from=0, to=72, step=0.2)\n  TAT_24  = integral(1.0, IPRED &gt; 0.5, from=0, to=24, step=0.1)\nOption B — observe the accumulator directly: set obs_cmt to the accumulator state. The accumulator value at each observation time then becomes IPRED. This is only practical when AUC (not concentration) is the modelled endpoint.\nFor feedback-driven dynamics where AUC_D1 or TAM_INT feeds into another ODE equation, the accumulator must stay in [odes]; pair it with [derived] integral() if you also want the value in sdtab.\n\n\n\n\n\n\nNote\n\n\n\nFor a full worked example of TIME, TAFD, TAD, and ODE accumulators alongside [derived] see Example: ODE with TIME, TAFD, and TAD.\n\n\n\n\n\n\nSequential scoping\nA derived column may reference earlier columns in the same block. Forward references are not allowed.\n[derived]\n  KE   = CL / V\n  T_HALF = 0.6931472 / KE    # ok — KE defined above\n  # CL2 = KE * V             # would be fine\n  # BAD = FUTURE + 1   # FUTURE not defined yet → parse error\n\n\nNaming rules\nA [derived] name must not clash with the mandatory sdtab columns (ID, TIME, DV, IPRED, CWRES, IWRES, ETA1, ETA2, …, TAFD, TAD) or with any theta, eta, or individual-parameter name. Shadowing a covariate name is allowed but emits a warning."
-  },
-  {
-    "objectID": "model-dsl/derived.html#output-echo-individual-parameters-and-covariates",
-    "href": "model-dsl/derived.html#output-echo-individual-parameters-and-covariates",
-    "title": "Derived columns and output",
-    "section": "[output] — echo individual parameters and covariates",
-    "text": "[output] — echo individual parameters and covariates\nThe [output] block lists extra columns to write to sdtab beyond the mandatory minimum. Each entry is a bare name:\n[output]\n  CL V KA WT\n\n\n\nCan list\nExample\n\n\n\n\nCovariates\nWT, AGE, SEX\n\n\nIndividual parameters\nCL, V, KA\n\n\nNames already in [derived]\nredundant but harmless\n\n\nEta names\nalready in mandatory minimum; emits a warning\n\n\n\n\nMandatory sdtab minimum (always present)\nID, TIME, DV, CENS, OCC, CMT, PRED, IPRED, CWRES, IWRES, EBE_OFV, N_OBS, TAFD, TAD\n\n\n\n\n\n\nTip\n\n\n\n[derived] vs [output]. Names in [derived] are automatically in sdtab. Use [output] only for individual parameters and covariates that [derived] does not already compute.\n\n\n\n\nExample — what [output] adds to sdtab\nWithout [output], individual parameters like CL, V, and KA are used during estimation but do not appear in fit$sdtab. With [output] they are echoed as extra columns:\n# Without [output]: sdtab has IPRED, PRED, residuals — no CL/V/KA\n[structural_model]\n  pk one_cpt_oral(cl=CL, v=V, ka=KA)\n\n# With [output]: CL, V, KA are appended to every row in fit$sdtab\n[output]\n  CL V KA\nIn R:\nlibrary(ferx)\nex  &lt;- ferx_example(\"warfarin_derived\")\nfit &lt;- ferx_fit(ex$model, ex$data)\n\n# CL, V, KA appear because the model has [output] CL V KA\nhead(unique(fit$sdtab[, c(\"ID\", \"CL\", \"V\", \"KA\")]))\nCovariates work the same way — add them to [output] to carry them through to sdtab for downstream analysis:\n[output]\n  CL V KA WT AGE"
-  },
-  {
-    "objectID": "model-dsl/derived.html#full-example",
-    "href": "model-dsl/derived.html#full-example",
-    "title": "Derived columns and output",
-    "section": "Full example",
-    "text": "Full example\nlibrary(ferx)\nex  &lt;- ferx_example(\"warfarin_derived\")\nfit &lt;- ferx_fit(ex$model, ex$data)\nThe bundled warfarin_derived model demonstrates all three computation kinds plus [output]:\n[derived]\n  KE        = CL / V\n  T_HALF    = 0.6931472 / KE\n  DAY       = floor(TAFD / 24) + 1\n  CMAX      = max(IPRED)\n  CTROUGH   = min(IPRED, TAD &lt; 1e-10)\n  CMAX_D1   = max(IPRED, TAFD &lt; 24)\n  AUC_0_72  = integral(IPRED, from=0, to=72)\n  AUC_TAU   = integral(IPRED, window=24, anchor=0, step=0.1)\n  AUC_DV_72 = integral(DV,    from=0, to=72)\n\n[output]\n  CL V KA\nAfter fitting, fit$sdtab contains all derived columns plus the echoed individual parameters:\nnames(fit$sdtab)\n\n# Aggregate columns: one value per subject (broadcast across rows)\nunique(fit$sdtab[, c(\"ID\", \"CMAX\", \"AUC_0_72\")])\nSee also Example: derived columns for a full worked example."
-  },
-  {
-    "objectID": "model-dsl/derived.html#see-also",
-    "href": "model-dsl/derived.html#see-also",
-    "title": "Derived columns and output",
-    "section": "See also",
-    "text": "See also\n\nExample: derived columns\nExample: derived PK/PD quantities\nExample: two-cpt oral with derived AUC\nStructural model\nODE models"
-  },
-  {
-    "objectID": "model-dsl/parameters.html",
-    "href": "model-dsl/parameters.html",
-    "title": "Parameters",
-    "section": "",
-    "text": "The [parameters] block defines all model parameters: fixed effects (theta), between-subject variability (omega), residual error (sigma), and inter-occasion variability (kappa)."
-  },
-  {
-    "objectID": "model-dsl/parameters.html#theta-fixed-effects",
-    "href": "model-dsl/parameters.html#theta-fixed-effects",
-    "title": "Parameters",
-    "section": "Theta (fixed effects)",
-    "text": "Theta (fixed effects)\ntheta NAME(initial_value, lower_bound, upper_bound)\n\nNAME — parameter name, referenced in [individual_parameters]\ninitial_value — starting value for estimation\nlower_bound — lower bound constraint (must be &gt; 0; parameters are log-transformed internally)\nupper_bound — optional; omit when there is no natural ceiling\n\ntheta TVCL(0.134, 0.001, 10.0)  # (initial, lower, upper)\ntheta TVV(8.1, 0.1, 500.0)\ntheta TVKA(1.0, 0.01, 50.0)\ntheta TVEMAX(0.8, 0.001)        # lower-bound only; no upper bound"
-  },
-  {
-    "objectID": "model-dsl/parameters.html#omega-between-subject-variability",
-    "href": "model-dsl/parameters.html#omega-between-subject-variability",
-    "title": "Parameters",
-    "section": "Omega (between-subject variability)",
-    "text": "Omega (between-subject variability)\n\nDiagonal omega\nomega NAME ~ value              # value is a variance (default)\nomega NAME ~ value (sd)         # value is a standard deviation\nomega NAME ~ value (variance)   # explicit — same as default\n\nNAME — random effect name, referenced as ETA_NAME in [individual_parameters]\nvalue — initial value; default scale is variance (diagonal element of Ω)\n\nThe (sd) annotation is convenient when setting initial values from expected CV%: omega ETA_CL ~ 0.30 (sd) is equivalent to omega ETA_CL ~ 0.09 (0.30²).\nomega ETA_CL ~ 0.09              # variance — ~30% CV for log-normal parameter\nomega ETA_CL ~ 0.30 (sd)        # same thing, SD coding\nThe coefficient of variation (CV%) is approximately sqrt(variance) * 100 for log-normally distributed parameters. For example, omega ETA_CL ~ 0.09 corresponds to ~30% CV.\nblock_omega is variance-only — (sd) is not accepted because the lower-triangle list mixes variances and covariances and a single tag would be ambiguous.\n\n\nBlock omega (correlated random effects)\nTo estimate correlations between random effects, use block_omega:\nblock_omega (NAME1, NAME2, ...) = [lower_triangle_values]\nThe values are the lower triangle of the covariance matrix, specified row-wise. For a 2×2 block:\nblock_omega (ETA_CL, ETA_V) = [var_CL, cov_CL_V, var_V]\nFor a 3×3 block:\nblock_omega (ETA_CL, ETA_V, ETA_KA) = [var_CL, cov_CL_V, var_V, cov_CL_KA, cov_V_KA, var_KA]\n\nVisualising the lower triangle\nFor an N×N block you supply N·(N+1)/2 values, walked row by row through the lower triangle (row 1 has 1 value, row 2 has 2, …, row N has N values):\n          ETA_1   ETA_2   ETA_3   ETA_4\n        ┌                                ┐\nETA_1   │  v[0]                          │\nETA_2   │  v[1]   v[2]                   │\nETA_3   │  v[3]   v[4]    v[5]           │\nETA_4   │  v[6]   v[7]    v[8]    v[9]   │\n        └                                ┘\nDiagonal entries are variances; off-diagonals are covariances. Set off-diagonals to 0.0 as initial values — the fit will recover correlations from the data.\n\n\nConverting diagonal omegas to a block\nA common pattern: replace all-diagonal omegas with a single correlated block. Each omega variance becomes a diagonal entry; off-diagonals start at 0.0:\n# Before: four diagonal omegas\nomega ETA_CL ~ 0.1\nomega ETA_V1 ~ 0.1\nomega ETA_Q  ~ 0.1\nomega ETA_V2 ~ 0.1\n\n# After: 4×4 block (10 values: 1+2+3+4)\nblock_omega (ETA_CL, ETA_V1, ETA_Q, ETA_V2) = [\n  0.1,\n  0.0, 0.1,\n  0.0, 0.0, 0.1,\n  0.0, 0.0, 0.0, 0.1\n]\nMulti-line and single-line layouts are equivalent — line breaks inside [...] are ignored. Row 2 is cov(CL,V1) var(V1), row 3 is cov(CL,Q) cov(V1,Q) var(Q), etc.\n\n\nMixing diagonal and block\nYou can mix omega (uncorrelated) and block_omega (correlated) declarations:\nblock_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]\nomega ETA_KA ~ 0.40\nThis estimates a 3×3 omega where ETA_CL and ETA_V are correlated (2×2 block), but ETA_KA is independent.\n\n\n\nDeclaration order\nThe order of omega and block_omega lines determines ETA indexing throughout the model: in the omega matrix and all output. For example:\nblock_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]\nomega ETA_KA ~ 0.40\nproduces ETA order [ETA_CL, ETA_V, ETA_KA] (indices 1, 2, 3)."
-  },
-  {
-    "objectID": "model-dsl/parameters.html#kappa-inter-occasion-variability",
-    "href": "model-dsl/parameters.html#kappa-inter-occasion-variability",
-    "title": "Parameters",
-    "section": "Kappa (inter-occasion variability)",
-    "text": "Kappa (inter-occasion variability)\nIOV is declared with kappa (independent per-parameter) or block_kappa (correlated across parameters). Kappa parameters must be paired with iov_column in [fit_options] and an occasion column in the dataset.\nSee also: Estimation — IOV (ferx-core book).\n\nDiagonal kappa — Option A\nkappa NAME ~ value              # value is a variance (default)\nkappa NAME ~ value (sd)         # value is a standard deviation\nkappa NAME ~ value FIX\nEach kappa line adds one diagonal element to the IOV omega matrix. Occasions are independent. The (sd) annotation has the same semantics as for omega. block_kappa is variance-only.\nkappa KAPPA_CL ~ 0.05\nkappa KAPPA_V  ~ 0.03\n\n\nBlock kappa — Option B (correlated IOV)\nblock_kappa (NAME1, NAME2, ...) = [lower_triangle_values]\nblock_kappa (NAME1, NAME2, ...) = [lower_triangle_values] FIX\nMirrors the block_omega syntax. For a 2×2 block:\nblock_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]\nwhere 0.05 = Var(KAPPA_CL), 0.01 = Cov(KAPPA_CL, KAPPA_V), 0.03 = Var(KAPPA_V).\n\n\nUsing kappas in individual parameters\nReference kappa names exactly like BSV etas:\n[individual_parameters]\n  CL = TVCL * exp(ETA_CL + KAPPA_CL)\n  V  = TVV  * exp(ETA_V  + KAPPA_V)\n  KA = TVKA * exp(ETA_KA)           # no IOV on absorption\nKappas can be combined freely — a parameter can carry BSV only, IOV only, or both.\n\n\nMixed diagonal and block kappa\nblock_kappa (KAPPA_CL, KAPPA_V) = [0.05, 0.01, 0.03]\nkappa KAPPA_KA ~ 0.10\nA name may not appear in both kappa and block_kappa — this is a parse error."
-  },
-  {
-    "objectID": "model-dsl/parameters.html#sigma-residual-error",
-    "href": "model-dsl/parameters.html#sigma-residual-error",
-    "title": "Parameters",
-    "section": "Sigma (residual error)",
-    "text": "Sigma (residual error)\nsigma NAME ~ value              # value is a variance (default)\nsigma NAME ~ value (sd)         # value is a standard deviation\nsigma NAME ~ value (variance)   # explicit — same as default\n\nNAME — residual error parameter name, referenced in [error_model]\nvalue — initial value; default scale is variance, matching omega\n\nThe (sd) annotation tells the parser that the initial value is a standard deviation — it squares it before storing. This is the form used throughout the bundled examples because writing “I expect 2% CV” as ~ 0.02 (sd) is more readable than computing the variance 0.02² = 0.0004 and writing ~ 0.0004.\nsigma PROP_ERR ~ 0.0004          # variance 0.0004  →  SD 0.02  →  2% CV\nsigma PROP_ERR ~ 0.02 (sd)       # same thing, SD coding\nRegardless of how the initial value is written, estimates are always reported on the SD scale — both in print(fit) and in ferx_estimates().\nSee Error Model — Sigma scale for how each sigma is interpreted."
-  },
-  {
-    "objectID": "model-dsl/parameters.html#parameter-level-correlation-in-output",
-    "href": "model-dsl/parameters.html#parameter-level-correlation-in-output",
-    "title": "Parameters",
-    "section": "Parameter-level correlation in output",
-    "text": "Parameter-level correlation in output\nWhen a block_omega (or block_kappa) is estimated, ferx reports a parameter-level correlation for each off-diagonal pair:\n\n\n\n\n\n\n\nETA pair\nFormula\n\n\n\n\nBoth lognormal (THETA * exp(ETA))\n\\((e^{\\omega_{ij}} - 1) / \\sqrt{(e^{\\omega_{ii}} - 1)(e^{\\omega_{jj}} - 1)}\\)\n\n\nBoth additive (THETA + ETA)\n\\(\\omega_{ij} / \\sqrt{\\omega_{ii} \\cdot \\omega_{jj}}\\)\n\n\nMixed / complex\nFalls back to eta-level; warning added to FitResult.warnings\n\n\n\nThe lognormal formula reflects the correlation between the actual PK parameters (CL, V) rather than their underlying normal variates."
-  },
-  {
-    "objectID": "model-dsl/parameters.html#writing-individual-parameters-mu-referencing",
-    "href": "model-dsl/parameters.html#writing-individual-parameters-mu-referencing",
-    "title": "Parameters",
-    "section": "Writing individual parameters: mu-referencing",
-    "text": "Writing individual parameters: mu-referencing\nWhen an individual parameter combines IIV with covariate effects, both term orderings are detected correctly:\nCL = TVCL * exp(ETA_CL) * (WT/70)^0.75      # fine\nCL = TVCL * (WT/70)^0.75 * exp(ETA_CL)      # also fine\nBoth forms are mathematically identical in log-space. ferx detects the theta * exp(eta) mu-reference pattern regardless of where covariate multipliers appear in the expression. See the covariates example for a worked model.\n\nLog-normal detection with derived intermediates\nThe theta * exp(eta) pattern is detected even when the base is a derived intermediate rather than a directly declared theta:\nKTR = 4.0 / TVMTT\nKA  = KTR * exp(ETA_KA)        # detected as log-normal; CV% reported correctly\nferx traces through the intermediate assignment to identify the underlying log-normal structure."
-  },
-  {
-    "objectID": "model-dsl/parameters.html#fixing-parameters-fix",
-    "href": "model-dsl/parameters.html#fixing-parameters-fix",
-    "title": "Parameters",
-    "section": "Fixing parameters (FIX)",
-    "text": "Fixing parameters (FIX)\nAppend FIX to any theta, omega, sigma, or kappa declaration to hold the parameter at its initial value during estimation:\ntheta TVLAG(0.25, 0.0, 2.0) FIX       # theta fixed at 0.25\nomega ETA_KA ~ 0.40 FIX               # omega fixed at 0.40\nsigma PROP_ERR ~ 0.01 (sd) FIX        # sigma fixed at SD = 0.01\nkappa KAPPA_CL ~ 0.05 FIX             # kappa fixed at 0.05\nblock_omega (ETA_CL, ETA_V) = [0.09, 0.0, 0.04] FIX   # entire block fixed\nFIX can also appear as part of the initial-value triple for theta:\ntheta TVLAG(0.25, FIX)   # two-element form: value + FIX, no bounds\nPlacement is flexible: FIX may appear at the end of the line or, for theta, inside the parentheses. For omega/sigma/kappa it can also precede the ~:\ntheta TVLAG(0.25, 0.0, 2.0) FIX       # after closing paren\ntheta TVLAG(0.25, FIX)                 # inside parens (no bounds)\ntheta CL (FIX) (0.134, 0.001, 10.0)   # FIX anywhere before the bound triple\nomega ETA_CL (FIX) ~ 0.07             # FIX before the tilde\nomega ETA_CL ~ 0.07 FIX               # FIX after the value — both forms OK\nFixed parameters are shown in print(fit) and ferx_estimates() with SE = fixed and %RSE = fixed; they are excluded from the covariance matrix.\nTypical uses: - Fix a lag time or Hill coefficient to a literature value - Fix omega to zero to temporarily remove BSV from a parameter - Fix sigma during a two-stage estimation (fix PK error while fitting PD)"
-  },
-  {
-    "objectID": "model-dsl/parameters.html#complete-examples",
-    "href": "model-dsl/parameters.html#complete-examples",
-    "title": "Parameters",
-    "section": "Complete examples",
-    "text": "Complete examples\nDiagonal omega (no correlations):\n[parameters]\n  theta TVCL(0.134, 0.001, 10.0)\n  theta TVV(8.1, 0.1, 500.0)\n  theta TVKA(1.0, 0.01, 50.0)\n\n  omega ETA_CL ~ 0.07\n  omega ETA_V  ~ 0.02\n  omega ETA_KA ~ 0.40\n\n  sigma PROP_ERR ~ 0.01\nBlock omega (correlated CL and V):\n[parameters]\n  theta TVCL(0.134, 0.001, 10.0)\n  theta TVV(8.1, 0.1, 500.0)\n  theta TVKA(1.0, 0.01, 50.0)\n\n  block_omega (ETA_CL, ETA_V) = [0.09, 0.02, 0.04]\n  omega ETA_KA ~ 0.40\n\n  sigma PROP_ERR ~ 0.01"
+    "text": "See also\n\n\nIndividual parameters — using covariates in PK expressions\n\nData selection — filtering records using covariate columns\nExample: two-cpt oral with derived AUC"
   },
   {
     "objectID": "model-dsl/structural-model.html",
@@ -2405,7 +2468,7 @@
     "href": "examples/two-cpt-oral-derived.html#fit",
     "title": "Example: Two-cpt oral with derived AUC",
     "section": "Fit",
-    "text": "Fit\n\nfit &lt;- ferx_fit(ex$model, ex$data, verbose = FALSE)\n\nMu-referencing detected for: ETA_CL, ETA_V1\n\nprint(fit)\n\n============================================================\n NONLINEAR MIXED EFFECTS MODEL ESTIMATION\n============================================================\n Model: two_cpt_oral_derived     Dataset: two_cpt_oral_cov\n Method: FOCEI | Gradient: FD | Subjects: 30 | Obs: 300\n\n STATUS: CONVERGED   423 iterations   0.6s\n OFV: -696.6876    AIC: -680.6876    BIC: -651.0573\n\nMODEL STRUCTURE (auto-derived)\n------------------------------------------------------------\n  Structural:  2-cpt oral  (TVCL, TVV1, TVQ, TVV2, TVKA)\n  IIV:         ETA_CL, ETA_V1\n  IOV:         none\n  Residual:    proportional\n\nTHETA\n------------------------------------------------------------\nParameter            Estimate           SE       %RSE\n----------------------------------------------------\nTVCL                 4.390102     0.030158        0.7\nTVV1                50.378191     1.212722        2.4\nTVQ                  8.864322     0.242002        2.7\nTVV2                91.298252     1.615809        1.8\nTVKA                 1.282321     0.049125        3.8\n\nOMEGA  (between-subject variability)\n------------------------------------------------------------\n  ETA_CL                   [log-normal]  = 0.197744  CV% = 46.8  SE = 0.026717\n  ETA_V1                   [log-normal]  = 0.110238  CV% = 34.1  SE = 0.014505\n\nSIGMA  (residual error)\n------------------------------------------------------------\n  PROP_ERR         [proportional] = 0.106696  (var = 0.011384, CV% = 10.7)  SE = 0.003450  [initial specified as SD]\n\nSHRINKAGE\n------------------------------------------------------------\n ETA_CL: 4.9%   ETA_V1: 3.0%   EPS: 9.6%\n\nDIAGNOSTICS\n------------------------------------------------------------\n Covariance: computed   Cond: 32.6   DW: 0.61 [positive autocorrelation]   IWRES lag-1 r: 0.657\n\nRUN INFO\n------------------------------------------------------------\n Gradient (requested): auto   (used: fd)\n ferx v0.1.5 (core v0.1.5)\n\nSETTINGS  (model file / call-time override)\n------------------------------------------------------------\n  method                       focei  [model only]\n  maxiter                      500  [model only]\n\n------------------------------------------------------------\n 2 warning   1 info  --  call ferx_warnings(fit) for details\n============================================================"
+    "text": "Fit\n\nfit &lt;- ferx_fit(ex$model, ex$data, verbose = FALSE)\n\nMu-referencing detected for: ETA_CL, ETA_V1\n\nprint(fit)\n\n============================================================\n NONLINEAR MIXED EFFECTS MODEL ESTIMATION\n============================================================\n Model: two_cpt_oral_derived     Dataset: two_cpt_oral_cov\n Method: FOCEI | Gradient: FD | Subjects: 30 | Obs: 300\n\n STATUS: CONVERGED   423 iterations   0.5s\n OFV: -696.6876    AIC: -680.6876    BIC: -651.0573\n\nMODEL STRUCTURE (auto-derived)\n------------------------------------------------------------\n  Structural:  2-cpt oral  (TVCL, TVV1, TVQ, TVV2, TVKA)\n  IIV:         ETA_CL, ETA_V1\n  IOV:         none\n  Residual:    proportional\n\nTHETA\n------------------------------------------------------------\nParameter            Estimate           SE       %RSE\n----------------------------------------------------\nTVCL                 4.390102     0.030158        0.7\nTVV1                50.378191     1.212722        2.4\nTVQ                  8.864322     0.242002        2.7\nTVV2                91.298252     1.615809        1.8\nTVKA                 1.282321     0.049125        3.8\n\nOMEGA  (between-subject variability)\n------------------------------------------------------------\n  ETA_CL                   [log-normal]  = 0.197744  CV% = 46.8  SE = 0.026717\n  ETA_V1                   [log-normal]  = 0.110238  CV% = 34.1  SE = 0.014505\n\nSIGMA  (residual error)\n------------------------------------------------------------\n  PROP_ERR         [proportional] = 0.106696  (var = 0.011384, CV% = 10.7)  SE = 0.003450  [initial specified as SD]\n\nSHRINKAGE\n------------------------------------------------------------\n ETA_CL: 4.9%   ETA_V1: 3.0%   EPS: 9.6%\n\nDIAGNOSTICS\n------------------------------------------------------------\n Covariance: computed   Cond: 32.6   DW: 0.61 [positive autocorrelation]   IWRES lag-1 r: 0.657\n\nRUN INFO\n------------------------------------------------------------\n Gradient (requested): auto   (used: fd)\n ferx v0.1.5 (core v0.1.5)\n\nSETTINGS  (model file / call-time override)\n------------------------------------------------------------\n  method                       focei  [model only]\n  maxiter                      500  [model only]\n\n------------------------------------------------------------\n 2 warning   1 info  --  call ferx_warnings(fit) for details\n============================================================"
   },
   {
     "objectID": "examples/two-cpt-oral-derived.html#derived-columns",
@@ -2636,7 +2699,7 @@
     "href": "examples/warfarin-ode-time.html#fit",
     "title": "Example: ODE with TIME, TAFD, and TAD",
     "section": "Fit",
-    "text": "Fit\n\nfit &lt;- ferx_fit(ex$model, ex$data, verbose = FALSE)\n\nMu-referencing detected for: ETA_CL, ETA_KA, ETA_V\n\nprint(fit)\n\n============================================================\n NONLINEAR MIXED EFFECTS MODEL ESTIMATION\n============================================================\n Model: warfarin_ode_time        Dataset: warfarin\n Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 110\n\n STATUS: CONVERGED   90 iterations   56.2s\n OFV: -285.9634    AIC: -271.9634    BIC: -253.0600\n\nMODEL STRUCTURE (auto-derived)\n------------------------------------------------------------\n  Structural:  ODE  (TVCL, TVV, TVKA)\n  IIV:         ETA_CL, ETA_V, ETA_KA\n  IOV:         none\n  Residual:    proportional\n\nTHETA\n------------------------------------------------------------\nParameter            Estimate           SE       %RSE\n----------------------------------------------------\nTVCL                 0.132669     0.000116        0.1\nTVV                  7.739691     0.009658        0.1\nTVKA                 0.788339     0.002194        0.3\n\nOMEGA  (between-subject variability)\n------------------------------------------------------------\n  ETA_CL                   [log-normal]  = 0.028045  CV% = 16.9  SE = 0.006212\n  ETA_V                    [log-normal]  = 0.010015  CV% = 10.0  SE = 0.002289\n  ETA_KA                   [log-normal]  = 0.349202  CV% = 64.6  SE = 0.079538\n\nSIGMA  (residual error)\n------------------------------------------------------------\n  PROP_ERR         [proportional] = 0.010579  (var = 0.000112, CV% = 1.1)  SE = 0.000607  [initial specified as SD]\n\nSHRINKAGE\n------------------------------------------------------------\n ETA_CL: -0.9%   ETA_V: 2.3%   ETA_KA: 1.8%   EPS: 14.8%\n\nDIAGNOSTICS\n------------------------------------------------------------\n Covariance: computed   Cond: 6.7   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365\n\nRUN INFO\n------------------------------------------------------------\n Gradient (requested): auto   (used: fd)\n ferx v0.1.5 (core v0.1.5)\n\nSETTINGS  (model file / call-time override)\n------------------------------------------------------------\n  method                       foce  [model only]\n  maxiter                      300  [model only]\n\n------------------------------------------------------------\n 1 warning   1 info  --  call ferx_warnings(fit) for details\n============================================================"
+    "text": "Fit\n\nfit &lt;- ferx_fit(ex$model, ex$data, verbose = FALSE)\n\nMu-referencing detected for: ETA_CL, ETA_KA, ETA_V\n\nprint(fit)\n\n============================================================\n NONLINEAR MIXED EFFECTS MODEL ESTIMATION\n============================================================\n Model: warfarin_ode_time        Dataset: warfarin\n Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 110\n\n STATUS: CONVERGED   90 iterations   57.1s\n OFV: -285.9634    AIC: -271.9634    BIC: -253.0600\n\nMODEL STRUCTURE (auto-derived)\n------------------------------------------------------------\n  Structural:  ODE  (TVCL, TVV, TVKA)\n  IIV:         ETA_CL, ETA_V, ETA_KA\n  IOV:         none\n  Residual:    proportional\n\nTHETA\n------------------------------------------------------------\nParameter            Estimate           SE       %RSE\n----------------------------------------------------\nTVCL                 0.132669     0.000116        0.1\nTVV                  7.739691     0.009658        0.1\nTVKA                 0.788339     0.002194        0.3\n\nOMEGA  (between-subject variability)\n------------------------------------------------------------\n  ETA_CL                   [log-normal]  = 0.028045  CV% = 16.9  SE = 0.006212\n  ETA_V                    [log-normal]  = 0.010015  CV% = 10.0  SE = 0.002289\n  ETA_KA                   [log-normal]  = 0.349202  CV% = 64.6  SE = 0.079538\n\nSIGMA  (residual error)\n------------------------------------------------------------\n  PROP_ERR         [proportional] = 0.010579  (var = 0.000112, CV% = 1.1)  SE = 0.000607  [initial specified as SD]\n\nSHRINKAGE\n------------------------------------------------------------\n ETA_CL: -0.9%   ETA_V: 2.3%   ETA_KA: 1.8%   EPS: 14.8%\n\nDIAGNOSTICS\n------------------------------------------------------------\n Covariance: computed   Cond: 6.7   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365\n\nRUN INFO\n------------------------------------------------------------\n Gradient (requested): auto   (used: fd)\n ferx v0.1.5 (core v0.1.5)\n\nSETTINGS  (model file / call-time override)\n------------------------------------------------------------\n  method                       foce  [model only]\n  maxiter                      300  [model only]\n\n------------------------------------------------------------\n 1 warning   1 info  --  call ferx_warnings(fit) for details\n============================================================"
   },
   {
     "objectID": "examples/warfarin-ode-time.html#derived-columns",

@@ -328,6 +328,10 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Individual parameters</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../model-dsl/covariates.html">
+ <span class="dropdown-text">Covariates</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../model-dsl/structural-model.html">
  <span class="dropdown-text">Structural model</span></a>
   </li>  
@@ -604,26 +608,31 @@ ul.task-list li input[type="checkbox"] {
 <td>Expressions mapping thetas + ETAs + covariates → PK parameters</td>
 </tr>
 <tr class="odd">
+<td><code>[covariates]</code></td>
+<td>No</td>
+<td>Declare covariate columns and types (continuous / categorical)</td>
+</tr>
+<tr class="even">
 <td><code>[structural_model]</code></td>
 <td>Yes</td>
 <td>Selects an analytical PK model or declares an ODE system</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>[error_model]</code></td>
 <td>Yes</td>
 <td>Residual error structure (<code>additive</code>, <code>proportional</code>, <code>combined</code>)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>[odes]</code></td>
 <td>ODE models only</td>
 <td>Right-hand side of the ODE system</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>[fit_options]</code></td>
 <td>No</td>
 <td>Estimation method, optimizer, convergence settings</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>[simulation]</code></td>
 <td>No</td>
 <td>Virtual trial design for <code>--simulate</code> runs</td>
@@ -680,6 +689,7 @@ theta TVCL(0.134, 0.001, 10.0)   # inline comment</code></pre>
 <ul>
 <li><a href="../model-dsl/parameters.html">Parameters</a> — theta, omega, sigma, kappa, block_omega</li>
 <li><a href="../model-dsl/individual-parameters.html">Individual Parameters</a> — expressions, covariates, conditionals, mu-referencing</li>
+<li><a href="../model-dsl/covariates.html">Covariates</a> — <code>[covariates]</code> block, types, covariate table</li>
 <li><a href="../model-dsl/structural-model.html">Structural Model</a> — analytical PK model functions</li>
 <li><a href="../model-dsl/odes.html">ODE Models</a> — ODE syntax, solver settings, dose handling</li>
 <li><a href="../model-dsl/error-model.html">Error Model</a> — additive, proportional, combined; sigma scale</li>

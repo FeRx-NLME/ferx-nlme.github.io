@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.38">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
-<title>Example: SDE process noise ([diffusion] block) – ferx</title>
+<title>Covariates ([covariates]) – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -60,7 +57,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
@@ -82,8 +78,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -109,41 +104,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../styles.css">
+}</script><link rel="stylesheet" href="../styles.css">
 </head>
-
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -309,14 +271,10 @@ window.Quarto = {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
-    </a>
+    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content"><img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content"></a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">ferx</span>
     </a>
@@ -327,7 +285,7 @@ window.Quarto = {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link" href="../get-started.html"> 
 <span class="menu-text">Get started</span></a>
   </li>  
@@ -335,8 +293,8 @@ window.Quarto = {
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-learn" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Learn</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-learn">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-learn">
+<li>
     <a class="dropdown-item" href="../learn/model-workflow.html">
  <span class="dropdown-text">Model workflow</span></a>
   </li>  
@@ -373,13 +331,13 @@ window.Quarto = {
  <span class="dropdown-text">Robust fitting</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-model-dsl" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Model DSL</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-model-dsl">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-model-dsl">
+<li>
     <a class="dropdown-item" href="../model-dsl/overview.html">
  <span class="dropdown-text">Overview</span></a>
   </li>  
@@ -452,13 +410,13 @@ window.Quarto = {
  <span class="dropdown-text">Fit options</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Examples</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">
+<li>
     <a class="dropdown-item" href="../examples/warfarin.html">
  <span class="dropdown-text">One-compartment oral (warfarin)</span></a>
   </li>  
@@ -567,10 +525,10 @@ window.Quarto = {
  <span class="dropdown-text">ODE with TIME, TAFD, and TAD</span></a>
   </li>  
     </ul>
-  </li>
+</li>
 </ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
     <a class="nav-link" href="https://ferx-nlme.github.io/ferx-book/"> 
 <span class="menu-text">ferx-r</span></a>
   </li>  
@@ -596,38 +554,31 @@ window.Quarto = {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link active" data-scroll-target="#how-it-works">How it works</a></li>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#the-diffusion-block" id="toc-the-diffusion-block" class="nav-link" data-scroll-target="#the-diffusion-block">The <code>[diffusion]</code> block</a></li>
-  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#interpreting-the-output" id="toc-interpreting-the-output" class="nav-link" data-scroll-target="#interpreting-the-output">Interpreting the output</a></li>
+<li><a href="#syntax" id="toc-syntax" class="nav-link active" data-scroll-target="#syntax">Syntax</a></li>
+  <li><a href="#behaviour" id="toc-behaviour" class="nav-link" data-scroll-target="#behaviour">Behaviour</a></li>
+  <li><a href="#categorical-covariates-must-be-numerically-coded" id="toc-categorical-covariates-must-be-numerically-coded" class="nav-link" data-scroll-target="#categorical-covariates-must-be-numerically-coded">Categorical covariates must be numerically coded</a></li>
+  <li><a href="#the-covariate-table-fitcovtab" id="toc-the-covariate-table-fitcovtab" class="nav-link" data-scroll-target="#the-covariate-table-fitcovtab">The covariate table (<code>fit$covtab</code>)</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  <li><a href="#checking-dataset-columns-with-ferx_columns" id="toc-checking-dataset-columns-with-ferx_columns" class="nav-link" data-scroll-target="#checking-dataset-columns-with-ferx_columns">Checking dataset columns with <code>ferx_columns()</code></a></li>
+  <li><a href="#why-declare-covariates-explicitly" id="toc-why-declare-covariates-explicitly" class="nav-link" data-scroll-target="#why-declare-covariates-explicitly">Why declare covariates explicitly?</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Example: SDE process noise ([diffusion] block)</h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Covariates ([covariates])</h1>
 </div>
 
 
@@ -641,110 +592,169 @@ window.Quarto = {
   
 
 
-</header>
+</header><p>The optional <code>[covariates]</code> block declares which dataset columns are covariates and whether each is <strong>continuous</strong> or <strong>categorical</strong>. It is a declaration of <em>availability</em>, not usage — a covariate can be declared without being referenced in <code>[individual_parameters]</code>, and vice versa.</p>
+<p>When the block is present, ferx validates the declared columns against the data and echoes them into the fit’s covariate table (<code>fit$covtab</code>), enabling downstream covariate-search and summary workflows.</p>
+<section id="syntax" class="level2"><h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
+<p>Two forms are accepted and may be mixed:</p>
+<pre><code>[covariates]
+  WT   continuous
+  HT   continuous
+  CRCL continuous
+  SEX  categorical
+  RACE categorical</code></pre>
+<p>Or the terser <code>TYPE: NAME, ...</code> form:</p>
+<pre><code>[covariates]
+  continuous: WT, HT, CRCL
+  categorical: SEX, RACE</code></pre>
+<p>Type keywords are case-insensitive (<code>continuous</code>, <code>cont</code>, <code>categorical</code>, <code>cat</code>). Column names are <strong>case-sensitive</strong> and must match the CSV header exactly.</p>
+</section><section id="behaviour" class="level2"><h2 class="anchored" data-anchor-id="behaviour">Behaviour</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead><tr class="header">
+<th>Situation</th>
+<th>Effect</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Block absent</td>
+<td>All non-standard CSV columns are auto-detected as covariates (backward-compatible)</td>
+</tr>
+<tr class="even">
+<td>Column declared, not used in model</td>
+<td>Valid — declares type for the covariate table</td>
+</tr>
+<tr class="odd">
+<td>Column used in model, not declared</td>
+<td>Model still fits; ferx emits a warning recommending declaration</td>
+</tr>
+<tr class="even">
+<td>Column declared, absent from data</td>
+<td>Hard error: <code>E_MISSING_COVARIATE</code>
+</td>
+</tr>
+</tbody>
+</table></section><section id="categorical-covariates-must-be-numerically-coded" class="level2"><h2 class="anchored" data-anchor-id="categorical-covariates-must-be-numerically-coded">Categorical covariates must be numerically coded</h2>
+<p>Covariate values are stored as floating-point numbers, so categorical covariates must be encoded as integer levels in the data (e.g.&nbsp;<code>SEX</code> as <code>0</code>/<code>1</code>, not <code>"M"</code>/<code>"F"</code>). When a <code>[covariates]</code> block is present this is enforced — a non-numeric value in a declared covariate is an error (<code>E_COVARIATE_NOT_NUMERIC</code>).</p>
+<p>Missing values (blank, <code>.</code>, <code>NA</code>) are permitted and recorded as missing.</p>
+</section><section id="the-covariate-table-fitcovtab" class="level2"><h2 class="anchored" data-anchor-id="the-covariate-table-fitcovtab">The covariate table (<code>fit$covtab</code>)</h2>
+<p>When <code>[covariates]</code> is declared, the fit result carries a covariate table:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">covtab</span>          <span class="co"># data frame with ID, TIME, EVID, &lt;declared covariates&gt;</span></span>
+<span><span class="va">fit</span><span class="op">$</span><span class="va">covariate_types</span> <span class="co"># named vector: "continuous" or "categorical" per column</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Unlike <code>fit$sdtab</code> (observation rows only), <code>fit$covtab</code> has <strong>one row per input dataset record</strong>, including dose and other-event rows. Missing values appear as <code>NA</code>. The CLI writes <code>{model}-covtab.csv</code> alongside <code>{model}-sdtab.csv</code>.</p>
+</section><section id="example" class="level2"><h2 class="anchored" data-anchor-id="example">Example</h2>
+<p>The bundled <code>two_cpt_oral_cov</code> model declares two continuous covariates used for allometric scaling:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ferx-nlme.github.io/reference/">ferx</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"two_cpt_oral_cov"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_model_show.html">ferx_model_show</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># model: two_cpt_oral_cov.ferx 
+# Two-compartment oral PK model with covariates (WT, CRCL)
 
+[parameters]
+  theta TVCL(5.0, 0.1, 100.0)
+  theta TVV1(50.0, 1.0, 500.0)
+  theta TVQ(10.0, 0.1, 100.0)
+  theta TVV2(100.0, 1.0, 500.0)
+  theta TVKA(1.2, 0.01, 10.0)
+  theta THETA_WT(0.75, 0.01, 5.0)
+  theta THETA_CRCL(0.50, 0.01, 5.0)
 
-<p>A stochastic differential equation (SDE) extension of the standard one-compartment warfarin model. The <code>[diffusion]</code> block adds within-subject system noise on one or more ODE states, estimated via an Extended Kalman Filter (EKF) likelihood. This is useful when IWRES shows autocorrelation that cannot be absorbed by residual error alone — a signal of structural misspecification or unmodelled absorption variability.</p>
-<section id="how-it-works" class="level2">
-<h2 class="anchored" data-anchor-id="how-it-works">How it works</h2>
-<p>Without a <code>[diffusion]</code> block, ferx treats the ODE system as deterministic: all unexplained variability enters through BSV (omega) and residual error (sigma).</p>
-<p>With <code>[diffusion]</code>, each listed state becomes a continuous diffusion process:</p>
-<p><span class="math display">\[dA = f(A,\theta,t)\,dt + \sqrt{Q}\,dW_t\]</span></p>
-<p>The EKF integrates the covariance ODE alongside the state ODE and inflates the observation variance at each time point by the accumulated process noise:</p>
-<p><span class="math display">\[V_{\text{total}} = P[\text{central}] + \sigma^2(\hat{y})\]</span></p>
-<p><code>DIFF_CENTRAL</code> is the diffusion variance <span class="math inline">\(Q\)</span> for the central compartment, estimated on the variance scale (not SD).</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>SDE models require an ODE structural model — they cannot be used with analytical PK solvers (<code>one_cpt_oral</code>, <code>two_cpt_iv_bolus</code>, etc.). The model file must use <code>[structural_model] ode(...)</code> with <code>[odes]</code>.</p>
-<p>SDE is also incompatible with Enzyme autodiff. <code>gradient_method = fd</code> is set automatically and the model file enforces it. Fits are significantly slower than equivalent analytical models.</p>
-</div>
-</div>
-</section>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<pre><code>[parameters]
-  theta TVCL(0.134, 0.001, 10.0)
-  theta TVV(8.1, 0.1, 500.0)
-  theta TVKA(1.0, 0.01, 50.0)
+  omega ETA_CL ~ 0.10
+  omega ETA_V1 ~ 0.10
+  omega ETA_Q  ~ 0.05
+  omega ETA_V2 ~ 0.05
+  omega ETA_KA ~ 0.15
 
-  omega ETA_CL ~ 0.07
-  omega ETA_V  ~ 0.02
-  omega ETA_KA ~ 0.40
-
-  sigma PROP_ERR ~ 0.01 (sd)
+  sigma PROP_ERR ~ 0.02 (sd)
 
 [individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V  = TVV  * exp(ETA_V)
+  CL = TVCL * (WT / 70)^THETA_WT * (CRCL / 100)^THETA_CRCL * exp(ETA_CL)
+  V1 = TVV1 * (WT / 70)^THETA_WT * exp(ETA_V1)
+  Q  = TVQ  * exp(ETA_Q)
+  V2 = TVV2 * exp(ETA_V2)
   KA = TVKA * exp(ETA_KA)
 
 [structural_model]
-  ode(obs_cmt=central, states=[depot, central])
+  pk two_cpt_oral(cl=CL, v1=V1, q=Q, v2=V2, ka=KA)
 
-[odes]
-  d/dt(depot)   = -KA * depot
-  d/dt(central) =  KA * depot / V - (CL / V) * central
-
-[diffusion]
-  central ~ 0.01
+# Declare the dataset covariate columns and their type. Optional; when present,
+# declared columns are validated (must exist + be numerically coded) and echoed
+# in the fit's covariate table (`fit$covtab`).
+[covariates]
+  WT   continuous
+  CRCL continuous
 
 [error_model]
   DV ~ proportional(PROP_ERR)
 
 [fit_options]
-  method          = foce
-  maxiter         = 300
-  covariance      = true
-  gradient_method = fd</code></pre>
-</section>
-<section id="the-diffusion-block" class="level2">
-<h2 class="anchored" data-anchor-id="the-diffusion-block">The <code>[diffusion]</code> block</h2>
-<p>Each line declares the diffusion variance for one ODE state:</p>
-<pre><code>[diffusion]
-  &lt;state&gt; ~ &lt;initial_variance&gt;</code></pre>
+  method     = focei
+  maxiter    = 500
+  covariance = true</code></pre>
+</div>
+</div>
+<p>The relevant block is:</p>
+<pre><code>[covariates]
+  WT   continuous
+  CRCL continuous</code></pre>
+<p>After fitting, inspect the covariate table:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># One row per dataset record (doses + observations)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">covtab</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Declared types</span></span>
+<span><span class="va">fit</span><span class="op">$</span><span class="va">covariate_types</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section><section id="checking-dataset-columns-with-ferx_columns" class="level2"><h2 class="anchored" data-anchor-id="checking-dataset-columns-with-ferx_columns">Checking dataset columns with <code>ferx_columns()</code>
+</h2>
+<p>Before writing a model, inspect the CSV header to confirm column names:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_columns.html">ferx_columns</a></span><span class="op">(</span><span class="va">ex</span><span class="op">)</span>         <span class="co"># pass the ferx_example() list directly</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data file: /home/runner/work/_temp/Library/ferx/examples/data/two_cpt_oral_cov.csv
+10 columns
+
+ Required NONMEM:      [1] ID  [2] TIME  [3] DV  [4] EVID  [5] AMT  [6] CMT
+ Optional NONMEM:      [7] RATE  [8] MDV
+ Covariates / other:   [9] WT  [10] CRCL</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_columns.html">ferx_columns</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>    <span class="co"># or pass the CSV path</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data file: /home/runner/work/_temp/Library/ferx/examples/data/two_cpt_oral_cov.csv
+10 columns
+
+ Required NONMEM:      [1] ID  [2] TIME  [3] DV  [4] EVID  [5] AMT  [6] CMT
+ Optional NONMEM:      [7] RATE  [8] MDV
+ Covariates / other:   [9] WT  [10] CRCL</code></pre>
+</div>
+</div>
+<p>Use the column names exactly (case-sensitive) in the <code>[covariates]</code> block.</p>
+</section><section id="why-declare-covariates-explicitly" class="level2"><h2 class="anchored" data-anchor-id="why-declare-covariates-explicitly">Why declare covariates explicitly?</h2>
+<p>Without <code>[covariates]</code>, every non-standard column is auto-detected, which means:</p>
 <ul>
-<li><code>central ~ 0.01</code> declares <code>DIFF_CENTRAL</code> with starting variance 0.01.</li>
-<li>The fitted parameter appears in <code>fit$theta</code> as <code>DIFF_CENTRAL</code>.</li>
-<li>Multiple states can be listed; each gets its own <code>DIFF_&lt;STATE&gt;</code> parameter.</li>
+<li>Type (continuous vs.&nbsp;categorical) is unknown, so covariate-search tools that need to know how to scale a covariate cannot proceed automatically.</li>
+<li>Non-covariate administrative columns (<code>STUDY</code>, <code>DATE</code>, <code>SITE</code>) also appear in the covariate table, polluting downstream summaries.</li>
+<li>A typo in <code>[individual_parameters]</code> (wrong covariate name) silently evaluates to zero rather than raising an error.</li>
 </ul>
-</section>
-<section id="running" class="level2">
-<h2 class="anchored" data-anchor-id="running">Running</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_sde"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>uses_sde                    <span class="co"># TRUE</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>theta[<span class="st">"DIFF_CENTRAL"</span>]       <span class="co"># fitted diffusion variance</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)             <span class="co"># DIFF_CENTRAL appears in the theta block</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="interpreting-the-output" class="level2">
-<h2 class="anchored" data-anchor-id="interpreting-the-output">Interpreting the output</h2>
-<p><code>print(fit)</code> shows <code>DIFF_CENTRAL</code> in the <code>THETA</code> block alongside the structural PK parameters. A small <code>DIFF_CENTRAL</code> relative to the observation variance indicates little system noise; a large value relative to sigma suggests the model is absorbing structural misfit as process noise — consider revisiting the structural model.</p>
-<p><code>fit$uses_sde</code> is <code>TRUE</code> whenever the fit used the EKF path.</p>
-</section>
-<section id="see-also" class="level2">
-<h2 class="anchored" data-anchor-id="see-also">See also</h2>
+<p>Declaring <code>[covariates]</code> explicitly gives validation, clean typing, and a focused covariate table for downstream use.</p>
+</section><section id="see-also" class="level2"><h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
-<li><a href="../model-dsl/odes.html">ODE Models DSL</a></li>
-<li><a href="../examples/ode-model.html">Example: ODE model (Michaelis-Menten)</a></li>
+<li>
+<a href="../model-dsl/individual-parameters.html">Individual parameters</a> — using covariates in PK expressions</li>
+<li>
+<a href="../model-dsl/data-selection.html">Data selection</a> — filtering records using covariate columns</li>
+<li><a href="../examples/two-cpt-oral-derived.html">Example: two-cpt oral with derived AUC</a></li>
 </ul>
 
 
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1158,8 +1168,7 @@ Note
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p>© 2026 FeRx-NLME · MIT licensed</p>
 </div>   
@@ -1171,8 +1180,6 @@ Note
 </div>
   </div>
 </footer>
-
-
 
 
 </body></html>
