@@ -33,6 +33,11 @@ jobs:
           git clone --depth 1 https://github.com/FeRx-NLME/ferx-r /tmp/ferx-r
           R CMD INSTALL --no-lock /tmp/ferx-r
 
+      # Clone ferx-core for its CHANGELOG.md (rendered on the changelog page)
+      - name: Clone ferx-core (changelog source)
+        run: |
+          git clone --depth 1 https://github.com/FeRx-NLME/ferx-core /tmp/ferx-core
+
       # Build pkgdown reference only (no vignettes — those live in learn/)
       - name: Build pkgdown reference
         run: |

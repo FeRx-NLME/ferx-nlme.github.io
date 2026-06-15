@@ -1,15 +1,44 @@
 ---
 title: "Changelog"
+toc: false
 ---
+
+Changes are tracked separately in each repository: the **ferx-core** Rust engine
+(`CHANGELOG.md`) and the **ferx-r** R package (`NEWS.md`). Use the tabs below to
+switch between them.
 
 ```{r}
 #| echo: false
 #| results: asis
-# Try local path first (dev), fall back to CI clone path
-path <- if (file.exists("../ferx-r/NEWS.md")) {
-  "../ferx-r/NEWS.md"
-} else {
-  "/tmp/ferx-r/NEWS.md"
+read_changelog <- function(local, ci) {
+  path <- if (file.exists(local)) local else ci
+  if (!file.exists(path)) {
+    return(sprintf("_Changelog source not found (`%s`)._", path))
+  }
+  lines <- readLines(path)
+  # Demote every real markdown heading by two levels so it sits below the
+  # `##` tab titles (otherwise each `#`/`##` would open a spurious tab).
+  # Skip lines inside fenced code blocks so `#`/`#>` R comments are untouched.
+  in_fence <- FALSE
+  for (i in seq_along(lines)) {
+    if (grepl("^\\s*```", lines[i])) { in_fence <- !in_fence; next }
+    if (!in_fence && grepl("^#{1,6} ", lines[i])) {
+      lines[i] <- paste0("##", lines[i])
+    }
+  }
+  paste(lines, collapse = "\n")
 }
-cat(readLines(path), sep = "\n")
+
+corelog  <- read_changelog("../ferx-core/CHANGELOG.md", "/tmp/ferx-core/CHANGELOG.md")
+news     <- read_changelog("../ferx-r/NEWS.md",         "/tmp/ferx-r/NEWS.md")
+
+cat(
+  '::: {.panel-tabset}\n\n',
+  '## ferx-core (Rust engine)\n\n',
+  corelog, '\n\n',
+  '## ferx-r (R package)\n\n',
+  news, '\n\n',
+  ':::\n',
+  sep = ""
+)
 ```

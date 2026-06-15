@@ -170,7 +170,7 @@ Patterns **not** detected (falls back to `eta = 0` start):
 - Compound eta expressions inside `exp` (`exp(ETA_CL + ETA_OCC)`)
 
 Set `mu_referencing = false` in `[fit_options]` to disable detection entirely.
-See [Fit Options](fit-options.qmd) and the [FAQ](../faq.qmd#mu-referencing).
+See [Fit Options](fit-options.qmd).
 
 ## Covariate detection
 
