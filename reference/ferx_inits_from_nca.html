@@ -271,8 +271,8 @@ these values automatically before the optimizer runs.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Model: warfarin                 Dataset: warfarin</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 110</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  STATUS: <span style="color: #00BB00; font-weight: bold;">CONVERGED</span>   74 iterations   0.0s</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  OFV: -285.9969    AIC: -271.9969    BIC: -253.0936</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  STATUS: <span style="color: #00BB00; font-weight: bold;">CONVERGED</span>   76 iterations   0.0s</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  OFV: -285.9956    AIC: -271.9956    BIC: -253.0922</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">MODEL STRUCTURE (auto-derived)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
@@ -285,32 +285,32 @@ these values automatically before the optimizer runs.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter            Estimate           SE       %RSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVCL                 0.132853     0.000116        0.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVV                  7.736804     0.009654        0.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVKA                 0.807982     0.002248        0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVCL                 0.132733     0.006976        5.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVV                  7.740378     0.240758        3.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVKA                 0.817105     0.150470       18.4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">OMEGA  (between-subject variability)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_CL                   [log-normal]  = 0.027618  CV% = 16.7  SE = 0.006070</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_V                    [log-normal]  = 0.009613  CV% = 9.8  SE = 0.002154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_KA                   [log-normal]  = 0.334427  CV% = 63.0  SE = 0.074645</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_CL                   [log-normal]  = 0.027603  CV% = 16.7  SE = 0.012134</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_V                    [log-normal]  = 0.009642  CV% = 9.8  SE = 0.004337</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ETA_KA                   [log-normal]  = 0.338768  CV% = 63.5  SE = 0.152357</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">SIGMA  (residual error)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PROP_ERR         [proportional] = 0.010578  (var = 0.000112, CV% = 1.1)  SE = 0.000607  [initial specified as SD]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   PROP_ERR         [proportional] = 0.010565  (var = 0.000112, CV% = 1.1)  SE = 0.000835  [initial specified as SD]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">SHRINKAGE</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ETA_CL: -1.7%   ETA_V: 0.3%   ETA_KA: -0.2%   EPS: 14.8%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ETA_CL: -1.7%   ETA_V: 0.4%   ETA_KA: 0.5%   EPS: 14.7%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">DIAGNOSTICS</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Covariance: computed   Cond: 6.7   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Covariance: computed   Cond: 1.0   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">RUN INFO</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Gradient (requested): auto   (used: fd)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ferx v0.1.5 (core v0.1.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ferx v0.1.5 (core v0.1.6)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">SETTINGS  (model file / call-time override)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>

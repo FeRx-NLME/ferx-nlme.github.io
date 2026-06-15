@@ -66,6 +66,7 @@ powered by automatic differentiation (Enzyme).</p>
 <span>  optimizer_trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  scale_params <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  inits_from_nca <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  fd_hessian_step <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  settings <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  include_data <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -103,10 +104,11 @@ the reported covariance/diagnostics. Supported methods: <code>"foce"</code>,
 <code>"gn_hybrid"</code> (Gauss-Newton followed by a FOCEI polish step), or
 <code>"imp"</code> (also accepted as <code>"importance_sampling"</code> or
 <code>"importance-sampling"</code>; importance-sampling marginal
-log-likelihood). The <code>"imp"</code> stage is a diagnostic terminal
-stage that does not update parameters and must be the <em>last</em> entry
-of the chain, e.g. <code>c("focei", "imp")</code> or
-<code>c("saem", "imp")</code>. Example chain: <code>c("saem", "focei")</code>.
+log-likelihood). The <code>"imp"</code> stage is a terminal stage that does
+not update parameters and must be the <em>last</em> entry of the chain, e.g.
+<code>c("focei", "imp")</code> or <code>c("saem", "imp")</code>. It may also run
+standalone (<code>method = "imp"</code>), scoring the model's initial
+parameters. Example chain: <code>c("saem", "focei")</code>.
 SAEM fully supports inter-occasion variability (IOV / kappa) models.</p></dd>
 
 
@@ -240,6 +242,16 @@ where bad starting values can stall the optimizer. See
 <code><a href="ferx_inits_from_nca.html">ferx_inits_from_nca</a></code> to inspect the values without fitting.</p></dd>
 
 
+<dt id="arg-fd-hessian-step">fd_hessian_step<a class="anchor" aria-label="anchor" href="#arg-fd-hessian-step"></a></dt>
+<dd><p>Positive finite numeric. Relative step size for the
+finite-difference Hessian used in the covariance step (default <code>0.01</code>).
+The actual perturbation for parameter <em>i</em> is
+<code>fd_hessian_step * (1 + |x_hat[i]|)</code>.
+Increase (e.g. <code>0.1</code>) when the fit warns about ill-conditioned Hessian
+entries; decrease (e.g. <code>1e-3</code>) on smooth OFV surfaces where FD noise
+is the primary concern. Has no effect when <code>covariance = FALSE</code>.</p></dd>
+
+
 <dt id="arg-settings">settings<a class="anchor" aria-label="anchor" href="#arg-settings"></a></dt>
 <dd><p>Optional named list of fine-grained options forwarded to the
 Rust <code>FitOptions</code>. Use this to tune knobs that do not have a
@@ -260,6 +272,45 @@ audit the full picture.</p>
 <dt><code>inner_tol</code></dt>
 <dd><p>Convergence tolerance for the inner EBE loop
 (default <code>1e-4</code>).</p></dd>
+
+<dt><code>fd_hessian_step</code></dt>
+<dd><p>Also available as the dedicated
+<code>fd_hessian_step</code> argument above.</p></dd>
+
+<dt><code>covariance_method</code></dt>
+<dd><p>Covariance estimator, mirroring NONMEM
+<code>$COV MATRIX=</code>: <code>"r"</code> (inverse Hessian, the default),
+<code>"s"</code> (score cross-product), or <code>"rsr"</code> (the Huber-White
+sandwich, robust to model misspecification). Validated for FOCEI;
+<code>"s"</code> and <code>"rsr"</code> are rejected under non-interaction FOCE.
+No effect when <code>covariance = FALSE</code>.</p></dd>
+
+<dt><code>covariance_fallback</code></dt>
+<dd><p><code>"none"</code> (default) or <code>"sir"</code>.
+When the finite-difference Hessian is not positive definite, <code>"sir"</code>
+runs SIR with an absolute-eigenvalue-rectified proposal instead of
+leaving the covariance step failed; <code>covariance_status</code> is then
+<code>"sir_fallback"</code> and SIR-based credible intervals are reported.</p></dd>
+
+
+</dl><p><strong>ODE models: RK45 solver tolerance</strong></p><dl><dt><code>ode_reltol</code></dt>
+<dd><p>RK45 relative tolerance for ODE models
+(default <code>1e-4</code>; ignored for analytical PK). The default
+reproduces analytical closed forms in PRED to about <code>1e-4</code>, but
+the FOCE objective amplifies solver error, so an ODE-form model's OFV
+can differ from its analytical equivalent by several units. Set tighter
+(e.g. <code>1e-10</code>) when the ODE-form OFV must match an analytical
+reference; expect slower fits. Can also be set in the model file's
+<code>[fit_options]</code> block.</p></dd>
+
+<dt><code>ode_abstol</code></dt>
+<dd><p>RK45 absolute tolerance for ODE models
+(default <code>1e-6</code>).</p></dd>
+
+<dt><code>ode_max_steps</code></dt>
+<dd><p>Maximum RK45 steps per integration segment
+(default <code>10000</code>). Raise if a tight <code>ode_reltol</code> exhausts the
+step budget on stiff multi-compartment systems.</p></dd>
 
 
 </dl><p><strong>FOCE / FOCEI / GN / GN-hybrid: iteration cap</strong></p><dl><dt><code>maxiter</code></dt>
@@ -452,7 +503,7 @@ Merged with <code>[data_selection] ignore_subjects</code> from the model file.</
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with components:</p>
+    <p>A named list. Where to find commonly-needed quantities:</p><table class="table table"><tr><td>What you want</td><td>Accessor</td><td>Shape</td><td>When present</td></tr><tr><td>Residuals, PRED, IPRED, diagnostics</td><td><code>fit$sdtab</code></td><td>one row per observation</td><td>always</td></tr><tr><td>Covariates echoed per observation (via <code>[output]</code>)</td><td><code>fit$sdtab</code></td><td>one row per observation, LOCF</td><td>declared in <code>[output]</code></td></tr><tr><td>Raw covariate values for all dataset records</td><td><code>fit$covtab</code></td><td>one row per dataset record (doses + obs)</td><td>model has <code>[covariates]</code> block</td></tr><tr><td>ETA / EBE values per observation row</td><td><code>fit$sdtab</code> (<code>ETA_CL</code>, <code>ETA_V</code>, …)</td><td>one row per observation, value repeated</td><td>always</td></tr><tr><td>ETA / EBE values per subject</td><td><code>fit$ebe_etas</code></td><td>one row per subject</td><td>model declares etas</td></tr><tr><td>Individual PK parameters per subject</td><td><code>fit$individual_estimates</code></td><td>one row per subject</td><td>always</td></tr></table><p>Full slot descriptions:</p>
 <dl><dt>converged</dt>
 <dd><p>Logical; did the optimizer converge</p></dd>
 
@@ -515,11 +566,11 @@ automatically.  Columns declared in <code>[derived]</code> (per-row
 expressions, aggregates, integrals) and <code>[output]</code> (individual
 PK parameters or covariates echoed by name) appear at the end of the
 data frame in declaration order.
-Note: per-subject ETA (EBE) values are in <code>fit$ebe_etas</code> (one
-row per subject, no row duplication); per-subject individual parameter
-values are in <code>fit$individual_estimates</code>.  ETAs are available as
-read-only context variables inside <code>[derived]</code> expressions but
-are not written as sdtab columns.</p></dd>
+ETA columns (<code>ETA_CL</code>, <code>ETA_V</code>, etc.) are included
+automatically — the same EBE value is repeated for every observation
+row of that subject. For a compact per-subject view use
+<code>fit$ebe_etas</code>; for individual PK parameter values use
+<code>fit$individual_estimates</code>.</p></dd>
 
 <dt>covtab</dt>
 <dd><p>Data frame echoing the declared covariate columns, present
@@ -608,8 +659,10 @@ in a single outer iteration.</p></dd>
 all subjects and iterations.</p></dd>
 
 <dt>covariance_status</dt>
-<dd><p>String: <code>"computed"</code>, <code>"failed"</code>, or
-<code>"not_requested"</code>.</p></dd>
+<dd><p>String: <code>"computed"</code>, <code>"failed"</code>,
+<code>"not_requested"</code>, or <code>"sir_fallback"</code> (the finite-difference
+Hessian was not positive definite and <code>covariance_fallback = "sir"</code>
+produced SIR-based intervals).</p></dd>
 
 <dt>shrinkage_eta</dt>
 <dd><p>Numeric vector of ETA shrinkage per random effect
@@ -1098,7 +1151,11 @@ parameters):</p><div class="sourceCode"><pre><code><span></span>
 
 <p><strong>Standard errors</strong> - the covariance step is on by default:</p><div class="sourceCode"><pre><code><span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, covariance <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># default: produces SE / </span></span>
-<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, covariance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># skip for speed during development</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, covariance <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># skip for speed during development</span></span>
+<span></span>
+<span><span class="co"># Tune the FD step for the Hessian (default 0.01):</span></span>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, fd_hessian_step <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>    <span class="co"># increase when Hessian is ill-conditioned</span></span>
+<span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, fd_hessian_step <span class="op">=</span> <span class="fl">1e-3</span><span class="op">)</span>   <span class="co"># decrease for very smooth surfaces</span></span></code></pre></div>
 
 <p><strong>Parallelism</strong> - cap the Rust thread pool:</p><div class="sourceCode"><pre><code><span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, threads <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -1273,7 +1330,7 @@ starting values before a full run.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">theta</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      TVCL       TVV      TVKA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1327389 7.6948086 0.7585626 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1327372 7.6947642 0.7585865 </span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">ofv</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -280.1835</span>
 <span class="r-in"><span></span></span>

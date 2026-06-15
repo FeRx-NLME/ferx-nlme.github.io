@@ -76,9 +76,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-3427f64fd80f222eb82c1c84ae2c11e8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -534,6 +534,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
     </ul>
 </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
 </ul>
 <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
@@ -547,10 +551,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="../reference/index.html"> 
 <span class="menu-text">Reference</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../faq.html"> 
-<span class="menu-text">FAQ</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../changelog.html"> 
@@ -735,8 +735,8 @@ Note
  Model: two_cpt_oral_derived     Dataset: two_cpt_oral_cov
  Method: FOCEI | Gradient: FD | Subjects: 30 | Obs: 300
 
- STATUS: CONVERGED   423 iterations   0.6s
- OFV: -696.6876    AIC: -680.6876    BIC: -651.0573
+ STATUS: CONVERGED   555 iterations   2.9s
+ OFV: -695.2313    AIC: -679.2313    BIC: -649.6011
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -749,33 +749,33 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 4.390102     0.030158        0.7
-TVV1                50.378191     1.212722        2.4
-TVQ                  8.864322     0.242002        2.7
-TVV2                91.298252     1.615809        1.8
-TVKA                 1.282321     0.049125        3.8
+TVCL                 4.173307     0.308433        7.4
+TVV1                49.360419     3.767995        7.6
+TVQ                  8.975158     0.389018        4.3
+TVV2                92.132656     2.690257        2.9
+TVKA                 1.247817     0.083937        6.7
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.197744  CV% = 46.8  SE = 0.026717
-  ETA_V1                   [log-normal]  = 0.110238  CV% = 34.1  SE = 0.014505
+  ETA_CL                   [log-normal]  = 0.149265  CV% = 40.1  SE = 0.037906
+  ETA_V1                   [log-normal]  = 0.117658  CV% = 35.3  SE = 0.032923
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.106696  (var = 0.011384, CV% = 10.7)  SE = 0.003450  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.105758  (var = 0.011185, CV% = 10.6)  SE = 0.004831  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 4.9%   ETA_V1: 3.0%   EPS: 9.6%
+ ETA_CL: -9.6%   ETA_V1: 5.2%   EPS: 8.8%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 32.6   DW: 0.61 [positive autocorrelation]   IWRES lag-1 r: 0.657
+ Covariance: computed   Cond: 9.0   DW: 0.61 [positive autocorrelation]   IWRES lag-1 r: 0.658
 
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): auto   (used: fd)
- ferx v0.1.5 (core v0.1.5)
+ ferx v0.1.5 (core v0.1.6)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -783,7 +783,7 @@ SETTINGS  (model file / call-time override)
   maxiter                      500  [model only]
 
 ------------------------------------------------------------
- 2 warning   1 info  --  call ferx_warnings(fit) for details
+ 1 warning   1 info  --  call ferx_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>
@@ -802,13 +802,13 @@ SETTINGS  (model file / call-time override)
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"CL"</span>, <span class="st">"V1"</span>, <span class="st">"Q"</span>, <span class="st">"V2"</span>, <span class="st">"K10"</span>, <span class="st">"K12"</span>, <span class="st">"K21"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   ID       CL       V1        Q       V2        K10       K12        K21
-1   1 4.265402 34.43194 8.864322 91.29825 0.12387921 0.2574447 0.09709192
-11  2 5.682651 42.59018 8.864322 91.29825 0.13342632 0.2081307 0.09709192
-21  3 4.782190 51.52692 8.864322 91.29825 0.09280955 0.1720328 0.09709192
-31  4 3.065057 27.44802 8.864322 91.29825 0.11166769 0.3229494 0.09709192
-41  5 5.611389 44.86298 8.864322 91.29825 0.12507838 0.1975866 0.09709192
-51  6 7.808147 41.71349 8.864322 91.29825 0.18718520 0.2125049 0.09709192</code></pre>
+<pre><code>   ID       CL       V1        Q       V2        K10       K12       K21
+1   1 4.257420 33.62608 8.975158 92.13266 0.12661066 0.2669106 0.0974156
+11  2 5.669641 41.59094 8.975158 92.13266 0.13631915 0.2157960 0.0974156
+21  3 4.770008 50.74803 8.975158 92.13266 0.09399395 0.1768573 0.0974156
+31  4 3.057730 26.93550 8.975158 92.13266 0.11352044 0.3332092 0.0974156
+41  5 5.593762 44.07455 8.975158 92.13266 0.12691594 0.2036359 0.0974156
+51  6 7.797001 40.90426 8.975158 92.13266 0.19061585 0.2194187 0.0974156</code></pre>
 </div>
 </div>
 </section><section id="peak-and-auc-summaries" class="level3"><h3 class="anchored" data-anchor-id="peak-and-auc-summaries">Peak and AUC summaries</h3>
@@ -816,12 +816,12 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"TMAX"</span>, <span class="st">"AUC_0_168"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID     CMAX TMAX AUC_0_168
-1   1 4.214111    1  88.40982
-11  2 3.503477    2  65.51782
-21  3 3.187721    2  79.28387
-31  4 5.134956    1 121.11558
-41  5 3.404415    2  66.58322
-51  6 3.438764    1  45.32703</code></pre>
+1   1 4.232570    1  88.57669
+11  2 3.531714    2  65.67949
+21  3 3.201115    2  79.48679
+31  4 5.133912    1 121.33327
+41  5 3.421620    2  66.82072
+51  6 3.443409    1  45.41898</code></pre>
 </div>
 </div>
 </section><section id="periodic-auc" class="level3"><h3 class="anchored" data-anchor-id="periodic-auc">Periodic AUC</h3>
@@ -831,16 +831,16 @@ SETTINGS  (model file / call-time override)
 <span>          <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"TIME"</span>, <span class="st">"TAFD"</span>, <span class="st">"AUC_TAU"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   TIME TAFD  AUC_TAU
-1   0.5  0.5 35.68493
-2   1.0  1.0 35.68493
-3   2.0  2.0 35.68493
-4   4.0  4.0 35.68493
-5   6.0  6.0 35.68493
-6   8.0  8.0 35.68493
-7  12.0 12.0 35.68493
-8  24.0 24.0 11.63419
-9  36.0 36.0 11.63419
-10 48.0 48.0  8.21814</code></pre>
+1   0.5  0.5 35.68543
+2   1.0  1.0 35.68543
+3   2.0  2.0 35.68543
+4   4.0  4.0 35.68543
+5   6.0  6.0 35.68543
+6   8.0  8.0 35.68543
+7  12.0 12.0 35.68543
+8  24.0 24.0 11.66281
+9  36.0 36.0 11.66281
+10 48.0 48.0  8.24569</code></pre>
 </div>
 </div>
 </section></section><section id="see-also" class="level2"><h2 class="anchored" data-anchor-id="see-also">See also</h2>

@@ -76,6 +76,7 @@ identifiability problem in the model.</p>
     <div class="dont-index"><p><code><a href="ferx_estimates.html">ferx_estimates</a></code> for SEs and \<!-- %RSE. --></p>
 <p>Other diagnostics:
 <code><a href="check_diagnostics.html">check_diagnostics()</a></code>,
+<code><a href="ferx_cov_screen.html">ferx_cov_screen()</a></code>,
 <code><a href="ferx_estimates.html">ferx_estimates()</a></code>,
 <code><a href="ferx_eta_cov.html">ferx_eta_cov()</a></code>,
 <code><a href="ferx_plot_trace.html">ferx_plot_trace()</a></code>,
@@ -93,13 +94,13 @@ identifiability problem in the model.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">cov_matrix</span><span class="op">)</span><span class="op">)</span> <span class="fu">ferx_cor_matrix</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            TVCL    TVV   TVKA ETA_CL  ETA_V ETA_KA PROP_ERR</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVCL      1.000 -0.744 -0.154  0.002  0.076  0.006    0.628</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVV      -0.744  1.000  0.138 -0.001 -0.101 -0.005   -0.352</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TVKA     -0.154  0.138  1.000  0.000 -0.015 -0.040   -0.156</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_CL    0.002 -0.001  0.000  1.000  0.000  0.000    0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_V     0.076 -0.101 -0.015  0.000  1.000  0.001    0.036</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_KA    0.006 -0.005 -0.040  0.000  0.001  1.000    0.006</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PROP_ERR  0.628 -0.352 -0.156  0.001  0.036  0.006    1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVCL      1.000  0.075 -0.079  0.003 -0.004  0.011    0.340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVV       0.075  1.000  0.064  0.001 -0.076 -0.009    0.187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TVKA     -0.079  0.064  1.000  0.000 -0.008 -0.140   -0.212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_CL    0.003  0.001  0.000  1.000  0.000  0.000    0.001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_V    -0.004 -0.076 -0.008  0.000  1.000  0.002   -0.014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ETA_KA    0.011 -0.009 -0.140  0.000  0.002  1.000    0.029</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PROP_ERR  0.340  0.187 -0.212  0.001 -0.014  0.029    1.000</span>
 </code></pre></div>
     </div>
   </div>

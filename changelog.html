@@ -76,9 +76,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-3427f64fd80f222eb82c1c84ae2c11e8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -106,7 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script><link rel="stylesheet" href="styles.css">
 </head>
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -534,6 +534,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
     </ul>
 </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
 </ul>
 <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
@@ -547,10 +551,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">Reference</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./faq.html"> 
-<span class="menu-text">FAQ</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./changelog.html" aria-current="page"> 
@@ -570,41 +570,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
-   
-  <ul>
-<li>
-<a href="#ferx-development" id="toc-ferx-development" class="nav-link active" data-scroll-target="#ferx-development">ferx (development)</a>
-  <ul class="collapse">
-<li><a href="#new-features" id="toc-new-features" class="nav-link" data-scroll-target="#new-features">New features</a></li>
-  <li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug fixes</a></li>
-  <li><a href="#build" id="toc-build" class="nav-link" data-scroll-target="#build">Build</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#ferx-0.1.5" id="toc-ferx-0.1.5" class="nav-link" data-scroll-target="#ferx-0.1.5">ferx 0.1.5</a>
-  <ul class="collapse">
-<li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
-  <li><a href="#new-features-1" id="toc-new-features-1" class="nav-link" data-scroll-target="#new-features-1">New features</a></li>
-  <li><a href="#bug-fixes-1" id="toc-bug-fixes-1" class="nav-link" data-scroll-target="#bug-fixes-1">Bug fixes</a></li>
-  <li><a href="#new-features-2" id="toc-new-features-2" class="nav-link" data-scroll-target="#new-features-2">New features</a></li>
-  <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking changes</a></li>
-  <li><a href="#bug-fixes-2" id="toc-bug-fixes-2" class="nav-link" data-scroll-target="#bug-fixes-2">Bug fixes</a></li>
-  <li><a href="#documentation-1" id="toc-documentation-1" class="nav-link" data-scroll-target="#documentation-1">Documentation</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#ferx-0.1.2" id="toc-ferx-0.1.2" class="nav-link" data-scroll-target="#ferx-0.1.2">ferx 0.1.2</a>
-  <ul class="collapse">
-<li><a href="#new-features-3" id="toc-new-features-3" class="nav-link" data-scroll-target="#new-features-3">New features</a></li>
-  <li><a href="#documentation-2" id="toc-documentation-2" class="nav-link" data-scroll-target="#documentation-2">Documentation</a></li>
-  <li><a href="#changes-to-existing-functions" id="toc-changes-to-existing-functions" class="nav-link" data-scroll-target="#changes-to-existing-functions">Changes to existing functions</a></li>
-  <li><a href="#bug-fixes-3" id="toc-bug-fixes-3" class="nav-link" data-scroll-target="#bug-fixes-3">Bug fixes</a></li>
-  </ul>
-</li>
-  </ul><div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">Changelog</h1>
@@ -621,9 +587,104 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="ferx-development" class="level1"><h1>ferx (development)</h1>
-<section id="new-features" class="level2"><h2 class="anchored" data-anchor-id="new-features">New features</h2>
+</header><p>Changes are tracked separately in each repository: the <strong>ferx-core</strong> Rust engine (<code>CHANGELOG.md</code>) and the <strong>ferx-r</strong> R package (<code>NEWS.md</code>). Use the tabs below to switch between them.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">ferx-core (Rust engine)</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">ferx-r (R package)</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<section id="changelog" class="level3"><h3 class="anchored" data-anchor-id="changelog">Changelog</h3>
+<p>All notable changes to <strong>ferx-core</strong> are documented here.</p>
+<p>The format is based on <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>, and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a> (see the <a href="https://ferx-nlme.github.io/ferx-core/development/sdlc.html#9-releases">Releases</a> section of the SDLC for the versioning policy).</p>
+<!--
+  HOW TO MAINTAIN THIS FILE
+  - Add an entry under [Unreleased] in the same PR as your change, in the right
+    category (Added / Changed / Deprecated / Removed / Fixed / Security /
+    Performance). One bullet, user-facing language, reference the issue/PR (#NN).
+  - At release time: rename [Unreleased] to the new version + date, then start a
+    fresh empty [Unreleased] and update the compare links at the bottom.
+  - The R wrapper (ferx-r) tracks its own user-facing changes in NEWS.md.
+-->
+<section id="unreleased" class="level4"><h4 class="anchored" data-anchor-id="unreleased"><a href="https://github.com/FeRx-NLME/ferx-core/compare/v0.1.5...HEAD">Unreleased</a></h4>
+<section id="added" class="level5"><h5 class="anchored" data-anchor-id="added">Added</h5>
 <ul>
+<li>Example <code>dose_rate.ferx</code> (+ <code>data/dose_rate.csv</code>) demonstrating the supported NONMEM <code>RATE</code> dosing forms — a bolus (<code>RATE=0</code>) and a constant-rate infusion (<code>RATE&gt;0</code>) mixed in one dataset (#324).</li>
+<li>Configurable RK45 ODE solver tolerances via <code>[fit_options]</code> (and call-time settings): <code>ode_reltol</code> (default <code>1e-4</code>), <code>ode_abstol</code> (default <code>1e-6</code>), and <code>ode_max_steps</code> (default <code>10000</code>). Defaults are unchanged, so existing fits are unaffected. Previously the tolerance was hardcoded, which made the OFV of an ODE-form model differ from its analytical equivalent by several units (the FOCE objective amplifies the ~<code>1e-4</code> solver error); a tighter <code>ode_reltol</code> now lets the two forms agree. Carried on <code>OdeSpec::solver_opts</code> and applied via <code>CompiledModel::sync_ode_solver_opts</code> (#127).</li>
+<li>Propensity-score-matched simulation: <code>simulate_with_options()</code> with a new <code>SimulateOptions { seed, propensity_match }</code>. When <code>propensity_match</code> is set, each replicate’s drawn etas are reassigned to subjects by optimal Mahalanobis matching (under the model Ω) against the subjects’ fitted (posthoc) etas, so a subject’s observed dosing/sampling design is paired with a similar drawn eta. This corrects VPC bias from treatment adaptation in real-world data (longer intervals for high-clearance patients, etc.). Operates on observed data; returns the usual simulation rows for the caller to build the VPC (#288).</li>
+<li>New <code>importance_sampling_map</code> (alias <code>impmap</code>) estimation method: a Monte-Carlo EM estimator equivalent to NONMEM <code>METHOD=IMPMAP</code>. Each iteration re-centers a per-subject importance-sampling proposal on the conditional mode (MAP) and updates θ/Ω/σ from the importance-weighted posterior moments. Runs standalone or chained (<code>methods = [focei, impmap]</code>); multivariate-normal proposal by default (<code>impmap_proposal_df = normal</code>), Student-t optional. Validated against FOCEI on warfarin. IOV and SDE models are not yet supported (#270).</li>
+<li>Importance sampling can now run <strong>standalone</strong> (<code>method = imp</code>), evaluating the IS log-likelihood at the initial parameters — IMP derives the EBEs/Jacobian it needs via a FOCE inner loop at those parameters instead of requiring a preceding estimator. Useful for scoring imported/fixed parameter sets. IMP still may appear at most once and must be the terminal stage of a chain.</li>
+<li>Feature maturity labels (<code>stable</code> / <code>beta</code> / <code>experimental</code>) documented for every major feature: a new <em>Feature Maturity</em> docs page with definitions and a per-feature table, plus a maturity banner on each feature reference page. Experimental features (<code>[diffusion]</code> / SDE, <code>[covariate_nn]</code> / neural networks) now emit a runtime warning at fit time (<code>W_EXPERIMENTAL_SDE</code>, <code>W_EXPERIMENTAL_NN</code>), also surfaced by <code>ferx check</code> (#175).</li>
+<li>
+<code>covariance_method</code> fit option: choose the covariance estimator, mirroring NONMEM <code>$COV MATRIX=</code> — <code>r</code> (inverse Hessian <code>R⁻¹</code>, default), <code>s</code> (inverse score cross-product <code>S⁻¹</code>), or <code>rsr</code> (the Huber–White sandwich <code>R⁻¹SR⁻¹</code>, robust to model mis-specification). Supported for FOCEI, FOCE, and IOV fits; anchored against NONMEM <code>$COV MATRIX=S</code>/<code>RSR</code> within ~10% for both FOCEI (#266) and FOCE (#250) (#223).</li>
+<li>
+<code>covariance_fallback = sir</code> fit option: when the FD Hessian is non-positive-definite, run SIR with an <code>|eigenvalue|</code>-rectified proposal (4× inflated) instead of leaving the covariance step as failed; <code>covariance_status</code> reports <code>sir_fallback</code> (#223).</li>
+<li>
+<code>covariance_matrix:</code> block in <code>*-fit.yaml</code>: the full optimizer-space parameter covariance matrix (log-theta, Cholesky-omega, log-sigma; kappa appended for IOV models), parameter-labelled, emitted when the covariance step succeeds or is regularised. Omega/kappa diagonal entries are keyed <code>log_chol_&lt;eta&gt;</code> (packed value is <code>log(L_ii)</code>); off-diagonal entries are keyed <code>chol_&lt;row&gt;_&lt;col&gt;</code> (<code>L_ij</code>, not log-transformed) (#236).</li>
+<li>Time-to-event / survival modelling (Phase 1): <code>[event_model]</code> block, TTE datareader, likelihood, and API wiring, behind the <code>survival</code> feature (#191, #192).</li>
+<li>
+<code>[data_selection]</code> block with NONMEM-style <code>IGNORE</code>/<code>ACCEPT</code> record filtering, plus an <code>ExclusionSummary</code> on <code>FitResult</code> surfaced in the CLI and YAML output.</li>
+<li>Combined ferx-core + ferx-r development documentation: a Development Lifecycle (SDLC) page and a Contributing page in the book.</li>
+<li>
+<code>[structural_model]</code> now warns when a <code>pk(...)</code> line maps a parameter the chosen model does not use (e.g.&nbsp;<code>ka</code> or <code>f</code> on an IV model, or <code>q</code>/<code>v2</code> on a one-compartment model); the mapping is accepted but has no effect (#309).</li>
+<li>
+<code>[individual_parameters]</code> now warns when a declared parameter is computed but never used — neither mapped into the <code>pk(...)</code> model nor referenced in any other block (e.g.&nbsp;declaring <code>F</code> but forgetting <code>f=F</code>); it silently has no effect (#309).</li>
+<li>
+<code>MACHEPS</code> (machine epsilon) is now available in <code>[odes]</code> RHS and <code>init(...)</code> expressions, matching its existing availability in <code>[derived]</code> (#314).</li>
+<li>The “computed but never used” warning above now also covers <strong>ODE models</strong>: an <code>[individual_parameters]</code> entry never referenced in the <code>[odes]</code> right-hand side (nor in <code>[scaling]</code>/<code>[derived]</code>/<code>[output]</code>) is flagged the same way. The engine-applied <code>F</code> (bioavailability) and <code>lagtime</code> (alias <code>alag</code>), which act on the dose without appearing in the RHS, are exempt (#315).</li>
+</ul></section><section id="changed" class="level5"><h5 class="anchored" data-anchor-id="changed">Changed</h5>
+<ul>
+<li>FOCEI gradient-based optimizers (SLSQP, L-BFGS, built-in BFGS, Gauss-Newton) now add the <code>log|H̃|</code> EBE-response term (the #274/#289 Δ) to the population gradient, so they reach the true marginal minimum instead of stalling above it on the fixed-EBE gradient (e.g.&nbsp;warfarin FOCEI −282.8 → −286.0, matching the derivative-free BOBYQA default). The term reuses the Laplace intermediates the gradient already forms (one extra <code>n_eta×n_eta</code> solve per subject) and is zero for additive error; the BOBYQA default is unaffected (it uses no gradient). The ω-block of the correction remains deferred (#335) (#330).</li>
+<li>The default inner (per-subject EBE) convergence tolerance <code>inner_tol</code> is now <code>1e-5</code> (was <code>1e-4</code>). A looser inner tolerance left residual noise in each subject’s EBE solution that propagated into the marginal objective, causing the derivative-free BOBYQA outer optimizer to false-converge above the true minimum on noisy-marginal models (notably log-transform-both-sides FOCE). The tighter default matches NONMEM’s minimum at roughly 1.5× the per-fit cost; loosen it via <code>inner_tol</code> in <code>[fit_options]</code> to recover the old speed on well-conditioned fits (#330).</li>
+<li>FOCE (non-interaction) now evaluates the residual variance at the population prediction <code>f(η=0)</code> — NONMEM’s <code>METHOD=1</code> (no <code>INTER</code>) semantics — instead of the linearized <code>f0 = f(η̂) − H·η̂</code>. On nonlinear models (e.g.&nbsp;oral absorption) with proportional/combined error, <code>f0</code> could extrapolate to near-zero or negative concentrations, collapsing <code>R(f0) = (f0·σ)²</code> and making the marginal multimodal with an indefinite covariance Hessian (garbage SEs reported as “likely reliable”). FOCE+proportional fits now converge deterministically, reproduce NONMEM FOCE estimates/SEs (within ~3% on a 1-cpt oral benchmark), and yield a positive-definite covariance. Additive-error FOCE is unchanged (its variance is <code>f</code>-independent). The FOCE covariance for <code>f</code>-dependent error uses the reconverged-OFV second-difference Hessian (the true objective curvature) rather than the envelope-approximation analytical gradient (#319).</li>
+<li>IMP (importance sampling) now jointly samples (η, κ) for IOV models, integrating over inter-occasion variability so the reported <code>−2 log L</code> is directly comparable to FOCE/FOCEI and NONMEM <code>METHOD=IMP</code>. Previously κ was held fixed at its EBE mode, giving a partial marginal; <code>kappa_treatment</code> in the fit YAML is now <code>marginalized</code> rather than <code>fixed_at_mode</code> (#186).</li>
+<li>A <code>[structural_model]</code> <code>pk(...)</code> line that omits a required parameter for the chosen model (e.g.&nbsp;<code>ka</code> for <code>one_cpt_oral</code>) is now a parse error naming the missing parameter, instead of silently defaulting that slot to <code>0.0</code> and fitting to a structurally broken optimum (#309).</li>
+</ul></section><section id="fixed" class="level5"><h5 class="anchored" data-anchor-id="fixed">Fixed</h5>
+<ul>
+<li>NONMEM coded <code>RATE</code> values (<code>-1</code> = modeled rate, <code>-2</code> = modeled duration) — and any other negative or non-finite <code>RATE</code> on a dose row — are now rejected with an informative error naming the subject and time, instead of being silently treated as an IV bolus (which produced wrong predictions with no warning). Modeled rate/duration support is not yet implemented; convert such rows to an explicit positive <code>RATE</code> (= <code>AMT</code>/duration) before importing (#324).</li>
+<li>A <code>[structural_model]</code> PK parameter that references a name not defined in <code>[individual_parameters]</code> (e.g.&nbsp;<code>pk one_cpt_oral(cl=CL, ...)</code> with no <code>CL</code>) is now a parse error instead of being silently dropped and defaulting the slot to 0.0 — which previously produced a “converged” but structurally broken fit (all predictions floored, 100% shrinkage). An unrecognized PK-parameter key (e.g.&nbsp;the typo <code>clx=</code>) is likewise rejected, and a numeric-literal value (e.g.&nbsp;<code>ka=1.0</code>) is now honored as a constant rather than dropped to 0.0 (#261).</li>
+<li>A name in an <code>[odes]</code> RHS or <code>init(...)</code> expression that is not a declared state, individual parameter, ODE-block intermediate, or reserved time variable (<code>TIME</code>/<code>TAFD</code>/<code>TAD</code>) is now a parse error instead of silently resolving to <code>0.0</code> — the ODE counterpart of the analytical guard above, which otherwise produced a “converged” but structurally broken fit (#314).</li>
+<li>Datasets without an <code>EVID</code> column no longer silently fit a dose-free model. ferx now infers a dose from a nonzero <code>AMT</code> when <code>EVID</code> is absent (matching NONMEM), so legacy datasets that mark doses only by <code>AMT</code>/<code>MDV=1</code> administer correctly. As a safety net, the reader also warns when <code>AMT != 0</code> rows are not treated as doses (<code>W_AMT_NOT_DOSED</code>) or when a population with observations parses zero dose events (<code>W_NO_DOSES</code>) (#262).</li>
+<li>Autodiff builds now fall back to finite differences for analytical models the single-snapshot AD kernel cannot represent faithfully: non-log-normal ETAs (additive / logit), conditional (<code>if</code>-branch) individual-parameter expressions, log-transform-both-sides (<code>log_additive</code>) error, eta-dependent <code>[scaling] obs_scale</code> expressions (e.g.&nbsp;<code>obs_scale = V</code>), and time-to-event (<code>[event_model]</code>) hazard likelihoods. The kernel hardcodes the log-normal map <code>param = tv*exp(eta)</code> (plus a log-wrap for LTBS, a subject-static eta-frozen <code>obs_scale</code>, and the PK NLL rather than the hazard term for TTE), so these previously produced inner gradients inconsistent with the objective - a small bias on well-conditioned data, but on ill-conditioned FOCEI-INTER fits a spurious variance-collapsed optimum with an OFV far below NONMEM’s. FD-only CI never exercised the AD path, so the divergence went undetected (surfaced by an external NONMEM/OpenPMX/ferx benchmark, FeRx-NLME/ferx-r#154). The default non-autodiff build was never affected (#278).</li>
+<li>FOCEI covariance standard errors (non-IOV) now include the <code>log|H̃|</code> EBE-response curvature for mu-referenced structural parameters, bringing the non-IOV stencil in line with the IOV stencil and matching NONMEM <code>$COV MATRIX=R</code> more closely on models with η-dependent (proportional/combined) residual error. The fixed-η̂ analytic gradient previously dropped this term — the envelope theorem zeros the inner objective but not <code>log|H̃|</code> — and the resulting SE gap grew with the proportional error magnitude. Additive-error SEs are unchanged (the correction is identically zero when <code>∂R/∂f = 0</code>) (#274).</li>
+<li>IOV models: <code>[derived]</code> columns, <code>[output]</code> individual parameters, and the TAD column in <code>sdtab</code> now use each observation’s <strong>occasion</strong> kappa instead of silently treating every kappa as zero. Post-fit diagnostic columns that depend on a κ-varying parameter (e.g.&nbsp;<code>CL</code>, <code>V</code>, <code>KA</code>) were wrong for IOV subjects; the fitted estimates, OFV, and IPRED/IWRES were unaffected (#238).</li>
+<li>The <code>sdtab</code> TAD column now shifts each dose by <strong>its own</strong> absorption lag — evaluated with that dose’s occasion kappa and that dose’s covariate snapshot — rather than applying the observation’s lag to every dose. This changes TAD only when the absorption lag varies across doses, i.e.&nbsp;when it carries IOV (kappa) or depends on a time-varying covariate, <em>and</em> dosing spans the differing values (e.g.&nbsp;BID across two occasions); models with a constant lag are unaffected (follow-up to #238).</li>
+<li>FOCE (non-interaction) omega standard errors now match NONMEM <code>$EST METHOD=1</code> <code>$COVARIANCE MATRIX=R</code> (to ~3–6% on warfarin, previously ~31% low). The covariance step had added the Ω prior (<code>η̂ᵀΩ⁻¹η̂ + log|Ω|</code>) on top of the Sheiner–Beal marginal, which already carries Ω through <code>R̃ = HΩHᵀ + R</code> — double-counting Ω and flattening the omega-block curvature. FOCE estimates were already correct; only the SEs were affected (#243).</li>
+<li>The covariance step now succeeds on models with a mixed block + diagonal Ω: the structural-zero cross-block off-diagonals (<code>free_mask == false</code>) are excluded from the parameter set like FIX parameters, so their flat Hessian diagonal no longer aborts the step. This affected both FOCE and FOCEI (#243).</li>
+<li>Covariance standard errors now match NONMEM <code>$COVARIANCE MATRIX=R</code> (within ~2% on warfarin). The covariance step reconverges the inner EBE loop at every finite-difference point — holding the EBEs fixed gave an indefinite Hessian that was clipped and inflated theta/sigma SEs 30–94× — and applies the correct factor of two for the <code>−2·logL</code> objective (every SE was previously <code>1/√2</code> too small) (#209, #196, #129).</li>
+<li>Covariance step: <code>fd_hessian_step</code> is now an <em>initial</em> step; ferx automatically halves it up to 8× if any diagonal FD stencil is non-finite (#223).</li>
+<li>IOV FOCEI marginal likelihood now matches NONMEM after the Almquist Laplace correction (#109, #203).</li>
+<li>SAEM no longer collapses a block Ω to a rank-1 (near-unit-correlation) solution (#191).</li>
+<li>Stacked <code>EVID=4</code> reset occasions are segmented onto a monotonic timeline (#195, #197).</li>
+<li>
+<code>sdtab</code> no longer emits stray ETA columns (regression from #185).</li>
+<li>
+<code>warfarin --simulate</code> works again, and the docs <code>verify-build</code> step is fixed (#199, #200).</li>
+</ul></section><section id="performance" class="level5"><h5 class="anchored" data-anchor-id="performance">Performance</h5>
+<ul>
+<li>The covariance step is now built as a single parallel work-list over the finite-difference points (subjects iterated serially within each point) instead of firing a per-subject parallel reduction at every perturbed point. This removes the fork/join overhead of up to <code>4·n_free</code> rayon barriers in series — the bottleneck was scheduling, not core utilisation — making the covariance step ~9–11× faster across error models and structures, with bit-identical results. Both stencils are flattened: the non-IOV analytic-gradient difference and the IOV <code>OFV</code>-second-difference (the latter has <code>~2·n_free²</code> points, so it benefits even more) (#256).</li>
+<li>The covariance Hessian is built from a central difference of the analytical population gradient — reusing H-matrix columns for mu-referenced parameters instead of finite-differencing predictions — making the covariance step ~9× faster than scalar finite differencing on warfarin, scaling with the number of free parameters (#209, #196).</li>
+<li>Autodiff inner gradients now flow through <code>EVID=3/4</code> resets and lag time, removing a large finite-difference fallback slowdown (#198).</li>
+</ul></section></section><section id="section" class="level4"><h4 class="anchored" data-anchor-id="section">
+<a href="https://github.com/FeRx-NLME/ferx-core/compare/v0.1.0...v0.1.5">0.1.5</a> - 2026-06-01</h4>
+<p>Released before this changelog was started. See the <a href="https://github.com/FeRx-NLME/ferx-core/releases/tag/v0.1.5">GitHub release</a> and <code>git log v0.1.0..v0.1.5</code> for details.</p>
+</section><section id="section-1" class="level4"><h4 class="anchored" data-anchor-id="section-1">
+<a href="https://github.com/FeRx-NLME/ferx-core/releases/tag/v0.1.0">0.1.0</a> - 2026-05-29</h4>
+<p>Initial tagged release. See the <a href="https://github.com/FeRx-NLME/ferx-core/releases/tag/v0.1.0">GitHub release</a>.</p>
+</section></section>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<section id="ferx-development" class="level3"><h3 class="anchored" data-anchor-id="ferx-development">ferx (development)</h3>
+<section id="new-features" class="level4"><h4 class="anchored" data-anchor-id="new-features">New features</h4>
+<ul>
+<li><p><strong>Configurable ODE solver tolerance</strong>: ODE models accept <code>ode_reltol</code> (default <code>1e-4</code>), <code>ode_abstol</code> (default <code>1e-6</code>), and <code>ode_max_steps</code> (default <code>10000</code>) in the model file’s <code>[fit_options]</code> block or via <code>ferx_fit(settings = list(ode_reltol = ...))</code>. Defaults are unchanged, so existing fits are unaffected. PRED reproduces the analytical closed form to about <code>1e-4</code>, but the FOCE objective amplifies solver error, so the OFV of an ODE-form model could differ from its analytical equivalent by several units; a tighter <code>ode_reltol</code> lets the two agree. The shipped <code>*_ode</code> examples now set <code>ode_reltol = 1e-10</code>, and <code>test-ode-analytical-equivalence.R</code> checks the OFV agrees within a tolerance band in addition to PRED. (Requires ferx-core with FeRx-NLME/ferx-core#334.)</p></li>
+<li><p><strong>Standard PK models in ODE form</strong>: every standard analytical model (<code>one_cpt_iv</code>, one-compartment oral = <code>warfarin</code>, <code>two_cpt_iv</code>, <code>two_cpt_oral_cov</code>, <code>three_cpt_iv</code>, <code>three_cpt_oral</code>) now ships an ODE-form example alongside its analytical counterpart (<code>*_ode</code>, plus new analytical <code>one_cpt_iv</code> / <code>three_cpt_oral</code> examples and datasets). The ODE forms use an amount-based convention (states are amounts; observed concentration via <code>[scaling] obs_scale = V</code>/<code>V1</code>), with bioavailability <code>F</code> and lag time applied by the engine at the dose rather than baked into the <code>[odes]</code> RHS. A new test (<code>test-ode-analytical-equivalence.R</code>) asserts each shipped pair gives identical predictions; the exhaustive cross-check across all dosing modes (bolus, infusion, multi-dose, steady state, lag, F) lives in ferx-core (<code>tests/analytical_ode_equivalence.rs</code>). Also fixes <code>bioavailability_ode</code>, which double-counted <code>F</code> (it was both declared as an individual parameter – applied at the dose by the engine – and baked into the absorption flux). (#127)</p></li>
+<li><p><strong>Propensity-score-matched simulation</strong>: <code>ferx_simulate(..., match = TRUE)</code> reassigns each replicate’s drawn etas to subjects by optimal Mahalanobis matching (under the model omega) against the subjects’ fitted (posthoc) etas, so a subject’s observed dosing/sampling design is paired with a similar drawn eta. This corrects VPC bias from treatment adaptation in real-world data (e.g.&nbsp;longer dosing intervals for high-clearance patients). Requires observed data; the posthoc etas use the fitted parameters when a <code>fit</code> is supplied. Needs a ferx-core that provides <code>simulate_with_options</code> (separate <code>Cargo.lock</code> bump). (ferx-core #288)</p></li>
+<li><p><strong>Standalone importance sampling</strong>: <code>ferx_fit(..., method = "imp")</code> now runs without a preceding estimator, scoring the model’s initial parameters (<code>fit$importance_sampling</code> is populated, <code>fit$method_chain</code> is <code>"IMP"</code>). The R-side guard that rejected a lone <code>"imp"</code> has been removed; the at-most-once and must-be-terminal checks remain. Needs a ferx-core that allows standalone IMP (separate <code>Cargo.lock</code> bump). (ferx-core #269)</p></li>
+<li><p><strong>Covariance estimator &amp; non-PD fallback options</strong>, forwarded via <code>settings</code>: <code>covariance_method</code> (<code>"r"</code> inverse-Hessian / <code>"s"</code> score cross-product / <code>"rsr"</code> Huber-White sandwich standard errors) and <code>covariance_fallback</code> (<code>"sir"</code> runs SIR with an absolute-eigenvalue-rectified proposal when the finite-difference Hessian is not positive definite). <code>fit$covariance_status</code> can now be <code>"sir_fallback"</code>, which is documented and labelled. Needs a ferx-core that provides these options (separate <code>Cargo.lock</code> bump). (ferx-core #245, #248)</p></li>
+<li><p><code>ferx_model_show()</code> now <strong>syntax-highlights</strong> <code>.ferx</code> files in colour-capable consoles: section headers (<code>[parameters]</code>, …) in bold yellow, declaration keywords (<code>theta</code>, <code>omega</code>, <code>sigma</code>, <code>kappa</code>, …) in cyan, and comments dimmed – via the optional <code>cli</code> package. Non-colour contexts (files, pipes, <code>NO_COLOR</code>, or no <code>cli</code> installed) print the raw text unchanged. (#4)</p></li>
+<li><p><strong>Covariate screen</strong> (<code>ferx_cov_screen()</code>): a quick, informal screen that correlates each declared covariate (from <code>fit$covtab</code>) with every parameter that has IIV – against both the subject’s individual parameter estimate and its ETA. Covariates are aggregated to one value per subject first (median for continuous, most-frequent level for categorical), and associations are reported as a signed Pearson correlation (continuous) or a correlation ratio (categorical), keeping only pairs above a threshold (default <code>|r| &gt;= 0.2</code>). Intended to flag what is worth a formal covariate search, not as a covariate test itself.</p></li>
 <li>
 <p><strong>Data-selection filtering</strong> (<code>[data_selection]</code> block, <code>ferx_fit(ignore=)</code>, <code>ferx_selection()</code>): records can now be excluded from the analysis dataset at read time without modifying the CSV – equivalent to NONMEM <code>$DATA IGNORE=</code> / <code>ACCEPT=</code>. Three entry points:</p>
 <ul>
@@ -645,14 +706,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><code>fit$sdtab</code> gains a <code>CMT</code> column for multi-endpoint models (present whenever any observation row has <code>CMT != 1</code>). Use this column to split GOF plots by endpoint without rejoining the original dataset.</p></li>
 <li><p><code>fit$sdtab</code> now carries the actual subject ID from the data (parsed as numeric where possible). Previously the ID column was a 1-based loop index that broke downstream joins when IDs were non-consecutive or non-numeric. Non-numeric IDs now trigger a <code>warning</code>-severity message.</p></li>
 <li><p><code>ferx_fit</code> objects from file-based fits now carry <code>fit$model_text</code> (verbatim <code>.ferx</code> source), <code>fit$theta_init</code> / <code>fit$omega_init</code> / <code>fit$sigma_init</code> (optimizer starting values), <code>fit$obs_time_range</code>, <code>fit$final_gradient</code>, <code>fit$optimizer_label</code>, <code>fit$bloq_method_label</code>, <code>fit$n_starts</code>, <code>fit$inits_from_nca</code>, <code>fit$covariate_names</code>, and several reproducibility seed fields. These fields power <code>ferx_runlog()</code> and are preserved in <code>.fitrx</code> bundles.</p></li>
-</ul></section><section id="bug-fixes" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes">Bug fixes</h2>
+</ul></section><section id="bug-fixes" class="level4"><h4 class="anchored" data-anchor-id="bug-fixes">Bug fixes</h4>
 <ul>
+<li><p>A <code>[structural_model]</code> PK parameter that maps to a name not defined in <code>[individual_parameters]</code> (e.g.&nbsp;<code>pk one_cpt_oral(cl=CL, ...)</code> with no <code>CL</code>) is now a clear parse error instead of silently fitting a structurally broken model (every prediction floored, 100% shrinkage). An unrecognized PK-parameter key (a typo such as <code>clx=</code>) is likewise rejected, and a numeric-literal value (e.g.&nbsp;<code>ka=1.0</code>) is honored as a constant rather than silently zeroed. Delivered by bumping the ferx-core pin; no wrapper change (ferx-core#261).</p></li>
+<li><p>Datasets without an <code>EVID</code> column no longer silently fit a dose-free model. ferx now infers a dose from a nonzero <code>AMT</code> when <code>EVID</code> is absent (matching NONMEM), so a NONMEM dataset that marks doses only by <code>AMT</code>/<code>MDV=1</code> administers correctly instead of dropping every dose. The reader also warns when <code>AMT != 0</code> rows are not treated as doses, or when a population parses zero doses despite having observations. Delivered by bumping the ferx-core pin; no wrapper change (ferx-core#262).</p></li>
+<li><p>IOV models: the <code>sdtab</code> diagnostic table (<code>fit$sdtab</code>) now reports each observation’s <strong>occasion</strong> individual parameters – <code>CL</code>, <code>V</code>, <code>KA</code>, any <code>[derived]</code>/<code>[output]</code> column, and <code>TAD</code> – instead of silently using <code>kappa = 0</code> for every row, so a parameter with inter-occasion variability no longer looks identical across occasions. <code>TAD</code> additionally shifts each dose by its own occasion (and covariate) absorption lag. Delivered by bumping the ferx-core pin; no wrapper change (ferx-core#238).</p></li>
 <li><p>Shapiro-Wilk ETA-normality flags now fold into a single warning that lists every flagged ETA (with its p-value) instead of firing one warning per ETA. Both <code>fit$warnings</code> and the structured <code>eta_normality</code> warning shown by <code>ferx_warnings()</code> are affected (ferx-core#163).</p></li>
 <li><p><code>ferx_runlog()</code>: theta names now resolve via <code>names(fit$theta)</code> (where <code>R/fit.R</code> stores them) instead of <code>fit$theta_names</code> (which is <code>NULL</code> by design after the R post-processing step). Fall-back chain: <code>names(fit$theta)</code> → <code>fit$theta_names</code> → <code>fit$model_structure$theta_names</code> → <code>THETA(i)</code>.</p></li>
 <li><p><code>ferx_runlog()</code>: <code>model_text</code>, <code>inits_from_nca</code>, and seed fields (<code>multi_start_seed</code>, <code>saem_seed</code>, <code>sir_seed_used</code>, <code>is_seed</code>) now guard against <code>NA_character_</code> / <code>NA_real_</code> values that extendr emits for Rust <code>Option&lt;T&gt;::None</code>, preventing spurious “NA” entries in the run log.</p></li>
 <li><p><code>ferx_runlog()</code>: gradient-tolerance line suppressed for derivative-free optimizers (BOBYQA, GN, SAEM) where a gradient tolerance is not applicable.</p></li>
 <li><p><code>ferx_rust_fit()</code> (internal): <code>fit$model_text</code> was <code>NA</code> for file-based fits because the R binding’s provenance block set <code>model_path</code> / <code>model_hash</code> but did not set <code>model_text</code>. Fixed by reading the model file in the same block.</p></li>
-</ul></section><section id="build" class="level2"><h2 class="anchored" data-anchor-id="build">Build</h2>
+</ul></section><section id="build" class="level4"><h4 class="anchored" data-anchor-id="build">Build</h4>
 <ul>
 <li>
 <code>src/Makevars</code>: the autodiff build now forces fat LTO with <code>override</code>. R CMD INSTALL runs make with <code>-e</code> semantics, so a stale <code>CARGO_PROFILE_RELEASE_LTO=thin</code> in the environment could previously leak past the makefile and silently build autodiff with thin LTO — which keeps the differentiated ferx-core functions in a separate module from their callers and breaks cross-crate Enzyme. <code>override</code> makes the makefile value authoritative regardless of the environment.</li>
@@ -660,12 +724,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code>src/Makevars</code>: building with <code>FERX_NO_AUTODIFF=0</code> now preflights for the <code>enzyme</code> rustup toolchain and fails fast with an actionable message (how to install the toolchain, or how to fall back to finite-difference gradients) instead of a cryptic <code>toolchain 'enzyme' is not installed</code> error from cargo.</li>
 <li>
 <code>src/ad-preflight.sh</code> (new): the autodiff build now runs an <em>AD self-test</em> before the long fat-LTO link. Registering an <code>enzyme</code> toolchain is not enough — a standalone Enzyme plugin copied into a prebuilt nightly’s sysroot passes the name check but then hangs forever in <code>llvm::Constant::getNullValue</code> the first time it differentiates anything. The self-test compiles and runs a real <code>#[autodiff_forward]</code> function under a portable timeout (no <code>timeout</code>/ <code>gtimeout</code> dependency); a hang is turned into a clean failure that aborts the build with a pointer to the toolchain rebuild instructions, instead of leaving the user staring at a wedged <code>rustc</code>. The result is cached per toolchain fingerprint, so identical reinstalls skip it. Set <code>FERX_AD_PREFLIGHT_SKIP=1</code> to bypass, or <code>FERX_AD_PREFLIGHT_TIMEOUT=&lt;seconds&gt;</code> to adjust the budget. (ferx-r#111)</li>
-</ul></section></section><section id="ferx-0.1.5" class="level1"><h1>ferx 0.1.5</h1>
-<section id="documentation" class="level2"><h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
+</ul></section></section><section id="ferx-0.1.5" class="level3"><h3 class="anchored" data-anchor-id="ferx-0.1.5">ferx 0.1.5</h3>
+<section id="documentation" class="level4"><h4 class="anchored" data-anchor-id="documentation">Documentation</h4>
 <ul>
 <li>
 <code>?ferx_fit</code>: the <code>settings</code> parameter block is restructured into labelled sections, one per estimation method (Shared, FOCE/FOCEI/GN-hybrid, Trust-region, SAEM, Gauss-Newton, Importance Sampling, SIR, Multi-start). Each key now lists its default value and which methods accept it.</li>
-</ul></section><section id="new-features-1" class="level2"><h2 class="anchored" data-anchor-id="new-features-1">New features</h2>
+</ul></section><section id="new-features-1" class="level4"><h4 class="anchored" data-anchor-id="new-features-1">New features</h4>
 <ul>
 <li><p><code>ferx_fit_async(model, data, ...)</code> now returns a <code>ferx_job</code> handle immediately so the R session stays free. Call <code>ferx_collect(handle)</code> to block-wait with live optimizer-trace progress; pass <code>verbose = FALSE</code> to suppress the display and just block until the result is ready. In RStudio the fit appears in the Jobs pane; elsewhere a <code><a href="https://callr.r-lib.org/reference/r_bg.html">callr::r_bg()</a></code> background process is used. The returned <code>ferx_fit</code> object is identical to what <code>ferx_fit()</code> produces. <strong>Breaking change from #91</strong>: <code>ferx_fit_async()</code> previously blocked and returned the fit directly; it now returns a handle that must be passed to <code>ferx_collect()</code>.</p></li>
 <li><p><code>print(fit)</code> has a new compact layout: a prominent <code>STATUS: CONVERGED</code> / <code>NOT CONVERGED</code> line with iteration count and wall time immediately after the header; OFV / AIC / BIC on one line; bold section headers with thin rules instead of <code>--- THETA Estimates ---</code> banners; shrinkage as a single line with inline <code>[!]</code> for values &gt; 30%; a diagnostics line consolidating covariance status, condition number, and Durbin-Watson; and a colour-coded warning-count footer pointing at <code>ferx_warnings(fit)</code>. Programmatic access (<code>fit$theta</code>, <code>ferx_estimates()</code>, <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>) is unchanged.</p></li>
@@ -692,12 +756,12 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 <li><p>New bundled example <code>ferx_example("transit_2cpt")</code>: two-compartment ODE model with 3-transit-compartment absorption and allometric scaling.</p></li>
 <li><p><code>ferx_fit()</code> accepts <code>"imp"</code> as a chained method (e.g.&nbsp;<code>method = c("focei", "imp")</code> or <code>method = c("saem", "imp")</code>). The terminal IMP stage runs an importance-sampling estimate of the marginal <code>-2 log L</code>, exposed on <code>fit$importance_sampling</code> (a list with <code>minus2_log_likelihood</code>, <code>mc_standard_error</code>, <code>n_samples</code>, <code>proposal_df</code>, <code>ess_min</code>/<code>ess_median</code>, <code>kappa_treatment</code>, and parallel <code>low_ess_subject_ids</code>/<code>low_ess_subject_frac</code> vectors). <code>print(fit)</code> and <code>summary(fit)</code> render the new block. New IMP-specific settings keys are recognized by <code>ferx_fit(settings = ...)</code>: <code>is_samples</code>, <code>is_proposal_df</code>, <code>is_seed</code>, <code>is_low_ess_threshold</code>. Requires ferx-core with importance-sampling support merged (FeRx-NLME/ferx-core IMP PR).</p></li>
 <li><p>New <code>stagnation_guard</code> key recognized by <code>ferx_fit(settings = ...)</code>. Pass <code>settings = list(stagnation_guard = FALSE)</code> to disable the NLopt outer-loop stagnation guard so SLSQP / L-BFGS run to their own xtol / ftol or to <code>maxiter</code> instead of short-circuiting on a numerically-flat OFV plateau. Useful for debugging or for problems with very slow but real OFV improvements below the guard’s 1e-3 threshold. Consumed by FOCE / FOCEI / GN-hybrid only. Requires ferx-core with PR FeRx-NLME/ferx-core#62 merged.</p></li>
-</ul></section><section id="bug-fixes-1" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-1">Bug fixes</h2>
+</ul></section><section id="bug-fixes-1" class="level4"><h4 class="anchored" data-anchor-id="bug-fixes-1">Bug fixes</h4>
 <ul>
 <li><p>SAEM no longer collapses the random-effect variances (Omega) on sparsely sampled data. Previously, with few observations per subject, the between-subject variability could shrink toward zero during the first iterations while the residual error absorbed it (tiny <code>omega</code>, inflated additive <code>sigma</code>). A burn-in now holds Omega fixed while the MH sampler warms up, tunable via <code>settings = list(omega_burnin = &lt;int&gt;)</code> (default 20; <code>0</code> restores the previous behaviour). Requires the matching ferx-core update that adds the SAEM Omega burn-in.</p></li>
 <li><p>SIR confidence intervals now work correctly for models with <code>FIX</code>-ed parameters. Previously, any fixed parameter caused the proposal covariance to be singular, and SIR returned “All SIR samples had invalid weights”. Sampling is now restricted to the free-parameter subspace and fixed parameters are held at their estimated values throughout. Requires ferx-core &gt;= 0.1.0 (commit 47b48b5, ferx-core#64).</p></li>
 <li><p>All output functions now display the declared variable name (<code>ETA_CL</code>, <code>EPS_PROP</code>) rather than wrapping it in <code>OMEGA()</code>/<code>SIGMA()</code>. Affected surfaces: <code>print(fit)</code> OMEGA section and shrinkage, <code>ferx_estimates()</code>, <code>ferx_cor_matrix()</code> (via <code>fit$cov_matrix</code> dimnames), <code>fit$omega</code> row/column names, <code>fit$sir_ci_omega</code>, <code>fit$sir_ci_sigma</code>, and <code>summary(fit)</code> shrinkage. When names are absent the fallback remains the conventional numbered form: <code>OMEGA(1,1)</code>, <code>SIGMA(1)</code>. (#19)</p></li>
-</ul></section><section id="new-features-2" class="level2"><h2 class="anchored" data-anchor-id="new-features-2">New features</h2>
+</ul></section><section id="new-features-2" class="level4"><h4 class="anchored" data-anchor-id="new-features-2">New features</h4>
 <ul>
 <li><p>IWRES autocorrelation diagnostic: <code>fit$dw_statistic</code> (pooled Durbin-Watson) and <code>fit$iwres_lag1_r</code> (pooled lag-1 Pearson r) are now returned by <code>ferx_fit()</code>. A <code>--- Diagnostics ---</code> block is printed by <code>print(fit)</code> when the values are available; an actionable <code><a href="https://rdrr.io/r/base/message.html">message()</a></code> is emitted when DW &lt; 1.5 or DW &gt; 2.5. The new <code>check_diagnostics(fit)</code> function returns a structured list with an <code>$autocorrelation</code> data frame and a tidy <code>$shrinkage</code> data frame covering both ETA and EPS components. Both fields round-trip through <code>ferx_save</code>/<code>ferx_load</code>; old <code>.fitrx</code> files deserialize with <code>NA</code>. Requires ferx-core ≥ 0.1.0 (commit 5653ddae, ferx-core#20). (#6)</p></li>
 <li><p>SDE support via Extended Kalman Filter: models with a <code>[diffusion]</code> block in the <code>.ferx</code> file now run through the EKF likelihood. <code>fit$uses_sde</code> is <code>TRUE</code> for these fits; diffusion variance parameters appear in <code>fit$theta</code> as <code>DIFF_&lt;STATE&gt;</code> (e.g.&nbsp;<code>DIFF_CENTRAL</code>). Autodiff is automatically forced to finite differences for SDE models; SAEM is not supported and raises a hard error. Requires ferx-core ≥ 0.1.0 (commit 03332951).</p></li>
@@ -706,7 +770,7 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 <li><p><code>ferx_simulate_with_uncertainty()</code> — simulate observations while propagating population parameter uncertainty in addition to the usual between-subject (eta) and residual (eps) variability. For each parameter set drawn from the uncertainty distribution (<code>method = "asymptotic"</code> uses <code>fit$cov_matrix</code>; <code>method = "sir"</code> reuses SIR resamples) the standard simulator runs <code>n_sim_per_draw</code> replicates. Output is a long data frame with a leading <code>DRAW</code> column so downstream code can compute uncertainty-aware prediction bands. Requires <code>covariance = TRUE</code> for asymptotic mode; SIR mode requires <code>sir = TRUE</code> and <code>sir_keep_samples = TRUE</code> (passed via <code>settings</code>) at fit time. <code>ferx_fit()</code> now also exposes <code>sir_resamples</code>, <code>sir_resamples_n</code>, and <code>sir_resamples_dim</code> for downstream consumers. Pairs with ferx-core#7.</p></li>
 <li><p><code>ferx_simulate()</code> output now includes a leading <code>DRAW</code> column (always <code>1</code> for non-uncertainty paths) for forward compatibility with <code>ferx_simulate_with_uncertainty()</code>. Downstream code that uses <code>subset(sim, ...)</code> or column selection by name is unaffected.</p></li>
 <li><p><code>ferx_fit()</code> now returns <code>$gradient_used</code> — the inner-loop gradient method the engine actually used (<code>"ad"</code>, <code>"fd"</code>, or <code>"N/A"</code>). When <code>gradient = "auto"</code> it shows which branch resolved at fit time; ODE models silently fall back from AD to FD even when <code>gradient = "ad"</code> was requested, and this field surfaces that fallback without needing to read warnings. The raw engine labels are also exposed as <code>$gradient_method_inner</code> / <code>$gradient_method_outer</code>. <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> shows both requested and used; <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> formats them as <code>auto (requested) -&gt; ad (used)</code> (ferx-core#1).</p></li>
-</ul></section><section id="breaking-changes" class="level2"><h2 class="anchored" data-anchor-id="breaking-changes">Breaking changes</h2>
+</ul></section><section id="breaking-changes" class="level4"><h4 class="anchored" data-anchor-id="breaking-changes">Breaking changes</h4>
 <ul>
 <li>
 <p><code>ferx_fit()</code> no longer has dedicated <code>max_unconverged_frac</code> and <code>min_obs_for_convergence_check</code> arguments. These are estimation knobs and now flow through <code>settings</code>, like the other low-level fit options (#51):</p>
@@ -721,17 +785,17 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 <p><code>ferx_model()</code> argument order is now <code>ferx_model(data, model)</code> (data first). This enables the natural data-first pipe entry point <code>ex$data |&gt; ferx_model(ex$model) |&gt; ferx_fit()</code> (#81).</p>
 <p>Old-style positional calls (<code>ferx_model("pk.ferx")</code> or <code>ferx_model("pk.ferx", "data.csv")</code>) are detected by the <code>.ferx</code> extension on what is now the <code>data</code> argument and auto-corrected with a deprecation warning. The compatibility shim will be removed in a future release. Calls that pass <code>data</code> by name (<code>ferx_model("pk.ferx", data = "data.csv")</code>) keep working unchanged because R matches <code>data =</code> by name first and the remaining positional argument falls into the <code>model</code> slot.</p>
 </li>
-</ul></section><section id="bug-fixes-2" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-2">Bug fixes</h2>
+</ul></section><section id="bug-fixes-2" class="level4"><h4 class="anchored" data-anchor-id="bug-fixes-2">Bug fixes</h4>
 <ul>
 <li><p>Bundled example <code>warfarin_additive_eta.ferx</code> used <code>tlag=TLAG</code> on its structural_model line. <code>tlag</code> was never a recognized PK parameter key in the engine, so the parser silently interpreted the value as the <code>cl=</code> parameter, overwriting the clearance value and producing incorrect fits. Updated to <code>lagtime=TLAG</code>. If you derived a local model from this example, change <code>tlag=</code> to <code>lagtime=</code> (or <code>alag=</code>). Pairs with ferx-core#12.</p></li>
 <li><p><code>ferx_model_validate()</code> no longer flags <code>[initial_values]</code> as a missing required section. The block was removed from the engine in <a href="https://github.com/FeRx-NLME/ferx-core/commit/e5e934d">ferx-core e5e934d</a> — theta / omega / sigma initial values are read from <code>[parameters]</code> and the parser silently ignores any leftover <code>[initial_values]</code> block. The R-side validator and <code>ferx_model_new()</code> templates hadn’t been updated. Now: validator’s <code>required_sections</code> drops <code>initial_values</code>, all five <code>ferx_model_new()</code> templates and every bundled <code>.ferx</code> example file emit the trimmed shape, and a regression test guards against the block creeping back into templates (#16).</p></li>
 <li><p><code>ferx_set_section()</code> now applies copy-on-write when the underlying <code>ferx_model</code> points at a file inside the installed <code>ferx</code> package directory (e.g.&nbsp;a model returned by <code>ferx_example()</code>). The file is copied to <code><a href="https://rdrr.io/r/base/tempfile.html">tempdir()</a></code> before editing and the returned <code>ferx_model</code>’s <code>$model</code> field is updated to the copy, preventing accidental modification of bundled examples. Plain-path callers are unaffected — passing a path string still edits in place (#80).</p></li>
 <li><p><code>ferx_check_init()</code> now accepts a <code>ferx_model</code> as its first argument (in addition to a plain path), so it can be placed directly in a pipe: <code>ex$data |&gt; ferx_model(ex$model) |&gt; ferx_check_init()</code>. When a <code>ferx_model</code> is supplied and <code>data</code> is not, the data path on the object is used (#79).</p></li>
-</ul></section><section id="documentation-1" class="level2"><h2 class="anchored" data-anchor-id="documentation-1">Documentation</h2>
+</ul></section><section id="documentation-1" class="level4"><h4 class="anchored" data-anchor-id="documentation-1">Documentation</h4>
 <ul>
 <li>New vignette <em>“Editing ferx model files programmatically”</em> covering <code>ferx_model_new()</code>, <code>ferx_model_section()</code>, and <code>ferx_model_set_section()</code>: skeleton creation, section inspection, read-modify-write patterns, a console-only fit workflow, and overwrite-guard behaviour.</li>
-</ul></section></section><section id="ferx-0.1.2" class="level1"><h1>ferx 0.1.2</h1>
-<section id="new-features-3" class="level2"><h2 class="anchored" data-anchor-id="new-features-3">New features</h2>
+</ul></section></section><section id="ferx-0.1.2" class="level3"><h3 class="anchored" data-anchor-id="ferx-0.1.2">ferx 0.1.2</h3>
+<section id="new-features-3" class="level4"><h4 class="anchored" data-anchor-id="new-features-3">New features</h4>
 <ul>
 <li><p>New <code>ferx_model_validate(path)</code> checks a <code>.ferx</code> file for syntax errors and missing required sections without running the optimizer. Prints a section presence report and returns <code>TRUE</code>/<code>FALSE</code> invisibly. Required sections are <code>[parameters]</code>, <code>[individual_parameters]</code>, <code>[structural_model]</code>, <code>[error_model]</code>, and <code>[initial_values]</code>; <code>[odes]</code> and <code>[fit_options]</code> are optional.</p></li>
 <li><p><code>ferx_fit()</code> now returns <code>$eigenvalues</code> (sorted descending) and <code>$condition_number</code> (ratio of largest to smallest eigenvalue) for the covariance correlation matrix. Both are <code>NULL</code> when the covariance step was not run or failed. <code>condition_number = Inf</code> signals a non-positive eigenvalue. A warning is appended when <code>condition_number &gt; 1000</code>. The condition number is shown on the <code>Covariance:</code> line in <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> output.</p></li>
@@ -739,16 +803,16 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 <li><p><code>ferx_fit()</code> now attaches <code>$model_structure</code> to every result: a named list with fields <code>theta_names</code>, <code>model_type</code>, <code>iiv</code>, <code>iov</code>, and <code>residual</code>. The same summary is shown in <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> output.</p></li>
 <li><p><code>ferx_model_section(path, section)</code> — extract and print the body of a named section from a <code>.ferx</code> model file; returns lines invisibly for scripted use.</p></li>
 <li><p><code>ferx_model_set_section(path, section, lines)</code> — replace the body of a named section in-place; the write complement to <code>ferx_model_section()</code>.</p></li>
-</ul></section><section id="documentation-2" class="level2"><h2 class="anchored" data-anchor-id="documentation-2">Documentation</h2>
+</ul></section><section id="documentation-2" class="level4"><h4 class="anchored" data-anchor-id="documentation-2">Documentation</h4>
 <ul>
 <li>New vignette <strong>“Model workflow: inspect, edit, fit”</strong> (<code>vignette("model-workflow", package = "ferx")</code>) demonstrates the pre-fit inspection workflow: <code>ferx_model_inspect()</code> before <code>ferx_fit()</code> to catch structural mistakes cheaply, and re-inspecting the fitted result via <code>ferx_model_inspect(fit)</code> (closes #57).</li>
-</ul></section><section id="changes-to-existing-functions" class="level2"><h2 class="anchored" data-anchor-id="changes-to-existing-functions">Changes to existing functions</h2>
+</ul></section><section id="changes-to-existing-functions" class="level4"><h4 class="anchored" data-anchor-id="changes-to-existing-functions">Changes to existing functions</h4>
 <ul>
 <li><p><code>ferx_fit()</code> now returns <code>$sigma_names</code> and <code>$sigma_types</code> (parallel to <code>$sigma</code>), and <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> displays each sigma with its declared name, the derived variance (<code>sigma^2</code>), and — for proportional components — the CV% (<code>sigma * 100</code>). Sigma is on the standard-deviation scale for both proportional and additive components, matching the new YAML output added in ferx-core#57. Closes #59.</p></li>
 <li><p><code>result$model_structure</code> is now sourced from the Rust engine (built from the parsed <code>CompiledModel</code>) instead of an R-side regex re-parse of the <code>.ferx</code> file (closes ferx-core#49). The shape is unchanged — <code>theta_names</code>, <code>model_type</code>, <code>iiv</code>, <code>iov</code>, <code>residual</code> — so <code>ferx_model_inspect()</code> callers see the same fields. <code>model_type</code> now distinguishes IV bolus from infusion (e.g.&nbsp;<code>"1-cpt IV infusion"</code>) and adds 3-cpt variants; the pre-fit <code>ferx_model_inspect(path)</code> parser was updated to the same label set so both the file-based and fit-based inspection paths report identical strings.</p></li>
 <li><p><code>ferx_model_edit()</code> gains <code>overwrite = FALSE</code>. Previously the function silently skipped the file copy when the destination already existed; it now errors with a clear message. Callers that relied on the silent-skip must add <code>overwrite = TRUE</code>.</p></li>
 <li><p><code>ferx_model_new()</code> gains <code>print = FALSE</code>. When <code>print = TRUE</code> the skeleton is printed to the console without writing any file or opening an editor; <code>path</code> becomes optional in that mode. Five templates are available: <code>"1cpt_oral"</code> (default), <code>"1cpt_iv"</code>, <code>"2cpt_oral"</code>, <code>"2cpt_iv"</code>, <code>"ode"</code>.</p></li>
-</ul></section><section id="bug-fixes-3" class="level2"><h2 class="anchored" data-anchor-id="bug-fixes-3">Bug fixes</h2>
+</ul></section><section id="bug-fixes-3" class="level4"><h4 class="anchored" data-anchor-id="bug-fixes-3">Bug fixes</h4>
 <ul>
 <li><p><code>print.ferx_fit()</code> now uses the exact coefficient of variation formula for <code>EXP(OMEGA)</code> log-normal parameters: <code>sqrt(exp(omega) - 1) * 100</code> instead of the approximation <code>sqrt(omega) * 100</code> (doi:10.1002/psp4.12507). Applied only when <code>eta_param_types == "log_normal"</code> (defaults to log-normal when the field is absent). Display for logit, additive, and custom ETA types is deferred to #53.</p></li>
 <li><p><code>ferx_model_section()</code>: fixed a descending-index bug where an empty section body (header immediately followed by another header) returned lines in reverse instead of <code>character(0)</code>.</p></li>
@@ -756,10 +820,14 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 <li><p><code>ferx_estimates()</code>: <code>estimate_natural</code> is now <code>NA</code> when SE is unavailable, matching the documented contract that all natural-scale columns are <code>NA</code> when the covariance step was not run. Previously the back-transform was always populated for <code>log</code> and <code>logit</code> thetas regardless of SE.</p></li>
 <li><p><code>.ferx_model_type()</code> (used by <code>ferx_model_inspect()</code>): now returns <code>"X-cpt IV infusion"</code> for <code>*_infusion</code> PK models, matching the label the Rust engine attaches post-fit. Previously the pre-fit label dropped the <code>IV</code> token.</p></li>
 <li><p><code>print.ferx_fit()</code>: the logit-ETA <code>+/-1SD</code> summary line is now ASCII; the previous <code>±</code> rendered as <code>&lt;U+00B1&gt;</code> under non-UTF-8 locales.</p></li>
-</ul>
+</ul></section></section>
+</div>
+</div>
+</div>
 
 
-</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+
+</main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1179,7 +1247,7 @@ DV ~ log_additive(ADD_LOG)    # DV already log-transformed in the data</code></p
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Fe · 26 · Rx · 2026</p>
 </div>

@@ -101,6 +101,9 @@ Otherwise, a list with components:</p>
 <dt>warfarin_if</dt>
 <dd><p>Two-compartment oral with conditional if/else covariate (WT)</p></dd>
 
+<dt>one_cpt_iv</dt>
+<dd><p>One-compartment IV (analytical <code>one_cpt_iv</code>)</p></dd>
+
 <dt>two_cpt_iv</dt>
 <dd><p>Two-compartment IV bolus</p></dd>
 
@@ -109,6 +112,20 @@ Otherwise, a list with components:</p>
 
 <dt>three_cpt_iv</dt>
 <dd><p>Three-compartment IV bolus</p></dd>
+
+<dt>three_cpt_oral</dt>
+<dd><p>Three-compartment oral (analytical <code>three_cpt_oral</code>)</p></dd>
+
+<dt>one_cpt_iv_ode, warfarin_ode, two_cpt_iv_ode, two_cpt_oral_cov_ode,
+three_cpt_iv_ode, three_cpt_oral_ode</dt>
+<dd><p>ODE-form transcriptions of the
+standard analytical models (<code>one_cpt_iv</code>, <code>warfarin</code> =
+one-cpt oral, <code>two_cpt_iv</code>, <code>two_cpt_oral_cov</code>,
+<code>three_cpt_iv</code>, <code>three_cpt_oral</code>). Each shares its analytical
+counterpart's dataset and parameters; states are amounts and the
+observed concentration is read out with <code>[scaling] obs_scale = V</code>
+(or <code>V1</code>). The two forms give identical predictions - verified by
+<code>test-ode-analytical-equivalence.R</code>.</p></dd>
 
 <dt>mm_oral</dt>
 <dd><p>One-compartment oral with Michaelis-Menten elimination (ODE)</p></dd>
@@ -168,8 +185,18 @@ needed.</p></dd>
 
 <dt>transit_2cpt</dt>
 <dd><p>Two-compartment ODE model with 3-transit-compartment
-absorption, allometric scaling on CL/V1/V2 (reference WT = 70 kg), and
-a lag time on the first transit compartment.</p></dd>
+absorption, allometric scaling on CL/V1/V2 (reference WT = 70 kg).
+Transit compartments provide the absorption delay without a hard lag time.</p></dd>
+
+<dt>warfarin_ode_lagtime</dt>
+<dd><p>One-compartment oral (warfarin) as an ODE model
+demonstrating the <code>LAGTIME</code> keyword in <code>[individual_parameters]</code>.
+Assigning to the reserved name <code>LAGTIME</code> delays every dose event for
+that subject by the individual lag time; no change to the ODE equations is
+needed. IIV on <code>LAGTIME</code> is log-normal; individual lag times are
+recovered in <code>fit$individual_estimates</code>. Contrast with the
+<code>lagtime=</code> argument used in analytical PK solvers
+(<code>warfarin_additive_eta</code>).</p></dd>
 
 <dt>emax_pkpd</dt>
 <dd><p>Simultaneous PK/PD: oral 1-compartment PK plus an
@@ -242,19 +269,23 @@ list.files(system.file("examples", package = "ferx"), pattern = "\.R$")
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ferx_example</span><span class="op">(</span><span class="op">)</span>                        <span class="co"># list all available example names</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "bioavailability"         "bioavailability_ode"    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "emax_pkpd"               "mm_multistart"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "mm_oral"                 "three_cpt_iv"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "transit_2cpt"            "two_cpt_iv"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "two_cpt_oral_cov"        "two_cpt_oral_derived"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "warfarin"                "warfarin_additive_eta"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "warfarin_addl"           "warfarin_block_omega"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "warfarin_bloq"           "warfarin_data_selection"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "warfarin_dcm"            "warfarin_derived"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "warfarin_derived_pkpd"   "warfarin_if"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "warfarin_iov"            "warfarin_iov_saem"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "warfarin_logit_f"        "warfarin_ltbs"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "warfarin_ode_time"       "warfarin_saem"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "warfarin_scaled"         "warfarin_sde"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "warfarin_ss"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "mm_oral"                 "one_cpt_iv"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "one_cpt_iv_ode"          "three_cpt_iv"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "three_cpt_iv_ode"        "three_cpt_oral"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "three_cpt_oral_ode"      "transit_2cpt"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "two_cpt_iv"              "two_cpt_iv_ode"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "two_cpt_oral_cov"        "two_cpt_oral_cov_ode"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "two_cpt_oral_derived"    "warfarin"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "warfarin_additive_eta"   "warfarin_addl"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "warfarin_block_omega"    "warfarin_bloq"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "warfarin_data_selection" "warfarin_dcm"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "warfarin_derived"        "warfarin_derived_pkpd"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "warfarin_if"             "warfarin_iov"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "warfarin_iov_saem"       "warfarin_logit_f"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "warfarin_ltbs"           "warfarin_ode"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "warfarin_ode_lagtime"    "warfarin_ode_time"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "warfarin_saem"           "warfarin_scaled"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "warfarin_sde"            "warfarin_ss"            </span>
 <span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu">ferx_example</span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ex</span><span class="op">$</span><span class="va">model</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/ferx-r/inst/examples/models/warfarin.ferx"</span>

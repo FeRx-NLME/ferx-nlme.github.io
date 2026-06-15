@@ -87,6 +87,7 @@ boundaries are drawn as vertical dashed lines.</p>
     <div class="dont-index"><p>Other diagnostics:
 <code><a href="check_diagnostics.html">check_diagnostics()</a></code>,
 <code><a href="ferx_cor_matrix.html">ferx_cor_matrix()</a></code>,
+<code><a href="ferx_cov_screen.html">ferx_cov_screen()</a></code>,
 <code><a href="ferx_estimates.html">ferx_estimates()</a></code>,
 <code><a href="ferx_eta_cov.html">ferx_eta_cov()</a></code>,
 <code><a href="ferx_runlog_iters.html">ferx_runlog_iters()</a></code>,
@@ -106,19 +107,19 @@ boundaries are drawn as vertical dashed lines.</p>
 <span class="r-in"><span><span class="va">tr</span>  <span class="op">&lt;-</span> <span class="fu"><a href="ferx_trace.html">ferx_trace</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   iter method phase       ofv wall_ms grad_norm step_norm inner_iter_count</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1     gn    NA -272.3136       1        NA        NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2     gn    NA -276.5305       2        NA        NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3     gn    NA -278.9250       2        NA        NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4     gn    NA -279.4244       3        NA        NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    5     gn    NA -279.5786       3        NA        NA               NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6     gn    NA -279.9263       4        NA        NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1     gn    NA -272.3138       1        NA        NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2     gn    NA -276.5307       1        NA        NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3     gn    NA -278.9249       2        NA        NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4     gn    NA -279.4243       2        NA        NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    5     gn    NA -279.5785       3        NA        NA               NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6     gn    NA -279.9262       3        NA        NA               NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   optimizer lm_lambda ofv_delta step_accepted cond_nll gamma mh_accept_rate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        NA         2 -2.389587             1       NA    NA             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        NA         4 -4.216840             1       NA    NA             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        NA         8 -2.394508             1       NA    NA             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        NA        10 -0.499388             1       NA    NA             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        NA        10 -0.154224             1       NA    NA             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        NA        10 -0.347733             1       NA    NA             NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        NA         2 -2.389746             1       NA    NA             NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        NA         4 -4.216941             1       NA    NA             NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        NA         8 -2.394139             1       NA    NA             NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        NA        10 -0.499398             1       NA    NA             NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        NA        10 -0.154236             1       NA    NA             NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        NA        10 -0.347659             1       NA    NA             NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   n_ebe_unconverged n_ebe_fallback</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                NA             NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                NA             NA</span>

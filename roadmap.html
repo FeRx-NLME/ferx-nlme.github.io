@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>FAQ – ferx</title>
+<title>Roadmap – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -45,9 +45,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-3427f64fd80f222eb82c1c84ae2c11e8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -512,6 +512,10 @@ ul.task-list li input[type="checkbox"] {
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="./roadmap.html" aria-current="page"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
@@ -525,10 +529,6 @@ ul.task-list li input[type="checkbox"] {
   <li class="nav-item">
     <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">Reference</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link active" href="./faq.html" aria-current="page"> 
-<span class="menu-text">FAQ</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./changelog.html"> 
@@ -556,15 +556,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#mu-referencing" id="toc-mu-referencing" class="nav-link active" data-scroll-target="#mu-referencing">Mu-referencing</a></li>
-  <li><a href="#conditional-logic" id="toc-conditional-logic" class="nav-link" data-scroll-target="#conditional-logic">Conditional logic</a></li>
-  <li><a href="#optimizer" id="toc-optimizer" class="nav-link" data-scroll-target="#optimizer">Optimizer selection</a></li>
-  <li><a href="#block-omega" id="toc-block-omega" class="nav-link" data-scroll-target="#block-omega">Block omega</a></li>
-  <li><a href="#sigma-scale" id="toc-sigma-scale" class="nav-link" data-scroll-target="#sigma-scale">Sigma scale</a></li>
-  <li><a href="#focei-vs-foce" id="toc-focei-vs-foce" class="nav-link" data-scroll-target="#focei-vs-foce">FOCEI vs FOCE</a></li>
-  <li><a href="#ode-vs-analytical" id="toc-ode-vs-analytical" class="nav-link" data-scroll-target="#ode-vs-analytical">ODE vs analytical</a></li>
-  <li><a href="#porting-nonmem" id="toc-porting-nonmem" class="nav-link" data-scroll-target="#porting-nonmem">Porting from NONMEM</a></li>
-  <li><a href="#gradient-methods" id="toc-gradient-methods" class="nav-link" data-scroll-target="#gradient-methods">Gradient methods</a></li>
+  <li><a href="#short-term-q2q3-26" id="toc-short-term-q2q3-26" class="nav-link active" data-scroll-target="#short-term-q2q3-26">Short term (Q2–Q3 ’26)</a></li>
+  <li><a href="#medium-term-q4-26" id="toc-medium-term-q4-26" class="nav-link" data-scroll-target="#medium-term-q4-26">Medium term (Q4 ’26)</a></li>
+  <li><a href="#ongoing-research-projects" id="toc-ongoing-research-projects" class="nav-link" data-scroll-target="#ongoing-research-projects">Ongoing research projects</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -574,7 +568,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">FAQ</h1>
+<h1 class="title">Roadmap</h1>
 </div>
 
 
@@ -591,155 +585,39 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="mu-referencing" class="level2">
-<h2 class="anchored" data-anchor-id="mu-referencing">Mu-referencing</h2>
-<p><strong>Do I need to write explicit MU-referencing like in NONMEM or nlmixr2?</strong></p>
-<p><strong>No.</strong> You do not need to write an explicit <code>MU_i</code> intermediate variable. ferx detects the same structure automatically from the right-hand side of each <code>[individual_parameters]</code> line.</p>
-<p>In NONMEM and nlmixr2, MU-referencing is required in SAEM because the conjugate-Gibbs E-step is only valid when the ETA→THETA relationship is strictly linear on a transformed scale. In ferx, you simply write the individual-parameter expression naturally:</p>
-<pre><code>CL = TVCL * exp(ETA_CL)              # detected: multiplicative / log-normal
-CL = exp(log(TVCL) + ETA_CL)         # detected: canonical MU form
-CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)  # detected: with covariate
-CL = TVCL + ETA_CL                   # detected: additive</code></pre>
-<p>The parser records the ETA→THETA mapping and re-centres the inner-loop ETA search at each outer iteration.</p>
-<p>Patterns <strong>not</strong> auto-detected (falls back to <code>eta = 0</code> start):</p>
+<p>This page lists planned and in-progress work for ferx. Timelines are indicative and may shift as priorities evolve. Feel free to reach out with any feature requests, research project proposals, or feedback.</p>
+<section id="short-term-q2q3-26" class="level2">
+<h2 class="anchored" data-anchor-id="short-term-q2q3-26">Short term (Q2–Q3 ’26)</h2>
 <ul>
-<li>Two or more free thetas in the product (<code>TVCL * TVSCALE * exp(ETA_CL)</code>) — ambiguous anchor</li>
-<li>Compound eta expressions inside exp (<code>exp(ETA_CL + ETA_OCC)</code>)</li>
+<li>Improve testing infrastructure with larger coverage, with more real datasets and models.</li>
+<li>Support for TTE / survival modeling and joint PK/PD–survival modeling.</li>
+<li>Support for stiff ODE solver(s).</li>
+<li>NONMEM and nlmixr2 model import. nlmixr2 models can be supported in a non-lossy way, since they can be read from the R object.</li>
+<li>Increase modularity of ferx, so external users can more easily write extensions with minimal (if any) modifications to ferx core code.</li>
+<li>Support for FREM estimation (including conversion to FFEM models).</li>
+<li>Support for covariate search approaches (GAM, SCM).</li>
+<li>Support for Enzyme autodiff through the ODE solver.</li>
+<li>Support for use of priors (like in NONMEM with penalties added to the likelihood, but with easier implementation).</li>
+<li>Support for propensity-score matching in simulations (for pmVPC, and realistic scenarios in case of treatment adaptation).</li>
+<li>Support mixture models.</li>
 </ul>
-<p>Mu-referencing affects convergence speed and robustness, not the final MLE. Disable with <code>mu_referencing = false</code> in <code>[fit_options]</code> to reproduce pre-automatic behaviour.</p>
-<hr>
 </section>
-<section id="conditional-logic" class="level2">
-<h2 class="anchored" data-anchor-id="conditional-logic">Conditional logic</h2>
-<p><strong>Can I use <code>if</code> / <code>else</code> statements like in NONMEM or nlmixr2?</strong></p>
-<p><strong>Yes.</strong> Two forms are supported in <code>[individual_parameters]</code> and <code>[odes]</code>:</p>
-<pre><code># Block form
-if (WT &gt; 70) {
-  CL = TVCL * (WT / 70)^0.75 * exp(ETA_CL)
-} else if (SEX == 1) {
-  CL = TVCL * 1.2 * exp(ETA_CL)
-} else {
-  CL = TVCL * exp(ETA_CL)
-}
-
-# Inline (ternary) form
-CL = if (SEX == 1) TVCL * 1.5 else TVCL</code></pre>
-<p>Compared to NONMEM: C-style <code>{braces}</code> and operators (<code>&gt;</code>, <code>==</code>, <code>&amp;&amp;</code>) rather than Fortran-style <code>IF THEN … ENDIF</code> and <code>.GT.</code>, <code>.LE.</code>, etc.</p>
-<p>Compared to nlmixr2: near-verbatim match — replace <code>&lt;-</code> with <code>=</code>.</p>
-<p><strong>Caveat:</strong> <code>==</code> and <code>!=</code> do bitwise float comparison. They work for integer-coded covariates (<code>SEX == 1</code>) but are unreliable for continuous thresholds. Prefer <code>WT &gt;= 70 &amp;&amp; WT &lt; 80</code> over <code>WT == 75</code>.</p>
-<p><strong>Caveat:</strong> when a parameter is assigned inside an <code>if</code> block, mu-reference detection is skipped for that parameter. See <a href="./model-dsl/individual-parameters.html#interaction-with-mu-referencing">Individual Parameters</a>.</p>
-<hr>
-</section>
-<section id="optimizer" class="level2">
-<h2 class="anchored" data-anchor-id="optimizer">Optimizer selection</h2>
-<p><strong>Which outer optimizer should I pick?</strong></p>
-<p><code>bobyqa</code> (the default) is the right choice for most models — derivative-free, robust on rough OFV surfaces, and requires no gradient from the outer loop.</p>
-<p>Reach for a different optimizer when BOBYQA is too slow or stalls:</p>
+<section id="medium-term-q4-26" class="level2">
+<h2 class="anchored" data-anchor-id="medium-term-q4-26">Medium term (Q4 ’26)</h2>
 <ul>
-<li><strong><code>slsqp</code></strong> — gradient-based NLopt SLSQP; faster per iteration on smooth, well-conditioned problems. Use with <code>reconverge_gradient_interval = 1</code> on difficult surfaces.</li>
-<li><strong><code>trust_region</code></strong> — second-order Newton trust-region with BHHH Hessian. Can be faster near convergence. Override the CG budget with <code>steihaug_max_iters</code> if needed.</li>
-<li><strong><code>lbfgs</code> / <code>bfgs</code></strong> — quasi-Newton; useful for moderate-sized parameter spaces.</li>
+<li>Release of v1.0.0.</li>
+<li>Benchmark vignette and subsequent publication in a journal.</li>
+<li>Support for count data models (Poisson).</li>
+<li>Support for Item Response Theory models.</li>
+<li>Support for optimal design analyses. At least computation of the FIM, and basic optimal design searches. Potentially in a separate R package.</li>
 </ul>
-<p>See <a href="./model-dsl/fit-options.html#optimizer-choices">Fit Options — Optimizer choices</a>.</p>
-<hr>
 </section>
-<section id="block-omega" class="level2">
-<h2 class="anchored" data-anchor-id="block-omega">Block omega</h2>
-<p><strong>How do I switch from diagonal to block omega?</strong></p>
-<p>Each <code>omega</code> variance becomes a diagonal entry; off-diagonals start at <code>0.0</code>:</p>
-<pre><code># Before
-omega ETA_CL ~ 0.1
-omega ETA_V1 ~ 0.1
-omega ETA_Q  ~ 0.1
-
-# After (3×3 block, 6 values: 1+2+3)
-block_omega (ETA_CL, ETA_V1, ETA_Q) = [
-  0.1,
-  0.0, 0.1,
-  0.0, 0.0, 0.1
-]</code></pre>
-<p>Block omega regularises poorly-identified parameters by letting them share variability. Starting all off-diagonals at <code>0.0</code> lets the fit recover the correlations from the data. See <a href="./model-dsl/parameters.html#block-omega-correlated-random-effects">Parameters — Block omega</a>.</p>
-<hr>
-</section>
-<section id="sigma-scale" class="level2">
-<h2 class="anchored" data-anchor-id="sigma-scale">Sigma scale</h2>
-<p><strong>Is sigma estimated on the SD scale or the variance scale?</strong></p>
-<p><strong>SD scale.</strong> <code>sigma PROP_ERR ~ 0.1</code> for a proportional model is a <strong>10% CV</strong> initial value.</p>
-<p>The fit YAML emits both <code>estimate</code> (SD) and <code>variance</code> (SD²). For proportional components it also emits <code>cv_pct = estimate * 100</code>. See <a href="./model-dsl/error-model.html#sigma-scale">Error Model — Sigma scale</a>.</p>
-<hr>
-</section>
-<section id="focei-vs-foce" class="level2">
-<h2 class="anchored" data-anchor-id="focei-vs-foce">FOCEI vs FOCE</h2>
-<p><strong>When should I use FOCEI instead of FOCE?</strong></p>
-<p>Use FOCEI (default) whenever the error model is proportional or combined. FOCE evaluates the residual variance at η = 0 (population mean); FOCEI evaluates it at the individual EBE η̂, capturing the dependence between residual error and individual predictions.</p>
-<p>For a purely additive error model, FOCE and FOCEI are equivalent (the interaction term is zero). Using FOCE for additive-error models can save a small amount of computation.</p>
-<hr>
-</section>
-<section id="ode-vs-analytical" class="level2">
-<h2 class="anchored" data-anchor-id="ode-vs-analytical">ODE vs analytical</h2>
-<p><strong>When must I use an ODE model?</strong></p>
-<p>Use an ODE model when the kinetics cannot be expressed as a sum of exponentials:</p>
+<section id="ongoing-research-projects" class="level2">
+<h2 class="anchored" data-anchor-id="ongoing-research-projects">Ongoing research projects</h2>
 <ul>
-<li>Saturable (Michaelis-Menten) elimination</li>
-<li>Target-mediated drug disposition (TMDD)</li>
-<li>Transit compartment absorption</li>
-<li>Custom multi-compartment structures</li>
+<li>Copula-estimation of between-subject variability with SAEM.</li>
+<li>Improved support for neural nets: deep compartmental models and neural ODEs.</li>
 </ul>
-<p>For standard first-order kinetics use the analytical models (<code>one_cpt_oral</code>, <code>two_cpt_oral</code>, etc.) — they are 10–100× faster and support Enzyme autodiff gradients. See <a href="./model-dsl/odes.html#when-to-use-ode-vs-analytical">ODE Models</a>.</p>
-<hr>
-</section>
-<section id="porting-nonmem" class="level2">
-<h2 class="anchored" data-anchor-id="porting-nonmem">Porting from NONMEM</h2>
-<p><strong>How do I port a NONMEM model to ferx?</strong></p>
-<ol type="1">
-<li>Drop all <code>$ABBR</code>, <code>$MU_i</code>, <code>$SIZE</code> boilerplate — not needed in ferx.</li>
-<li>Translate <code>$PK</code> assignments to <code>[individual_parameters]</code> expressions with <code>=</code> instead of <code>=</code>.</li>
-<li>Replace <code>THETA(i)</code>, <code>ETA(i)</code>, <code>EPS(i)</code> with descriptive names (<code>TVCL</code>, <code>ETA_CL</code>, <code>PROP_ERR</code>).</li>
-<li>If the NONMEM model uses explicit <code>MU_i = LOG(THETA(i))</code> lines, drop them — ferx detects the mu-reference automatically.</li>
-<li>Map <code>$SUBROUTINE ADVAN</code> to the equivalent ferx <code>pk</code> function:
-<ul>
-<li>ADVAN1 → <code>one_cpt_iv_bolus</code></li>
-<li>ADVAN2 → <code>one_cpt_oral</code></li>
-<li>ADVAN3 → <code>two_cpt_iv_bolus</code></li>
-<li>ADVAN4 → <code>two_cpt_oral</code></li>
-<li>ADVAN11 → <code>three_cpt_iv_bolus</code></li>
-<li>ADVAN12 → <code>three_cpt_oral</code></li>
-</ul></li>
-<li>Map <code>$ERROR</code> to <code>[error_model]</code>. Remember sigma is on the <strong>SD scale</strong> in ferx (not variance).</li>
-</ol>
-<hr>
-</section>
-<section id="gradient-methods" class="level2">
-<h2 class="anchored" data-anchor-id="gradient-methods">Gradient methods</h2>
-<p><strong>When does Enzyme autodiff kick in, and when does ferx fall back to finite differences?</strong></p>
-<p>The gradient path is resolved per-subject at runtime:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Path</th>
-<th>When used</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>AdSingleSnapshot</code> (Enzyme reverse-mode)</td>
-<td>Subject has no time-varying covariates; analytical PK model</td>
-</tr>
-<tr class="even">
-<td><code>AdEventDriven</code> (Enzyme reverse-mode, event-driven)</td>
-<td>Subject has TV covariates; 1- or 2-cpt analytical model</td>
-</tr>
-<tr class="odd">
-<td><code>Fd</code> (central finite differences)</td>
-<td><code>FERX_NO_AUTODIFF=1</code> build, ODE model, or TV-cov on 3-cpt model</td>
-</tr>
-</tbody>
-</table>
-<p><code>fit$gradient_used</code> (in R) shows which path was resolved. See the <a href="https://ferx-nlme.github.io/ferx-core/">ferx-core book</a> for details.</p>
 
 
 </section>

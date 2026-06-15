@@ -76,9 +76,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-59fd85490d97061c4355c3937331f9a1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-31777a7360b8e6a9e7556f332bef046f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-3427f64fd80f222eb82c1c84ae2c11e8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -534,6 +534,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
     </ul>
 </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
 </ul>
 <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
@@ -547,10 +551,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="../reference/index.html"> 
 <span class="menu-text">Reference</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../faq.html"> 
-<span class="menu-text">FAQ</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../changelog.html"> 
@@ -711,8 +711,8 @@ theta EC50(3.0)   fix</code></pre>
  Model: warfarin_derived_pkpd    Dataset: warfarin
  Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   133 iterations   0.2s
- OFV: -286.0032    AIC: -272.0032    BIC: -253.0998
+ STATUS: CONVERGED   131 iterations   2.3s
+ OFV: -285.9903    AIC: -271.9903    BIC: -253.0869
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -725,35 +725,35 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132642     0.000116        0.1
-TVV                  7.738241     0.009652        0.1
-TVKA                 0.808107     0.002248        0.3
+TVCL                 0.132727     0.007135        5.4
+TVV                  7.730986     0.244954        3.2
+TVKA                 0.815122     0.147631       18.1
 MEC                  0.500000     0.000000        0.0
 EMAX                80.000000     0.000000        0.0
 EC50                 3.000000     0.000000        0.0
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028587  CV% = 17.0  SE = 0.006392
-  ETA_V                    [log-normal]  = 0.009663  CV% = 9.9  SE = 0.002170
-  ETA_KA                   [log-normal]  = 0.333447  CV% = 62.9  SE = 0.074318
+  ETA_CL                   [log-normal]  = 0.028879  CV% = 17.1  SE = 0.012985
+  ETA_V                    [log-normal]  = 0.010005  CV% = 10.0  SE = 0.004584
+  ETA_KA                   [log-normal]  = 0.327753  CV% = 62.3  SE = 0.144989
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010574  (var = 0.000112, CV% = 1.1)  SE = 0.000606  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010572  (var = 0.000112, CV% = 1.1)  SE = 0.000836  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 0.0%   ETA_V: 0.5%   ETA_KA: -0.3%   EPS: 14.8%
+ ETA_CL: 0.5%   ETA_V: 2.2%   ETA_KA: -1.2%   EPS: 14.7%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 6.7   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
+ Covariance: computed   Cond: 1.0   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
 
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): auto   (used: fd)
- ferx v0.1.5 (core v0.1.5)
+ ferx v0.1.5 (core v0.1.6)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -769,28 +769,28 @@ SETTINGS  (model file / call-time override)
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_estimates.html">ferx_estimates</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      param    transform     estimate           se     rse_pct     lower_95
-1      TVCL     identity  0.132641644 0.0001157319  0.08725153  0.132414809
-2       TVV     identity  7.738241156 0.0096521840  0.12473356  7.719322876
-3      TVKA     identity  0.808106666 0.0022477054  0.27814465  0.803701164
-4       MEC     identity  0.500000000 0.0000000000  0.00000000  0.500000000
-5      EMAX     identity 80.000000000 0.0000000000  0.00000000 80.000000000
-6      EC50     identity  3.000000000 0.0000000000  0.00000000  3.000000000
-7    ETA_CL     variance  0.028587071 0.0063922961 22.36079404  0.016058171
-8     ETA_V     variance  0.009662513 0.0021700564 22.45850927  0.005409203
-9    ETA_KA     variance  0.333446992 0.0743177085 22.28771299  0.187784283
-10 PROP_ERR proportional  0.010574403 0.0006062951  5.73361043  0.009386064
+<pre><code>      param    transform    estimate           se   rse_pct     lower_95
+1      TVCL     identity  0.13272728 0.0071346321  5.375407  0.118743404
+2       TVV     identity  7.73098572 0.2449541615  3.168473  7.250875567
+3      TVKA     identity  0.81512177 0.1476313495 18.111570  0.525764327
+4       MEC     identity  0.50000000 0.0000000000  0.000000  0.500000000
+5      EMAX     identity 80.00000000 0.0000000000  0.000000 80.000000000
+6      EC50     identity  3.00000000 0.0000000000  0.000000  3.000000000
+7    ETA_CL     variance  0.02887883 0.0129848825 44.963323  0.003428462
+8     ETA_V     variance  0.01000485 0.0045838610 45.816387  0.001020483
+9    ETA_KA     variance  0.32775276 0.1449889448 44.237292  0.043574429
+10 PROP_ERR proportional  0.01057228 0.0008357137  7.904765  0.008934278
       upper_95 estimate_natural lower_95_natural upper_95_natural init_as_sd
-1   0.13286848               NA               NA               NA      FALSE
-2   7.75715944               NA               NA               NA      FALSE
-3   0.81251217               NA               NA               NA      FALSE
+1   0.14671116               NA               NA               NA      FALSE
+2   8.21109588               NA               NA               NA      FALSE
+3   1.10447922               NA               NA               NA      FALSE
 4   0.50000000               NA               NA               NA      FALSE
 5  80.00000000               NA               NA               NA      FALSE
 6   3.00000000               NA               NA               NA      FALSE
-7   0.04111597               NA               NA               NA      FALSE
-8   0.01391582               NA               NA               NA      FALSE
-9   0.47910970               NA               NA               NA      FALSE
-10  0.01176274               NA               NA               NA       TRUE</code></pre>
+7   0.05432920               NA               NA               NA      FALSE
+8   0.01898922               NA               NA               NA      FALSE
+9   0.61193109               NA               NA               NA      FALSE
+10  0.01221028               NA               NA               NA       TRUE</code></pre>
 </div>
 </div>
 </section><section id="pd-derived-columns" class="level2"><h2 class="anchored" data-anchor-id="pd-derived-columns">PD derived columns</h2>
@@ -799,18 +799,18 @@ SETTINGS  (model file / call-time override)
 <span>                   <span class="st">"CMAX_INTERVAL"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">12</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID  TIME     IPRED      EFF TAM_TAU TAM_D1 CMAX_INTERVAL
-1   1   0.5  5.351959 51.26423      24     24      11.38307
-2   1   1.0  8.283592 58.73018      24     24      11.38307
-3   1   2.0 10.708437 62.49253      24     24      11.38307
-4   1   4.0 11.383075 63.31372      24     24      11.38307
-5   1   8.0 10.757560 62.55505      24     24      11.38307
-6   1  12.0 10.069105 61.63608      24     24      11.38307
-7   1  24.0  8.254668 58.67552      24     24      11.38307
-8   1  48.0  5.547743 51.92241      24     24      11.38307
-9   1  72.0  3.728490 44.33078      24     24      11.38307
-10  1  96.0  2.505819 36.40976      24     24      11.38307
-11  1 120.0  1.684094 28.76277      24     24      11.38307
-12  2   0.5  3.227477 41.46112      24     24      12.10567</code></pre>
+1   1   0.5  5.351969 51.26426      24     24      11.38303
+2   1   1.0  8.283592 58.73018      24     24      11.38303
+3   1   2.0 10.708412 62.49250      24     24      11.38303
+4   1   4.0 11.383027 63.31367      24     24      11.38303
+5   1   8.0 10.757514 62.55499      24     24      11.38303
+6   1  12.0 10.069063 61.63602      24     24      11.38303
+7   1  24.0  8.254639 58.67546      24     24      11.38303
+8   1  48.0  5.547730 51.92237      24     24      11.38303
+9   1  72.0  3.728486 44.33076      24     24      11.38303
+10  1  96.0  2.505819 36.40976      24     24      11.38303
+11  1 120.0  1.684097 28.76280      24     24      11.38303
+12  2   0.5  3.227479 41.46113      24     24      12.10576</code></pre>
 </div>
 </div>
 <p><code>EFF</code> varies per time point (it depends on <code>IPRED</code>). <code>CMAX_INTERVAL</code>, <code>TAM_TAU</code>, and <code>TAM_D1</code> are aggregate quantities — constant per 24-h window or per subject.</p>
