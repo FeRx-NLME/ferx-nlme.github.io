@@ -1,0 +1,39 @@
+---
+title: "Roadmap"
+---
+
+This page lists planned and in-progress work for ferx. Timelines are indicative
+and may shift as priorities evolve. Feel free to reach out with any feature requests,
+research project proposals, or feedback.
+
+## Short term (Q2–Q3 '26)
+
+- Improve testing infrastructure with larger coverage, with more real datasets and models.
+- Support for TTE / survival modeling and joint PK/PD–survival modeling.
+- Support for stiff ODE solver(s).
+- NONMEM and nlmixr2 model import. nlmixr2 models can be supported in a
+  non-lossy way, since they can be read from the R object.
+- Increase modularity of ferx, so external users can more easily write
+  extensions with minimal (if any) modifications to ferx core code.
+- Support for FREM estimation (including conversion to FFEM models).
+- Support for covariate search approaches (GAM, SCM).
+- Support for Enzyme autodiff through the ODE solver.
+- Support for use of priors (like in NONMEM with penalties added to the
+  likelihood, but with easier implementation).
+- Support for propensity-score matching in simulations (for pmVPC, and
+  realistic scenarios in case of treatment adaptation).
+- Support mixture models.
+
+## Medium term (Q4 '26)
+
+- Release of v1.0.0.
+- Benchmark vignette and subsequent publication in a journal.
+- Support for count data models (Poisson).
+- Support for Item Response Theory models.
+- Support for optimal design analyses. At least computation of the FIM, and
+  basic optimal design searches. Potentially in a separate R package.
+
+## Ongoing research projects
+
+- Copula-estimation of between-subject variability with SAEM.
+- Improved support for neural nets: deep compartmental models and neural ODEs.
