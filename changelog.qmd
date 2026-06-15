@@ -1,15 +1,38 @@
 ---
 title: "Changelog"
+toc: false
 ---
+
+Changes are tracked separately in each repository: the **ferx-r** R package
+(`NEWS.md`) and the **ferx-core** Rust engine (`CHANGELOG.md`). Both are shown
+below side by side.
 
 ```{r}
 #| echo: false
 #| results: asis
-# Try local path first (dev), fall back to CI clone path
-path <- if (file.exists("../ferx-r/NEWS.md")) {
-  "../ferx-r/NEWS.md"
-} else {
-  "/tmp/ferx-r/NEWS.md"
+read_changelog <- function(local, ci) {
+  path <- if (file.exists(local)) local else ci
+  if (!file.exists(path)) {
+    return(sprintf("_Changelog source not found (`%s`)._", path))
+  }
+  paste(readLines(path), collapse = "\n")
 }
-cat(readLines(path), sep = "\n")
+
+news     <- read_changelog("../ferx-r/NEWS.md",        "/tmp/ferx-r/NEWS.md")
+corelog  <- read_changelog("../ferx-core/CHANGELOG.md", "/tmp/ferx-core/CHANGELOG.md")
+
+cat(
+  ':::: {.columns}\n\n',
+  '::: {.column width="48%"}\n',
+  '### ferx-r (R package)\n\n',
+  news, '\n',
+  ':::\n\n',
+  '::: {.column width="4%"}\n:::\n\n',
+  '::: {.column width="48%"}\n',
+  '### ferx-core (Rust engine)\n\n',
+  corelog, '\n',
+  ':::\n\n',
+  '::::\n',
+  sep = ""
+)
 ```
