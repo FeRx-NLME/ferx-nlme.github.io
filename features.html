@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Roadmap – ferx</title>
+<title>Features – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -268,7 +268,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Get started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./features.html"> 
+    <a class="nav-link active" href="./features.html" aria-current="page"> 
 <span class="menu-text">Features</span></a>
   </li>  
   <li class="nav-item">
@@ -276,7 +276,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Changelog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./roadmap.html" aria-current="page"> 
+    <a class="nav-link" href="./roadmap.html"> 
 <span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
@@ -311,9 +311,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#short-term-q2q3-26" id="toc-short-term-q2q3-26" class="nav-link active" data-scroll-target="#short-term-q2q3-26">Short term (Q2–Q3 ’26)</a></li>
-  <li><a href="#medium-term-q4-26" id="toc-medium-term-q4-26" class="nav-link" data-scroll-target="#medium-term-q4-26">Medium term (Q4 ’26)</a></li>
-  <li><a href="#ongoing-research-projects" id="toc-ongoing-research-projects" class="nav-link" data-scroll-target="#ongoing-research-projects">Ongoing research projects</a></li>
+  <li><a href="#estimation-methods" id="toc-estimation-methods" class="nav-link active" data-scroll-target="#estimation-methods">Estimation methods</a></li>
+  <li><a href="#outer-optimizers" id="toc-outer-optimizers" class="nav-link" data-scroll-target="#outer-optimizers">Outer optimizers</a></li>
+  <li><a href="#gradients" id="toc-gradients" class="nav-link" data-scroll-target="#gradients">Gradients</a></li>
+  <li><a href="#structural-models" id="toc-structural-models" class="nav-link" data-scroll-target="#structural-models">Structural models</a></li>
+  <li><a href="#random-effects-error" id="toc-random-effects-error" class="nav-link" data-scroll-target="#random-effects-error">Random effects &amp; error</a></li>
+  <li><a href="#covariates" id="toc-covariates" class="nav-link" data-scroll-target="#covariates">Covariates</a></li>
+  <li><a href="#data-dosing" id="toc-data-dosing" class="nav-link" data-scroll-target="#data-dosing">Data &amp; dosing</a></li>
+  <li><a href="#initialization-diagnostics" id="toc-initialization-diagnostics" class="nav-link" data-scroll-target="#initialization-diagnostics">Initialization &amp; diagnostics</a></li>
+  <li><a href="#performance" id="toc-performance" class="nav-link" data-scroll-target="#performance">Performance</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -323,7 +329,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Roadmap</h1>
+<h1 class="title">Features</h1>
 </div>
 
 
@@ -340,37 +346,135 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This page lists planned and in-progress work for ferx. Timelines are indicative and may shift as priorities evolve. Feel free to reach out with any feature requests, research project proposals, or feedback.</p>
-<section id="short-term-q2q3-26" class="level2">
-<h2 class="anchored" data-anchor-id="short-term-q2q3-26">Short term (Q2–Q3 ’26)</h2>
+<p>ferx implements the same statistical methodology as NONMEM, Monolix, and Pumas, in an open-source Rust engine with exact gradients via <a href="https://enzyme.mit.edu/">Enzyme</a> automatic differentiation. This page summarizes what the engine can do. For full detail see the <strong><a href="https://ferx-nlme.github.io/ferx-core/">ferx-core book</a></strong> (engine, CLI, DSL) and the <strong><a href="https://ferx-nlme.github.io/ferx-book/">ferx-r book</a></strong> (R workflow).</p>
+<p>Maturity labels — <strong>stable</strong>, <strong>beta</strong>, <strong>experimental</strong> — follow the <a href="https://ferx-nlme.github.io/ferx-core/maturity.html">ferx-core feature maturity</a> page.</p>
+<hr>
+<section id="estimation-methods" class="level2">
+<h2 class="anchored" data-anchor-id="estimation-methods">Estimation methods</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 28%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Notes</th>
+<th>Maturity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>FOCE / FOCEI</strong></td>
+<td>First-Order Conditional Estimation, with or without interaction — the PopPK gold standard</td>
+<td>beta</td>
+</tr>
+<tr class="even">
+<td><strong>SAEM</strong></td>
+<td>Stochastic Approximation EM — robust on complex / poorly-identified models</td>
+<td>stable</td>
+</tr>
+<tr class="odd">
+<td><strong>Gauss-Newton (BHHH)</strong></td>
+<td>Fast outer optimizer with Levenberg–Marquardt damping; <code>gn</code> and a <code>gn_hybrid</code> GN+FOCEI polish</td>
+<td>beta</td>
+</tr>
+<tr class="even">
+<td><strong>Importance Sampling (IMP)</strong></td>
+<td>Exact marginal likelihood by Monte-Carlo integration</td>
+<td>beta</td>
+</tr>
+<tr class="odd">
+<td><strong>IMPMAP</strong></td>
+<td>MAP-anchored importance sampling</td>
+<td>beta</td>
+</tr>
+<tr class="even">
+<td><strong>SIR</strong></td>
+<td>Sampling Importance Resampling — posterior parameter uncertainty</td>
+<td>beta</td>
+</tr>
+<tr class="odd">
+<td><strong>Bayesian (MCMC)</strong></td>
+<td>Full Markov-chain posterior sampling</td>
+<td>experimental</td>
+</tr>
+<tr class="even">
+<td><strong>Time-to-event (TTE)</strong></td>
+<td>Survival / event endpoints</td>
+<td>beta</td>
+</tr>
+</tbody>
+</table>
+<p>Methods can be <strong>chained</strong> (e.g.&nbsp;<code>method = [saem, focei]</code>) — a robust global pass followed by a FOCEI polish.</p>
+</section>
+<section id="outer-optimizers" class="level2">
+<h2 class="anchored" data-anchor-id="outer-optimizers">Outer optimizers</h2>
+<p><code>bobyqa</code> (default, derivative-free trust-region) · <code>slsqp</code> · built-in <code>bfgs</code> · <code>lbfgs</code> / <code>nlopt_lbfgs</code> · <code>mma</code> · Newton <code>trust_region</code> · Gauss-Newton (BHHH). Optional CRS2-LM gradient-free <strong>global pre-search</strong> (<code>global_search</code>) for poorly-identified models.</p>
+</section>
+<section id="gradients" class="level2">
+<h2 class="anchored" data-anchor-id="gradients">Gradients</h2>
 <ul>
-<li>Improve testing infrastructure with larger coverage, with more real datasets and models.</li>
-<li>Support for TTE / survival modeling and joint PK/PD–survival modeling.</li>
-<li>Support for stiff ODE solver(s).</li>
-<li>NONMEM and nlmixr2 model import. nlmixr2 models can be supported in a non-lossy way, since they can be read from the R object.</li>
-<li>Increase modularity of ferx, so external users can more easily write extensions with minimal (if any) modifications to ferx core code.</li>
-<li>Support for FREM estimation (including conversion to FFEM models).</li>
-<li>Support for covariate search approaches (GAM, SCM).</li>
-<li>Support for Enzyme autodiff through the ODE solver.</li>
-<li>Support for use of priors (like in NONMEM with penalties added to the likelihood, but with easier implementation).</li>
-<li>Support for mixture models.</li>
+<li><strong>Enzyme automatic differentiation</strong> — fast, exact reverse-mode gradients (full build)</li>
+<li><strong>Finite differences</strong> — fallback on the simple build; always used for ODE/SDE/SAEM</li>
+<li>Covariance via inverse Hessian (<code>R⁻¹</code>), score cross-product (<code>S⁻¹</code>), or Huber–White sandwich (<code>R⁻¹SR⁻¹</code>), mirroring NONMEM <code>$COVARIANCE</code></li>
+</ul>
+<hr>
+</section>
+<section id="structural-models" class="level2">
+<h2 class="anchored" data-anchor-id="structural-models">Structural models</h2>
+<ul>
+<li><strong>Analytical PK</strong> — one-, two-, three-compartment (IV bolus, infusion, oral), with numerical-stability guarantees</li>
+<li><strong>ODE models</strong> — Dormand–Prince RK45 adaptive integrator for custom kinetics (e.g.&nbsp;Michaelis–Menten), with configurable tolerances</li>
+<li><strong>Built-in absorption</strong> — first-order, transit-compartment chains</li>
+<li><strong>SDE / diffusion</strong> — Extended Kalman Filter path via the <code>[diffusion]</code> block (experimental)</li>
+<li><strong>Neural networks</strong> — MLP covariate mapper (DCM) and neural-ODE components (experimental)</li>
 </ul>
 </section>
-<section id="medium-term-q4-26" class="level2">
-<h2 class="anchored" data-anchor-id="medium-term-q4-26">Medium term (Q4 ’26)</h2>
+<section id="random-effects-error" class="level2">
+<h2 class="anchored" data-anchor-id="random-effects-error">Random effects &amp; error</h2>
 <ul>
-<li>Release of v1.0.0.</li>
-<li>Benchmark vignette and subsequent publication in a journal.</li>
-<li>Support for count data models (Poisson).</li>
-<li>Support for Item Response Theory models.</li>
-<li>Support for optimal design analyses. At least computation of the FIM, and basic optimal design searches. Potentially in a separate R package.</li>
+<li><strong>IIV</strong> — <code>omega</code> random effects, diagonal or block (correlated ETAs)</li>
+<li><strong>IOV</strong> — inter-occasion variability via <code>kappa</code> / <code>block_kappa</code> (FOCE/FOCEI and SAEM)</li>
+<li><strong>Error models</strong> — additive, proportional, combined, log-transform-both-sides (LTBS)</li>
+<li><strong>Multi-endpoint</strong> — per-compartment error for joint PK/PD</li>
 </ul>
 </section>
-<section id="ongoing-research-projects" class="level2">
-<h2 class="anchored" data-anchor-id="ongoing-research-projects">Ongoing research projects</h2>
+<section id="covariates" class="level2">
+<h2 class="anchored" data-anchor-id="covariates">Covariates</h2>
 <ul>
-<li>Copula-estimation of between-subject variability with SAEM.</li>
-<li>Improved support for neural nets: deep compartmental models and neural ODEs.</li>
+<li>Time-constant and time-varying, with automatic detection</li>
+<li>Continuous and categorical, conditional (<code>if/else</code>) covariate effects</li>
+<li>Mu-referencing (automatic) for SAEM compatibility and faster FOCE convergence</li>
+</ul>
+</section>
+<section id="data-dosing" class="level2">
+<h2 class="anchored" data-anchor-id="data-dosing">Data &amp; dosing</h2>
+<ul>
+<li>Reads standard <strong>NONMEM-format CSV</strong> directly</li>
+<li>Multiple dosing, ADDL, steady-state doses (<code>SS=1</code>), infusions, mid-record resets</li>
+<li><strong>BLOQ</strong> — Beal M3 likelihood for below-LLOQ observations</li>
+<li><strong>Data selection</strong> and <strong>derived columns</strong> in the model file</li>
+</ul>
+</section>
+<section id="initialization-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="initialization-diagnostics">Initialization &amp; diagnostics</h2>
+<ul>
+<li><strong>NCA-based starting values</strong> (<code>inits_from_nca</code>) — AUC, terminal-slope, Wagner–Nelson Ka, biexponential peeling</li>
+<li>CWRES and NPDE simulation-based diagnostics.</li>
+<li>Simulations for VPC, with propensity-score matching for adaptive treatments</li>
+<li>Multi-start fitting, optimizer trace output</li>
+</ul>
+<hr>
+</section>
+<section id="performance" class="level2">
+<h2 class="anchored" data-anchor-id="performance">Performance</h2>
+<ul>
+<li>Per-subject computations parallelized across cores (Rayon)</li>
+<li>Parameters internally transformed for unconstrained optimization (log θ/σ, Cholesky Ω) to guarantee positive-definiteness</li>
+<li>Engine usable three ways with identical results: the <strong><code>ferx</code> CLI</strong>, the <strong>ferx-r</strong> package, or as a <strong>Rust library</strong></li>
+<li>Benchmarks versus NONMEM and nlmixr2 coming soon</li>
 </ul>
 
 

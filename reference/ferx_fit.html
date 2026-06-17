@@ -88,7 +88,9 @@ powered by automatic differentiation (Enzyme).</p>
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>Path to a NONMEM-format CSV file. Required columns: ID, TIME,
 DV, EVID, AMT, CMT. Optional columns recognised by the engine: RATE
-(infusion rate), MDV (missing-DV flag), II (dosing interval, required when
+(infusion rate; <code>RATE = -2</code> infuses <code>AMT</code> over a modeled duration given by
+a per-subject parameter <code>D{n}</code> on dose compartment <code>n</code>, for ODE models),
+MDV (missing-DV flag), II (dosing interval, required when
 SS &gt; 0), SS (steady-state flag: 1 = pre-dose at steady state, 2 = add SS
 concentration to current state), CENS (BLOQ flag for M3 method), OCC
 (occasion index for IOV), and any covariate columns referenced in the
@@ -109,6 +111,13 @@ not update parameters and must be the <em>last</em> entry of the chain, e.g.
 <code>c("focei", "imp")</code> or <code>c("saem", "imp")</code>. It may also run
 standalone (<code>method = "imp"</code>), scoring the model's initial
 parameters. Example chain: <code>c("saem", "focei")</code>.
+<code>"bayes"</code> (also accepted as <code>"bayesian"</code> or <code>"mcmc"</code>) runs
+full MCMC Bayesian estimation (Gibbs-within-HMC, NONMEM <code>METHOD=BAYES</code>
+parity): it returns posterior means with credible intervals and
+convergence diagnostics on <code>$bayes</code> rather than a point estimate, and
+runs standalone. Supports BSV and zero-mean inter-occasion variability
+(per-occasion <code>kappa</code>); the IOV variance posterior appears as
+<code>OMEGA_IOV(...)</code> in <code>$bayes</code>.
 SAEM fully supports inter-occasion variability (IOV / kappa) models.</p></dd>
 
 
@@ -401,6 +410,27 @@ value replaces MH with one HMC proposal per subject per iteration.
 Requires an AD build; see examples below.</p></dd>
 
 
+</dl><p><strong>Bayes (<code>"bayes"</code>)</strong></p><dl><dt><code>bayes_warmup</code></dt>
+<dd><p>Warmup (burn-in + adaptation) sweeps per chain,
+discarded from the posterior (default <code>1000</code>).</p></dd>
+
+<dt><code>bayes_iters</code></dt>
+<dd><p>Retained sampling sweeps per chain, before
+thinning (default <code>1000</code>).</p></dd>
+
+<dt><code>bayes_chains</code></dt>
+<dd><p>Number of independent chains (default
+<code>4</code>); used for split-R-hat.</p></dd>
+
+<dt><code>bayes_thin</code></dt>
+<dd><p>Keep every <code>bayes_thin</code>-th sampling draw
+(default <code>1</code>).</p></dd>
+
+<dt><code>bayes_seed</code></dt>
+<dd><p>Base RNG seed for the Bayes sampler. Independent
+of <code>seed</code> / <code>saem_seed</code>.</p></dd>
+
+
 </dl><p><strong>Gauss-Newton (<code>"gn"</code> / <code>"gn_hybrid"</code>)</strong></p><dl><dt><code>gn_lambda</code></dt>
 <dd><p>Levenberg-Marquardt damping factor (default
 <code>0.01</code>). Larger values make steps more conservative. Accepted
@@ -503,7 +533,7 @@ Merged with <code>[data_selection] ignore_subjects</code> from the model file.</
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A named list. Where to find commonly-needed quantities:</p><table class="table table"><tr><td>What you want</td><td>Accessor</td><td>Shape</td><td>When present</td></tr><tr><td>Residuals, PRED, IPRED, diagnostics</td><td><code>fit$sdtab</code></td><td>one row per observation</td><td>always</td></tr><tr><td>Covariates echoed per observation (via <code>[output]</code>)</td><td><code>fit$sdtab</code></td><td>one row per observation, LOCF</td><td>declared in <code>[output]</code></td></tr><tr><td>Raw covariate values for all dataset records</td><td><code>fit$covtab</code></td><td>one row per dataset record (doses + obs)</td><td>model has <code>[covariates]</code> block</td></tr><tr><td>ETA / EBE values per observation row</td><td><code>fit$sdtab</code> (<code>ETA_CL</code>, <code>ETA_V</code>, …)</td><td>one row per observation, value repeated</td><td>always</td></tr><tr><td>ETA / EBE values per subject</td><td><code>fit$ebe_etas</code></td><td>one row per subject</td><td>model declares etas</td></tr><tr><td>Individual PK parameters per subject</td><td><code>fit$individual_estimates</code></td><td>one row per subject</td><td>always</td></tr></table><p>Full slot descriptions:</p>
+    <p>A named list. Where to find commonly-needed quantities:</p><table class="table table"><tr><td>What you want</td><td>Accessor</td><td>Shape</td><td>When present</td></tr><tr><td>Residuals, PRED, IPRED, diagnostics</td><td><code>fit$sdtab</code></td><td>one row per observation</td><td>always</td></tr><tr><td>Covariates echoed per observation (via <code>[output]</code>)</td><td><code>fit$sdtab</code></td><td>one row per observation, LOCF</td><td>declared in <code>[output]</code></td></tr><tr><td>Raw covariate values for all dataset records</td><td><code>fit$covtab</code></td><td>one row per dataset record (doses + obs)</td><td>model has <code>[covariates]</code> block</td></tr><tr><td>ETA / EBE values per observation row</td><td><code>fit$sdtab</code> (<code>ETA_CL</code>, <code>ETA_V</code>, ...)</td><td>one row per observation, value repeated</td><td>always</td></tr><tr><td>ETA / EBE values per subject</td><td><code>fit$ebe_etas</code></td><td>one row per subject</td><td>model declares etas</td></tr><tr><td>Individual PK parameters per subject</td><td><code>fit$individual_estimates</code></td><td>one row per subject</td><td>always</td></tr></table><p>Full slot descriptions:</p>
 <dl><dt>converged</dt>
 <dd><p>Logical; did the optimizer converge</p></dd>
 
@@ -567,7 +597,7 @@ expressions, aggregates, integrals) and <code>[output]</code> (individual
 PK parameters or covariates echoed by name) appear at the end of the
 data frame in declaration order.
 ETA columns (<code>ETA_CL</code>, <code>ETA_V</code>, etc.) are included
-automatically — the same EBE value is repeated for every observation
+automatically - the same EBE value is repeated for every observation
 row of that subject. For a compact per-subject view use
 <code>fit$ebe_etas</code>; for individual PK parameter values use
 <code>fit$individual_estimates</code>.</p></dd>
@@ -1184,8 +1214,8 @@ diagnostics:</p><div class="sourceCode"><pre><code><span></span>
 the Rust backend without requiring a new wrapper release. Arguments with
 dedicated parameters (e.g. <code>method</code>, <code>covariance</code>) cannot be
 duplicated in <code>settings</code> - pass them via the named argument.</p>
-<p>For the complete settings reference — including which options apply to which
-method, valid combinations, and a convergence troubleshooting guide — see
+<p>For the complete settings reference - including which options apply to which
+method, valid combinations, and a convergence troubleshooting guide - see
 <a href="https://ferx-nlme.github.io/model-dsl/fit-options.html" class="external-link">ferx-nlme.github.io/model-dsl/fit-options</a>.</p>
 <p><strong>Outer optimizer selection:</strong></p><div class="sourceCode"><pre><code><span></span>
 <span><span class="fu"><a href="../reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">d</span>, settings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>optimizer <span class="op">=</span> <span class="st">"bobyqa"</span><span class="op">)</span><span class="op">)</span>      <span class="co"># default</span></span>
@@ -1302,17 +1332,17 @@ work both as standalone calls and as the tail of a <code>|&gt;</code> pipe:</p>
     <h2>See also</h2>
     <div class="dont-index">
 <ul><li><p><a href="https://ferx-nlme.github.io/model-dsl/fit-options.html" class="external-link">Fit
-options reference</a> — full documentation of every <code>[fit_options]</code>
+options reference</a> - full documentation of every <code>[fit_options]</code>
 key and <code>settings</code> knob, organised by method with a
-convergence-troubleshooting guide and a method × option compatibility
+convergence-troubleshooting guide and a method x option compatibility
 table.</p></li>
-<li><p><code><a href="ferx_fit_async.html">ferx_fit_async</a></code> — non-blocking version for long runs.</p></li>
-<li><p><code><a href="ferx_check_init.html">ferx_check_init</a></code> — 5-iteration pilot to validate
+<li><p><code><a href="ferx_fit_async.html">ferx_fit_async</a></code> - non-blocking version for long runs.</p></li>
+<li><p><code><a href="ferx_check_init.html">ferx_check_init</a></code> - 5-iteration pilot to validate
 starting values before a full run.</p></li>
-<li><p><code><a href="ferx_inits_from_nca.html">ferx_inits_from_nca</a></code> — NCA-derived starting values.</p></li>
-<li><p><code><a href="ferx_warnings.html">ferx_warnings</a></code> — structured warnings from the fit.</p></li>
-<li><p><code><a href="ferx_estimates.html">ferx_estimates</a></code> — tidy parameter table with SE / \<!-- %RSE. --></p></li>
-<li><p><code><a href="ferx_plot_trace.html">ferx_plot_trace</a></code> — convergence trace plot.</p></li>
+<li><p><code><a href="ferx_inits_from_nca.html">ferx_inits_from_nca</a></code> - NCA-derived starting values.</p></li>
+<li><p><code><a href="ferx_warnings.html">ferx_warnings</a></code> - structured warnings from the fit.</p></li>
+<li><p><code><a href="ferx_estimates.html">ferx_estimates</a></code> - tidy parameter table with SE / \<!-- %RSE. --></p></li>
+<li><p><code><a href="ferx_plot_trace.html">ferx_plot_trace</a></code> - convergence trace plot.</p></li>
 </ul><p>Other fitting:
 <code><a href="ferx_check_init.html">ferx_check_init()</a></code>,
 <code><a href="ferx_collect.html">ferx_collect()</a></code>,
@@ -1330,9 +1360,9 @@ starting values before a full run.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">theta</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      TVCL       TVV      TVKA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1327372 7.6947642 0.7585865 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1329408 7.7330210 0.7263616 </span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">ofv</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -280.1835</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -280.3635</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>

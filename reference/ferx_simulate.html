@@ -105,6 +105,7 @@ supplied, otherwise at the model file's initial values.</p></dd>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>Other simulation:
+<code><a href="ferx_npde.html">ferx_npde()</a></code>,
 <code><a href="ferx_predict.html">ferx_predict()</a></code>,
 <code><a href="ferx_simulate_with_uncertainty.html">ferx_simulate_with_uncertainty()</a></code></p></div>
     </div>
@@ -119,12 +120,12 @@ supplied, otherwise at the model file's initial values.</p></dd>
 <span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">ferx_simulate</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, n_sim <span class="op">=</span> <span class="fl">10L</span>, seed <span class="op">=</span> <span class="fl">1L</span>, fit <span class="op">=</span> <span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   DRAW SIM ID TIME     IPRED    DV_SIM</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1   1  1  0.5  3.566796  3.543540</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    1   1  1  1.0  6.037308  5.978880</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1   1  1  2.0  8.895848  9.077318</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    1   1  1  4.0 10.701059 10.683624</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    1   1  1  8.0 10.469007 10.517418</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    1   1  1 12.0  9.654237  9.659583</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1   1  1  0.5  3.420780  3.398263</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    1   1  1  1.0  5.827146  5.770214</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1   1  1  2.0  8.675585  8.854251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    1   1  1  4.0 10.570295 10.552909</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    1   1  1  8.0 10.425373 10.474042</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    1   1  1 12.0  9.626546  9.631928</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Propensity-score-matched simulation for a real-world-data VPC:</span></span></span>
 <span class="r-in"><span><span class="va">sim_pm</span> <span class="op">&lt;-</span> <span class="fu">ferx_simulate</span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, n_sim <span class="op">=</span> <span class="fl">10L</span>, seed <span class="op">=</span> <span class="fl">1L</span>,</span></span>
