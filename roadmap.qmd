@@ -20,9 +20,7 @@ research project proposals, or feedback.
 - Support for Enzyme autodiff through the ODE solver.
 - Support for use of priors (like in NONMEM with penalties added to the
   likelihood, but with easier implementation).
-- Support for propensity-score matching in simulations (for pmVPC, and
-  realistic scenarios in case of treatment adaptation).
-- Support mixture models.
+- Support for mixture models.
 
 ## Medium term (Q4 '26)
 

@@ -1,0 +1,95 @@
+---
+title: "Features"
+---
+
+ferx implements the same statistical methodology as NONMEM, Monolix, and Pumas,
+in an open-source Rust engine with exact gradients via [Enzyme](https://enzyme.mit.edu/)
+automatic differentiation. This page summarizes what the engine can do. For full
+detail see the **[ferx-core book](https://ferx-nlme.github.io/ferx-core/)** (engine,
+CLI, DSL) and the **[ferx-r book](https://ferx-nlme.github.io/ferx-book/)** (R workflow).
+
+Maturity labels — **stable**, **beta**, **experimental** — follow the
+[ferx-core feature maturity](https://ferx-nlme.github.io/ferx-core/maturity.html) page.
+
+---
+
+## Estimation methods
+
+| Method | Notes | Maturity |
+|--------|-------|----------|
+| **FOCE / FOCEI** | First-Order Conditional Estimation, with or without interaction — the PopPK gold standard | beta |
+| **SAEM** | Stochastic Approximation EM — robust on complex / poorly-identified models | stable |
+| **Gauss-Newton (BHHH)** | Fast outer optimizer with Levenberg–Marquardt damping; `gn` and a `gn_hybrid` GN+FOCEI polish | beta |
+| **Importance Sampling (IMP)** | Exact marginal likelihood by Monte-Carlo integration | beta |
+| **IMPMAP** | MAP-anchored importance sampling | beta |
+| **SIR** | Sampling Importance Resampling — posterior parameter uncertainty | beta |
+| **Bayesian (MCMC)** | Full Markov-chain posterior sampling | experimental |
+| **Time-to-event (TTE)** | Survival / event endpoints | beta |
+
+Methods can be **chained** (e.g. `method = [saem, focei]`) — a robust global pass
+followed by a FOCEI polish.
+
+## Outer optimizers
+
+`bobyqa` (default, derivative-free trust-region) · `slsqp` · built-in `bfgs` ·
+`lbfgs` / `nlopt_lbfgs` · `mma` · Newton `trust_region` · Gauss-Newton (BHHH).
+Optional CRS2-LM gradient-free **global pre-search** (`global_search`) for
+poorly-identified models.
+
+## Gradients
+
+- **Enzyme automatic differentiation** — fast, exact reverse-mode gradients (full build)
+- **Finite differences** — fallback on the simple build; always used for ODE/SDE/SAEM
+- Covariance via inverse Hessian (`R⁻¹`), score cross-product (`S⁻¹`), or
+  Huber–White sandwich (`R⁻¹SR⁻¹`), mirroring NONMEM `$COVARIANCE`
+
+---
+
+## Structural models
+
+- **Analytical PK** — one-, two-, three-compartment (IV bolus, infusion, oral),
+  with numerical-stability guarantees
+- **ODE models** — Dormand–Prince RK45 adaptive integrator for custom kinetics
+  (e.g. Michaelis–Menten), with configurable tolerances
+- **Built-in absorption** — first-order, transit-compartment chains
+- **SDE / diffusion** — Extended Kalman Filter path via the `[diffusion]` block (experimental)
+- **Neural networks** — MLP covariate mapper (DCM) and neural-ODE components (experimental)
+
+## Random effects & error
+
+- **IIV** — `omega` random effects, diagonal or block (correlated ETAs)
+- **IOV** — inter-occasion variability via `kappa` / `block_kappa` (FOCE/FOCEI and SAEM)
+- **Error models** — additive, proportional, combined, log-transform-both-sides (LTBS)
+- **Multi-endpoint** — per-compartment error for joint PK/PD
+
+## Covariates
+
+- Time-constant and time-varying, with automatic detection
+- Continuous and categorical, conditional (`if/else`) covariate effects
+- Mu-referencing (automatic) for SAEM compatibility and faster FOCE convergence
+
+## Data & dosing
+
+- Reads standard **NONMEM-format CSV** directly
+- Multiple dosing, ADDL, steady-state doses (`SS=1`), infusions, mid-record resets
+- **BLOQ** — Beal M3 likelihood for below-LLOQ observations
+- **Data selection** and **derived columns** in the model file
+
+## Initialization & diagnostics
+
+- **NCA-based starting values** (`inits_from_nca`) — AUC, terminal-slope,
+  Wagner–Nelson Ka, biexponential peeling
+- CWRES and NPDE simulation-based diagnostics.
+- Simulations for VPC, with propensity-score matching for adaptive treatments
+- Multi-start fitting, optimizer trace output
+
+---
+
+## Performance
+
+- Per-subject computations parallelized across cores (Rayon)
+- Parameters internally transformed for unconstrained optimization (log θ/σ,
+  Cholesky Ω) to guarantee positive-definiteness
+- Engine usable three ways with identical results: the **`ferx` CLI**, the
+  **ferx-r** package, or as a **Rust library**
+- Benchmarks versus NONMEM and nlmixr2 coming soon

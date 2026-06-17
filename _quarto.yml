@@ -22,124 +22,10 @@ website:
     left:
       - text: "Get started"
         href: get-started.qmd
-      - text: "Learn"
-        menu:
-          - text: "Model workflow"
-            href: learn/model-workflow.qmd
-          - text: "Model editing"
-            href: learn/model-editing.qmd
-          - text: "Parameter transforms"
-            href: learn/parameter-transforms.qmd
-          - text: "Diagnostics"
-            href: learn/diagnostics.qmd
-          - text: "Simulation"
-            href: learn/simulation.qmd
-          - text: "Special features"
-            href: learn/special-features.qmd
-          - text: "Uncertainty (SIR)"
-            href: learn/uncertainty-sir.qmd
-          - text: "Method chaining & optimizers"
-            href: learn/method-chaining.qmd
-          - text: "Robust fitting"
-            href: learn/robust-fitting.qmd
-      - text: "Model DSL"
-        menu:
-          - text: "Overview"
-            href: model-dsl/overview.qmd
-          - text: "Parameters"
-            href: model-dsl/parameters.qmd
-          - text: "Individual parameters"
-            href: model-dsl/individual-parameters.qmd
-          - text: "Covariates"
-            href: model-dsl/covariates.qmd
-          - text: "Structural model"
-            href: model-dsl/structural-model.qmd
-          - text: "ODE models"
-            href: model-dsl/odes.qmd
-          - text: "Error model"
-            href: model-dsl/error-model.qmd
-          - text: "Lag time"
-            href: model-dsl/lag-time.qmd
-          - text: "Steady-state doses (SS=1)"
-            href: model-dsl/steady-state.qmd
-          - text: "Scaling"
-            href: model-dsl/scaling.qmd
-          - text: "Derived columns"
-            href: model-dsl/derived.qmd
-          - text: "Data selection"
-            href: model-dsl/data-selection.qmd
-          - text: "BLOQ (M3 method)"
-            href: model-dsl/bloq.qmd
-          - text: "IOV (inter-occasion variability)"
-            href: model-dsl/iov.qmd
-          - text: "Diffusion (SDE)"
-            href: model-dsl/diffusion.qmd
-          - text: "Neural networks"
-            href: model-dsl/neural-networks.qmd
-          - text: "Covariate NN (DCM)"
-            href: model-dsl/covariate-nn.qmd
-          - text: "Simulation"
-            href: model-dsl/simulation.qmd
-          - text: "Fit options"
-            href: model-dsl/fit-options.qmd
-      - text: "Examples"
-        menu:
-          - text: "One-compartment oral (warfarin)"
-            href: examples/warfarin.qmd
-          - text: "Covariate model"
-            href: examples/covariates.qmd
-          - text: "Inter-occasion variability"
-            href: examples/iov.qmd
-          - text: "BLOQ (M3 method)"
-            href: examples/bloq.qmd
-          - text: "ODE model (Michaelis-Menten)"
-            href: examples/ode-model.qmd
-          - text: "Two-compartment IV"
-            href: examples/two-cpt-iv.qmd
-          - text: "Three-compartment IV"
-            href: examples/three-cpt-iv.qmd
-          - text: "Transit absorption + 2-cpt ODE"
-            href: examples/transit-2cpt.qmd
-          - text: "Simultaneous PK/PD (Emax)"
-            href: examples/emax-pkpd.qmd
-          - text: "Absorption lag time"
-            href: examples/lag-time.qmd
-          - text: "Steady-state dosing (SS=1)"
-            href: examples/warfarin-ss.qmd
-          - text: "Block omega (correlated ETAs)"
-            href: examples/block-omega.qmd
-          - text: "Additive ETA parameterization"
-            href: examples/warfarin-additive-eta.qmd
-          - text: "Log-transform-both-sides (LTBS)"
-            href: examples/warfarin-ltbs.qmd
-          - text: "Conditional covariate (if/else)"
-            href: examples/conditional-covariate.qmd
-          - text: "Oral bioavailability (logit-normal F)"
-            href: examples/bioavailability.qmd
-          - text: "Observation scaling (unit conversion)"
-            href: examples/warfarin-scaled.qmd
-          - text: "Deep Compartment Model (DCM)"
-            href: examples/dcm.qmd
-          - text: "SAEM estimation"
-            href: examples/saem.qmd
-          - text: "SDE process noise"
-            href: examples/sde.qmd
-          - text: "IOV with SAEM"
-            href: examples/warfarin-iov-saem.qmd
-          - text: "Multi-start fitting"
-            href: examples/multistart.qmd
-          - text: "Derived columns ([derived])"
-            href: examples/warfarin-derived.qmd
-          - text: "Derived PK/PD quantities"
-            href: examples/warfarin-derived-pkpd.qmd
-          - text: "Two-cpt oral with derived AUC"
-            href: examples/two-cpt-oral-derived.qmd
-          - text: "Data selection (LLOQ filtering)"
-            href: examples/warfarin-data-selection.qmd
-          - text: "ODE with TIME, TAFD, and TAD"
-            href: examples/warfarin-ode-time.qmd
-          - text: "ADDL/multiple-dose"
-            href: examples/warfarin-addl.qmd
+      - text: "Features"
+        href: features.qmd
+      - text: "Changelog"
+        href: changelog.qmd
       - text: "Roadmap"
         href: roadmap.qmd
     right:
@@ -147,10 +33,6 @@ website:
         href: https://ferx-nlme.github.io/ferx-book/
       - text: "ferx-core"
         href: https://ferx-nlme.github.io/ferx-core/
-      - text: "Reference"
-        href: reference/index.html
-      - text: "Changelog"
-        href: changelog.qmd
       - icon: github
         href: https://github.com/FeRx-NLME
         aria-label: GitHub
