@@ -61,23 +61,23 @@ same numerical results as the CLI and ferx-r.
 ::: {.resource-grid style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 1rem;"}
 
 ::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
-**[ferx-r](https://ferx-nlme.github.io/ferx-book/)**\
-Comprehensive narrative guide — installation through ODE models, BLOQ, and IOV. All code runs on CI.
-:::
-
-::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
 **[Get started](get-started.qmd)**\
 Install ferx and run the warfarin quickstart in under five minutes.
 :::
 
 ::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
-**[Reference](reference/index.html)**\
-Function-level documentation for every exported function in ferx-r.
+**[ferx-r](https://ferx-nlme.github.io/ferx-book/)**\
+Guide on working with FeRx from R.
 :::
 
 ::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
-**[Model DSL](model-dsl/overview.qmd)**\
-Complete syntax reference for `.ferx` model files.
+**[ferx-core](https://ferx-nlme.github.io/ferx-core/)**\
+Detailed information on estimation settings, and working with the CLI or Rust library.
+:::
+
+::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
+**[Reference](reference/index.html)**\
+Function-level documentation for every exported function in ferx-r.
 :::
 
 :::

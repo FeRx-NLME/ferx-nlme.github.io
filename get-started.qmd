@@ -2,185 +2,52 @@
 title: "Get started"
 ---
 
-## Two install paths
+ferx fits nonlinear mixed-effects models defined in a small, readable DSL
+(`.ferx` files), powered by a Rust engine. There are two ways to run it:
 
-ferx has two builds. They produce the **same parameter estimates** — they differ in how gradients are computed and how fast fits run.
+- **From R** — the `ferx-r` package wraps the engine, takes a `data.frame`, and
+  returns a fit object you can plot and report on.
+- **From the command line** — the `ferx` CLI reads a `.ferx` model plus a CSV
+  and writes results to disk. No R involved.
 
-| Build | Gradients | Compile time | Fit speed | When to use |
-|-------|-----------|--------------|-----------|-------------|
-| **Simple** (default) | Finite differences | ~2 min | Baseline | Trying ferx out, Windows-native, no Rust nightly |
-| **Full** (Enzyme autodiff) | Exact via [Enzyme](https://enzyme.mit.edu/) | ~45–60 min one-time toolchain build | Faster, more accurate Hessians | Production fits, large models, SIR / uncertainty quantification |
-
-You can start with the simple build and upgrade later — the R API is identical.
-
-For a deeper walkthrough of either path, see the installation chapter of the ferx-r book.
-
-### What you give up with the simple build
-
-Almost nothing is *disabled* — the simple build falls back to finite-difference (FD) gradients everywhere autodiff would be used:
-
-| Feature | Simple build |
-|---|---|
-| `ferx_simulate()`, `ferx_predict()` | Identical — no gradients used |
-| ODE / SDE / EKF models | Identical — these always use FD, even in the full build |
-| SAEM | Identical — derivative-free E-step |
-| Population (outer-loop) optimizer | Identical — always FD in both builds |
-| FOCE / FOCEI inner loop with analytical 1-/2-cpt PK | **Slower** — FD instead of Enzyme reverse-mode AD (≈ 2 × n_eta extra gradient calls per iteration); results match |
-| Hessian-based standard errors | Slightly less accurate (FD Hessian) |
-
-If you mostly fit ODE models or use SAEM, the full build buys you nothing. The full build's main win is faster FOCEI on analytical-PK models and crisper SEs for SIR / uncertainty quantification work. Tracked in [ferx-r#46](https://github.com/FeRx-NLME/ferx-r/issues/46).
+Both call the same engine and produce the **same estimates**.
 
 ---
 
-## Pick a version
+## Run from R
 
-The install snippets below default to **main** (development). For reproducible work, pin to the latest tagged release — currently **v0.1.5**:
-
-```r
-# Latest release (recommended for new users / reproducible work)
-pak::pak("FeRx-NLME/ferx-r@v0.1.5")
-
-# Latest development version (tracks main; picks up new features and fixes)
-pak::pak("FeRx-NLME/ferx-r")
-```
-
-`@v0.1.5` works with `remotes::install_github()` and `devtools::install_github()` too. See the [ferx-r releases page](https://github.com/FeRx-NLME/ferx-r/releases) for what each release ships and a link to the matching `ferx-core` engine release.
-
----
-
-## Simple build
-
-The simple build skips the Enzyme toolchain entirely. It works on plain stable Rust and falls back to finite-difference gradients. Estimates match the full build; fits are somewhat slower and standard errors from the FD Hessian are slightly less accurate.
-
-**Prerequisites:** R ≥ 4.2, cmake, and Rust stable (via [rustup](https://rustup.rs)).
-
-### macOS
-
-```bash
-brew install cmake
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-RStudio on macOS does not inherit the Homebrew `PATH`. Add cmake explicitly before installing:
-
-```r
-# Apple Silicon (M1/M2/M3):
-Sys.setenv(PATH = paste("/opt/homebrew/opt/cmake/bin", Sys.getenv("PATH"), sep = ":"))
-# Intel Mac:
-# Sys.setenv(PATH = paste("/usr/local/opt/cmake/bin", Sys.getenv("PATH"), sep = ":"))
-
-Sys.setenv(FERX_NO_AUTODIFF = "1")
-pak::pak("FeRx-NLME/ferx-r")
-```
-
-### Windows
-
-Install [Rtools45](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html) and [Rust via rustup](https://rustup.rs) (cmake ships with Rtools45), then in R:
-
-```r
-Sys.setenv(FERX_NO_AUTODIFF = "1")
-pak::pak("FeRx-NLME/ferx-r")
-```
-
-### Linux
-
-```bash
-sudo apt-get install cmake   # Debian / Ubuntu
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-```r
-Sys.setenv(FERX_NO_AUTODIFF = "1")
-pak::pak("FeRx-NLME/ferx-r")
-```
-
-The `FERX_NO_AUTODIFF=1` flag tells the package build to skip the Enzyme probe and go straight to the stable, finite-difference path.
-
----
-
-## Full build (Enzyme autodiff)
-
-The full build uses [Enzyme](https://enzyme.mit.edu/) to compute exact gradients via automatic differentiation. This requires building a custom `rustc` from source with Enzyme integrated into its own LLVM — a one-time ~45–60 min setup that needs ~30 GB of free disk.
-
-::: {.callout-important}
-**Do not** build a standalone Enzyme *plugin* against a separately-installed LLVM and copy it into a prebuilt nightly's sysroot. That setup looks like it works but causes Enzyme to **hang silently** in `llvm::Constant::getNullValue` the first time it actually differentiates anything. The full toolchain must be built from a single `rust-lang/rust` source tree with `--enable-llvm-enzyme` and `--set llvm.download-ci-llvm=false`. See the warning at the top of the [ferx-core installation page](https://ferx-nlme.github.io/ferx-core/installation.html#do-not-build-a-standalone-enzyme-plugin-against-a-separately-installed-llvm).
-:::
-
-### 1. Build the Enzyme toolchain
-
-Follow the platform steps in the ferx-core book:
-
-- [**Linux**](https://ferx-nlme.github.io/ferx-core/installation.html#linux)
-- [**macOS**](https://ferx-nlme.github.io/ferx-core/installation.html#macos) (Intel and Apple Silicon)
-- [**Windows**](https://ferx-nlme.github.io/ferx-core/installation.html#windows) — not supported; use WSL2 or Docker
-
-Then [verify](https://ferx-nlme.github.io/ferx-core/installation.html#4-verify-the-toolchain) the toolchain with a real `#[autodiff_forward]` test — the usual `E0601` check is **not** sufficient and passes for broken toolchains.
-
-For shared servers, see [multi-user installs](https://ferx-nlme.github.io/ferx-core/installation.html#multi-user-servers).
-
-### 2. Install the R package
-
-Once the `enzyme` toolchain is registered with rustup:
+Install the package:
 
 ```r
 pak::pak("FeRx-NLME/ferx-r")
 ```
 
-The package auto-detects the `enzyme` toolchain and builds the autodiff path. Before the long fat-LTO link it runs the same `#[autodiff_forward]` compile-and-run self-test as the manual verify step above — under a timeout watchdog — and aborts with a clear message if the toolchain is broken, so a misconfigured toolchain fails in seconds rather than wedging `rustc` deep into the build. To confirm the path taken afterwards:
-
-```r
-ferx:::ferx_rust_autodiff_enabled()
-# [1] TRUE
-```
-
-To force one path or the other, or to control the preflight, set before installing:
-
-- `FERX_NO_AUTODIFF=1` — force the simple build even if Enzyme is installed
-- `FERX_NO_AUTODIFF=0` — force the full build, erroring out if Enzyme isn't found
-- `FERX_AD_PREFLIGHT_SKIP=1` — skip the autodiff self-test (useful when reinstalling a verified toolchain; results are also cached per toolchain fingerprint)
-- `FERX_AD_PREFLIGHT_TIMEOUT=<seconds>` — preflight timeout budget (default: 90)
-
----
-
-## Docker (full autodiff, no local toolchain)
-
-The [ferx-r Docker image](https://github.com/FeRx-NLME/ferx-r) ships the Enzyme toolchain prebuilt — the fastest way to get a working full-autodiff setup, especially on Windows.
-
-```bash
-docker build -t ferx:latest https://github.com/FeRx-NLME/ferx-r.git#main
-docker run --rm -p 8787:8787 -e PASSWORD=ferx ferx:latest
-```
-
-Open [http://localhost:8787](http://localhost:8787) — user: `rstudio`, password: `ferx`.
-
----
-
-## First fit
-
-After either install, run the bundled warfarin example:
+Then fit the bundled warfarin example:
 
 ```r
 library(ferx)
 ex  <- ferx_example("warfarin")
 fit <- ferx_fit(ex$model, ex$data)
 print(fit)
-summary(fit)
 ```
 
-List all bundled examples:
+`ferx_example()` (no argument) lists all bundled examples.
 
-```r
-ferx_example()   # character vector of available example names
-?ferx_example    # full list with descriptions
-```
+For installation options (simple vs. Enzyme-autodiff build, Docker, platform
+notes) and the full R workflow — diagnostics, simulation, covariates, IOV —
+see the **[ferx-r book](https://ferx-nlme.github.io/ferx-book/)**.
 
 ---
 
-## Next steps
+## Run from the CLI
 
-- [ferx-r](https://ferx-nlme.github.io/ferx-book/) — narrative guide to the R package with runnable examples
-- [ferx-core](https://ferx-nlme.github.io/ferx-core/) — mdBook for the Rust engine, CLI, and `.ferx` DSL spec
-- [Model workflow](learn/model-workflow.qmd) — full fitting workflow
-- [Model DSL](model-dsl/overview.qmd) — write your own `.ferx` model files
-- [Reference](reference/index.html) — function documentation
-- [ferx-core installation](https://ferx-nlme.github.io/ferx-core/installation.html) — full toolchain detail and troubleshooting
+The CLI ships with `ferx-core`. Point it at a `.ferx` model and a CSV:
+
+```bash
+ferx warfarin.ferx --data warfarin.csv
+```
+
+It writes the fit results (estimates, predictions) to disk next to the inputs.
+
+For building the CLI, estimation settings, the `.ferx` DSL spec, and using the
+engine as a Rust library, see the **[ferx-core book](https://ferx-nlme.github.io/ferx-core/)**.
