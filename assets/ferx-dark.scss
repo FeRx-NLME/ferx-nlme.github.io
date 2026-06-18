@@ -205,7 +205,7 @@ h2 { letter-spacing: -0.02em; }
 
 // ── Hero (index page) ─────────────────────────────
 .hero-banner {
-  padding: 80px 0 64px;
+  padding: 80px 0 24px;
 
   .wordmark {
     font-family: $font-family-monospace;
@@ -408,6 +408,7 @@ h2 { letter-spacing: -0.02em; }
 }
 @media (max-width: 960px) {
   .about-grid { grid-template-columns: 1fr; gap: 32px; }
+  .built-grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
 }
 
 // ── Citation block ────────────────────────────────
