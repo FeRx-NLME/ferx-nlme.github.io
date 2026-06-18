@@ -45,9 +45,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-3427f64fd80f222eb82c1c84ae2c11e8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-704507aa6a64674c474c91908d743cfa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-d6ca0237fbedf1b081249f92efe508f3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,26 +324,30 @@ ul.task-list li input[type="checkbox"] {
 <section id="a-nonlinear-mixed-effects-engine-for-pharmacometrics-written-in-rust." class="level3 headline">
 <h3 class="headline anchored" data-anchor-id="a-nonlinear-mixed-effects-engine-for-pharmacometrics-written-in-rust.">A nonlinear mixed-effects engine for <em>pharmacometrics</em>, written in Rust.</h3>
 <div class="lede">
-<p>ferx fits models defined in a small, readable DSL — bracket-sectioned <code>.ferx</code> files — powered by a Rust backend with <a href="https://enzyme.mit.edu/">Enzyme</a> automatic differentiation for exact gradients. MIT-licensed.</p>
+<p>ferx fits models defined in comprehensible syntax, using state-of-art algorithms powered by a Rust backend. In any data science environment.</p>
 </div>
 <div class="meta">
-<p><span><strong>26</strong> — iron, the element</span>   <span><strong>2026</strong> — launch year</span>   <span><strong>MIT</strong> — license</span></p>
+<p><span><strong>MIT</strong> — license</span></p>
 </div>
 </section>
 </div>
-<div class="hero-right">
+</div>
+</div>
+</div>
+<p>:::</p>
+<div class="container" style="padding: 1rem 1rem;">
+<div class="built-grid" style="display:grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px); gap: 2rem; align-items: center;">
+<section id="how-ferx-is-built" class="level2 built-text">
+<h2 class="anchored" data-anchor-id="how-ferx-is-built">How ferx is built</h2>
+<p><strong>ferx-core</strong> is the Rust engine — it parses <code>.ferx</code> model files, runs the estimators, and produces fits. All numerical work happens here. It ships with a standalone command-line tool (the <code>ferx</code> CLI) that reads a <code>.ferx</code> file plus a CSV dataset and writes results to disk, so you can use the engine directly with no R involved.</p>
+<p><strong>ferx-r</strong> is a thin R wrapper around <code>ferx-core</code>. It exposes the same engine through R functions, hands <code>data.frame</code>s to the core, and returns fit objects you can pipe into R’s plotting and reporting ecosystem.</p>
+<p>Because <code>ferx-core</code> is a stable library, you (or anyone else) can build a different wrapper on top of it — Python, Julia, a web service — and get the exact same numerical results as the CLI and ferx-r.</p>
+</section>
 <div class="sticker-stage-inline">
 <p><img src="assets/ferx-hex-palette-c.svg" class="sticker-sm img-fluid"></p>
 </div>
 </div>
 </div>
-</div>
-</div>
-<section id="how-ferx-is-built" class="level2 container" style="padding: 3rem 1rem 1rem;">
-<h2 class="anchored" data-anchor-id="how-ferx-is-built">How ferx is built</h2>
-<p><strong>ferx-core</strong> is the Rust engine — it parses <code>.ferx</code> model files, runs the estimators, computes gradients (Enzyme autodiff or finite differences), and produces fits. All numerical work happens here. It ships with a standalone command-line tool (the <code>ferx</code> CLI) that reads a <code>.ferx</code> file plus a CSV dataset and writes results to disk, so you can use the engine directly with no R involved.</p>
-<p><strong>ferx-r</strong> is a thin R wrapper around ferx-core. It exposes the same engine through R functions, hands <code>data.frame</code>s to the core, and returns fit objects you can pipe into R’s plotting and reporting ecosystem. Because ferx-core is a stable library, you (or anyone else) can build a different wrapper on top of it — Python, Julia, a web service — and get the exact same numerical results as the CLI and ferx-r.</p>
-</section>
 <section id="learn-ferx" class="level2 container" style="padding: 3rem 1rem 2rem;">
 <h2 class="anchored" data-anchor-id="learn-ferx">Learn ferx</h2>
 <div class="resource-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
@@ -353,15 +357,15 @@ Install ferx and run the warfarin quickstart in under five minutes.</p>
 </div>
 <div class="resource-card" style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;">
 <p><strong><a href="https://ferx-nlme.github.io/ferx-book/">ferx-r</a></strong><br>
-Guide on working with FeRx from R.</p>
+Introduction to FeRx and guide for working with FeRx from R.</p>
 </div>
 <div class="resource-card" style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;">
 <p><strong><a href="https://ferx-nlme.github.io/ferx-core/">ferx-core</a></strong><br>
-Detailed information on estimation settings, and working with the CLI or Rust library.</p>
+Guiden and reference for working with FeRx using the CLI or Rust library.</p>
 </div>
 <div class="resource-card" style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;">
 <p><strong><a href="reference/index.html">Reference</a></strong><br>
-Function-level documentation for every exported function in ferx-r.</p>
+Function-level documentation for every exported function in the ferx R package.</p>
 </div>
 </div>
 </section>
