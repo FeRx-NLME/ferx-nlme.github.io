@@ -112,24 +112,24 @@ the optimizer rejects the step. This matches NONMEM's `OBJFN = NaN →
 step rejection` convention and surfaces bad scales in the per-subject
 diagnostics rather than silently producing a mis-scaled fit.
 
-## Gradients (AD vs FD)
+## Gradients (analytic vs FD)
 
 All `[scaling]` variants on the **analytical PK path** support both
-`gradient = ad` and `gradient = fd`:
+the analytic `gradient = auto` path and `gradient = fd`:
 
-| Form                              | AD                | FD     | Notes |
+| Form                              | Analytic          | FD     | Notes |
 |-----------------------------------|-------------------|--------|-------|
 | Scalar `obs_scale = K`            | ✓ exact           | ✓ exact| Threads as a `Const` slice (one entry per obs) |
 | Expression `obs_scale = <expr>`   | ✓ subject-static  | ✓ exact| See subject-static caveat below |
 | Per-CMT `obs_scale[CMT=N]`        | ✓ subject-static  | ✓ exact| Dispatched per observation by `CMT` |
-| Form C `y[…] = <expr>` (ODE only) | ✗ — forces `fd`   | ✓      | Form C only exists on ODE models, where the AD path isn't available regardless of scaling |
+| Form C `y[…] = <expr>` (ODE only) | ✗ — forces `fd`   | ✓      | Form C only exists on ODE models, where the analytic path isn't available regardless of scaling |
 
 **Subject-static caveat.** The per-observation scale array passed to
-AD is materialised from a single subject-static evaluation. AD treats
-the scale as constant w.r.t. eta. For the common eta-independent
-scale (`WT/70`, `TVV/1000`, or `V` reading the EBE value) AD and FD
+the analytic path is materialised from a single subject-static evaluation.
+It treats the scale as constant w.r.t. eta. For the common eta-independent
+scale (`WT/70`, `TVV/1000`, or `V` reading the EBE value) the analytic and FD
 gradients are identical. If the scale expression explicitly
-references eta (e.g. `obs_scale = exp(ETA_V)`), the AD gradient
+references eta (e.g. `obs_scale = exp(ETA_V)`), the analytic gradient
 ignores that dependence while FD captures it — set `gradient = fd`
 for that case.
 

@@ -17,7 +17,7 @@ research project proposals, or feedback.
   extensions with minimal (if any) modifications to ferx core code.
 - Support for FREM estimation (including conversion to FFEM models).
 - Support for covariate search approaches (GAM, SCM).
-- Support for Enzyme autodiff through the ODE solver.
+- Exact analytic sensitivities through the ODE solver (ODE models currently use finite differences).
 - Support for use of priors (like in NONMEM with penalties added to the
   likelihood, but with easier implementation).
 - Support for mixture models.

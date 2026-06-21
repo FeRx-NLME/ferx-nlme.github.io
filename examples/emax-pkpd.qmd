@@ -90,7 +90,7 @@ E = E0 + EMAX * effect^GAMMA / (EC50^GAMMA + effect^GAMMA)
 Two points worth noting:
 
 - **No `obs_cmt`** in `ode(...)` — with a per-CMT scaling block (`y[CMT=N] = ...`) there is no single observation compartment; the dispatch is handled by the data `CMT` column.
-- **`gradient = fd`** is required when using Form C (`y[CMT=N] = ...`) per-CMT readouts; automatic differentiation is not yet implemented for this path.
+- **`gradient = fd`** is required when using Form C (`y[CMT=N] = ...`) per-CMT readouts; the analytic sensitivity path is not available for this path (Form C only exists on ODE models).
 
 ## Running
 

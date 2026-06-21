@@ -29,7 +29,7 @@
 - [ ] Every `examples/*.ferx` in ferx-core is either covered by a site page or is an internal/test-only model (note which)
 
 ### Example execution (run locally on your CPU before marking ready for review)
-- [ ] Installed ferx-r from local build: `cd ../ferx-r && FERX_NO_AUTODIFF=1 R CMD INSTALL .`
+- [ ] Installed ferx-r from local build: `cd ../ferx-r && R CMD INSTALL .`
 - [ ] All new or changed example `.qmd` pages render cleanly: `quarto render examples/<page>.qmd`
 - [ ] Full site renders without error: `quarto render`
 - [ ] No execution needed (style / structural / non-example change)
