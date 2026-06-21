@@ -398,7 +398,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Inspect the trace (<code>optimizer_trace = TRUE</code>): the population parameters should settle to stable averages by the end of phase 2.</li>
 <li>Increase <code>n_convergence</code> (default 250 → 400+) if the averaging phase is too short.</li>
 <li>Increase <code>omega_burnin</code> (default 20) if Ω collapses in early iterations on sparse data.</li>
-<li>SAEM with HMC (<code>n_leapfrog = 3</code>, AD build) mixes faster for correlated ETAs.</li>
+<li>SAEM with HMC (<code>n_leapfrog = 3</code>) mixes faster for correlated ETAs.</li>
 </ul>
 <hr>
 </section>
@@ -555,7 +555,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td><code>n_leapfrog</code> / <code>saem_n_leapfrog</code></td>
 <td><code>0</code></td>
-<td>Leapfrog steps for HMC proposals. <code>0</code> = Metropolis-Hastings. A positive value replaces MH with HMC — better mixing for correlated ETAs. <strong>Requires an AD (Enzyme) build.</strong></td>
+<td>Leapfrog steps for HMC proposals. <code>0</code> = Metropolis-Hastings. A positive value replaces MH with HMC — better mixing for correlated ETAs. The HMC η-sampler uses the analytic <code>Dual2</code> sensitivity provider.</td>
 </tr>
 </tbody>
 </table>
@@ -887,18 +887,15 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td><code>auto</code> <em>(default)</em></td>
-<td>Use Enzyme AD when available and model has an analytical PK path; otherwise finite differences. Right choice for almost all uses.</td>
+<td>Exact analytic <code>Dual2</code> sensitivities when the model is in scope (analytical PK path); finite differences otherwise. Right choice for almost all uses.</td>
 </tr>
 <tr class="even">
-<td><code>ad</code></td>
-<td>Force Enzyme reverse-mode AD. ~5× faster per gradient call on 1-cpt oral (3 ETAs); advantage grows with more ETAs. Requires AD build. ODE models silently fall back to FD.</td>
-</tr>
-<tr class="odd">
 <td><code>fd</code></td>
 <td>Force finite differences. Always available. Required for SDE (<code>[diffusion]</code>) models and Form-C per-CMT scaling.</td>
 </tr>
 </tbody>
 </table>
+<p>The legacy <code>ad</code> value is no longer accepted and returns an <code>E_AD_RETIRED</code> error — use <code>auto</code> or <code>fd</code> instead.</p>
 <p>Set <code>FERX_TIME_GRADIENTS=1</code> to print per-call timings at the end of a fit.</p>
 <hr>
 </section>
@@ -1138,7 +1135,7 @@ ul.task-list li input[type="checkbox"] {
   sir           = true
   sir_samples   = 2000
   sir_resamples = 500</code></pre>
-<p><strong>SAEM with HMC proposals (AD build only):</strong></p>
+<p><strong>SAEM with HMC proposals:</strong></p>
 <pre><code>[fit_options]
   method       = saem
   n_leapfrog   = 3

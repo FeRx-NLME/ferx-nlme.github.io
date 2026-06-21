@@ -351,7 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#form-c-explicit-output-expression-ode-only" id="toc-form-c-explicit-output-expression-ode-only" class="nav-link" data-scroll-target="#form-c-explicit-output-expression-ode-only">Form C — explicit output expression (ODE only)</a></li>
   <li><a href="#multi-analyte-per-cmt-scaling" id="toc-multi-analyte-per-cmt-scaling" class="nav-link" data-scroll-target="#multi-analyte-per-cmt-scaling">Multi-analyte / per-CMT scaling</a></li>
   <li><a href="#runtime-behaviour-on-bad-scales" id="toc-runtime-behaviour-on-bad-scales" class="nav-link" data-scroll-target="#runtime-behaviour-on-bad-scales">Runtime behaviour on bad scales</a></li>
-  <li><a href="#gradients-ad-vs-fd" id="toc-gradients-ad-vs-fd" class="nav-link" data-scroll-target="#gradients-ad-vs-fd">Gradients (AD vs FD)</a></li>
+  <li><a href="#gradients-analytic-vs-fd" id="toc-gradients-analytic-vs-fd" class="nav-link" data-scroll-target="#gradients-analytic-vs-fd">Gradients (analytic vs FD)</a></li>
   <li><a href="#interaction-with-diffusion" id="toc-interaction-with-diffusion" class="nav-link" data-scroll-target="#interaction-with-diffusion">Interaction with <code>[diffusion]</code></a></li>
   <li><a href="#nonmem-and-nlmixr2-mapping" id="toc-nonmem-and-nlmixr2-mapping" class="nav-link" data-scroll-target="#nonmem-and-nlmixr2-mapping">NONMEM and nlmixr2 mapping</a></li>
   <li><a href="#runnable-example" id="toc-runnable-example" class="nav-link" data-scroll-target="#runnable-example">Runnable example</a></li>
@@ -435,9 +435,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="runtime-behaviour-on-bad-scales">Runtime behaviour on bad scales</h2>
 <p>If an expression scale (Form B or C) evaluates to non-positive or non-finite at runtime — e.g.&nbsp;<code>WT / 70</code> with missing <code>WT</code> (reads <code>0</code>), or <code>1 / (TVV - x)</code> near a singularity — every prediction for that subject is set to <code>NaN</code>. The outer NLL then evaluates to <code>NaN</code> and the optimizer rejects the step. This matches NONMEM’s <code>OBJFN = NaN → step rejection</code> convention and surfaces bad scales in the per-subject diagnostics rather than silently producing a mis-scaled fit.</p>
 </section>
-<section id="gradients-ad-vs-fd" class="level2">
-<h2 class="anchored" data-anchor-id="gradients-ad-vs-fd">Gradients (AD vs FD)</h2>
-<p>All <code>[scaling]</code> variants on the <strong>analytical PK path</strong> support both <code>gradient = ad</code> and <code>gradient = fd</code>:</p>
+<section id="gradients-analytic-vs-fd" class="level2">
+<h2 class="anchored" data-anchor-id="gradients-analytic-vs-fd">Gradients (analytic vs FD)</h2>
+<p>All <code>[scaling]</code> variants on the <strong>analytical PK path</strong> support both the analytic <code>gradient = auto</code> path and <code>gradient = fd</code>:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -448,7 +448,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <thead>
 <tr class="header">
 <th>Form</th>
-<th>AD</th>
+<th>Analytic</th>
 <th>FD</th>
 <th>Notes</th>
 </tr>
@@ -476,11 +476,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Form C <code>y[…] = &lt;expr&gt;</code> (ODE only)</td>
 <td>✗ — forces <code>fd</code></td>
 <td>✓</td>
-<td>Form C only exists on ODE models, where the AD path isn’t available regardless of scaling</td>
+<td>Form C only exists on ODE models, where the analytic path isn’t available regardless of scaling</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Subject-static caveat.</strong> The per-observation scale array passed to AD is materialised from a single subject-static evaluation. AD treats the scale as constant w.r.t. eta. For the common eta-independent scale (<code>WT/70</code>, <code>TVV/1000</code>, or <code>V</code> reading the EBE value) AD and FD gradients are identical. If the scale expression explicitly references eta (e.g.&nbsp;<code>obs_scale = exp(ETA_V)</code>), the AD gradient ignores that dependence while FD captures it — set <code>gradient = fd</code> for that case.</p>
+<p><strong>Subject-static caveat.</strong> The per-observation scale array passed to the analytic path is materialised from a single subject-static evaluation. It treats the scale as constant w.r.t. eta. For the common eta-independent scale (<code>WT/70</code>, <code>TVV/1000</code>, or <code>V</code> reading the EBE value) the analytic and FD gradients are identical. If the scale expression explicitly references eta (e.g.&nbsp;<code>obs_scale = exp(ETA_V)</code>), the analytic gradient ignores that dependence while FD captures it — set <code>gradient = fd</code> for that case.</p>
 </section>
 <section id="interaction-with-diffusion" class="level2">
 <h2 class="anchored" data-anchor-id="interaction-with-diffusion">Interaction with <code>[diffusion]</code></h2>

@@ -524,7 +524,7 @@ Tip
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>gradient_used</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># "finite_differences" — ODE models always use FD (no Enzyme AD path)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># "finite_differences" — ODE models always use FD (no analytic sensitivity path)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="notes" class="level2">
 <h2 class="anchored" data-anchor-id="notes">Notes</h2>
@@ -532,7 +532,7 @@ Tip
 <li>ODE models are slower than analytical models because each prediction requires numerical integration. For standard first-order kinetics, always prefer <code>one_cpt_oral</code> (or other analytical models).</li>
 <li>The ODE solver uses adaptive step-size control — the default tolerances (rtol = 1e-4, atol = 1e-6) work for most PK models; loosen if the fit is very slow or tighten if you observe discontinuities in predictions.</li>
 <li>Steady-state (<code>SS=1</code>) is supported for ODE models via iterative pre-simulation (ferx simulates repeated doses until the state converges). SS doses are slower than for analytical models — roughly 50× the cost of a regular dose due to the RK45 integration segments.</li>
-<li>There is no Enzyme autodiff path for ODE models — <code>gradient_used</code> will always be <code>"finite_differences"</code>.</li>
+<li>There is no analytic sensitivity path for ODE models — <code>gradient_used</code> will always be <code>"finite_differences"</code>.</li>
 </ul>
 </section>
 <section id="see-also" class="level2">

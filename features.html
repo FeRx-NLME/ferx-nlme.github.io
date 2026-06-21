@@ -346,7 +346,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>ferx implements the same statistical methodology as NONMEM, Monolix, and Pumas, in an open-source Rust engine with exact gradients via <a href="https://enzyme.mit.edu/">Enzyme</a> automatic differentiation. This page summarizes what the engine can do. For full detail see the <strong><a href="https://ferx-nlme.github.io/ferx-core/">ferx-core book</a></strong> (engine, CLI, DSL) and the <strong><a href="https://ferx-nlme.github.io/ferx-book/">ferx-r book</a></strong> (R workflow).</p>
+<p>ferx implements the same statistical methodology as NONMEM, Monolix, and Pumas, in an open-source Rust engine with exact analytic gradients. This page summarizes what the engine can do. For full detail see the <strong><a href="https://ferx-nlme.github.io/ferx-core/">ferx-core book</a></strong> (engine, CLI, DSL) and the <strong><a href="https://ferx-nlme.github.io/ferx-book/">ferx-r book</a></strong> (R workflow).</p>
 <p>Maturity labels — <strong>stable</strong>, <strong>beta</strong>, <strong>experimental</strong> — follow the <a href="https://ferx-nlme.github.io/ferx-core/maturity.html">ferx-core feature maturity</a> page.</p>
 <hr>
 <section id="estimation-methods" class="level2">
@@ -416,8 +416,8 @@ ul.task-list li input[type="checkbox"] {
 <section id="gradients" class="level2">
 <h2 class="anchored" data-anchor-id="gradients">Gradients</h2>
 <ul>
-<li><strong>Enzyme automatic differentiation</strong> — fast, exact reverse-mode gradients (full build)</li>
-<li><strong>Finite differences</strong> — fallback on the simple build; always used for ODE/SDE/SAEM</li>
+<li><strong>Analytic <code>Dual2</code> sensitivities</strong> — fast, exact closed-form gradients for in-scope models (FOCE/FOCEI, SAEM/Bayes HMC)</li>
+<li><strong>Finite differences</strong> — used for ODE/SDE, LTBS, expression scaling, and time-varying covariates</li>
 <li>Covariance via inverse Hessian (<code>R⁻¹</code>), score cross-product (<code>S⁻¹</code>), or Huber–White sandwich (<code>R⁻¹SR⁻¹</code>), mirroring NONMEM <code>$COVARIANCE</code></li>
 </ul>
 <hr>

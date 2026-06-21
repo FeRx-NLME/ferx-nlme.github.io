@@ -471,7 +471,7 @@ d/dt(effect)  =  KE0 * (central/V - effect)</code></pre>
 <p>Two points worth noting:</p>
 <ul>
 <li><strong>No <code>obs_cmt</code></strong> in <code>ode(...)</code> — with a per-CMT scaling block (<code>y[CMT=N] = ...</code>) there is no single observation compartment; the dispatch is handled by the data <code>CMT</code> column.</li>
-<li><strong><code>gradient = fd</code></strong> is required when using Form C (<code>y[CMT=N] = ...</code>) per-CMT readouts; automatic differentiation is not yet implemented for this path.</li>
+<li><strong><code>gradient = fd</code></strong> is required when using Form C (<code>y[CMT=N] = ...</code>) per-CMT readouts; the analytic sensitivity path is not available for this path (Form C only exists on ODE models).</li>
 </ul>
 </section>
 <section id="running" class="level2">

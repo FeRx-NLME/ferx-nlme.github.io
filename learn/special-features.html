@@ -550,7 +550,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>A more general Form C lets you write the readout expression directly (<code>y = central / V</code>), useful for non-trivial transformations.</p>
-<p>Because forms B (expressions) and Form C are evaluated through the ODE machinery, they force finite-difference gradients. Add <code>gradient = fd</code> explicitly in <code>[fit_options]</code> to make that choice visible (or <code>gradient = ad</code> to opt back into autodiff for Form A, which is compatible).</p>
+<p>Because forms B (expressions) and Form C are evaluated through the ODE machinery, they force finite-difference gradients. Add <code>gradient = fd</code> explicitly in <code>[fit_options]</code> to make that choice visible. Form A is in scope for the analytic <code>gradient = auto</code> path.</p>
 <p><code>[scaling]</code> is not yet supported on SDE (<code>[diffusion]</code>) models.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fit_scaled <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_scaled<span class="sc">$</span>model, ex_scaled<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fit_scaled<span class="sc">$</span>theta</span>

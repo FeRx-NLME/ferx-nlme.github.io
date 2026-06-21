@@ -405,11 +405,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>lagtime</code> is supported on:</p>
 <ul>
 <li>the analytical superposition path,</li>
-<li>the autodiff (single-snapshot) path used during <code>fit()</code>,</li>
+<li>the analytic sensitivity (single-snapshot) path used during <code>fit()</code>,</li>
 <li>the ODE path,</li>
 <li>steady-state doses (<code>SS=1</code>).</li>
 </ul>
-<p>In the niche case of a time-varying-covariate subject combined with a lagtime-bearing model, ferx-core silently falls back from the event-driven autodiff path to finite differences — correctness is preserved at a small performance cost.</p>
+<p>In the niche case of a time-varying-covariate subject combined with a lagtime-bearing model, ferx-core silently falls back from the event-driven analytic sensitivity path to finite differences — correctness is preserved at a small performance cost.</p>
 </section>
 <section id="notes-and-caveats" class="level2">
 <h2 class="anchored" data-anchor-id="notes-and-caveats">Notes and caveats</h2>

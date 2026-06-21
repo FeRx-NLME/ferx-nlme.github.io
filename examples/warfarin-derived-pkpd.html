@@ -464,10 +464,10 @@ theta EC50(3.0)   fix</code></pre>
  NONLINEAR MIXED EFFECTS MODEL ESTIMATION
 ============================================================
  Model: warfarin_derived_pkpd    Dataset: warfarin
- Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 110
+ Method: FOCEI | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   72 iterations   2.5s
- OFV: -285.6146    AIC: -271.6146    BIC: -252.7112
+ STATUS: CONVERGED   81 iterations   2.5s
+ OFV: -285.3109    AIC: -271.3109    BIC: -252.4075
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -480,35 +480,35 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132860     0.007265        5.5
-TVV                  7.726009     0.236281        3.1
-TVKA                 0.738894     0.152067       20.6
+TVCL                 0.133219     0.007331        5.5
+TVV                  7.700367     0.258887        3.4
+TVKA                 0.762672     0.165732       21.7
 MEC                  0.500000     0.000000        0.0
 EMAX                80.000000     0.000000        0.0
 EC50                 3.000000     0.000000        0.0
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.029886  CV% = 17.4  SE = 0.013648
-  ETA_V                    [log-normal]  = 0.009316  CV% = 9.7  SE = 0.004120
-  ETA_KA                   [log-normal]  = 0.401132  CV% = 70.3  SE = 0.198743
+  ETA_CL                   [log-normal]  = 0.030229  CV% = 17.5  SE = 0.013895
+  ETA_V                    [log-normal]  = 0.011215  CV% = 10.6  SE = 0.005441
+  ETA_KA                   [log-normal]  = 0.461734  CV% = 76.6  SE = 0.243648
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010485  (var = 0.000110, CV% = 1.0)  SE = 0.000822  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010559  (var = 0.000111, CV% = 1.1)  SE = 0.000834  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 2.2%   ETA_V: -1.3%   ETA_KA: 7.4%   EPS: 14.0%
+ ETA_CL: 2.8%   ETA_V: 7.5%   ETA_KA: 14.3%   EPS: 14.6%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 1.6   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
+ Covariance: computed   Cond: 1.4   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
 
 RUN INFO
 ------------------------------------------------------------
- Gradient (requested): auto   (used: fd)
- ferx v0.1.5 (core v0.1.6)
+ Gradient (requested): auto   (used: analytic (Dual2))
+ ferx v0.1.6 (core v0.1.6)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -525,27 +525,27 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_estimates.html">ferx_estimates</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      param    transform    estimate           se   rse_pct     lower_95
-1      TVCL     identity  0.13285979 0.0072654518  5.468511  0.118619508
-2       TVV     identity  7.72600900 0.2362812065  3.058257  7.262897835
-3      TVKA     identity  0.73889396 0.1520667595 20.580322  0.440843116
+1      TVCL     identity  0.13321911 0.0073305691  5.502641  0.118851199
+2       TVV     identity  7.70036655 0.2588867074  3.362005  7.192948607
+3      TVKA     identity  0.76267155 0.1657316092 21.730404  0.437837592
 4       MEC     identity  0.50000000 0.0000000000  0.000000  0.500000000
 5      EMAX     identity 80.00000000 0.0000000000  0.000000 80.000000000
 6      EC50     identity  3.00000000 0.0000000000  0.000000  3.000000000
-7    ETA_CL     variance  0.02988630 0.0136484193 45.667811  0.003135399
-8     ETA_V     variance  0.00931611 0.0041202982 44.227670  0.001240325
-9    ETA_KA     variance  0.40113217 0.1987430243 49.545521  0.011595846
-10 PROP_ERR proportional  0.01048507 0.0008223695  7.843241  0.008873228
+7    ETA_CL     variance  0.03022882 0.0138954556 45.967571  0.002993730
+8     ETA_V     variance  0.01121520 0.0054412012 48.516308  0.000550446
+9    ETA_KA     variance  0.46173371 0.2436477955 52.768033 -0.015815967
+10 PROP_ERR proportional  0.01055910 0.0008339692  7.898110  0.008924519
       upper_95 estimate_natural lower_95_natural upper_95_natural init_as_sd
-1   0.14710008               NA               NA               NA      FALSE
-2   8.18912016               NA               NA               NA      FALSE
-3   1.03694481               NA               NA               NA      FALSE
+1   0.14758703               NA               NA               NA      FALSE
+2   8.20778450               NA               NA               NA      FALSE
+3   1.08750550               NA               NA               NA      FALSE
 4   0.50000000               NA               NA               NA      FALSE
 5  80.00000000               NA               NA               NA      FALSE
 6   3.00000000               NA               NA               NA      FALSE
-7   0.05663720               NA               NA               NA      FALSE
-8   0.01739189               NA               NA               NA      FALSE
-9   0.79066850               NA               NA               NA      FALSE
-10  0.01209692               NA               NA               NA       TRUE</code></pre>
+7   0.05746392               NA               NA               NA      FALSE
+8   0.02187995               NA               NA               NA      FALSE
+9   0.93928339               NA               NA               NA      FALSE
+10  0.01219368               NA               NA               NA       TRUE</code></pre>
 </div>
 </div>
 </section><section id="pd-derived-columns" class="level2"><h2 class="anchored" data-anchor-id="pd-derived-columns">PD derived columns</h2>
@@ -554,18 +554,18 @@ SETTINGS  (model file / call-time override)
 <span>                   <span class="st">"CMAX_INTERVAL"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">12</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID  TIME     IPRED      EFF TAM_TAU TAM_D1 CMAX_INTERVAL
-1   1   0.5  5.351950 51.26420      24     24      11.38318
-2   1   1.0  8.283606 58.73020      24     24      11.38318
-3   1   2.0 10.708504 62.49262      24     24      11.38318
-4   1   4.0 11.383182 63.31385      24     24      11.38318
-5   1   8.0 10.757665 62.55518      24     24      11.38318
-6   1  12.0 10.069198 61.63621      24     24      11.38318
-7   1  24.0  8.254731 58.67563      24     24      11.38318
-8   1  48.0  5.547768 51.92249      24     24      11.38318
-9   1  72.0  3.728495 44.33081      24     24      11.38318
-10  1  96.0  2.505814 36.40972      24     24      11.38318
-11  1 120.0  1.684086 28.76268      24     24      11.38318
-12  2   0.5  3.227385 41.46055      24     24      12.10592</code></pre>
+1   1   0.5  5.352089 51.26467      24     24      11.38282
+2   1   1.0  8.283676 58.73034      24     24      11.38282
+3   1   2.0 10.708346 62.49242      24     24      11.38282
+4   1   4.0 11.382822 63.31343      24     24      11.38282
+5   1   8.0 10.757300 62.55472      24     24      11.38282
+6   1  12.0 10.068872 61.63575      24     24      11.38282
+7   1  24.0  8.254505 58.67521      24     24      11.38282
+8   1  48.0  5.547670 51.92217      24     24      11.38282
+9   1  72.0  3.728466 44.33065      24     24      11.38282
+10  1  96.0  2.505819 36.40976      24     24      11.38282
+11  1 120.0  1.684106 28.76290      24     24      11.38282
+12  2   0.5  3.227339 41.46026      24     24      12.10641</code></pre>
 </div>
 </div>
 <p><code>EFF</code> varies per time point (it depends on <code>IPRED</code>). <code>CMAX_INTERVAL</code>, <code>TAM_TAU</code>, and <code>TAM_D1</code> are aggregate quantities — constant per 24-h window or per subject.</p>

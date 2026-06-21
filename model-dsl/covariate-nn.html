@@ -539,7 +539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="whats-not-yet-wired">What’s not yet wired</h2>
 <ul>
 <li><code>method = nn_mse</code> — Janssen 2022’s original fixed-effects MSE objective. Not implemented; FOCEI is the default and works today.</li>
-<li>AD-aware mu-ref re-centering for NN-anchored etas. Fits work, but the inner-loop AD fast path skips NN-anchored etas — a performance issue, not a correctness issue.</li>
+<li>Analytic-sensitivity-aware mu-ref re-centering for NN-anchored etas. Fits work, but the inner-loop analytic fast path skips NN-anchored etas — a performance issue, not a correctness issue.</li>
 <li><code>[dynamics_nn]</code> block for neural-ODE-style RHS terms (Phase B / not shipped).</li>
 </ul>
 </section>

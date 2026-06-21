@@ -355,18 +355,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header><p>Demonstrates the <code>ADDL</code> column for multiple-dose designs. A single dose row per subject (<code>ADDL=6, II=24</code>) is expanded to seven daily doses at read time; <code>TAD</code> resets to 0 at each expanded dose automatically. The <a href="../model-dsl/derived.html"><code>[derived]</code></a> block computes daily trough (<code>CMIN_TAU</code>), peak (<code>CMAX</code>), and periodic AUC (<code>AUC_TAU</code>).</p>
 <section id="model" class="level2"><h2 class="anchored" data-anchor-id="model">Model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ferx-nlme.github.io/reference/">ferx</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>ferx: built WITHOUT autodiff (finite-difference gradients only).
-All estimation methods (FOCE/FOCEI/SAEM/IMP) work.
-Limitations vs. the full Enzyme build:
-  - gradient = ad in model files falls back to fd (slower, may be less accurate)
-  - SAEM HMC proposals (n_leapfrog &gt; 0) are unavailable; MH is used instead
-  - saem_n_subjects_hmc is always NA
-To enable autodiff: install the Enzyme Rust toolchain and reinstall ferx.
-See: https://ferx-nlme.github.io/ferx-core/installation.html</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin_addl"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ferx-nlme.github.io/reference/">ferx</a></span><span class="op">)</span></span>
+<span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin_addl"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_model_show.html">ferx_model_show</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># model: warfarin_addl.ferx 
@@ -427,7 +417,7 @@ See: https://ferx-nlme.github.io/ferx-core/installation.html</code></pre>
 </section><section id="data-structure" class="level2"><h2 class="anchored" data-anchor-id="data-structure">Data structure</h2>
 <p>The dataset has one dose row per subject with <code>ADDL=6, II=24</code> and observations spread across seven days: rich sampling on day 1, daily troughs at t = 24, 72, 120, 144 h (where <code>TAD</code> resets to 0 at each expanded dose), and rich steady-state sampling on day 7.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_columns.html">ferx_columns</a></span><span class="op">(</span><span class="va">ex</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_columns.html">ferx_columns</a></span><span class="op">(</span><span class="va">ex</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data file: /home/runner/work/_temp/Library/ferx/examples/data/warfarin_addl.csv
 10 columns
@@ -436,7 +426,7 @@ See: https://ferx-nlme.github.io/ferx-core/installation.html</code></pre>
  Optional NONMEM:      [7] RATE  [8] MDV  [9] II
  Covariates / other:   [10] ADDL</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">EVID</span> <span class="op">==</span> <span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>   <span class="co"># dose rows: ADDL=6, II=24</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID TIME DV EVID AMT CMT RATE MDV II ADDL
@@ -450,20 +440,20 @@ See: https://ferx-nlme.github.io/ferx-core/installation.html</code></pre>
 </div>
 </section><section id="fit" class="level2"><h2 class="anchored" data-anchor-id="fit">Fit</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>============================================================
  NONLINEAR MIXED EFFECTS MODEL ESTIMATION
 ============================================================
  Model: warfarin_addl            Dataset: warfarin_addl
- Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 160
+ Method: FOCEI | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 160
 
- STATUS: CONVERGED   443 iterations   2.1s
- OFV: 434.6570    AIC: 448.6570    BIC: 470.1832
+ STATUS: CONVERGED   390 iterations   1.9s
+ OFV: 434.4103    AIC: 448.4103    BIC: 469.9365
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -476,32 +466,32 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.225134     0.014824        6.6
-TVV                 10.386625     0.757478        7.3
-TVKA                 1.611938     0.290344       18.0
+TVCL                 0.225475     0.015523        6.9
+TVV                 10.480776     0.749031        7.1
+TVKA                 1.668271     0.332229       19.9
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.039169  CV% = 20.0  SE = 0.018850
-  ETA_V                    [log-normal]  = 0.045689  CV% = 21.6  SE = 0.023668
-  ETA_KA                   [log-normal]  = 0.251291  CV% = 53.4  SE = 0.145416
+  ETA_CL                   [log-normal]  = 0.043196  CV% = 21.0  SE = 0.021394
+  ETA_V                    [log-normal]  = 0.043584  CV% = 21.1  SE = 0.022303
+  ETA_KA                   [log-normal]  = 0.313975  CV% = 60.7  SE = 0.187813
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.162699  (var = 0.026471, CV% = 16.3)  SE = 0.010264  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.163063  (var = 0.026590, CV% = 16.3)  SE = 0.010306  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 0.0%   ETA_V: 8.2%   ETA_KA: 7.4%   EPS: 7.3%
+ ETA_CL: 3.9%   ETA_V: 6.6%   ETA_KA: 13.0%   EPS: 7.7%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 1.3   DW: 2.05 [no autocorrelation]   IWRES lag-1 r: -0.094
+ Covariance: computed   Cond: 1.4   DW: 2.06 [no autocorrelation]   IWRES lag-1 r: -0.096
 
 RUN INFO
 ------------------------------------------------------------
- Gradient (requested): auto   (used: fd)
- ferx v0.1.5 (core v0.1.6)
+ Gradient (requested): auto   (used: analytic (Dual2))
+ ferx v0.1.6 (core v0.1.6)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -515,100 +505,100 @@ SETTINGS  (model file / call-time override)
 </div>
 </section><section id="derived-columns" class="level2"><h2 class="anchored" data-anchor-id="derived-columns">Derived columns</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Per-subject summary (scalar derived quantities broadcast to all rows)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Per-subject summary (scalar derived quantities broadcast to all rows)</span></span>
 <span><span class="va">subj_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"KE"</span>, <span class="st">"T_HALF"</span>, <span class="st">"CMAX"</span>, <span class="st">"CMIN_TAU"</span>,</span>
 <span>                                      <span class="st">"CMIN_LATE"</span>, <span class="st">"AUC_TAU"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">subj_summary</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> ID         KE   T_HALF     CMAX CMIN_TAU CMIN_LATE  AUC_TAU
-  1 0.02120275 32.69139 21.78721 5.698553 13.882916 174.3972
-  1 0.02120275 32.69139 21.78721 5.698553 13.882916 297.3369
-  1 0.02120275 32.69139 21.78721 5.698553 13.882916 268.4143
-  1 0.02120275 32.69139 21.78721 5.698553 13.882916 321.3414
-  1 0.02120275 32.69139 21.78721 5.698553 13.882916 429.8401
-  1 0.02120275 32.69139 21.78721 5.698553 13.882916 333.1900
-  2 0.02764766 25.07074 19.43449 5.253251 10.727848 176.0065
-  2 0.02764766 25.07074 19.43449 5.253251 10.727848 288.4261
-  2 0.02764766 25.07074 19.43449 5.253251 10.727848 224.4531
-  2 0.02764766 25.07074 19.43449 5.253251 10.727848 252.8217
-  2 0.02764766 25.07074 19.43449 5.253251 10.727848 361.7631
-  2 0.02764766 25.07074 19.43449 5.253251 10.727848 257.4683
-  3 0.02546524 27.21935 24.77795 6.597275 14.227066 216.1604
-  3 0.02546524 27.21935 24.77795 6.597275 14.227066 355.8451
-  3 0.02546524 27.21935 24.77795 6.597275 14.227066 290.9019
-  3 0.02546524 27.21935 24.77795 6.597275 14.227066 333.6606
-  3 0.02546524 27.21935 24.77795 6.597275 14.227066 467.1307
-  3 0.02546524 27.21935 24.77795 6.597275 14.227066 341.4496
-  4 0.01351293 51.29512 27.89683 6.613240 21.410408 178.9762
-  4 0.01351293 51.29512 27.89683 6.613240 21.410408 326.5049
-  4 0.01351293 51.29512 27.89683 6.613240 21.410408 356.4471
-  4 0.01351293 51.29512 27.89683 6.613240 21.410408 475.4287
-  4 0.01351293 51.29512 27.89683 6.613240 21.410408 598.2496
-  4 0.01351293 51.29512 27.89683 6.613240 21.410408 513.8498
-  5 0.02662931 26.02948 23.24712 6.525192 13.660102 210.6662
-  5 0.02662931 26.02948 23.24712 6.525192 13.660102 354.7327
-  5 0.02662931 26.02948 23.24712 6.525192 13.660102 282.8752
-  5 0.02662931 26.02948 23.24712 6.525192 13.660102 321.2388
-  5 0.02662931 26.02948 23.24712 6.525192 13.660102 450.6574
-  5 0.02662931 26.02948 23.24712 6.525192 13.660102 327.8425
-  6 0.01424795 48.64891 21.15248 4.942045 15.506208 139.6613
-  6 0.01424795 48.64891 21.15248 4.942045 15.506208 245.6645
-  6 0.01424795 48.64891 21.15248 4.942045 15.506208 262.7223
-  6 0.01424795 48.64891 21.15248 4.942045 15.506208 346.1324
-  6 0.01424795 48.64891 21.15248 4.942045 15.506208 440.6626
-  6 0.01424795 48.64891 21.15248 4.942045 15.506208 372.1490
-  7 0.02162588 32.05175 21.66352 5.775835 13.887878 176.0079
-  7 0.02162588 32.05175 21.66352 5.775835 13.887878 302.1802
-  7 0.02162588 32.05175 21.66352 5.775835 13.887878 270.2051
-  7 0.02162588 32.05175 21.66352 5.775835 13.887878 321.9572
-  7 0.02162588 32.05175 21.66352 5.775835 13.887878 431.0152
-  7 0.02162588 32.05175 21.66352 5.775835 13.887878 333.3091
-  8 0.02623942 26.41625 14.95760 4.328413  9.150341 133.6907
-  8 0.02623942 26.41625 14.95760 4.328413  9.150341 232.3377
-  8 0.02623942 26.41625 14.95760 4.328413  9.150341 188.7041
-  8 0.02623942 26.41625 14.95760 4.328413  9.150341 214.9958
-  8 0.02623942 26.41625 14.95760 4.328413  9.150341 295.5921
-  8 0.02623942 26.41625 14.95760 4.328413  9.150341 219.6082
-  9 0.02004040 34.58750 20.33539 5.112564 12.928153 157.5352
-  9 0.02004040 34.58750 20.33539 5.112564 12.928153 264.5264
-  9 0.02004040 34.58750 20.33539 5.112564 12.928153 245.4442
-  9 0.02004040 34.58750 20.33539 5.112564 12.928153 297.8660
-  9 0.02004040 34.58750 20.33539 5.112564 12.928153 396.2589
-  9 0.02004040 34.58750 20.33539 5.112564 12.928153 310.2757
- 10 0.02735158 25.34213 25.65765 6.963696 14.322233 231.5736
- 10 0.02735158 25.34213 25.65765 6.963696 14.322233 381.3678
- 10 0.02735158 25.34213 25.65765 6.963696 14.322233 298.7828
- 10 0.02735158 25.34213 25.65765 6.963696 14.322233 337.3282
- 10 0.02735158 25.34213 25.65765 6.963696 14.322233 480.5211
- 10 0.02735158 25.34213 25.65765 6.963696 14.322233 343.7336</code></pre>
+  1 0.02114780 32.77633 21.78154 5.691447 13.889476 174.1120
+  1 0.02114780 32.77633 21.78154 5.691447 13.889476 296.8473
+  1 0.02114780 32.77633 21.78154 5.691447 13.889476 268.3183
+  1 0.02114780 32.77633 21.78154 5.691447 13.889476 321.4268
+  1 0.02114780 32.77633 21.78154 5.691447 13.889476 429.7819
+  1 0.02114780 32.77633 21.78154 5.691447 13.889476 333.3474
+  2 0.02759814 25.11572 19.40782 5.242179 10.717904 175.6009
+  2 0.02759814 25.11572 19.40782 5.242179 10.717904 287.7023
+  2 0.02759814 25.11572 19.40782 5.242179 10.717904 224.1365
+  2 0.02759814 25.11572 19.40782 5.242179 10.717904 252.5624
+  2 0.02759814 25.11572 19.40782 5.242179 10.717904 361.2473
+  2 0.02759814 25.11572 19.40782 5.242179 10.717904 257.2297
+  3 0.02527877 27.42013 24.75946 6.582633 14.265073 215.3152
+  3 0.02527877 27.42013 24.75946 6.582633 14.265073 354.5263
+  3 0.02527877 27.42013 24.75946 6.582633 14.265073 291.0592
+  3 0.02527877 27.42013 24.75946 6.582633 14.265073 334.3957
+  3 0.02527877 27.42013 24.75946 6.582633 14.265073 467.3291
+  3 0.02527877 27.42013 24.75946 6.582633 14.265073 342.3618
+  4 0.01344500 51.55429 27.96379 6.619339 21.493368 178.9298
+  4 0.01344500 51.55429 27.96379 6.619339 21.493368 326.6479
+  4 0.01344500 51.55429 27.96379 6.619339 21.493368 357.2345
+  4 0.01344500 51.55429 27.96379 6.619339 21.493368 477.0322
+  4 0.01344500 51.55429 27.96379 6.619339 21.493368 600.0231
+  4 0.01344500 51.55429 27.96379 6.619339 21.493368 515.8408
+  5 0.02659453 26.06352 23.23392 6.522335 13.665952 210.4465
+  5 0.02659453 26.06352 23.23392 6.522335 13.665952 354.4708
+  5 0.02659453 26.06352 23.23392 6.522335 13.665952 282.8931
+  5 0.02659453 26.06352 23.23392 6.522335 13.665952 321.3517
+  5 0.02659453 26.06352 23.23392 6.522335 13.665952 450.6230
+  5 0.02659453 26.06352 23.23392 6.522335 13.665952 327.9828
+  6 0.01416845 48.92188 21.15460 4.932819 15.529099 139.3551
+  6 0.01416845 48.92188 21.15460 4.932819 15.529099 245.0795
+  6 0.01416845 48.92188 21.15460 4.932819 15.529099 262.6209
+  6 0.01416845 48.92188 21.15460 4.932819 15.529099 346.4521
+  6 0.01416845 48.92188 21.15460 4.932819 15.529099 440.9267
+  6 0.01416845 48.92188 21.15460 4.932819 15.529099 372.6984
+  7 0.02161241 32.07173 21.65585 5.773128 13.887118 175.8924
+  7 0.02161241 32.07173 21.65585 5.773128 13.887118 302.0079
+  7 0.02161241 32.07173 21.65585 5.773128 13.887118 270.1369
+  7 0.02161241 32.07173 21.65585 5.773128 13.887118 321.9240
+  7 0.02161241 32.07173 21.65585 5.773128 13.887118 430.9161
+  7 0.02161241 32.07173 21.65585 5.773128 13.887118 333.2908
+  8 0.02657063 26.08697 14.92626 4.337085  9.092716 134.2310
+  8 0.02657063 26.08697 14.92626 4.337085  9.092716 233.2235
+  8 0.02657063 26.08697 14.92626 4.337085  9.092716 188.1772
+  8 0.02657063 26.08697 14.92626 4.337085  9.092716 213.8018
+  8 0.02657063 26.08697 14.92626 4.337085  9.092716 294.6480
+  8 0.02657063 26.08697 14.92626 4.337085  9.092716 218.2252
+  9 0.01989147 34.84646 20.33348 5.094488 12.945833 156.8095
+  9 0.01989147 34.84646 20.33348 5.094488 12.945833 263.3048
+  9 0.01989147 34.84646 20.33348 5.094488 12.945833 245.1822
+  9 0.01989147 34.84646 20.33348 5.094488 12.945833 298.0864
+  9 0.01989147 34.84646 20.33348 5.094488 12.945833 396.0747
+  9 0.01989147 34.84646 20.33348 5.094488 12.945833 310.7000
+ 10 0.02722300 25.46182 25.64996 6.954151 14.347200 230.9638
+ 10 0.02722300 25.46182 25.64996 6.954151 14.347200 380.4458
+ 10 0.02722300 25.46182 25.64996 6.954151 14.347200 298.9188
+ 10 0.02722300 25.46182 25.64996 6.954151 14.347200 337.8265
+ 10 0.02722300 25.46182 25.64996 6.954151 14.347200 480.6212
+ 10 0.02722300 25.46182 25.64996 6.954151 14.347200 344.3328</code></pre>
 </div>
 </div>
 <p><code>CMIN_TAU</code> uses <code>TAD &lt; 1e-10</code> to locate the observation at the exact start of each dosing interval (where <code>TAD</code> resets to 0 after ADDL expansion). <code>CMIN_LATE</code> uses <code>TAD &gt; 20</code> as an alternative window-based trough — less precise but avoids the floating-point boundary.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># DAY = floor(TAFD / 24) + 1; shows which dosing day each observation belongs to</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># DAY = floor(TAFD / 24) + 1; shows which dosing day each observation belongs to</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"TAFD"</span>, <span class="st">"TAD"</span>, <span class="st">"DAY"</span>, <span class="st">"IPRED"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">20</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID  TIME  TAFD  TAD DAY     IPRED
-1   1   0.5   0.5  0.5   1  5.233118
-2   1   1.0   1.0  1.0   1  7.466790
-3   1   2.0   2.0  2.0   1  8.738543
-4   1   4.0   4.0  4.0   1  8.695523
-5   1   8.0   8.0  8.0   1  8.000100
-6   1  24.0  24.0  0.0   2  5.698553
-7   1  28.0  28.0  4.0   2 13.930704
-8   1  32.0  32.0  8.0   2 12.809587
-9   1  72.0  72.0  0.0   4 11.183927
-10  1 120.0 120.0  0.0   6 13.166417
-11  1 144.0 144.0  0.0   7 13.613900
-12  1 145.0 145.0  1.0   7 20.795077
-13  1 146.0 146.0  2.0   7 21.787208
-14  1 148.0 148.0  4.0   7 21.202421
-15  1 152.0 152.0  8.0   7 19.490012
-16  1 168.0 168.0 24.0   8 13.882916
-17  2   0.5   0.5  0.5   1  5.927478
-18  2   1.0   1.0  1.0   1  8.247607
-19  2   2.0   2.0  2.0   1  9.376504
-20  2   4.0   4.0  4.0   1  9.124737</code></pre>
+1   1   0.5   0.5  0.5   1  5.249371
+2   1   1.0   1.0  1.0   1  7.473795
+3   1   2.0   2.0  2.0   1  8.726879
+4   1   4.0   4.0  4.0   1  8.675847
+5   1   8.0   8.0  8.0   1  7.983105
+6   1  24.0  24.0  0.0   2  5.691447
+7   1  28.0  28.0  4.0   2 13.905648
+8   1  32.0  32.0  8.0   2 12.788705
+9   1  72.0  72.0  0.0   4 11.179928
+10  1 120.0 120.0  0.0   6 13.168780
+11  1 144.0 144.0  0.0   7 13.618661
+12  1 145.0 145.0  1.0   7 20.807476
+13  1 146.0 146.0  2.0   7 21.781542
+14  1 148.0 148.0  4.0   7 21.189869
+15  1 152.0 152.0  8.0   7 19.482087
+16  1 168.0 168.0 24.0   8 13.889476
+17  2   0.5   0.5  0.5   1  5.954588
+18  2   1.0   1.0  1.0   1  8.258308
+19  2   2.0   2.0  2.0   1  9.358712
+20  2   4.0   4.0  4.0   1  9.097133</code></pre>
 </div>
 </div>
 </section><section id="see-also" class="level2"><h2 class="anchored" data-anchor-id="see-also">See also</h2>

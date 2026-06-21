@@ -427,7 +427,7 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>SDE models require an ODE structural model — they cannot be used with analytical PK solvers (<code>one_cpt_oral</code>, <code>two_cpt_iv_bolus</code>, etc.). The model file must use <code>[structural_model] ode(...)</code> with <code>[odes]</code>.</p>
-<p>SDE is also incompatible with Enzyme autodiff. <code>gradient_method = fd</code> is set automatically and the model file enforces it. Fits are significantly slower than equivalent analytical models.</p>
+<p>SDE is also incompatible with the analytic sensitivity path. <code>gradient_method = fd</code> is set automatically and the model file enforces it. Fits are significantly slower than equivalent analytical models.</p>
 </div>
 </div>
 </section>

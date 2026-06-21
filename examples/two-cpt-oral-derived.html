@@ -488,10 +488,10 @@ Note
  NONLINEAR MIXED EFFECTS MODEL ESTIMATION
 ============================================================
  Model: two_cpt_oral_derived     Dataset: two_cpt_oral_cov
- Method: FOCEI | Gradient: FD | Subjects: 30 | Obs: 300
+ Method: FOCEI | Gradient: ANALYTIC (DUAL2) | Subjects: 30 | Obs: 300
 
- STATUS: CONVERGED   612 iterations   3.0s
- OFV: -696.5568    AIC: -680.5568    BIC: -650.9265
+ STATUS: CONVERGED   385 iterations   3.1s
+ OFV: -658.3534    AIC: -642.3534    BIC: -612.7231
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -504,33 +504,33 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 4.439407     0.353276        8.0
-TVV1                49.191598     3.677783        7.5
-TVQ                  9.022071     0.407470        4.5
-TVV2                90.885639     2.673961        2.9
-TVKA                 1.244735     0.087753        7.0
+TVCL                 4.664002     0.379912        8.1
+TVV1                67.125151    21.176187       31.5
+TVQ                  8.793466     0.392245        4.5
+TVV2                93.021626     3.081509        3.3
+TVKA                 1.343474     0.092259        6.9
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.184090  CV% = 45.0  SE = 0.051003
-  ETA_V1                   [log-normal]  = 0.104157  CV% = 33.1  SE = 0.027826
+  ETA_CL                   [log-normal]  = 0.186491  CV% = 45.3  SE = 0.052021
+  ETA_V1                   [log-normal]  = 0.776976  CV% = 108.4  SE = 0.819114
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.107659  (var = 0.011591, CV% = 10.8)  SE = 0.005000  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.112604  (var = 0.012680, CV% = 11.3)  SE = 0.005512  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 2.4%   ETA_V1: -0.2%   EPS: 10.4%
+ ETA_CL: 0.4%   ETA_V1: 52.5% [!]   EPS: 13.7%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 9.7   DW: 0.61 [positive autocorrelation]   IWRES lag-1 r: 0.658
+ Covariance: computed   Cond: 13.3   DW: 0.61 [positive autocorrelation]   IWRES lag-1 r: 0.656
 
 RUN INFO
 ------------------------------------------------------------
- Gradient (requested): auto   (used: fd)
- ferx v0.1.5 (core v0.1.6)
+ Gradient (requested): auto   (used: analytic (Dual2))
+ ferx v0.1.6 (core v0.1.6)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -557,13 +557,13 @@ SETTINGS  (model file / call-time override)
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"CL"</span>, <span class="st">"V1"</span>, <span class="st">"Q"</span>, <span class="st">"V2"</span>, <span class="st">"K10"</span>, <span class="st">"K12"</span>, <span class="st">"K21"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   ID       CL       V1        Q       V2        K10       K12        K21
-1   1 4.278483 33.65222 9.022071 90.88564 0.12713818 0.2680973 0.09926839
-11  2 5.689616 41.55738 9.022071 90.88564 0.13690988 0.2170991 0.09926839
-21  3 4.797609 50.61403 9.022071 90.88564 0.09478813 0.1782524 0.09926839
-31  4 3.079984 26.97015 9.022071 90.88564 0.11419971 0.3345206 0.09926839
-41  5 5.625980 43.96147 9.022071 90.88564 0.12797526 0.2052268 0.09926839
-51  6 7.802979 40.90606 9.022071 90.88564 0.19075362 0.2205559 0.09926839</code></pre>
+<pre><code>   ID       CL       V1        Q       V2       K10       K12        K21
+1   1 4.250747 35.12881 8.793466 93.02163 0.1210046 0.2503207 0.09453142
+11  2 5.683057 43.96596 8.793466 93.02163 0.1292604 0.2000062 0.09453142
+21  3 4.760654 52.97945 8.793466 93.02163 0.0898585 0.1659788 0.09453142
+31  4 3.039533 27.64093 8.793466 93.02163 0.1099649 0.3181321 0.09453142
+41  5 5.590855 46.11268 8.793466 93.02163 0.1212433 0.1906952 0.09453142
+51  6 7.830417 42.73728 8.793466 93.02163 0.1832222 0.2057563 0.09453142</code></pre>
 </div>
 </div>
 </section><section id="peak-and-auc-summaries" class="level3"><h3 class="anchored" data-anchor-id="peak-and-auc-summaries">Peak and AUC summaries</h3>
@@ -571,12 +571,12 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"TMAX"</span>, <span class="st">"AUC_0_168"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID     CMAX TMAX AUC_0_168
-1   1 4.220841    1  88.27689
-11  2 3.526973    2  65.45010
-21  3 3.200879    2  79.14230
-31  4 5.116534    1 120.92818
-41  5 3.419651    2  66.43121
-51  6 3.437200    1  45.32994</code></pre>
+1   1 4.240405    1  88.52297
+11  2 3.468234    1  65.54005
+21  3 3.152258    2  79.49219
+31  4 5.222892    1 121.45632
+41  5 3.371167    2  66.85214
+51  6 3.446816    1  45.29230</code></pre>
 </div>
 </div>
 </section><section id="periodic-auc" class="level3"><h3 class="anchored" data-anchor-id="periodic-auc">Periodic AUC</h3>
@@ -586,16 +586,16 @@ SETTINGS  (model file / call-time override)
 <span>          <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"TIME"</span>, <span class="st">"TAFD"</span>, <span class="st">"AUC_TAU"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   TIME TAFD   AUC_TAU
-1   0.5  0.5 35.716625
-2   1.0  1.0 35.716625
-3   2.0  2.0 35.716625
-4   4.0  4.0 35.716625
-5   6.0  6.0 35.716625
-6   8.0  8.0 35.716625
-7  12.0 12.0 35.716625
-8  24.0 24.0 11.645039
-9  36.0 36.0 11.645039
-10 48.0 48.0  8.183045</code></pre>
+1   0.5  0.5 35.521229
+2   1.0  1.0 35.521229
+3   2.0  2.0 35.521229
+4   4.0  4.0 35.521229
+5   6.0  6.0 35.521229
+6   8.0  8.0 35.521229
+7  12.0 12.0 35.521229
+8  24.0 24.0 11.617212
+9  36.0 36.0 11.617212
+10 48.0 48.0  8.276906</code></pre>
 </div>
 </div>
 </section></section><section id="see-also" class="level2"><h2 class="anchored" data-anchor-id="see-also">See also</h2>

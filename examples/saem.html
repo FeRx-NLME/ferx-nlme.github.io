@@ -351,7 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#saem-specific-options" id="toc-saem-specific-options" class="nav-link" data-scroll-target="#saem-specific-options">SAEM-specific options</a></li>
   <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
   <li><a href="#chaining-saem-focei" id="toc-chaining-saem-focei" class="nav-link" data-scroll-target="#chaining-saem-focei">Chaining SAEM → FOCEI</a></li>
-  <li><a href="#hmc-proposals-ad-build-only" id="toc-hmc-proposals-ad-build-only" class="nav-link" data-scroll-target="#hmc-proposals-ad-build-only">HMC proposals (AD build only)</a></li>
+  <li><a href="#hmc-proposals" id="toc-hmc-proposals" class="nav-link" data-scroll-target="#hmc-proposals">HMC proposals</a></li>
   <li><a href="#iov-with-saem" id="toc-iov-with-saem" class="nav-link" data-scroll-target="#iov-with-saem">IOV with SAEM</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
@@ -479,9 +479,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The chained fit runs SAEM first, then starts FOCEI from the SAEM-converged parameters. The final result is a FOCEI fit with SAEM-warm-started initial values.</p>
 </section>
-<section id="hmc-proposals-ad-build-only" class="level2">
-<h2 class="anchored" data-anchor-id="hmc-proposals-ad-build-only">HMC proposals (AD build only)</h2>
-<p>SAEM normally uses Metropolis-Hastings (MH) proposals for the E-step. When ferx is built with Enzyme autodiff support, Hamiltonian Monte Carlo (HMC) proposals can be used instead via <code>n_leapfrog</code>. HMC takes gradient-informed steps so it explores the ETA posterior more efficiently, particularly for models with correlated random effects.</p>
+<section id="hmc-proposals" class="level2">
+<h2 class="anchored" data-anchor-id="hmc-proposals">HMC proposals</h2>
+<p>SAEM normally uses Metropolis-Hastings (MH) proposals for the E-step. Hamiltonian Monte Carlo (HMC) proposals can be used instead via <code>n_leapfrog</code>. HMC takes gradient-informed steps (from the analytic <code>Dual2</code> sensitivity provider) so it explores the ETA posterior more efficiently, particularly for models with correlated random effects.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit_hmc <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  ex<span class="sc">$</span>model, ex<span class="sc">$</span>data,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">method   =</span> <span class="st">"saem"</span>,</span>
@@ -494,7 +494,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of subjects whose E-step used HMC (NULL if MH was used)</span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>fit_hmc<span class="sc">$</span>saem_n_subjects_hmc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If ferx was not compiled with autodiff (<code>FERX_NO_AUTODIFF=1</code> build), <code>n_leapfrog</code> is silently ignored and standard MH proposals are used. Check <code>ferx::ferx_rust_autodiff_enabled()</code> to confirm the build type.</p>
+<p>HMC needs the analytic sensitivity path. For models outside its scope (ODE, SDE, and other finite-difference-only models), <code>n_leapfrog</code> is silently ignored and standard MH proposals are used.</p>
 </section>
 <section id="iov-with-saem" class="level2">
 <h2 class="anchored" data-anchor-id="iov-with-saem">IOV with SAEM</h2>

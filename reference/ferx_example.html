@@ -18,7 +18,7 @@ Called without arguments, lists available example names."><!-- mathjax --><scrip
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ferx</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.6</span>
       </span>
     </div>
 
@@ -188,6 +188,12 @@ needed.</p></dd>
 absorption, allometric scaling on CL/V1/V2 (reference WT = 70 kg).
 Transit compartments provide the absorption delay without a hard lag time.</p></dd>
 
+<dt>igd_inverse_gaussian</dt>
+<dd><p>One-compartment ODE model with Freijer &amp; Post
+inverse-Gaussian absorption via the built-in <code>igd(mat, cv2)</code> input
+rate fed straight into central (the entire absorption delay in one term,
+no first-order <code>ka</code>). Paired with the NONMEM igd anchor dataset.</p></dd>
+
 <dt>two_cpt_oral_cov_ode_template</dt>
 <dd><p>Two-compartment oral PK with covariates
 written with <code>ode_template two_cpt_oral(...)</code> in
@@ -280,25 +286,25 @@ list.files(system.file("examples", package = "ferx"), pattern = "\.R$")
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ferx_example</span><span class="op">(</span><span class="op">)</span>                        <span class="co"># list all available example names</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "bioavailability"               "bioavailability_ode"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "emax_pkpd"                     "mm_multistart"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "mm_oral"                       "one_cpt_iv"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "one_cpt_iv_ode"                "three_cpt_iv"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "three_cpt_iv_ode"              "three_cpt_oral"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "three_cpt_oral_ode"            "transit_2cpt"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "two_cpt_iv"                    "two_cpt_iv_ode"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "two_cpt_oral_cov"              "two_cpt_oral_cov_ode"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "two_cpt_oral_cov_ode_template" "two_cpt_oral_derived"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "warfarin"                      "warfarin_additive_eta"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "warfarin_addl"                 "warfarin_block_omega"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "warfarin_bloq"                 "warfarin_data_selection"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "warfarin_dcm"                  "warfarin_derived"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "warfarin_derived_pkpd"         "warfarin_if"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "warfarin_iov"                  "warfarin_iov_saem"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "warfarin_logit_f"              "warfarin_ltbs"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "warfarin_ode"                  "warfarin_ode_lagtime"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "warfarin_ode_time"             "warfarin_saem"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "warfarin_scaled"               "warfarin_sde"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "warfarin_ss"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "emax_pkpd"                     "igd_inverse_gaussian"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "mm_multistart"                 "mm_oral"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "one_cpt_iv"                    "one_cpt_iv_ode"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "three_cpt_iv"                  "three_cpt_iv_ode"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "three_cpt_oral"                "three_cpt_oral_ode"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "transit_2cpt"                  "two_cpt_iv"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "two_cpt_iv_ode"                "two_cpt_oral_cov"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "two_cpt_oral_cov_ode"          "two_cpt_oral_cov_ode_template"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "two_cpt_oral_derived"          "warfarin"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "warfarin_additive_eta"         "warfarin_addl"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "warfarin_block_omega"          "warfarin_bloq"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "warfarin_data_selection"       "warfarin_dcm"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "warfarin_derived"              "warfarin_derived_pkpd"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "warfarin_if"                   "warfarin_iov"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "warfarin_iov_saem"             "warfarin_logit_f"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "warfarin_ltbs"                 "warfarin_ode"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "warfarin_ode_lagtime"          "warfarin_ode_time"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "warfarin_saem"                 "warfarin_scaled"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "warfarin_sde"                  "warfarin_ss"                  </span>
 <span class="r-in"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu">ferx_example</span><span class="op">(</span><span class="st">"warfarin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ex</span><span class="op">$</span><span class="va">model</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/ferx-r/inst/examples/models/warfarin.ferx"</span>
@@ -313,18 +319,19 @@ list.files(system.file("examples", package = "ferx"), pattern = "\.R$")
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ex4_mm_oral.R"                      "ex5_warfarin_iov.R"                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "ex6_three_cpt_iv.R"                 "ex7_warfarin_block_omega.R"        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11] "ex8_warfarin_sde.R"                 "ex9_mm_multistart.R"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ex_emax_pkpd.R"                     "ex_optimizer_tuning.R"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "ex_robust_fit.R"                    "ex_save_load_fit.R"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "ex_transit_2cpt.R"                  "ex_two_cpt_oral_cov_ode_template.R"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ex_two_cpt_oral_derived.R"          "ex_warfarin_additive_eta.R"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "ex_warfarin_addl.R"                 "ex_warfarin_chains.R"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "ex_warfarin_data_selection.R"       "ex_warfarin_dcm.R"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "ex_warfarin_derived.R"              "ex_warfarin_derived_pkpd.R"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "ex_warfarin_if.R"                   "ex_warfarin_iov_saem.R"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "ex_warfarin_logit_f.R"              "ex_warfarin_ltbs.R"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "ex_warfarin_ode_time.R"             "ex_warfarin_saem.R"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "ex_warfarin_saem_hmc.R"             "ex_warfarin_scaled.R"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "ex_warfarin_sir.R"                  "ex_warfarin_ss.R"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ex_emax_pkpd.R"                     "ex_igd_inverse_gaussian.R"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "ex_optimizer_tuning.R"              "ex_robust_fit.R"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "ex_save_load_fit.R"                 "ex_transit_2cpt.R"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ex_two_cpt_oral_cov_ode_template.R" "ex_two_cpt_oral_derived.R"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "ex_warfarin_additive_eta.R"         "ex_warfarin_addl.R"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "ex_warfarin_chains.R"               "ex_warfarin_data_selection.R"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "ex_warfarin_dcm.R"                  "ex_warfarin_derived.R"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "ex_warfarin_derived_pkpd.R"         "ex_warfarin_if.R"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "ex_warfarin_iov_saem.R"             "ex_warfarin_logit_f.R"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "ex_warfarin_ltbs.R"                 "ex_warfarin_ode_time.R"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "ex_warfarin_saem.R"                 "ex_warfarin_saem_hmc.R"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "ex_warfarin_scaled.R"               "ex_warfarin_sir.R"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "ex_warfarin_ss.R"                  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Open a script in RStudio to read or run it:</span></span></span>
