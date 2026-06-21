@@ -3,8 +3,8 @@ title: "Features"
 ---
 
 ferx implements the same statistical methodology as NONMEM, Monolix, and Pumas,
-in an open-source Rust engine with exact gradients via [Enzyme](https://enzyme.mit.edu/)
-automatic differentiation. This page summarizes what the engine can do. For full
+in an open-source Rust engine with exact analytic gradients. This page summarizes
+what the engine can do. For full
 detail see the **[ferx-core book](https://ferx-nlme.github.io/ferx-core/)** (engine,
 CLI, DSL) and the **[ferx-r book](https://ferx-nlme.github.io/ferx-book/)** (R workflow).
 
@@ -38,8 +38,8 @@ poorly-identified models.
 
 ## Gradients
 
-- **Enzyme automatic differentiation** — fast, exact reverse-mode gradients (full build)
-- **Finite differences** — fallback on the simple build; always used for ODE/SDE/SAEM
+- **Analytic `Dual2` sensitivities** — fast, exact closed-form gradients for in-scope models (FOCE/FOCEI, SAEM/Bayes HMC)
+- **Finite differences** — used for ODE/SDE, LTBS, expression scaling, and time-varying covariates
 - Covariance via inverse Hessian (`R⁻¹`), score cross-product (`S⁻¹`), or
   Huber–White sandwich (`R⁻¹SR⁻¹`), mirroring NONMEM `$COVARIANCE`
 

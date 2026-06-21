@@ -101,7 +101,7 @@ variance of process noise *in the same units as the state* — e.g.
 |-------------------------------------------------|----------------------------------------------------|
 | `[diffusion]` on an analytical `pk` model       | Parse-time error                                   |
 | `method = saem` with `[diffusion]`              | Hard error at fit time                             |
-| `gradient_method = ad` with `[diffusion]`       | Warning emitted; automatically switched to `fd`    |
+| `gradient_method = ad` with `[diffusion]`       | `ad` is retired (`E_AD_RETIRED`); use `auto` or `fd` |
 | State name not in `states = [...]`              | Parse-time error                                   |
 | Negative initial value                          | Parse-time error                                   |
 | `[scaling]` combined with `[diffusion]`         | Parse-time error (deferred to a future phase)      |

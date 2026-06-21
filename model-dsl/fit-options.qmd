@@ -57,7 +57,7 @@ gave surprising results. Work through this list in order:
   too short.
 - Increase `omega_burnin` (default 20) if Ω collapses in early iterations
   on sparse data.
-- SAEM with HMC (`n_leapfrog = 3`, AD build) mixes faster for correlated ETAs.
+- SAEM with HMC (`n_leapfrog = 3`) mixes faster for correlated ETAs.
 
 ---
 
@@ -168,7 +168,7 @@ time is controlled by iteration counts, not `maxiter`.
 | `adapt_interval` | `50` | How often (iterations) to adapt the MH proposal scale. |
 | `omega_burnin` | `20` | Hold Ω fixed for this many iterations while the sampler warms up. Guards against Ω collapse on sparse data. Set `0` to disable. |
 | `seed` / `saem_seed` | `12345` | RNG seed for the MH sampler. Independent of `multi_start_seed`. |
-| `n_leapfrog` / `saem_n_leapfrog` | `0` | Leapfrog steps for HMC proposals. `0` = Metropolis-Hastings. A positive value replaces MH with HMC — better mixing for correlated ETAs. **Requires an AD (Enzyme) build.** |
+| `n_leapfrog` / `saem_n_leapfrog` | `0` | Leapfrog steps for HMC proposals. `0` = Metropolis-Hastings. A positive value replaces MH with HMC — better mixing for correlated ETAs. The HMC η-sampler uses the analytic `Dual2` sensitivity provider. |
 
 **Works with:** IOV · BLOQ M3 · method chains
 
@@ -301,9 +301,11 @@ Set in the model file with `gradient = ...` or in R with the `gradient` argument
 
 | Value | Description |
 |---|---|
-| `auto` *(default)* | Use Enzyme AD when available and model has an analytical PK path; otherwise finite differences. Right choice for almost all uses. |
-| `ad` | Force Enzyme reverse-mode AD. ~5× faster per gradient call on 1-cpt oral (3 ETAs); advantage grows with more ETAs. Requires AD build. ODE models silently fall back to FD. |
+| `auto` *(default)* | Exact analytic `Dual2` sensitivities when the model is in scope (analytical PK path); finite differences otherwise. Right choice for almost all uses. |
 | `fd` | Force finite differences. Always available. Required for SDE (`[diffusion]`) models and Form-C per-CMT scaling. |
+
+The legacy `ad` value is no longer accepted and returns an `E_AD_RETIRED`
+error — use `auto` or `fd` instead.
 
 Set `FERX_TIME_GRADIENTS=1` to print per-call timings at the end of a fit.
 
@@ -489,7 +491,7 @@ Inspect `fit$model_file_settings` and `fit$call_settings` to audit.
   sir_resamples = 500
 ```
 
-**SAEM with HMC proposals (AD build only):**
+**SAEM with HMC proposals:**
 
 ```
 [fit_options]

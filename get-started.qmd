@@ -33,8 +33,8 @@ print(fit)
 
 `ferx_example()` (no argument) lists all bundled examples.
 
-For installation options (simple vs. Enzyme-autodiff build, Docker, platform
-notes) and the full R workflow — diagnostics, simulation, covariates, IOV —
+For installation options (Docker, platform notes) and the full R workflow —
+diagnostics, simulation, covariates, IOV —
 see the **[ferx-r book](https://ferx-nlme.github.io/ferx-book/)**.
 
 ---

@@ -346,7 +346,7 @@ fit$aic                  # AIC = OFV + 2p
 fit$bic                  # BIC = OFV + p*ln(N)
 fit$converged            # TRUE if the outer optimizer converged
 fit$method               # estimation method used
-fit$gradient_used        # "enzyme", "dual", or "finite_differences"
+fit$gradient_used        # "dual" (analytic) or "finite_differences"
 fit$warnings             # non-fatal warnings from the run
 
 fit$ebe_etas             # empirical Bayes ETAs per subject (data frame)

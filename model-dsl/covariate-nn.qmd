@@ -137,9 +137,9 @@ than dumping one row per weight.
 
 - `method = nn_mse` — Janssen 2022's original fixed-effects MSE
   objective. Not implemented; FOCEI is the default and works today.
-- AD-aware mu-ref re-centering for NN-anchored etas. Fits work, but
-  the inner-loop AD fast path skips NN-anchored etas — a performance
-  issue, not a correctness issue.
+- Analytic-sensitivity-aware mu-ref re-centering for NN-anchored etas.
+  Fits work, but the inner-loop analytic fast path skips NN-anchored etas —
+  a performance issue, not a correctness issue.
 - `[dynamics_nn]` block for neural-ODE-style RHS terms (Phase B / not
   shipped).
 

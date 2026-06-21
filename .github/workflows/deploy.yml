@@ -26,9 +26,7 @@ jobs:
             any::remotes
 
       # Install ferx-r to build pkgdown reference
-      - name: Install ferx-r (no autodiff)
-        env:
-          FERX_NO_AUTODIFF: "1"
+      - name: Install ferx-r
         run: |
           git clone --depth 1 https://github.com/FeRx-NLME/ferx-r /tmp/ferx-r
           R CMD INSTALL --no-lock /tmp/ferx-r

@@ -85,12 +85,12 @@ The chained fit runs SAEM first, then starts FOCEI from the SAEM-converged
 parameters. The final result is a FOCEI fit with SAEM-warm-started initial
 values.
 
-## HMC proposals (AD build only)
+## HMC proposals
 
-SAEM normally uses Metropolis-Hastings (MH) proposals for the E-step. When
-ferx is built with Enzyme autodiff support, Hamiltonian Monte Carlo (HMC)
-proposals can be used instead via `n_leapfrog`. HMC takes gradient-informed
-steps so it explores the ETA posterior more efficiently, particularly for
+SAEM normally uses Metropolis-Hastings (MH) proposals for the E-step.
+Hamiltonian Monte Carlo (HMC) proposals can be used instead via `n_leapfrog`.
+HMC takes gradient-informed steps (from the analytic `Dual2` sensitivity
+provider) so it explores the ETA posterior more efficiently, particularly for
 models with correlated random effects.
 
 ```r
@@ -108,9 +108,9 @@ fit_hmc <- ferx_fit(
 fit_hmc$saem_n_subjects_hmc
 ```
 
-If ferx was not compiled with autodiff (`FERX_NO_AUTODIFF=1` build),
-`n_leapfrog` is silently ignored and standard MH proposals are used. Check
-`ferx::ferx_rust_autodiff_enabled()` to confirm the build type.
+HMC needs the analytic sensitivity path. For models outside its scope (ODE,
+SDE, and other finite-difference-only models), `n_leapfrog` is silently
+ignored and standard MH proposals are used.
 
 ## IOV with SAEM
 
