@@ -12,9 +12,8 @@ This is the **baseline × NN-modulator** architecture from
 Janssen et al. 2022 (CPT:PSP, DOI 10.1002/psp4.12808).
 
 ::: {.callout-note}
-DCM requires the `nn` cargo feature. The default ferx-r build includes it
-(`FERX_NO_AUTODIFF=1` is sufficient — no Enzyme needed for DCM). If `fit$neural_networks`
-is empty after fitting, rebuild with `--features nn`.
+DCM requires the `nn` cargo feature. The default ferx-r build includes it.
+If `fit$neural_networks` is empty after fitting, rebuild with `--features nn`.
 :::
 
 ## Model file

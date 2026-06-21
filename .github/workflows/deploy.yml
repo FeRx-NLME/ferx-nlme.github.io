@@ -24,10 +24,8 @@ jobs:
             any::Rd2md
             any::yaml
 
-      # Install ferx-r so executable {r} chunks in example pages can run
-      - name: Install ferx-r (no autodiff)
-        env:
-          FERX_NO_AUTODIFF: "1"
+      # Install ferx-r to build pkgdown reference
+      - name: Install ferx-r
         run: |
           git clone --depth 1 https://github.com/FeRx-NLME/ferx-r /tmp/ferx-r
           R CMD INSTALL --no-lock /tmp/ferx-r

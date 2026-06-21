@@ -47,7 +47,7 @@ _quarto.yml     # Site nav — new pages must be registered here
 
 All example `.qmd` pages use knitr R chunks that call `library(ferx)`. Before rendering:
 
-1. Rebuild ferx-r (which compiles ferx-core Rust via Enzyme): `cd ../ferx-r && FERX_NO_AUTODIFF=1 R CMD INSTALL .`
+1. Rebuild ferx-r (which compiles ferx-core Rust on a stock nightly toolchain): `cd ../ferx-r && R CMD INSTALL .`
 2. Render a single page: `quarto render examples/<page>.qmd`
 3. Render the full site: `quarto render`
 

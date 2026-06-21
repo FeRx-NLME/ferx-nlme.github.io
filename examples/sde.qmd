@@ -31,9 +31,9 @@ SDE models require an ODE structural model — they cannot be used with analytic
 PK solvers (`one_cpt_oral`, `two_cpt_iv_bolus`, etc.). The model file must use
 `[structural_model] ode(...)` with `[odes]`.
 
-SDE is also incompatible with Enzyme autodiff. `gradient_method = fd` is set
-automatically and the model file enforces it. Fits are significantly slower than
-equivalent analytical models.
+SDE is also incompatible with the analytic sensitivity path. `gradient_method = fd`
+is set automatically and the model file enforces it. Fits are significantly slower
+than equivalent analytical models.
 :::
 
 ## Model file
