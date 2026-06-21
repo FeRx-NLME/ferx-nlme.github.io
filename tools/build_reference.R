@@ -80,6 +80,26 @@ unwrap_norun <- function(txt) {
   strsplit(s, "\n", fixed = TRUE)[[1]]
 }
 
+# Neutralise bracketed \link forms before parsing. Rd2md's as_markdown resolves
+# \link[pkg]{x} / \link[pkg:topic]{x} by reading that package's installed help
+# DB (readRDS(system.file("help", "aliases.rds", package = pkg))). If the
+# referenced package is not installed in the build env, system.file returns ""
+# and readRDS("") aborts with "cannot open the connection" (a gzfile error),
+# failing the whole run. CI installs ferx without its Suggests (e.g. xpose), so
+# any \link[xpose:...] would break it. We rewrite:
+#   \link[=dest]{text}        -> \link{dest}   (keep as an intra-site link)
+#   \link[pkg]{text} / [pkg:t]-> \code{text}   (external; cannot link in-site)
+# Plain \link{x} (no brackets) passes through untouched: get_topic_href is
+# called with package = NULL there and just returns the topic, no DB read.
+neutralize_links <- function(txt) {
+  s <- paste(txt, collapse = "\n")
+  # Same-package anchor links: \link[=dest]{text} -> \link{dest}
+  s <- gsub("\\\\link\\[=([^]]+)\\]\\{[^}]*\\}", "\\\\link{\\1}", s, perl = TRUE)
+  # Any remaining bracketed (cross-package) link -> plain \code{text}
+  s <- gsub("\\\\link\\[[^]]+\\]\\{([^}]*)\\}", "\\\\code{\\1}", s, perl = TRUE)
+  strsplit(s, "\n", fixed = TRUE)[[1]]
+}
+
 # Rewrite intra-package cross references emitted by Rd2md as bare topic names:
 #   [ferx_model](ferx_model) -> [ferx_model](ferx_model.qmd)
 # Only rewrite targets that resolve to a real topic page; leave external and
@@ -103,6 +123,7 @@ convert_one <- function(rd_path, alias_map) {
 
   txt <- readLines(rd_path, warn = FALSE)
   txt <- unwrap_norun(txt)
+  txt <- neutralize_links(txt)
   tmp <- tempfile(fileext = ".Rd")
   writeLines(txt, tmp)
   on.exit(unlink(tmp), add = TRUE)
