@@ -2,7 +2,6 @@ project:
   type: website
   output-dir: _site
   resources:
-    - reference/**
     - articles/**
 
 brand: _brand.yml
@@ -29,10 +28,12 @@ website:
       - text: "Roadmap"
         href: roadmap.qmd
     right:
-      - text: "ferx-r"
-        href: https://ferx-nlme.github.io/ferx-book/
       - text: "ferx-core"
         href: https://ferx-nlme.github.io/ferx-core/
+      - text: "ferx-r"
+        href: https://ferx-nlme.github.io/ferx-book/
+      - text: "Reference"
+        href: reference/index.qmd
       - icon: github
         href: https://github.com/FeRx-NLME
         aria-label: GitHub
