@@ -2,7 +2,6 @@ project:
   type: website
   output-dir: _site
   resources:
-    - reference/**
     - articles/**
 
 brand: _brand.yml
@@ -24,6 +23,8 @@ website:
         href: get-started.qmd
       - text: "Features"
         href: features.qmd
+      - text: "Reference"
+        href: reference/index.qmd
       - text: "Changelog"
         href: changelog.qmd
       - text: "Roadmap"

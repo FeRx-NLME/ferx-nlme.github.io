@@ -21,11 +21,10 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           packages: |
-            any::pkgdown
-            any::pkgload
-            any::remotes
+            any::Rd2md
+            any::yaml
 
-      # Install ferx-r to build pkgdown reference
+      # Install ferx-r so executable {r} chunks in example pages can run
       - name: Install ferx-r (no autodiff)
         env:
           FERX_NO_AUTODIFF: "1"
@@ -38,21 +37,11 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/FeRx-NLME/ferx-core /tmp/ferx-core
 
-      # Build pkgdown reference only (no vignettes — those live in learn/)
-      - name: Build pkgdown reference
-        run: |
-          Rscript -e '
-            setwd("/tmp/ferx-r")
-            pkgdown::build_reference(override = list(destination = "/tmp/pkgdown-ref"))
-          '
-
-      # Copy pkgdown reference output into the Quarto site
-      - name: Copy reference into site
-        run: |
-          mkdir -p reference
-          cp -r /tmp/pkgdown-ref/reference/* reference/
-          # Copy pkgdown assets (css/js) needed for reference pages
-          cp -r /tmp/pkgdown-ref/assets reference/assets 2>/dev/null || true
+      # Generate native Quarto reference pages from ferx-r's Rd man pages.
+      # These render with the site theme (cosmo + _brand.yml), unlike pkgdown's
+      # separate Bootstrap output. See tools/build_reference.R.
+      - name: Build reference pages
+        run: Rscript tools/build_reference.R /tmp/ferx-r reference
 
       - uses: quarto-dev/quarto-actions/setup@v2
 
