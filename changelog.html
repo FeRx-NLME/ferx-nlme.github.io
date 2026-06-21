@@ -304,12 +304,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
+    <a class="nav-link" href="https://ferx-nlme.github.io/ferx-core/"> 
+<span class="menu-text">ferx-core</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="https://ferx-nlme.github.io/ferx-book/"> 
 <span class="menu-text">ferx-r</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://ferx-nlme.github.io/ferx-core/"> 
-<span class="menu-text">ferx-core</span></a>
+    <a class="nav-link" href="./reference/index.html"> 
+<span class="menu-text">Reference</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/FeRx-NLME"> <i class="bi bi-github" role="img" aria-label="GitHub">
@@ -454,6 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Propensity-score-matched simulation: <code>simulate_with_options()</code> with a new <code>SimulateOptions { seed, match_method }</code>. When <code>match_method</code> is <code>Some(..)</code>, each replicate’s drawn etas are reassigned to subjects by Mahalanobis matching (under the model Ω) against the subjects’ fitted (posthoc) etas, so a subject’s observed dosing/sampling design is paired with a similar drawn eta. This corrects VPC bias from treatment adaptation in real-world data (longer intervals for high-clearance patients, etc.). Three methods are offered via <code>MatchMethod</code>: <code>Optimal</code> (global linear-assignment minimum; best on average in simulation, recommended default), <code>Nearest</code> (greedy nearest-neighbour, <code>MatchIt(method="nearest", distance="mahalanobis")</code>), and <code>Rank</code> (pair by the rank of the Mahalanobis norm). Operates on observed data; returns the usual simulation rows for the caller to build the VPC (#288, #396).</li>
 <li>New <code>importance_sampling_map</code> (alias <code>impmap</code>) estimation method: a Monte-Carlo EM estimator equivalent to NONMEM <code>METHOD=IMPMAP</code>. Each iteration re-centers a per-subject importance-sampling proposal on the conditional mode (MAP) and updates θ/Ω/σ from the importance-weighted posterior moments. Runs standalone or chained (<code>methods = [focei, impmap]</code>); multivariate-normal proposal by default (<code>impmap_proposal_df = normal</code>), Student-t optional. Validated against FOCEI on warfarin. IOV and SDE models are not yet supported (#270).</li>
 <li>Importance sampling can now run <strong>standalone</strong> (<code>method = imp</code>), evaluating the IS log-likelihood at the initial parameters — IMP derives the EBEs/Jacobian it needs via a FOCE inner loop at those parameters instead of requiring a preceding estimator. Useful for scoring imported/fixed parameter sets. IMP still may appear at most once and must be the terminal stage of a chain.</li>
+<li>SAEM conditional-distribution pass: set <code>conddist = true</code> in <code>[fit_options]</code> to estimate each subject’s conditional distribution of the random effects <code>p(η_i | y_i)</code> by MCMC after the fit — reporting per-subject conditional mean, SD, distribution-based η-shrinkage, and (with <code>conddist_keep_samples = true</code>) the raw draws. Surfaced on <code>FitResult.cond_dist</code> and written to <code>{model}-conddist.csv</code> (+ <code>-conddist-samples.csv</code>). This is the SAEM analogue of saemix <code>conddist.saemix</code> / Monolix’s “Conditional Distribution” task and is the shrinkage-unbiased basis for η diagnostics; validated against saemix on warfarin (#257).</li>
 <li>Feature maturity labels (<code>stable</code> / <code>beta</code> / <code>experimental</code>) documented for every major feature: a new <em>Feature Maturity</em> docs page with definitions and a per-feature table, plus a maturity banner on each feature reference page. Experimental features (<code>[diffusion]</code> / SDE, <code>[covariate_nn]</code> / neural networks) now emit a runtime warning at fit time (<code>W_EXPERIMENTAL_SDE</code>, <code>W_EXPERIMENTAL_NN</code>), also surfaced by <code>ferx check</code> (#175).</li>
 <li>
 <code>covariance_method</code> fit option: choose the covariance estimator, mirroring NONMEM <code>$COV MATRIX=</code> — <code>r</code> (inverse Hessian <code>R⁻¹</code>, default), <code>s</code> (inverse score cross-product <code>S⁻¹</code>), or <code>rsr</code> (the Huber–White sandwich <code>R⁻¹SR⁻¹</code>, robust to model mis-specification). Supported for FOCEI, FOCE, and IOV fits; anchored against NONMEM <code>$COV MATRIX=S</code>/<code>RSR</code> within ~10% for both FOCEI (#266) and FOCE (#250) (#223).</li>
