@@ -23,6 +23,8 @@ jobs:
           packages: |
             any::Rd2md
             any::yaml
+            any::knitr
+            any::rmarkdown
 
       # Install ferx-r to build pkgdown reference
       - name: Install ferx-r
