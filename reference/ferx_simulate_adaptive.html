@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Simulate from a NLME model – ferx</title>
+<title>Simulate state-reactive (adaptive / feedback) dosing – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -353,6 +353,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -366,7 +367,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Simulate from a NLME model</h1>
+<h1 class="title">Simulate state-reactive (adaptive / feedback) dosing</h1>
 </div>
 
 
@@ -385,39 +386,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Simulates observations from a parsed model with between-subject variability and residual error. When a <code>fit</code> is supplied, the fitted theta, omega, and sigma replace the model file’s initial values - which is the usual flow after <code>[ferx_fit](ferx_fit.qmd)</code> (e.g.&nbsp;for posterior-predictive checks or VPCs).</p>
+<p>Runs a forward simulation in which the dosing regimen is decided at run time by the model file’s <code>[adaptive_dosing]</code> block - a declarative first-matching-rule controller that reads the simulated (optionally assay-noised) state at each decision time and titrates the next dose. This is the file-driven therapeutic-drug-monitoring / feedback-dosing path; the plain <code>[ferx_simulate](ferx_simulate.qmd)</code> replays a fixed regimen from the data instead.</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_simulate</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_simulate_adaptive</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  model,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  data,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_sim =</span> <span class="dv">1</span>L,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">42</span>L,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fit =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">match =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">horizon =</span> <span class="cn">NULL</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">verify =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_decisions =</span> <span class="dv">0</span>L</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>model</code>: Path to a .ferx model file</li>
-<li><code>data</code>: Path to a NONMEM-format CSV (provides population structure: doses, obs times)</li>
+<li><code>model</code>: Path to a .ferx model file containing an <code>[adaptive_dosing]</code> block</li>
+<li><code>data</code>: Path to a NONMEM-format CSV (dose-free base subjects + observation times)</li>
 <li><code>n_sim</code>: Number of simulation replicates</li>
 <li><code>seed</code>: Random seed for reproducibility</li>
-<li><code>fit</code>: Optional <code>ferx_fit</code> result. When provided, simulation uses <code>fit$theta</code>, <code>fit$omega</code>, and <code>fit$sigma</code> instead of the model file’s initial values.</li>
-<li><code>match</code>: Propensity-score matching method (default <code>FALSE</code>). When enabled, each replicate’s drawn etas are reassigned to subjects by <strong><em>propensity-score matching</em></strong> against the subjects’ fitted (posthoc) etas - Mahalanobis matching under the model omega. This pairs each subject’s observed dosing/sampling design with a similar drawn eta, correcting VPC bias from treatment adaptation in real-world data (e.g.&nbsp;longer dosing intervals for high-clearance patients). Accepts:</li>
-<li><code>FALSE</code> / <code>"none"</code>: No matching (default).</li>
-<li><code>TRUE</code> / <code>"optimal"</code>: Global linear-assignment minimum Mahalanobis distance (<code>MatchIt(method = "optimal")</code>); best on average in simulation, the recommended method.</li>
-<li><code>"nearest"</code>: Greedy nearest-neighbour (<code>MatchIt(method = "nearest", distance = "mahalanobis")</code>).</li>
-<li><code>"rank"</code>: Pair by the rank of each eta’s Mahalanobis norm.Requires <code>data</code> to be real observed data (every subject must have observations, so its posthoc eta can be computed). The posthoc etas are computed at the fitted parameters when <code>fit</code> is supplied, otherwise at the model file’s initial values.</li>
-<li><code>horizon</code>: Optional administrative censoring time for time-to-event (TTE) endpoints. A finite, positive <code>horizon</code> is <strong><em>required</em></strong> to simulate a drug-driven (joint PK-TTE) model: the augmented hazard ODE is integrated until the cumulative hazard reaches <code>-log U</code>, censoring at <code>horizon</code> if no event fires (ferx-core #564). Purely-Gaussian models ignore it. <code>NULL</code> (default) leaves it unset.</li>
+<li><code>verify</code>: Run the frozen-schedule replay verifier after every (subject, replicate) (default <code>TRUE</code>). A divergence is a hard error, not a warning: it means the realized dose ledger does not reproduce the trajectory, so the result is not trustworthy.</li>
+<li><code>max_decisions</code>: Per-run cap on the number of decision points (the runaway / closed-loop guard). <code>0</code> (default) keeps the engine default.</li>
 </ul>
+</section>
+<section id="details" class="level2">
+<h2 class="anchored" data-anchor-id="details">Details</h2>
+<p>The base subjects must be <strong><em>dose-free</em></strong>: the controller supplies every dose, so the data provides only the observation grid and any covariates. A model without an <code>[adaptive_dosing]</code> block is an error.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other simulation: <code>[ferx_npde](ferx_npde.qmd)()</code>, <code>[ferx_predict](ferx_predict.qmd)()</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)()</code>, <code>[ferx_simulate_adaptive](ferx_simulate_adaptive.qmd)()</code>, <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)()</code></p>
+<p>Other simulation: <code>[ferx_npde](ferx_npde.qmd)()</code>, <code>[ferx_predict](ferx_predict.qmd)()</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)()</code>, <code>[ferx_simulate](ferx_simulate.qmd)()</code>, <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -425,18 +424,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A data.frame. Gaussian rows carry DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM (with <code>OBSERVED = NA</code>). For a joint PK-TTE model each subject also yields a TTE row on the event CMT, where TIME is the sampled event/censor time and <code>OBSERVED</code> is 1 (event before <code>horizon</code>) or 0 (right-censored at it); its IPRED and DV_SIM are <code>NA</code>. Use <code>is.na(OBSERVED)</code> to separate continuous rows from event rows.</p>
+<p>A list of four data frames:</p>
+<ul>
+<li><code>trajectories</code>: DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM, OBSERVED - the per-observation predictions, as in <code>[ferx_simulate](ferx_simulate.qmd)</code> (<code>OBSERVED</code> is <code>NA</code> here: the adaptive path has no time-to-event endpoint).</li>
+<li><code>doses</code>: The realized dose ledger: DRAW, SIM, ID, TIME, AMT, CMT, RATE, DECISION, SIGNAL (the value the controller titrated on - assay-noised when <code>with_assay_error</code>), RULE (the rule that fired).</li>
+<li><code>decisions</code>: One row per decision including holds: DRAW, SIM, ID, DECISION, TIME, SIGNAL, OUTCOME (“dosed” / “hold” / “stop”), N_DOSED.</li>
+<li><code>metrics</code>: One row per realized run (subject x draw x replicate) - the per-subject outcome summary: DRAW, SIM, ID, CUM_DOSE (sum of realized doses), N_DOSES, N_INCREASES / N_DECREASES (realized dose-change counts, by dose delta), N_HOLDS, DISCONTINUED, TIME_TO_DISCONT, SIGNAL_MIN / SIGNAL_MAX / SIGNAL_MEAN (over the decisions that recorded a signal), and PCT_TIME_IN_WINDOW - the fraction of signal-bearing decisions whose observed value fell inside the model’s <code>[adaptive_dosing]</code> <code>target_window</code> (NA when no <code>target_window</code> is declared).</li>
+</ul>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">10</span>L, <span class="at">seed =</span> <span class="dv">1</span>L, <span class="at">fit =</span> fit)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Propensity-score-matched simulation for a real-world-data VPC:</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>sim_pm <span class="ot">&lt;-</span> <span class="fu">ferx_simulate</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">10</span>L, <span class="at">seed =</span> <span class="dv">1</span>L,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">fit =</span> fit, <span class="at">match =</span> <span class="st">"optimal"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"adaptive_tdm"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">ferx_simulate_adaptive</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">20</span>L, <span class="at">seed =</span> <span class="dv">1</span>L)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res<span class="sc">$</span>doses)         <span class="co"># how the dose was titrated per decision</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res<span class="sc">$</span>trajectories)  <span class="co"># the resulting concentration-time profiles</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

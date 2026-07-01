@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.38">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
 <title>Example: ODE with TIME, TAFD, and TAD – ferx</title>
 <style>
 /* Default styles provided by pandoc.
@@ -57,6 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
@@ -78,7 +82,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-d6ca0237fbedf1b081249f92efe508f3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -104,8 +109,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><link rel="stylesheet" href="../styles.css">
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
 </head>
+
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -271,10 +280,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content"><img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content"></a>
+    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    </a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">ferx</span>
     </a>
@@ -285,7 +298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../get-started.html"> 
 <span class="menu-text">Get started</span></a>
   </li>  
@@ -302,8 +315,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
-<ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
     <a class="nav-link" href="https://ferx-nlme.github.io/ferx-core/"> 
 <span class="menu-text">ferx-core</span></a>
   </li>  
@@ -321,28 +334,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#model" id="toc-model" class="nav-link active" data-scroll-target="#model">Model</a></li>
+  <li><a href="#model" id="toc-model" class="nav-link active" data-scroll-target="#model">Model</a></li>
   <li><a href="#fit" id="toc-fit" class="nav-link" data-scroll-target="#fit">Fit</a></li>
   <li><a href="#derived-columns" id="toc-derived-columns" class="nav-link" data-scroll-target="#derived-columns">Derived columns</a></li>
   <li><a href="#time-vs-tafd-vs-tad-in-ode-expressions" id="toc-time-vs-tafd-vs-tad-in-ode-expressions" class="nav-link" data-scroll-target="#time-vs-tafd-vs-tad-in-ode-expressions">TIME vs TAFD vs TAD in ODE expressions</a></li>
   <li><a href="#scaling-with-ode-models" id="toc-scaling-with-ode-models" class="nav-link" data-scroll-target="#scaling-with-ode-models">[scaling] with ODE models</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
-  </ul><div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
 <h1 class="title">Example: ODE with TIME, TAFD, and TAD</h1>
 </div>
 
@@ -357,13 +379,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><p>Inside <code>[odes]</code> RHS expressions four time variables are available: <code>TIME</code> (= <code>T</code>) is the ODE solver clock, <code>TAFD</code> is time after first dose, and <code>TAD</code> is time after the most recent dose. This example uses them to build conditional accumulator compartments alongside a standard 1-cpt oral ODE, and then computes post-fit summaries with <code>[derived]</code>.</p>
-<section id="model" class="level2"><h2 class="anchored" data-anchor-id="model">Model</h2>
+</header>
+
+
+<p>Inside <code>[odes]</code> RHS expressions four time variables are available: <code>TIME</code> (= <code>T</code>) is the ODE solver clock, <code>TAFD</code> is time after first dose, and <code>TAD</code> is time after the most recent dose. This example uses them to build conditional accumulator compartments alongside a standard 1-cpt oral ODE, and then computes post-fit summaries with <code>[derived]</code>.</p>
+<section id="model" class="level2">
+<h2 class="anchored" data-anchor-id="model">Model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ferx-nlme.github.io/reference/">ferx</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">ex</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin_ode_time"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_model_show.html">ferx_model_show</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_ode_time"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_show</span>(ex<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># model: warfarin_ode_time.ferx 
 # Warfarin ODE -- demonstrates TIME/T/TAFD/TAD in [odes] RHS expressions
@@ -418,18 +444,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Key points:</p>
 <ul>
-<li>
-<code>TIME</code> and <code>T</code> are synonymous — both track the ODE solver time axis.</li>
-<li>
-<code>TAFD</code> resets at the first dose; <code>TAD</code> resets at each dose event.</li>
-<li>
-<code>d/dt(AUC_D1) = if (TIME &lt; 24) central/V else 0.0</code> accumulates AUC only during the first 24 h. The inline <code>if</code> fires at every ODE solver step, so the integral is exact (no grid approximation needed).</li>
-<li>
-<code>d/dt(TAM_INT) = if (central/V &gt; 0.5 &amp;&amp; TAD &lt; 24) 1.0 else 0.0</code> counts hours above 0.5 mg/L within each dosing interval. <code>TAD &lt; 24</code> resets the window at every dose; the condition fires whenever concentration exceeds the threshold.</li>
-<li>
-<code>[scaling] obs_scale = V</code> maps the <code>central</code> amount to concentration.</li>
-<li>
-<code>[derived]</code> adds <code>KE</code>, <code>T_HALF</code>, <code>CMAX</code>, and <code>AUC_72</code> to sdtab.</li>
+<li><code>TIME</code> and <code>T</code> are synonymous — both track the ODE solver time axis.</li>
+<li><code>TAFD</code> resets at the first dose; <code>TAD</code> resets at each dose event.</li>
+<li><code>d/dt(AUC_D1) = if (TIME &lt; 24) central/V else 0.0</code> accumulates AUC only during the first 24 h. The inline <code>if</code> fires at every ODE solver step, so the integral is exact (no grid approximation needed).</li>
+<li><code>d/dt(TAM_INT) = if (central/V &gt; 0.5 &amp;&amp; TAD &lt; 24) 1.0 else 0.0</code> counts hours above 0.5 mg/L within each dosing interval. <code>TAD &lt; 24</code> resets the window at every dose; the condition fires whenever concentration exceeds the threshold.</li>
+<li><code>[scaling] obs_scale = V</code> maps the <code>central</code> amount to concentration.</li>
+<li><code>[derived]</code> adds <code>KE</code>, <code>T_HALF</code>, <code>CMAX</code>, and <code>AUC_72</code> to sdtab.</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -444,22 +464,21 @@ Note
 <p><strong>ODE accumulator states vs sdtab.</strong> <code>AUC_D1</code> and <code>TAM_INT</code> accumulate correctly during integration and can drive feedback dynamics (e.g., cumulative exposure affecting tolerance). Raw ODE state values are not written to <code>fit$sdtab</code> automatically. To report an integral in sdtab, use <code>[derived] integral(IPRED, ...)</code> — the two approaches are complementary: use ODE accumulators when the value feeds back into the RHS, and use <code>[derived]</code> for post-fit sdtab columns.</p>
 </div>
 </div>
-</section><section id="fit" class="level2"><h2 class="anchored" data-anchor-id="fit">Fit</h2>
+</section>
+<section id="fit" class="level2">
+<h2 class="anchored" data-anchor-id="fit">Fit</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>============================================================
  NONLINEAR MIXED EFFECTS MODEL ESTIMATION
 ============================================================
  Model: warfarin_ode_time        Dataset: warfarin
- Method: FOCEI | Gradient: FD | Subjects: 10 | Obs: 110
+ Method: FOCE | Gradient: FD | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   144 iterations   217.2s
- OFV: -285.9905    AIC: -271.9905    BIC: -253.0871
+ STATUS: CONVERGED   (condition_number)   110 iterations   167.3s
+ OFV: 20763.4095    AIC: 20777.4095    BIC: 20796.3129
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -472,27 +491,27 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132307     0.006995        5.3
-TVV                  7.735153     0.243021        3.1
-TVKA                 0.809413     0.126639       15.6
+TVCL                 0.132966     1.452400     1092.3
+TVV                  7.730734   484.529877     6267.6
+TVKA                 0.725203    45.504954     6274.8
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028038  CV% = 16.9  SE = 0.011677
-  ETA_V                    [log-normal]  = 0.009850  CV% = 9.9  SE = 0.004840
-  ETA_KA                   [log-normal]  = 0.348794  CV% = 64.6  SE = 0.120150
+  ETA_CL                   [log-normal]  = 0.028593  CV% = 17.0  SE = 3.570694
+  ETA_V                    [log-normal]  = 0.009578  CV% = 9.8  SE = 1.198408
+  ETA_KA                   [log-normal]  = 0.348937  CV% = 64.6  SE = 43.715095
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010562  (var = 0.000112, CV% = 1.1)  SE = 0.000834  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010749  (var = 0.000116, CV% = 1.1)  SE = 0.170969  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: -1.0%   ETA_V: 1.5%   ETA_KA: 1.9%   EPS: 14.7%
+ ETA_CL: 10.1%   ETA_V: -3.4%   ETA_KA: -278.1%   EPS: -778.9%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 1.3   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
+ Covariance: computed   Cond: 2883354352.3   DW: 0.39 [positive autocorrelation]   IWRES lag-1 r: 0.707
 
 RUN INFO
 ------------------------------------------------------------
@@ -505,14 +524,16 @@ SETTINGS  (model file / call-time override)
   maxiter                      300  [model only]
 
 ------------------------------------------------------------
- 1 warning   1 info  --  call ferx_warnings(fit) for details
+ 1 critical   4 warning  --  call ferx_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>
-</section><section id="derived-columns" class="level2"><h2 class="anchored" data-anchor-id="derived-columns">Derived columns</h2>
+</section>
+<section id="derived-columns" class="level2">
+<h2 class="anchored" data-anchor-id="derived-columns">Derived columns</h2>
 <p>The <code>[derived]</code> columns <code>KE</code>, <code>T_HALF</code>, <code>CMAX</code>, and <code>AUC_72</code> appear in sdtab alongside the mandatory minimum:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fit<span class="sc">$</span>sdtab)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "ID"      "TIME"    "DV"      "PRED"    "IPRED"   "CWRES"   "IWRES"  
  [8] "EBE_OFV" "N_OBS"   "TAFD"    "TAD"     "CL"      "V"       "KA"     
@@ -520,30 +541,32 @@ SETTINGS  (model file / call-time override)
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"KE"</span>, <span class="st">"T_HALF"</span>, <span class="st">"CMAX"</span>, <span class="st">"AUC_72"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"KE"</span>, <span class="st">"T_HALF"</span>, <span class="st">"CMAX"</span>, <span class="st">"AUC_72"</span>)]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID         KE   T_HALF     CMAX   AUC_72
-1   1 0.01655776 41.86239 11.38302 511.3372
-12  2 0.01860709 37.25178 12.10577 544.4735
-23  3 0.01532007 45.24440 11.01615 515.0605
-34  4 0.02064395 33.57629 13.56227 594.7201
-45  5 0.01536651 45.10765 13.82114 638.4543
-56  6 0.01586468 43.69122 11.70192 522.0942</code></pre>
+1   1 0.01655818 41.86131 11.38328 511.3444
+12  2 0.01860713 37.25170 12.10571 544.4706
+23  3 0.01532056 45.24294 11.01640 515.0692
+34  4 0.02064343 33.57713 13.56174 594.7006
+45  5 0.01996430 34.71934 14.83891 607.6903
+56  6 0.01586528 43.68958 11.70240 522.1093</code></pre>
 </div>
 </div>
-</section><section id="time-vs-tafd-vs-tad-in-ode-expressions" class="level2"><h2 class="anchored" data-anchor-id="time-vs-tafd-vs-tad-in-ode-expressions">TIME vs TAFD vs TAD in ODE expressions</h2>
+</section>
+<section id="time-vs-tafd-vs-tad-in-ode-expressions" class="level2">
+<h2 class="anchored" data-anchor-id="time-vs-tafd-vs-tad-in-ode-expressions">TIME vs TAFD vs TAD in ODE expressions</h2>
 <p>All three variables are available in <code>[odes]</code>. Choosing between them:</p>
 <table class="caption-top table">
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th>Variable</th>
 <th>Resets at</th>
 <th>Use for</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td>
-<code>TIME</code> / <code>T</code>
-</td>
+<td><code>TIME</code> / <code>T</code></td>
 <td>Never</td>
 <td>Absolute clock; calendar-time conditions</td>
 </tr>
@@ -563,9 +586,13 @@ SETTINGS  (model file / call-time override)
 <pre><code>d/dt(AUC_interval) = if (TAD &lt; 24) central/V else 0.0</code></pre>
 <p>And using <code>TIME</code> for day-1 vs later conditions:</p>
 <pre><code>d/dt(AUC_D1) = if (TIME &lt; 24) central/V else 0.0</code></pre>
-</section><section id="scaling-with-ode-models" class="level2"><h2 class="anchored" data-anchor-id="scaling-with-ode-models">[scaling] with ODE models</h2>
+</section>
+<section id="scaling-with-ode-models" class="level2">
+<h2 class="anchored" data-anchor-id="scaling-with-ode-models">[scaling] with ODE models</h2>
 <p>The <code>obs_scale = V</code> declaration divides every model prediction by <code>V</code> before the residual error is applied, so the <code>DV</code> column should be in concentration units (amount/volume) while the ODE state <code>central</code> is in amount units. This avoids putting <code>V</code> in the ODE RHS for the prediction step, keeping the ODE equations simpler.</p>
-</section><section id="see-also" class="level2"><h2 class="anchored" data-anchor-id="see-also">See also</h2>
+</section>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
 <li><a href="../model-dsl/odes.html">Model DSL: ODE models</a></li>
 <li><a href="../model-dsl/derived.html">Model DSL: Derived columns</a></li>
@@ -574,7 +601,10 @@ SETTINGS  (model file / call-time override)
 </ul>
 
 
-</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -988,7 +1018,8 @@ SETTINGS  (model file / call-time override)
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
 <p>© 2026 FeRx-NLME · MIT licensed</p>
 </div>   
@@ -1000,6 +1031,8 @@ SETTINGS  (model file / call-time override)
 </div>
   </div>
 </footer>
+
+
 
 
 </body></html>

@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.38">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
 <title>Example: Derived PK/PD quantities – ferx</title>
 <style>
 /* Default styles provided by pandoc.
@@ -57,6 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
@@ -78,7 +82,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-d6ca0237fbedf1b081249f92efe508f3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -104,8 +109,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><link rel="stylesheet" href="../styles.css">
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
 </head>
+
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -271,10 +280,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content"><img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content"></a>
+    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    </a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">ferx</span>
     </a>
@@ -285,7 +298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../get-started.html"> 
 <span class="menu-text">Get started</span></a>
   </li>  
@@ -302,8 +315,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
-<ul class="navbar-nav navbar-nav-scroll ms-auto">
-<li class="nav-item">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
     <a class="nav-link" href="https://ferx-nlme.github.io/ferx-core/"> 
 <span class="menu-text">ferx-core</span></a>
   </li>  
@@ -321,27 +334,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#model" id="toc-model" class="nav-link active" data-scroll-target="#model">Model</a></li>
+  <li><a href="#model" id="toc-model" class="nav-link active" data-scroll-target="#model">Model</a></li>
   <li><a href="#fit" id="toc-fit" class="nav-link" data-scroll-target="#fit">Fit</a></li>
   <li><a href="#pd-derived-columns" id="toc-pd-derived-columns" class="nav-link" data-scroll-target="#pd-derived-columns">PD derived columns</a></li>
   <li><a href="#why-step-for-time-above-threshold" id="toc-why-step-for-time-above-threshold" class="nav-link" data-scroll-target="#why-step-for-time-above-threshold">Why <code>step=</code> for time-above-threshold</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
-  </ul><div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
 <h1 class="title">Example: Derived PK/PD quantities</h1>
 </div>
 
@@ -356,15 +378,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><p>This example uses <code>[derived]</code> to compute pharmacodynamic metrics from PK predictions after the fit: an Emax response, a TAD-gated Cmax, and time-above-MEC per dosing interval.</p>
+</header>
+
+
+<p>This example uses <code>[derived]</code> to compute pharmacodynamic metrics from PK predictions after the fit: an Emax response, a TAD-gated Cmax, and time-above-MEC per dosing interval.</p>
 <p>The PD parameters (<code>MEC</code>, <code>EMAX</code>, <code>EC50</code>) are <strong>fixed</strong> at assumed values — they do not enter the PK likelihood and cannot be estimated from PK-only data. Only <code>TVCL</code>, <code>TVV</code>, <code>TVKA</code>, and the random effects are estimated.</p>
 <p>For a model where PD observations are also fitted jointly, see <a href="../examples/emax-pkpd.html">Example: simultaneous PK/PD (Emax)</a>.</p>
-<section id="model" class="level2"><h2 class="anchored" data-anchor-id="model">Model</h2>
+<section id="model" class="level2">
+<h2 class="anchored" data-anchor-id="model">Model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ferx-nlme.github.io/reference/">ferx</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">ex</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_example.html">ferx_example</a></span><span class="op">(</span><span class="st">"warfarin_derived_pkpd"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_model_show.html">ferx_model_show</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_derived_pkpd"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_show</span>(ex<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># model: warfarin_derived_pkpd.ferx 
 # Warfarin with PD effect and time-above-MEC derived quantities
@@ -429,11 +455,13 @@ theta EC50(3.0)   fix</code></pre>
 <col style="width: 33%">
 <col style="width: 33%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th>Column</th>
 <th>Expression</th>
 <th>Description</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td><code>EFF</code></td>
@@ -456,22 +484,22 @@ theta EC50(3.0)   fix</code></pre>
 <td>Hours above MEC on day 1</td>
 </tr>
 </tbody>
-</table></section><section id="fit" class="level2"><h2 class="anchored" data-anchor-id="fit">Fit</h2>
+</table>
+</section>
+<section id="fit" class="level2">
+<h2 class="anchored" data-anchor-id="fit">Fit</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_fit.html">ferx_fit</a></span><span class="op">(</span><span class="va">ex</span><span class="op">$</span><span class="va">model</span>, <span class="va">ex</span><span class="op">$</span><span class="va">data</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Mu-referencing detected for: ETA_CL, ETA_KA, ETA_V</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>============================================================
  NONLINEAR MIXED EFFECTS MODEL ESTIMATION
 ============================================================
  Model: warfarin_derived_pkpd    Dataset: warfarin
- Method: FOCEI | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 110
+ Method: FOCE | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   81 iterations   2.6s
- OFV: -285.3109    AIC: -271.3109    BIC: -252.4075
+ STATUS: CONVERGED   102 iterations   2.5s
+ OFV: -280.3640    AIC: -266.3640    BIC: -247.4606
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -484,30 +512,30 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.133219     0.007331        5.5
-TVV                  7.700367     0.258887        3.4
-TVKA                 0.762672     0.165732       21.7
+TVCL                 0.132970     0.006628        5.0
+TVV                  7.730695     0.234062        3.0
+TVKA                 0.725187     0.125303       17.3
 MEC                  0.500000     0.000000        0.0
 EMAX                80.000000     0.000000        0.0
 EC50                 3.000000     0.000000        0.0
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.030229  CV% = 17.5  SE = 0.013895
-  ETA_V                    [log-normal]  = 0.011215  CV% = 10.6  SE = 0.005441
-  ETA_KA                   [log-normal]  = 0.461734  CV% = 76.6  SE = 0.243648
+  ETA_CL                   [log-normal]  = 0.028585  CV% = 17.0  SE = 0.012790
+  ETA_V                    [log-normal]  = 0.009575  CV% = 9.8  SE = 0.004294
+  ETA_KA                   [log-normal]  = 0.348959  CV% = 64.6  SE = 0.160968
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010559  (var = 0.000111, CV% = 1.1)  SE = 0.000834  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010749  (var = 0.000116, CV% = 1.1)  SE = 0.000942  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 2.8%   ETA_V: 7.5%   ETA_KA: 14.3%   EPS: 14.6%
+ ETA_CL: 0.0%   ETA_V: 0.1%   ETA_KA: 0.2%   EPS: 16.1%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 1.4   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
+ Covariance: computed   Cond: 2.7   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
 
 RUN INFO
 ------------------------------------------------------------
@@ -520,77 +548,84 @@ SETTINGS  (model file / call-time override)
   maxiter                      300  [model only]
 
 ------------------------------------------------------------
- 4 warning   1 info  --  call ferx_warnings(fit) for details
+ 4 warning  --  call ferx_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>
 <p>The PK thetas have proper SEs; <code>MEC</code>, <code>EMAX</code>, and <code>EC50</code> show <code>SE = 0</code> because they are fixed:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ferx-nlme.github.io/reference/ferx_estimates.html">ferx_estimates</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      param    transform    estimate           se   rse_pct     lower_95
-1      TVCL     identity  0.13321911 0.0073305691  5.502641  0.118851199
-2       TVV     identity  7.70036655 0.2588867074  3.362005  7.192948607
-3      TVKA     identity  0.76267155 0.1657316092 21.730404  0.437837592
-4       MEC     identity  0.50000000 0.0000000000  0.000000  0.500000000
-5      EMAX     identity 80.00000000 0.0000000000  0.000000 80.000000000
-6      EC50     identity  3.00000000 0.0000000000  0.000000  3.000000000
-7    ETA_CL     variance  0.03022882 0.0138954556 45.967571  0.002993730
-8     ETA_V     variance  0.01121520 0.0054412012 48.516308  0.000550446
-9    ETA_KA     variance  0.46173371 0.2436477955 52.768033 -0.015815967
-10 PROP_ERR proportional  0.01055910 0.0008339692  7.898110  0.008924519
+<pre><code>      param    transform     estimate           se   rse_pct     lower_95
+1      TVCL     identity  0.132969570 0.0066284653  4.984949  0.119977778
+2       TVV     identity  7.730695262 0.2340617937  3.027694  7.271934147
+3      TVKA     identity  0.725187222 0.1253027264 17.278673  0.479593879
+4       MEC     identity  0.500000000 0.0000000000  0.000000  0.500000000
+5      EMAX     identity 80.000000000 0.0000000000  0.000000 80.000000000
+6      EC50     identity  3.000000000 0.0000000000  0.000000  3.000000000
+7    ETA_CL     variance  0.028585310 0.0127900421 44.743410  0.003516827
+8     ETA_V     variance  0.009575317 0.0042943833 44.848474  0.001158325
+9    ETA_KA     variance  0.348959133 0.1609684369 46.128163  0.033460997
+10 PROP_ERR proportional  0.010748634 0.0009421476  8.765277  0.008902025
       upper_95 estimate_natural lower_95_natural upper_95_natural init_as_sd
-1   0.14758703               NA               NA               NA      FALSE
-2   8.20778450               NA               NA               NA      FALSE
-3   1.08750550               NA               NA               NA      FALSE
+1   0.14596136               NA               NA               NA      FALSE
+2   8.18945638               NA               NA               NA      FALSE
+3   0.97078057               NA               NA               NA      FALSE
 4   0.50000000               NA               NA               NA      FALSE
 5  80.00000000               NA               NA               NA      FALSE
 6   3.00000000               NA               NA               NA      FALSE
-7   0.05746392               NA               NA               NA      FALSE
-8   0.02187995               NA               NA               NA      FALSE
-9   0.93928339               NA               NA               NA      FALSE
-10  0.01219368               NA               NA               NA       TRUE</code></pre>
+7   0.05365379               NA               NA               NA      FALSE
+8   0.01799231               NA               NA               NA      FALSE
+9   0.66445727               NA               NA               NA      FALSE
+10  0.01259524               NA               NA               NA       TRUE</code></pre>
 </div>
 </div>
-</section><section id="pd-derived-columns" class="level2"><h2 class="anchored" data-anchor-id="pd-derived-columns">PD derived columns</h2>
+</section>
+<section id="pd-derived-columns" class="level2">
+<h2 class="anchored" data-anchor-id="pd-derived-columns">PD derived columns</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">sdtab</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"IPRED"</span>, <span class="st">"EFF"</span>, <span class="st">"TAM_TAU"</span>, <span class="st">"TAM_D1"</span>,</span>
-<span>                   <span class="st">"CMAX_INTERVAL"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">12</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"IPRED"</span>, <span class="st">"EFF"</span>, <span class="st">"TAM_TAU"</span>, <span class="st">"TAM_D1"</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"CMAX_INTERVAL"</span>)], <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID  TIME     IPRED      EFF TAM_TAU TAM_D1 CMAX_INTERVAL
-1   1   0.5  5.352089 51.26467      24     24      11.38282
-2   1   1.0  8.283676 58.73034      24     24      11.38282
-3   1   2.0 10.708346 62.49242      24     24      11.38282
-4   1   4.0 11.382822 63.31343      24     24      11.38282
-5   1   8.0 10.757300 62.55472      24     24      11.38282
-6   1  12.0 10.068872 61.63575      24     24      11.38282
-7   1  24.0  8.254505 58.67521      24     24      11.38282
-8   1  48.0  5.547670 51.92217      24     24      11.38282
-9   1  72.0  3.728466 44.33065      24     24      11.38282
-10  1  96.0  2.505819 36.40976      24     24      11.38282
-11  1 120.0  1.684106 28.76290      24     24      11.38282
-12  2   0.5  3.227339 41.46026      24     24      12.10641</code></pre>
+1   1   0.5  5.351751 51.26351      24     24      11.38329
+2   1   1.0  8.283413 58.72984      24     24      11.38329
+3   1   2.0 10.708454 62.49256      24     24      11.38329
+4   1   4.0 11.383286 63.31397      24     24      11.38329
+5   1   8.0 10.757786 62.55533      24     24      11.38329
+6   1  12.0 10.069303 61.63636      24     24      11.38329
+7   1  24.0  8.254797 58.67576      24     24      11.38329
+8   1  48.0  5.547784 51.92255      24     24      11.38329
+9   1  72.0  3.728488 44.33077      24     24      11.38329
+10  1  96.0  2.505797 36.40958      24     24      11.38329
+11  1 120.0  1.684066 28.76246      24     24      11.38329
+12  2   0.5  3.227396 41.46062      24     24      12.10572</code></pre>
 </div>
 </div>
 <p><code>EFF</code> varies per time point (it depends on <code>IPRED</code>). <code>CMAX_INTERVAL</code>, <code>TAM_TAU</code>, and <code>TAM_D1</code> are aggregate quantities — constant per 24-h window or per subject.</p>
-</section><section id="why-step-for-time-above-threshold" class="level2"><h2 class="anchored" data-anchor-id="why-step-for-time-above-threshold">Why <code>step=</code> for time-above-threshold</h2>
+</section>
+<section id="why-step-for-time-above-threshold" class="level2">
+<h2 class="anchored" data-anchor-id="why-step-for-time-above-threshold">Why <code>step=</code> for time-above-threshold</h2>
 <p><code>TAM_TAU</code> uses <code>step=0.1</code> to force grid evaluation at 0.1-hour intervals. Without <code>step=</code>, only observation time points are evaluated. If the observation design is sparse (large gaps between samples), the trapezoidal rule can miss brief periods above threshold between those times. The <code>step=</code> argument fills in the gaps:</p>
 <pre><code># Without step= (observation-time only -- can miss threshold crossings):
 TAM_approx = integral(1.0, IPRED &gt; MEC, window=24, anchor=0)
 
 # With step=0.1 (fine grid -- catches brief excursions):
 TAM_TAU    = integral(1.0, IPRED &gt; MEC, window=24, anchor=0, step=0.1)</code></pre>
-</section><section id="see-also" class="level2"><h2 class="anchored" data-anchor-id="see-also">See also</h2>
+</section>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
 <li><a href="../model-dsl/derived.html">Model DSL: Derived columns</a></li>
-<li>
-<a href="../examples/warfarin-derived.html">Example: derived columns</a> — full [derived] syntax tour</li>
-<li>
-<a href="../examples/emax-pkpd.html">Example: simultaneous PK/PD (Emax)</a> — jointly estimated PD</li>
+<li><a href="../examples/warfarin-derived.html">Example: derived columns</a> — full [derived] syntax tour</li>
+<li><a href="../examples/emax-pkpd.html">Example: simultaneous PK/PD (Emax)</a> — jointly estimated PD</li>
 </ul>
 
 
-</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1004,7 +1039,8 @@ TAM_TAU    = integral(1.0, IPRED &gt; MEC, window=24, anchor=0, step=0.1)</code>
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
 <p>© 2026 FeRx-NLME · MIT licensed</p>
 </div>   
@@ -1016,6 +1052,8 @@ TAM_TAU    = integral(1.0, IPRED &gt; MEC, window=24, anchor=0, step=0.1)</code>
 </div>
   </div>
 </footer>
+
+
 
 
 </body></html>

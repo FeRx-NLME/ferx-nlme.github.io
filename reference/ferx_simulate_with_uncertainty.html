@@ -422,7 +422,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other simulation: <code>[ferx_npde](ferx_npde.qmd)()</code>, <code>[ferx_predict](ferx_predict.qmd)()</code>, <code>[ferx_simulate](ferx_simulate.qmd)()</code></p>
+<p>Other simulation: <code>[ferx_npde](ferx_npde.qmd)()</code>, <code>[ferx_predict](ferx_predict.qmd)()</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)()</code>, <code>[ferx_simulate](ferx_simulate.qmd)()</code>, <code>[ferx_simulate_adaptive](ferx_simulate_adaptive.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -430,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A data.frame with columns: DRAW, SIM, ID, TIME, IPRED, DV_SIM. Row count: <code>n_uncertainty_draws * n_sim_per_draw * n_obs</code>.</p>
+<p>A data.frame with columns: DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM, OBSERVED. <code>CMT</code> is the observation compartment; <code>OBSERVED</code> is <code>NA</code>throughout (this path is Gaussian-only - a drug-driven ODE-TTE endpoint is not supported here). Row count: <code>n_uncertainty_draws * n_sim_per_draw * n_obs</code>.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
