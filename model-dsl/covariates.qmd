@@ -103,14 +103,14 @@ head(fit$covtab)
 fit$covariate_types
 ```
 
-## Checking dataset columns with `ferx_columns()`
+## Checking dataset columns with `ferx_get_columns()`
 
 Before writing a model, inspect the CSV header to confirm column names:
 
 ```{r}
 #| label: columns
-ferx_columns(ex)         # pass the ferx_example() list directly
-ferx_columns(ex$data)    # or pass the CSV path
+ferx_get_columns(ex)         # pass the ferx_example() list directly
+ferx_get_columns(ex$data)    # or pass the CSV path
 ```
 
 Use the column names exactly (case-sensitive) in the `[covariates]` block.
