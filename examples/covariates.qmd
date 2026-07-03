@@ -104,7 +104,7 @@ print(fit)
 
 # ETA-covariate correlations: check if covariates were absorbed
 data <- read.csv(ex$data)
-ferx_eta_cov(fit, data)
+fit$eta_cov
 # ETA_CL correlations with WT and CRCL should be near zero after fitting
 ```
 

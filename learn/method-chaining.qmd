@@ -141,11 +141,11 @@ fit_global <- ferx_fit(
 ## Optimizer trace
 
 Pass `optimizer_trace = TRUE` to record per-iteration OFV and parameter values.
-Use `ferx_plot_trace()` to visualise convergence:
+Use `plot()` to visualise convergence:
 
 ```r
 fit_trace <- ferx_fit(ex$model, ex$data, optimizer_trace = TRUE)
-ferx_plot_trace(fit_trace)   # two-panel: OFV and convergence metric vs iteration
+plot(fit_trace)   # two-panel: OFV and convergence metric vs iteration
 ferx_trace(fit_trace)        # returns the raw data frame
 ```
 

@@ -12,16 +12,16 @@ For a complete diagnostics walkthrough with plots, see [Chapter 5 (Diagnostics)]
 
 ---
 
-## Parameter estimates — `ferx_estimates()`
+## Parameter estimates — `fit$estimates`
 
-`ferx_estimates()` collects all estimated parameters (theta, omega, sigma) into
+`fit$estimates` collects all estimated parameters (theta, omega, sigma) into
 a tidy data frame. Run it after any fit that used `covariance = TRUE`:
 
 ```r
 ex  <- ferx_example("warfarin")
 fit <- ferx_fit(ex$model, ex$data)
 
-ferx_estimates(fit)
+fit$estimates
 #   param           transform    estimate      se  rse_pct  lower_95  upper_95
 #   TVCL            identity       0.134  0.0108     8.1     0.113     0.155
 #   TVV             identity       7.94   0.420      5.3     7.12      8.76
@@ -50,14 +50,14 @@ column relates to log-normal, logit-normal, and additive ETAs.
 
 ---
 
-## Parameter correlation matrix — `ferx_cor_matrix()`
+## Parameter correlation matrix — `fit$cor_matrix`
 
-`ferx_cor_matrix()` converts the estimated parameter covariance matrix to
+`fit$cor_matrix` converts the estimated parameter covariance matrix to
 correlations. A value near ±1 between two parameters signals a structural
 identifiability problem worth investigating:
 
 ```r
-ferx_cor_matrix(fit)
+fit$cor_matrix
 #                TVCL   TVV  TVKA  ...
 #   TVCL         1.00  0.12  0.03
 #   TVV          0.12  1.00 -0.07
@@ -69,9 +69,9 @@ where absorption and elimination are not separately identifiable.
 
 ---
 
-## ETA-covariate correlations — `ferx_eta_cov()`
+## ETA-covariate correlations — `fit$eta_cov`
 
-`ferx_eta_cov()` computes Pearson correlations between individual ETA estimates
+`fit$eta_cov` computes Pearson correlations between individual ETA estimates
 (EBEs) and numeric covariate columns. Identifies covariates worth including in
 a formal covariate search.
 
@@ -83,7 +83,7 @@ The warfarin dataset has no covariate columns. The following example uses
 ex_cov   <- ferx_example("two_cpt_oral_cov")
 fit_cov  <- ferx_fit(ex_cov$model, ex_cov$data)
 data_cov <- read.csv(ex_cov$data)
-ferx_eta_cov(fit_cov, data_cov)
+fit_cov$eta_cov
 #   eta      covariate    r   p_val  flag
 #   ETA_CL   WT        0.38  0.008   [!]
 #   ETA_CL   CRCL      0.41  0.003   [!]
@@ -191,14 +191,14 @@ ggplot(sdtab, aes(PRED, CWRES)) +
 
 ---
 
-## Structured warnings — `ferx_warnings()`
+## Structured warnings — `ferx_get_warnings()`
 
 ferx classifies non-fatal issues from a run into severity levels and categories
-and makes them available via `ferx_warnings()`. Critical issues are also surfaced
+and makes them available via `ferx_get_warnings()`. Critical issues are also surfaced
 inline in the `STATUS` line of `print(fit)`.
 
 ```r
-ferx_warnings(fit)
+ferx_get_warnings(fit)
 #   severity  category              message
 #   warning   shrinkage             ETA_KA shrinkage = 0.58 (> 0.40): EBEs
 #                                   unreliable for this parameter
@@ -380,7 +380,7 @@ chk$summary
 
 ---
 
-## Optimizer trace — `ferx_trace()` / `ferx_plot_trace()`
+## Optimizer trace — `ferx_trace()` / `plot()`
 
 When `optimizer_trace = TRUE` is passed to `ferx_fit()`, ferx writes a
 per-iteration CSV. Read and plot it:
@@ -391,8 +391,8 @@ fit <- ferx_fit(ex$model, ex$data, optimizer_trace = TRUE)
 tr <- ferx_trace(fit)          # data frame with one row per outer iteration
 head(tr[, c("iter", "ofv", "grad_norm")])
 
-ferx_plot_trace(fit)           # two-panel plot: OFV + method-specific metric
-ferx_plot_trace(fit, log_ofv = TRUE)  # OFV on log scale (OFV - min(OFV))
+plot(fit)           # two-panel plot: OFV + method-specific metric
+plot(fit, log_ofv = TRUE)  # OFV on log scale (OFV - min(OFV))
 ```
 
 `ferx_trace()` with no argument recalls the trace from the last `ferx_fit()`

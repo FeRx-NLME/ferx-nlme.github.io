@@ -225,7 +225,7 @@ sigma PROP_ERR ~ 0.02 (sd)       # same thing, SD coding
 ```
 
 Regardless of how the initial value is written, **estimates are always
-reported on the SD scale** — both in `print(fit)` and in `ferx_estimates()`.
+reported on the SD scale** — both in `print(fit)` and in `fit$estimates`.
 
 See [Error Model — Sigma scale](error-model.qmd#sigma-scale) for how each sigma is interpreted.
 
@@ -302,7 +302,7 @@ omega ETA_CL (FIX) ~ 0.07             # FIX before the tilde
 omega ETA_CL ~ 0.07 FIX               # FIX after the value — both forms OK
 ```
 
-Fixed parameters are shown in `print(fit)` and `ferx_estimates()` with `SE =
+Fixed parameters are shown in `print(fit)` and `fit$estimates` with `SE =
 fixed` and `%RSE = fixed`; they are excluded from the covariance matrix.
 
 **Typical uses:**

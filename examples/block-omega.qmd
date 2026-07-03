@@ -39,7 +39,7 @@ $$\rho_\text{ETA} = \frac{\text{cov}_{AB}}{\sqrt{\text{var}_A \cdot \text{var}_B
 >
 > $$\rho_\text{param} = \frac{e^{\,\text{cov}_{AB}} - 1}{\sqrt{(e^{\,\text{var}_A} - 1)(e^{\,\text{var}_B} - 1)}}$$
 >
-> `ferx_cor_matrix()` returns the ETA correlation matrix ($\rho_\text{ETA}$), which is the standard quantity reported in NLME output.
+> `fit$cor_matrix` returns the ETA correlation matrix ($\rho_\text{ETA}$), which is the standard quantity reported in NLME output.
 
 For a block of size 3, provide 6 values (lower triangle):
 `[var_A, cov_AB, var_B, cov_AC, cov_BC, var_C]`.
@@ -92,7 +92,7 @@ fit <- ferx_fit(ex$model, ex$data)
 print(fit)
 
 # Off-diagonal correlations — converts estimated Ω to a correlation matrix
-ferx_cor_matrix(fit)
+fit$cor_matrix
 ```
 
 ## Tips

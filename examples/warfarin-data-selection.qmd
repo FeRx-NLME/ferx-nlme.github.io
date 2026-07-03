@@ -27,12 +27,12 @@ The relevant block is:
 
 ## R-side preview
 
-Before fitting, use `ferx_selection()` to inspect which records the filter
+Before fitting, use `ferx_apply_selection()` to inspect which records the filter
 would drop:
 
 ```{r}
 #| label: preview
-sel <- ferx_selection(ex$data, ignore = "DV < 1.0")
+sel <- ferx_apply_selection(ex$data, ignore = "DV < 1.0")
 
 cat("Total records:", nrow(read.csv(ex$data)), "\n")
 cat("Retained:     ", nrow(sel), "\n")
@@ -43,7 +43,7 @@ The excluded rows carry a `.exclude_reason` column:
 
 ```{r}
 #| label: excluded-rows
-ferx_selection_excluded(sel)[, c("ID", "TIME", "DV", ".exclude_reason")]
+ferx_apply_selection(sel, excluded = TRUE)[, c("ID", "TIME", "DV", ".exclude_reason")]
 ```
 
 ## Fit
@@ -90,13 +90,13 @@ rbind(
 
 ## R-side filtering as an alternative to `[data_selection]`
 
-Pass a `ferx_selection()` result directly to `ferx_fit()` instead of writing
+Pass a `ferx_apply_selection()` result directly to `ferx_fit()` instead of writing
 a `[data_selection]` block. Both approaches produce the same fit:
 
 ```{r}
 #| label: r-side
 #| eval: false
-filtered_data <- ferx_selection(ex$data, ignore = "DV < 1.0")
+filtered_data <- ferx_apply_selection(ex$data, ignore = "DV < 1.0")
 fit2 <- ferx_fit(ex$model, filtered_data)
 ```
 

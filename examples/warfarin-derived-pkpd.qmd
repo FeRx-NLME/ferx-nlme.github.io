@@ -55,7 +55,7 @@ because they are fixed:
 
 ```{r}
 #| label: estimates
-ferx_estimates(fit)
+fit$estimates
 ```
 
 ## PD derived columns

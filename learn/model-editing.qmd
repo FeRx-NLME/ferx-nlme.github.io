@@ -4,8 +4,8 @@ title: "Editing ferx model files programmatically"
 
 ferx model files (`.ferx`) are plain text, so you can create and modify them
 entirely from R without opening an editor. This article covers the three
-functions that support that workflow: `ferx_model_new()`,
-`ferx_model_section()`, and `ferx_model_set_section()`.
+functions that support that workflow: `ferx_model()`,
+`ferx_model_get_section()`, and `ferx_model_set_section()`.
 
 ::: {.callout-tip}
 See also [Chapter 3 (Model DSL)](https://ferx-nlme.github.io/ferx-book/chapters/03-model-dsl.html) in the ferx book for a complete reference with examples.
@@ -15,7 +15,7 @@ See also [Chapter 3 (Model DSL)](https://ferx-nlme.github.io/ferx-book/chapters/
 
 ## Starting from scratch
 
-`ferx_model_new()` writes a skeleton `.ferx` file for one of five built-in
+`ferx_model()` writes a skeleton `.ferx` file for one of five built-in
 templates: `"1cpt_oral"` (default), `"1cpt_iv"`, `"2cpt_oral"`, `"2cpt_iv"`,
 and `"ode"`.
 
@@ -23,37 +23,37 @@ Pass `print = TRUE` to preview a template in the console without writing any
 file — useful when you are exploring or copy-pasting a starting point:
 
 ```r
-ferx_model_new(print = TRUE)
+ferx_model(print = TRUE)
 ```
 
 ```r
-ferx_model_new(template = "2cpt_iv", print = TRUE)
+ferx_model(template = "2cpt_iv", print = TRUE)
 ```
 
 To write a file, supply a path. By default the file is also opened in your
 editor (`edit = TRUE`); pass `edit = FALSE` to skip that:
 
 ```r
-ferx_model_new("my_model.ferx", edit = FALSE)
+ferx_model(path = "my_model.ferx", edit = FALSE)
 ```
 
 ---
 
 ## Inspecting a section
 
-`ferx_model_section()` extracts the body of a named section and prints it.
+`ferx_model_get_section()` extracts the body of a named section and prints it.
 Start with the bundled warfarin example:
 
 ```r
 ex <- ferx_example("warfarin")
-ferx_model_section(ex$model, "parameters")
+ferx_model_get_section(ex$model, "parameters")
 ```
 
 The return value is the character vector of lines, returned invisibly, so you
 can capture it:
 
 ```r
-params <- ferx_model_section(ex$model, "parameters")
+params <- ferx_model_get_section(ex$model, "parameters")
 params
 ```
 
@@ -71,7 +71,7 @@ model_path <- tempfile(fileext = ".ferx")
 stopifnot(file.copy(ex$model, model_path))
 
 # read the section
-lines <- ferx_model_section(model_path, "parameters")
+lines <- ferx_model_get_section(model_path, "parameters")
 
 # modify: change the TVCL initial value from 0.134 to 0.5
 lines <- sub("TVCL\\([^,]+,", "TVCL(0.5,", lines)
@@ -80,7 +80,7 @@ lines <- sub("TVCL\\([^,]+,", "TVCL(0.5,", lines)
 ferx_model_set_section(model_path, "parameters", lines)
 
 # verify
-ferx_model_section(model_path, "parameters")
+ferx_model_get_section(model_path, "parameters")
 ```
 
 `ferx_model_set_section()` replaces only the targeted section; all other
@@ -98,7 +98,7 @@ estimation method to FOCEI, and run `ferx_fit()`:
 model_path <- file.path(tempdir(), "run1.ferx")
 
 # 1. Write a skeleton
-ferx_model_new(model_path, template = "1cpt_oral", edit = FALSE)
+ferx_model(path = model_path, template = "1cpt_oral", edit = FALSE)
 
 # 2. Switch method to focei
 ferx_model_set_section(model_path, "fit_options", c(
@@ -162,14 +162,14 @@ ferx_model_validate(bad)
 
 ## Overwrite guards
 
-By default `ferx_model_new()` refuses to overwrite an existing file:
+By default `ferx_model()` refuses to overwrite an existing file:
 
 ```r
 model_path <- tempfile(fileext = ".ferx")
-ferx_model_new(model_path, edit = FALSE)            # creates the file
+ferx_model(path = model_path, edit = FALSE)            # creates the file
 
 tryCatch(
-  ferx_model_new(model_path, edit = FALSE),          # would overwrite — error
+  ferx_model(path = model_path, edit = FALSE),          # would overwrite — error
   error = function(e) message(conditionMessage(e))
 )
 ```
@@ -177,8 +177,8 @@ tryCatch(
 Opt in explicitly with `overwrite = TRUE`:
 
 ```r
-ferx_model_new(model_path, template = "1cpt_iv", overwrite = TRUE, edit = FALSE)
-ferx_model_section(model_path, "structural_model")
+ferx_model(path = model_path, template = "1cpt_iv", overwrite = TRUE, edit = FALSE)
+ferx_model_get_section(model_path, "structural_model")
 ```
 
 ---
@@ -187,10 +187,10 @@ ferx_model_section(model_path, "structural_model")
 
 | Function | Purpose |
 |---|---|
-| `ferx_model_new()` | Write a skeleton `.ferx` file from a template |
-| `ferx_model_section()` | Extract the body of a named section |
+| `ferx_model()` | Write a skeleton `.ferx` file from a template |
+| `ferx_model_get_section()` | Extract the body of a named section |
 | `ferx_model_set_section()` | Replace the body of a named section |
-| `ferx_get_section()` | Print a section mid-pipe (returns object unchanged) |
-| `ferx_set_section()` | Rewrite a section mid-pipe (returns object unchanged) |
+| `ferx_model_get_section()` | Print a section mid-pipe (returns object unchanged) |
+| `ferx_model_set_section()` | Rewrite a section mid-pipe (returns object unchanged) |
 | `ferx_model_edit()` | Copy + open a model in your editor |
 | `ferx_model_validate()` | Check that all required sections are present |

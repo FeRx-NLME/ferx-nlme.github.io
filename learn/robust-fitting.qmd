@@ -137,11 +137,11 @@ problems.
 fit
 
 # Warnings: boundary parameters, high shrinkage, unconverged subjects
-ferx_warnings(fit)
+ferx_get_warnings(fit)
 
 # Optimizer trace: is OFV still decreasing at maxiter?
 fit <- ferx_fit(ex$model, ex$data, optimizer_trace = TRUE)
-ferx_plot_trace(fit)  # if OFV is still falling, increase maxiter
+plot(fit)  # if OFV is still falling, increase maxiter
 
 # Pilot fit: confirm OFV drops at all from the starting values
 chk <- ferx_check_init(ex$model, ex$data)

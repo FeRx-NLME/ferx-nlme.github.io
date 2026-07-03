@@ -129,31 +129,31 @@ fit$exclusions$fired_ignore      # "ignore: DV < 1.0"
 
 ---
 
-## R companion: `ferx_selection()`
+## R companion: `ferx_apply_selection()`
 
-`ferx_selection()` applies the same filtering logic in pure R before
+`ferx_apply_selection()` applies the same filtering logic in pure R before
 committing to a fit, so you can inspect which records would be excluded:
 
 ```r
 library(ferx)
 ex  <- ferx_example("warfarin_data_selection")
 
-sel <- ferx_selection(ex$data, ignore = "DV < 1.0")
+sel <- ferx_apply_selection(ex$data, ignore = "DV < 1.0")
 nrow(sel)                           # retained records
 sel$exclusions$n_obs_excluded       # number of excluded obs
 
 # Inspect excluded rows and the matched rule:
-ferx_selection_excluded(sel)[, c("ID", "TIME", "DV", ".exclude_reason")]
+ferx_apply_selection(sel, excluded = TRUE)[, c("ID", "TIME", "DV", ".exclude_reason")]
 ```
 
 The returned `ferx_data` object can be passed directly to `ferx_fit()`:
 
 ```r
 fit <- ferx_fit(model = ex$model,
-                data  = ferx_selection(ex$data, ignore = "DV < 1.0"))
+                data  = ferx_apply_selection(ex$data, ignore = "DV < 1.0"))
 ```
 
-When both a `[data_selection]` block in the model file and a `ferx_selection()`
+When both a `[data_selection]` block in the model file and a `ferx_apply_selection()`
 call supply conditions, they are **merged**: duplicate expressions are
 deduplicated automatically.
 
@@ -189,7 +189,7 @@ DATA SELECTION
 ```
 
 See also [Example: data selection](../examples/warfarin-data-selection.qmd)
-for a full worked example including the R-side preview with `ferx_selection()`.
+for a full worked example including the R-side preview with `ferx_apply_selection()`.
 
 ---
 

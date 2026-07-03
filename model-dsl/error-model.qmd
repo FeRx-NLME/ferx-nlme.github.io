@@ -71,7 +71,7 @@ reason about: "I expect ~2% CV" → `~ 0.02 (sd)`.
 ### Estimate scale
 
 Regardless of how the initial value is written, **estimates are always reported
-on the SD scale** — in `print(fit)`, `ferx_estimates()`, and the fit YAML.
+on the SD scale** — in `print(fit)`, `fit$estimates`, and the fit YAML.
 
 | Error model | Estimated sigma means … |
 |---|---|
@@ -81,7 +81,7 @@ on the SD scale** — in `print(fit)`, `ferx_estimates()`, and the fit YAML.
 
 The fit YAML emits both the SD (`estimate`) and the variance (`variance:
 estimate²`); for proportional components it also emits `cv_pct = estimate * 100`.
-The SE in `ferx_estimates()` is on the SD scale — multiply by 100 for an SE in
+The SE in `fit$estimates` is on the SD scale — multiply by 100 for an SE in
 CV-percentage points.
 
 ## Examples

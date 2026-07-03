@@ -99,7 +99,7 @@ print(fit)
 fit$uses_sde                    # TRUE
 fit$theta["DIFF_CENTRAL"]       # fitted diffusion variance
 
-ferx_estimates(fit)             # DIFF_CENTRAL appears in the theta block
+fit$estimates             # DIFF_CENTRAL appears in the theta block
 ```
 
 ## Interpreting the output
