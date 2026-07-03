@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Inspect a section of a ferx model (pipe-friendly) – ferx</title>
+<title>Structured warnings from a ferx fit – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -353,7 +353,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
-  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -367,7 +366,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Inspect a section of a ferx model (pipe-friendly)</h1>
+<h1 class="title">Structured warnings from a ferx fit</h1>
 </div>
 
 
@@ -386,49 +385,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Prints the contents of a named section of a <code>.ferx</code> model file to the console and returns the input object invisibly so the pipe can continue.</p>
+<p>Returns or prints the warnings produced by a fit, classified by severity (<code>critical</code>, <code>warning</code>, <code>info</code>) and category. Severity and category are assigned by the ferx-core engine (for engine warnings) or by the R diagnostics layer (for condition number and ETA normality); the R side never re-parses message text to guess severity.</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_section</span>(x, section)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_warnings</span>(fit, <span class="at">as_df =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>x</code>: A <code>ferx_model</code> object or a path to a <code>.ferx</code> file.</li>
-<li><code>section</code>: Name of the section to display, without brackets.</li>
+<li><code>fit</code>: A <code>ferx_fit</code> object returned by <code>[ferx_fit](ferx_fit.qmd)</code>.</li>
+<li><code>as_df</code>: Logical. When <code>TRUE</code>, returns the raw data frame (<code>severity</code>, <code>category</code>, <code>message</code>, <code>source_method</code>) instead of pretty-printing. Default <code>FALSE</code>.</li>
 </ul>
-</section>
-<section id="details" class="level2">
-<h2 class="anchored" data-anchor-id="details">Details</h2>
-<p>When <code>x</code> is a <code>ferx_model</code> object the section is read from <code>x$model</code>. When <code>x</code> is a plain path string the call is equivalent to <code>[ferx_model_section](ferx_model_section.qmd)(x, section)</code>.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p><code>[ferx_model_section](ferx_model_section.qmd)</code>, <code>[ferx_set_section](ferx_set_section.qmd)</code>Other model-editing: <code>[ferx_model](ferx_model.qmd)()</code>, <code>[ferx_model_edit](ferx_model_edit.qmd)()</code>, <code>[ferx_model_inspect](ferx_model_inspect.qmd)()</code>, <code>[ferx_model_new](ferx_model_new.qmd)()</code>, <code>[ferx_model_section](ferx_model_section.qmd)()</code>, <code>[ferx_model_set_section](ferx_model_set_section.qmd)()</code>, <code>[ferx_model_show](ferx_model_show.qmd)()</code>, <code>[ferx_model_validate](ferx_model_validate.qmd)()</code>, <code>[ferx_set_section](ferx_set_section.qmd)()</code></p>
+<p>Other diagnostics: <code>[check_diagnostics](check_diagnostics.qmd)()</code>, <code>[ferx_conddist](ferx_conddist.qmd)()</code>, <code>[ferx_cov_screen](ferx_cov_screen.qmd)()</code>, <code>[ferx_runlog_iters](ferx_runlog_iters.qmd)()</code>, <code>[ferx_trace](ferx_trace.qmd)()</code>, <code>[plot.ferx_fit](plot.ferx_fit.qmd)()</code>, <code>[summary.ferx_fit](summary.ferx_fit.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
-<p>model-editing</p>
+<p>diagnostics</p>
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p><code>x</code>, invisibly.</p>
+<p>When <code>as_df = TRUE</code>, a data frame. Otherwise the same data frame invisibly, after printing a grouped, colour-coded summary (critical first, then warning, then info).</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect [parameters] and continue piping: ferx_get_section() prints</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the section and passes the ferx_model object through unchanged.</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_get_section</span>(<span class="st">"parameters"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Mid-pipe peek: print [parameters] then fit without interrupting the chain</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_get_section</span>(<span class="st">"parameters"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>(<span class="at">method =</span> <span class="st">"focei"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_warnings</span>(fit)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_warnings</span>(fit, <span class="at">as_df =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

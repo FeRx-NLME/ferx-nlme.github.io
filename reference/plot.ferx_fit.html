@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Extract a section from a ferx model file – ferx</title>
+<title>Plot the optimizer trace from a ferx fit or running job – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -111,6 +111,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -353,6 +382,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -366,7 +396,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Extract a section from a ferx model file</h1>
+<h1 class="title">Plot the optimizer trace from a ferx fit or running job</h1>
 </div>
 
 
@@ -385,37 +415,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Returns the lines belonging to a named section of a <code>.ferx</code> model file, excluding the section header itself. Prints the lines to the console and returns them invisibly.</p>
+<p>Produces a two-panel diagnostic plot from the per-iteration trace written when <code>optimizer_trace = TRUE</code> was passed to <code>[ferx_fit](ferx_fit.qmd)</code>. The top panel shows OFV over iterations; the bottom panel shows a method-specific convergence metric (gradient norm for gradient-based methods, MH accept rate for SAEM, LM lambda for Gauss-Newton). Phase boundaries are drawn as vertical dashed lines.</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(path, section, <span class="at">strip =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># S3 method for ferx_fit</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, <span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">log_ofv =</span> <span class="cn">FALSE</span>, <span class="at">monotonic =</span> <span class="cn">TRUE</span>, ...)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># S3 method for ferx_job</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, <span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">log_ofv =</span> <span class="cn">FALSE</span>, <span class="at">monotonic =</span> <span class="cn">TRUE</span>, ...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>path</code>: Path to a <code>.ferx</code> model file.</li>
-<li><code>section</code>: Name of the section to extract, without brackets (e.g. <code>"parameters"</code>).</li>
-<li><code>strip</code>: Logical. If <code>TRUE</code>, leading whitespace is trimmed from each returned line via <code>trimws</code>. Defaults to <code>FALSE</code> to preserve the round-trip guarantee with <code>[ferx_model_set_section](ferx_model_set_section.qmd)</code>.</li>
+<li><code>x</code>: A <code>ferx_fit</code> object (from <code>[ferx_fit](ferx_fit.qmd)</code>) or a <code>ferx_job</code> handle (from <code>[ferx_fit_async](ferx_fit_async.qmd)</code>).</li>
+<li><code>y</code>: Ignored. Present only for consistency with the <code>plot(x, y, ...)</code> generic; must be <code>NULL</code> if supplied.</li>
+<li><code>log_ofv</code>: Logical; when <code>TRUE</code>, shift the OFV panel down by its minimum value (<span class="math inline">\(OFV - min(OFV)\)</span>) instead of plotting the raw OFV. Despite the name this is a shift, not a log transform. Default <code>FALSE</code>.</li>
+<li><code>monotonic</code>: Logical; when <code>TRUE</code> (the default), the OFV panel shows the running minimum (<code>cummin</code>) over FOCE/FOCEI iterations only, rather than their raw per-evaluation OFV, since FOCE/FOCEI traces include rejected line-search trial steps that can transiently increase OFV. Gauss-Newton and SAEM iterations (including a chained method’s SAEM/GN segment preceding a FOCE/FOCEI segment) are always left as-is.</li>
+<li><code>...</code>: Ignored.</li>
 </ul>
+</section>
+<section id="details" class="level2">
+<h2 class="anchored" data-anchor-id="details">Details</h2>
+<p><code>plot.ferx_job</code> dispatches on the handle returned by <code>[ferx_fit_async](ferx_fit_async.qmd)</code> and plots the trace accumulated so far, before the job has completed. If no iterations have been written yet, a placeholder panel is shown instead of an error.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p><code>[ferx_model_show](ferx_model_show.qmd)</code>, <code>[ferx_model_edit](ferx_model_edit.qmd)</code>, <code>[ferx_model_set_section](ferx_model_set_section.qmd)</code>Other model-editing: <code>[ferx_get_section](ferx_get_section.qmd)()</code>, <code>[ferx_model](ferx_model.qmd)()</code>, <code>[ferx_model_edit](ferx_model_edit.qmd)()</code>, <code>[ferx_model_inspect](ferx_model_inspect.qmd)()</code>, <code>[ferx_model_new](ferx_model_new.qmd)()</code>, <code>[ferx_model_set_section](ferx_model_set_section.qmd)()</code>, <code>[ferx_model_show](ferx_model_show.qmd)()</code>, <code>[ferx_model_validate](ferx_model_validate.qmd)()</code>, <code>[ferx_set_section](ferx_set_section.qmd)()</code></p>
+<p>Other diagnostics: <code>[check_diagnostics](check_diagnostics.qmd)()</code>, <code>[ferx_conddist](ferx_conddist.qmd)()</code>, <code>[ferx_cov_screen](ferx_cov_screen.qmd)()</code>, <code>[ferx_get_warnings](ferx_get_warnings.qmd)()</code>, <code>[ferx_runlog_iters](ferx_runlog_iters.qmd)()</code>, <code>[ferx_trace](ferx_trace.qmd)()</code>, <code>[summary.ferx_fit](summary.ferx_fit.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
-<p>model-editing</p>
+<p>diagnostics</p>
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>Character vector of lines in the requested section, invisibly.</p>
+<p>Invisibly returns the trace data frame (from <code>[ferx_trace](ferx_trace.qmd)</code>), or <code>NULL</code> when no trace data is available yet (job case).</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>, <span class="at">strip =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

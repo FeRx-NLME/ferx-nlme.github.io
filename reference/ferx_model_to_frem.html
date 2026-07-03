@@ -387,14 +387,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_to_frem</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_to_frem</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  model,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="cn">NULL</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">covariates =</span> <span class="cn">NULL</span>,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">output_dir =</span> <span class="cn">NULL</span>,</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">output_model =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">output_data =</span> <span class="cn">NULL</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">output_data =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">fit =</span> <span class="cn">NULL</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
@@ -405,6 +406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>output_dir</code>: Directory for the output model and data files. Defaults to the directory containing <code>model</code>.</li>
 <li><code>output_model</code>: Optional explicit path for the output <code>.ferx</code> model file. When <code>NULL</code> (default), the file is written to <code>&lt;output_dir&gt;/&lt;stem&gt;_frem.ferx</code>.</li>
 <li><code>output_data</code>: Optional explicit path for the output CSV data file. When <code>NULL</code> (default), the file is written to <code>&lt;output_dir&gt;/&lt;stem&gt;_frem_data.csv</code>.</li>
+<li><code>fit</code>: Optional <code>[ferx_fit](ferx_fit.qmd)</code> result from fitting <code>model</code> (the base model, before FREM conversion). When supplied, its theta and omega estimates seed the generated FREM model’s PK theta inits and PK-PK omega block, so a subsequent fit of the FREM model warm-starts from converged parameters instead of <code>model</code>’s declared inits. Matching is by name (theta/eta names in <code>fit</code>); a name not found in <code>model</code> keeps its declared init. <code>NULL</code> (default) leaves every init at the value declared in <code>model</code>.</li>
 </ul>
 </section>
 <section id="details" class="level2">
@@ -416,7 +418,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Generates a new <code>.ferx</code> model file with an extended omega block that covers both the original random effects and covariate random effects.</li>
 <li>Returns a <code>ferx_model</code> referencing the generated files.</li>
 </ol>
-<p>After calling <code>ferx_to_frem()</code>, fit the returned model directly: <code>[ferx_fit](ferx_fit.qmd)(frem)</code>.</p>
+<p>After calling <code>ferx_model_to_frem()</code>, fit the returned model directly: <code>[ferx_fit](ferx_fit.qmd)(frem)</code>.</p>
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>

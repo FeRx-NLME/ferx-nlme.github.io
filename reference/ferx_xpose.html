@@ -417,7 +417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="limitations" class="level2">
 <h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
-<p>Only the table data is populated, not the estimation-iteration trace. Xpose functions that read the NONMEM <code>.ext</code> / <code>.grd</code> files - notably <code>xpose::prm_vs_iteration()</code> and <code>xpose::grd_vs_iteration()</code> - therefore do not work on the returned object: ferx records only a scalar OFV and gradient norm per iteration, not the per-parameter value/gradient trajectory those plots need. For an OFV-over-iterations view use <code>[ferx_plot_trace](ferx_plot_trace.qmd)</code> (requires <code>optimizer_trace = TRUE</code> at fit time).</p>
+<p>Only the table data is populated, not the estimation-iteration trace. Xpose functions that read the NONMEM <code>.ext</code> / <code>.grd</code> files - notably <code>xpose::prm_vs_iteration()</code> and <code>xpose::grd_vs_iteration()</code> - therefore do not work on the returned object: ferx records only a scalar OFV and gradient norm per iteration, not the per-parameter value/gradient trajectory those plots need. For an OFV-over-iterations view use <code>[plot.ferx_fit](plot.ferx_fit.qmd)</code> (requires <code>optimizer_trace = TRUE</code> at fit time).</p>
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>

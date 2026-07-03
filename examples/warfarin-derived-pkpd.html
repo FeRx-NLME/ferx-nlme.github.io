@@ -489,8 +489,12 @@ theta EC50(3.0)   fix</code></pre>
 <section id="fit" class="level2">
 <h2 class="anchored" data-anchor-id="fit">Fit</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in .ferx_compute_cor_matrix(result$cov_matrix): One or more diagonal
+elements are non-positive; correlation matrix may not be meaningful.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>============================================================
  NONLINEAR MIXED EFFECTS MODEL ESTIMATION
@@ -498,7 +502,7 @@ theta EC50(3.0)   fix</code></pre>
  Model: warfarin_derived_pkpd    Dataset: warfarin
  Method: FOCE | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   102 iterations   2.5s
+ STATUS: NOT CONVERGED   (convergence)   49 iterations   2.4s
  OFV: -280.3640    AIC: -266.3640    BIC: -247.4606
 
 MODEL STRUCTURE (auto-derived)
@@ -513,17 +517,17 @@ THETA
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
 TVCL                 0.132970     0.006628        5.0
-TVV                  7.730695     0.234062        3.0
-TVKA                 0.725187     0.125303       17.3
+TVV                  7.730772     0.234062        3.0
+TVKA                 0.725187     0.124560       17.2
 MEC                  0.500000     0.000000        0.0
 EMAX                80.000000     0.000000        0.0
 EC50                 3.000000     0.000000        0.0
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028585  CV% = 17.0  SE = 0.012790
-  ETA_V                    [log-normal]  = 0.009575  CV% = 9.8  SE = 0.004294
-  ETA_KA                   [log-normal]  = 0.348959  CV% = 64.6  SE = 0.160968
+  ETA_CL                   [log-normal]  = 0.028585  CV% = 17.0  SE = 0.012789
+  ETA_V                    [log-normal]  = 0.009575  CV% = 9.8  SE = 0.004295
+  ETA_KA                   [log-normal]  = 0.348959  CV% = 64.6  SE = 0.160827
 
 SIGMA  (residual error)
 ------------------------------------------------------------
@@ -535,12 +539,12 @@ SHRINKAGE
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 2.7   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
+ Covariance: computed   Cond: 2.6   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
 
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): auto   (used: analytic (Dual2))
- ferx v0.1.6 (core v0.1.6)
+ ferx v0.2.0 (core v0.2.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -548,50 +552,50 @@ SETTINGS  (model file / call-time override)
   maxiter                      300  [model only]
 
 ------------------------------------------------------------
- 4 warning  --  call ferx_warnings(fit) for details
+ 1 critical   4 warning  --  call ferx_get_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>
 <p>The PK thetas have proper SEs; <code>MEC</code>, <code>EMAX</code>, and <code>EC50</code> show <code>SE = 0</code> because they are fixed:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>estimates</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      param    transform     estimate           se   rse_pct     lower_95
-1      TVCL     identity  0.132969570 0.0066284653  4.984949  0.119977778
-2       TVV     identity  7.730695262 0.2340617937  3.027694  7.271934147
-3      TVKA     identity  0.725187222 0.1253027264 17.278673  0.479593879
+1      TVCL     identity  0.132969621 0.0066280332  4.984622  0.119978676
+2       TVV     identity  7.730771790 0.2340617358  3.027663  7.272010788
+3      TVKA     identity  0.725187179 0.1245597053 17.176214  0.481050157
 4       MEC     identity  0.500000000 0.0000000000  0.000000  0.500000000
 5      EMAX     identity 80.000000000 0.0000000000  0.000000 80.000000000
 6      EC50     identity  3.000000000 0.0000000000  0.000000  3.000000000
-7    ETA_CL     variance  0.028585310 0.0127900421 44.743410  0.003516827
-8     ETA_V     variance  0.009575317 0.0042943833 44.848474  0.001158325
-9    ETA_KA     variance  0.348959133 0.1609684369 46.128163  0.033460997
-10 PROP_ERR proportional  0.010748634 0.0009421476  8.765277  0.008902025
+7    ETA_CL     variance  0.028585184 0.0127893980 44.741353  0.003517964
+8     ETA_V     variance  0.009575279 0.0042954288 44.859567  0.001156239
+9    ETA_KA     variance  0.348959097 0.1608274013 46.087751  0.033737390
+10 PROP_ERR proportional  0.010748786 0.0009418125  8.762037  0.008902833
       upper_95 estimate_natural lower_95_natural upper_95_natural init_as_sd
-1   0.14596136               NA               NA               NA      FALSE
-2   8.18945638               NA               NA               NA      FALSE
-3   0.97078057               NA               NA               NA      FALSE
+1   0.14596057               NA               NA               NA      FALSE
+2   8.18953279               NA               NA               NA      FALSE
+3   0.96932420               NA               NA               NA      FALSE
 4   0.50000000               NA               NA               NA      FALSE
 5  80.00000000               NA               NA               NA      FALSE
 6   3.00000000               NA               NA               NA      FALSE
-7   0.05365379               NA               NA               NA      FALSE
-8   0.01799231               NA               NA               NA      FALSE
-9   0.66445727               NA               NA               NA      FALSE
-10  0.01259524               NA               NA               NA       TRUE</code></pre>
+7   0.05365240               NA               NA               NA      FALSE
+8   0.01799432               NA               NA               NA      FALSE
+9   0.66418080               NA               NA               NA      FALSE
+10  0.01259474               NA               NA               NA       TRUE</code></pre>
 </div>
 </div>
 </section>
 <section id="pd-derived-columns" class="level2">
 <h2 class="anchored" data-anchor-id="pd-derived-columns">PD derived columns</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"IPRED"</span>, <span class="st">"EFF"</span>, <span class="st">"TAM_TAU"</span>, <span class="st">"TAM_D1"</span>,</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"CMAX_INTERVAL"</span>)], <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"IPRED"</span>, <span class="st">"EFF"</span>, <span class="st">"TAM_TAU"</span>, <span class="st">"TAM_D1"</span>,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"CMAX_INTERVAL"</span>)], <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID  TIME     IPRED      EFF TAM_TAU TAM_D1 CMAX_INTERVAL
 1   1   0.5  5.351751 51.26351      24     24      11.38329
 2   1   1.0  8.283413 58.72984      24     24      11.38329
 3   1   2.0 10.708454 62.49256      24     24      11.38329
-4   1   4.0 11.383286 63.31397      24     24      11.38329
+4   1   4.0 11.383285 63.31397      24     24      11.38329
 5   1   8.0 10.757786 62.55533      24     24      11.38329
 6   1  12.0 10.069303 61.63636      24     24      11.38329
 7   1  24.0  8.254797 58.67576      24     24      11.38329
@@ -599,7 +603,7 @@ SETTINGS  (model file / call-time override)
 9   1  72.0  3.728488 44.33077      24     24      11.38329
 10  1  96.0  2.505797 36.40958      24     24      11.38329
 11  1 120.0  1.684066 28.76246      24     24      11.38329
-12  2   0.5  3.227396 41.46062      24     24      12.10572</code></pre>
+12  2   0.5  3.227396 41.46062      24     24      12.10571</code></pre>
 </div>
 </div>
 <p><code>EFF</code> varies per time point (it depends on <code>IPRED</code>). <code>CMAX_INTERVAL</code>, <code>TAM_TAU</code>, and <code>TAM_D1</code> are aggregate quantities — constant per 24-h window or per subject.</p>

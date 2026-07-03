@@ -424,7 +424,7 @@ sigma PROP_ERR ~ 0.02 (sd)       # SD coding →  same result</code></pre>
 </section>
 <section id="estimate-scale" class="level3">
 <h3 class="anchored" data-anchor-id="estimate-scale">Estimate scale</h3>
-<p>Regardless of how the initial value is written, <strong>estimates are always reported on the SD scale</strong> — in <code>print(fit)</code>, <code>ferx_estimates()</code>, and the fit YAML.</p>
+<p>Regardless of how the initial value is written, <strong>estimates are always reported on the SD scale</strong> — in <code>print(fit)</code>, <code>fit$estimates</code>, and the fit YAML.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -451,7 +451,7 @@ sigma PROP_ERR ~ 0.02 (sd)       # SD coding →  same result</code></pre>
 </tr>
 </tbody>
 </table>
-<p>The fit YAML emits both the SD (<code>estimate</code>) and the variance (<code>variance: estimate²</code>); for proportional components it also emits <code>cv_pct = estimate * 100</code>. The SE in <code>ferx_estimates()</code> is on the SD scale — multiply by 100 for an SE in CV-percentage points.</p>
+<p>The fit YAML emits both the SD (<code>estimate</code>) and the variance (<code>variance: estimate²</code>); for proportional components it also emits <code>cv_pct = estimate * 100</code>. The SE in <code>fit$estimates</code> is on the SD scale — multiply by 100 for an SE in CV-percentage points.</p>
 </section>
 </section>
 <section id="examples" class="level2">

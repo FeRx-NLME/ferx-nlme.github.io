@@ -437,9 +437,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="r-side-preview" class="level2">
 <h2 class="anchored" data-anchor-id="r-side-preview">R-side preview</h2>
-<p>Before fitting, use <code>ferx_selection()</code> to inspect which records the filter would drop:</p>
+<p>Before fitting, use <code>ferx_apply_selection()</code> to inspect which records the filter would drop:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sel <span class="ot">&lt;-</span> <span class="fu">ferx_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sel <span class="ot">&lt;-</span> <span class="fu">ferx_apply_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total records:"</span>, <span class="fu">nrow</span>(<span class="fu">read.csv</span>(ex<span class="sc">$</span>data)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -456,7 +456,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The excluded rows carry a <code>.exclude_reason</code> column:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_selection_excluded</span>(sel)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"DV"</span>, <span class="st">".exclude_reason"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_apply_selection</span>(sel, <span class="at">excluded =</span> <span class="cn">TRUE</span>)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"DV"</span>, <span class="st">".exclude_reason"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID TIME     DV  .exclude_reason
 84  7  120 0.9761 ignore: DV &lt; 1.0
@@ -520,7 +520,7 @@ DIAGNOSTICS
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): fd   (used: fd)
- ferx v0.1.6 (core v0.1.6)
+ ferx v0.2.0 (core v0.2.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -529,7 +529,7 @@ SETTINGS  (model file / call-time override)
   gradient                     fd  [model only]
 
 ------------------------------------------------------------
- 1 warning  --  call ferx_warnings(fit) for details
+ 1 warning  --  call ferx_get_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>
@@ -575,9 +575,9 @@ filtered      0.1329  7.7307</code></pre>
 </section>
 <section id="r-side-filtering-as-an-alternative-to-data_selection" class="level2">
 <h2 class="anchored" data-anchor-id="r-side-filtering-as-an-alternative-to-data_selection">R-side filtering as an alternative to <code>[data_selection]</code></h2>
-<p>Pass a <code>ferx_selection()</code> result directly to <code>ferx_fit()</code> instead of writing a <code>[data_selection]</code> block. Both approaches produce the same fit:</p>
+<p>Pass a <code>ferx_apply_selection()</code> result directly to <code>ferx_fit()</code> instead of writing a <code>[data_selection]</code> block. Both approaches produce the same fit:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> <span class="fu">ferx_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> <span class="fu">ferx_apply_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, filtered_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>When both sources supply conditions they are merged — duplicate expressions are deduplicated automatically.</p>

@@ -477,7 +477,7 @@ Note
  Model: warfarin_ode_time        Dataset: warfarin
  Method: FOCE | Gradient: FD | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   (condition_number)   110 iterations   167.3s
+ STATUS: NOT CONVERGED   (convergence, condition_number)   49 iterations   95.4s
  OFV: 20763.4095    AIC: 20777.4095    BIC: 20796.3129
 
 MODEL STRUCTURE (auto-derived)
@@ -516,7 +516,7 @@ DIAGNOSTICS
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): auto   (used: fd)
- ferx v0.1.6 (core v0.1.6)
+ ferx v0.2.0 (core v0.2.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -524,7 +524,7 @@ SETTINGS  (model file / call-time override)
   maxiter                      300  [model only]
 
 ------------------------------------------------------------
- 1 critical   4 warning  --  call ferx_warnings(fit) for details
+ 2 critical   4 warning  --  call ferx_get_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>

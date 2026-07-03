@@ -434,13 +434,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>iov_column = OCC</code></pre></li>
 <li><p><strong>The data</strong> carries an integer <code>OCC</code> column. Each value within a subject identifies an occasion; the engine draws one kappa per occasion per subject.</p></li>
 </ol>
-<p>After fitting, <code>fit$omega_iov</code> is a square matrix on the kappa diagonal, and <code>ferx_estimates()</code> reports each kappa as a row with <code>transform = "variance"</code> (same convention as omega rows):</p>
+<p>After fitting, <code>fit$omega_iov</code> is a square matrix on the kappa diagonal, and <code>fit$estimates</code> reports each kappa as a row with <code>transform = "variance"</code> (same convention as omega rows):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit_iov <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_iov<span class="sc">$</span>model, ex_iov<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"focei"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fit_iov<span class="sc">$</span>omega_iov</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            KAPPA_CL</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; KAPPA_CL 0.04679037</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit_iov)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>fit_iov<span class="sc">$</span>estimates</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     param    transform   estimate se rse_pct lower_95 upper_95 estimate_natural lower_95_natural upper_95_natural init_as_sd</span></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      TVCL     identity 0.17003443 NA      NA       NA       NA               NA               NA               NA      FALSE</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       TVV     identity 8.62276910 NA      NA       NA       NA               NA               NA               NA      FALSE</span></span>

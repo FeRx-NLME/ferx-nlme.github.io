@@ -357,7 +357,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#evaluation-order" id="toc-evaluation-order" class="nav-link" data-scroll-target="#evaluation-order">Evaluation order</a></li>
   <li><a href="#supported-columns" id="toc-supported-columns" class="nav-link" data-scroll-target="#supported-columns">Supported columns</a></li>
   <li><a href="#exclusion-summary" id="toc-exclusion-summary" class="nav-link" data-scroll-target="#exclusion-summary">Exclusion summary</a></li>
-  <li><a href="#r-companion-ferx_selection" id="toc-r-companion-ferx_selection" class="nav-link" data-scroll-target="#r-companion-ferx_selection">R companion: <code>ferx_selection()</code></a></li>
+  <li><a href="#r-companion-ferx_apply_selection" id="toc-r-companion-ferx_apply_selection" class="nav-link" data-scroll-target="#r-companion-ferx_apply_selection">R companion: <code>ferx_apply_selection()</code></a></li>
   <li><a href="#nonmem-equivalents" id="toc-nonmem-equivalents" class="nav-link" data-scroll-target="#nonmem-equivalents">NONMEM equivalents</a></li>
   <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
@@ -495,22 +495,22 @@ Note
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>exclusions<span class="sc">$</span>fired_ignore      <span class="co"># "ignore: DV &lt; 1.0"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
-<section id="r-companion-ferx_selection" class="level2">
-<h2 class="anchored" data-anchor-id="r-companion-ferx_selection">R companion: <code>ferx_selection()</code></h2>
-<p><code>ferx_selection()</code> applies the same filtering logic in pure R before committing to a fit, so you can inspect which records would be excluded:</p>
+<section id="r-companion-ferx_apply_selection" class="level2">
+<h2 class="anchored" data-anchor-id="r-companion-ferx_apply_selection">R companion: <code>ferx_apply_selection()</code></h2>
+<p><code>ferx_apply_selection()</code> applies the same filtering logic in pure R before committing to a fit, so you can inspect which records would be excluded:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_data_selection"</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>sel <span class="ot">&lt;-</span> <span class="fu">ferx_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>sel <span class="ot">&lt;-</span> <span class="fu">ferx_apply_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>)</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(sel)                           <span class="co"># retained records</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>sel<span class="sc">$</span>exclusions<span class="sc">$</span>n_obs_excluded       <span class="co"># number of excluded obs</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect excluded rows and the matched rule:</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_selection_excluded</span>(sel)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"DV"</span>, <span class="st">".exclude_reason"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_apply_selection</span>(sel, <span class="at">excluded =</span> <span class="cn">TRUE</span>)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"DV"</span>, <span class="st">".exclude_reason"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The returned <code>ferx_data</code> object can be passed directly to <code>ferx_fit()</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(<span class="at">model =</span> ex<span class="sc">$</span>model,</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">data  =</span> <span class="fu">ferx_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>When both a <code>[data_selection]</code> block in the model file and a <code>ferx_selection()</code> call supply conditions, they are <strong>merged</strong>: duplicate expressions are deduplicated automatically.</p>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">data  =</span> <span class="fu">ferx_apply_selection</span>(ex<span class="sc">$</span>data, <span class="at">ignore =</span> <span class="st">"DV &lt; 1.0"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When both a <code>[data_selection]</code> block in the model file and a <code>ferx_apply_selection()</code> call supply conditions, they are <strong>merged</strong>: duplicate expressions are deduplicated automatically.</p>
 <hr>
 </section>
 <section id="nonmem-equivalents" class="level2">
@@ -557,7 +557,7 @@ Note
 <pre><code>DATA SELECTION
   Records read: 120    Obs excl.: 2    Doses excl.: 0    Other excl.: 0
   Fired ignore: DV &lt; 1.0</code></pre>
-<p>See also <a href="../examples/warfarin-data-selection.html">Example: data selection</a> for a full worked example including the R-side preview with <code>ferx_selection()</code>.</p>
+<p>See also <a href="../examples/warfarin-data-selection.html">Example: data selection</a> for a full worked example including the R-side preview with <code>ferx_apply_selection()</code>.</p>
 <hr>
 </section>
 <section id="see-also" class="level2">

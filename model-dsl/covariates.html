@@ -355,7 +355,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#categorical-covariates-must-be-numerically-coded" id="toc-categorical-covariates-must-be-numerically-coded" class="nav-link" data-scroll-target="#categorical-covariates-must-be-numerically-coded">Categorical covariates must be numerically coded</a></li>
   <li><a href="#the-covariate-table-fitcovtab" id="toc-the-covariate-table-fitcovtab" class="nav-link" data-scroll-target="#the-covariate-table-fitcovtab">The covariate table (<code>fit$covtab</code>)</a></li>
   <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
-  <li><a href="#checking-dataset-columns-with-ferx_columns" id="toc-checking-dataset-columns-with-ferx_columns" class="nav-link" data-scroll-target="#checking-dataset-columns-with-ferx_columns">Checking dataset columns with <code>ferx_columns()</code></a></li>
+  <li><a href="#checking-dataset-columns-with-ferx_get_columns" id="toc-checking-dataset-columns-with-ferx_get_columns" class="nav-link" data-scroll-target="#checking-dataset-columns-with-ferx_get_columns">Checking dataset columns with <code>ferx_get_columns()</code></a></li>
   <li><a href="#why-declare-covariates-explicitly" id="toc-why-declare-covariates-explicitly" class="nav-link" data-scroll-target="#why-declare-covariates-explicitly">Why declare covariates explicitly?</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
@@ -516,11 +516,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>covariate_types</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="checking-dataset-columns-with-ferx_columns" class="level2">
-<h2 class="anchored" data-anchor-id="checking-dataset-columns-with-ferx_columns">Checking dataset columns with <code>ferx_columns()</code></h2>
+<section id="checking-dataset-columns-with-ferx_get_columns" class="level2">
+<h2 class="anchored" data-anchor-id="checking-dataset-columns-with-ferx_get_columns">Checking dataset columns with <code>ferx_get_columns()</code></h2>
 <p>Before writing a model, inspect the CSV header to confirm column names:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_columns</span>(ex)         <span class="co"># pass the ferx_example() list directly</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_columns</span>(ex)         <span class="co"># pass the ferx_example() list directly</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data file: /home/runner/work/_temp/Library/ferx/examples/data/two_cpt_oral_cov.csv
 10 columns
@@ -529,7 +529,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  Optional NONMEM:      [7] RATE  [8] MDV
  Covariates / other:   [9] WT  [10] CRCL</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_columns</span>(ex<span class="sc">$</span>data)    <span class="co"># or pass the CSV path</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_columns</span>(ex<span class="sc">$</span>data)    <span class="co"># or pass the CSV path</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data file: /home/runner/work/_temp/Library/ferx/examples/data/two_cpt_oral_cov.csv
 10 columns

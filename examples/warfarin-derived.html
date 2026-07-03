@@ -502,7 +502,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  Model: warfarin_derived         Dataset: warfarin
  Method: FOCE | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   102 iterations   1.5s
+ STATUS: NOT CONVERGED   (convergence)   49 iterations   1.4s
  OFV: -280.3640    AIC: -266.3640    BIC: -247.4606
 
 MODEL STRUCTURE (auto-derived)
@@ -517,14 +517,14 @@ THETA
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
 TVCL                 0.132970     0.006628        5.0
-TVV                  7.730695     0.234062        3.0
-TVKA                 0.725187     0.125303       17.3
+TVV                  7.730772     0.234062        3.0
+TVKA                 0.725187     0.124560       17.2
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028585  CV% = 17.0  SE = 0.012790
-  ETA_V                    [log-normal]  = 0.009575  CV% = 9.8  SE = 0.004294
-  ETA_KA                   [log-normal]  = 0.348959  CV% = 64.6  SE = 0.160968
+  ETA_CL                   [log-normal]  = 0.028585  CV% = 17.0  SE = 0.012789
+  ETA_V                    [log-normal]  = 0.009575  CV% = 9.8  SE = 0.004295
+  ETA_KA                   [log-normal]  = 0.348959  CV% = 64.6  SE = 0.160827
 
 SIGMA  (residual error)
 ------------------------------------------------------------
@@ -536,12 +536,12 @@ SHRINKAGE
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 2.7   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
+ Covariance: computed   Cond: 2.6   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
 
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): auto   (used: analytic (Dual2))
- ferx v0.1.6 (core v0.1.6)
+ ferx v0.2.0 (core v0.2.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -550,7 +550,7 @@ SETTINGS  (model file / call-time override)
   covariance                   true  [model only]
 
 ------------------------------------------------------------
- 1 warning  --  call ferx_warnings(fit) for details
+ 1 critical   1 warning  --  call ferx_get_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>
@@ -598,7 +598,7 @@ SETTINGS  (model file / call-time override)
 <div class="cell-output cell-output-stdout">
 <pre><code>    ID     CMAX TMAX AUC_0_72
 1    1 11.38329    4 510.6520
-12   2 12.10572    8 544.1912
+12   2 12.10571    8 544.1912
 23   3 11.01643    4 514.5164
 34   4 13.56179    8 594.6227
 45   5 13.82101    4 637.5880
@@ -618,7 +618,7 @@ SETTINGS  (model file / call-time override)
 <div class="cell-output cell-output-stdout">
 <pre><code>    ID     CMAX  CMAX_D1 TMAX
 1    1 11.38329 11.38329    4
-12   2 12.10572 12.10572    8
+12   2 12.10571 12.10571    8
 23   3 11.01643 11.01643    4
 34   4 13.56179 13.56179    8
 45   5 13.82101 13.82101    4
@@ -645,7 +645,7 @@ SETTINGS  (model file / call-time override)
 4    4.0   4.0 233.55469
 5    8.0   8.0 233.55469
 6   12.0  12.0 233.55469
-7   24.0  24.0 165.76633
+7   24.0  24.0 165.76632
 8   48.0  48.0 111.40623
 9   72.0  72.0  74.87255
 10  96.0  96.0  50.31944
@@ -680,16 +680,16 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"CL"</span>, <span class="st">"V"</span>, <span class="st">"KA"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    ID        CL        V        KA
-1    1 0.1367378 8.258032 1.1738301
+1    1 0.1367378 8.258033 1.1738302
 12   2 0.1350286 7.256836 0.5366661
 23   3 0.1297238 8.467318 0.9441843
-34   4 0.1291865 6.258011 0.3906890
-45   5 0.1052014 6.846145 1.3118066
-56   6 0.1315967 8.294638 2.8192265
+34   4 0.1291865 6.258012 0.3906890
+45   5 0.1052014 6.846145 1.3118067
+56   6 0.1315967 8.294638 2.8192264
 67   7 0.1776121 8.230884 0.4165787
 78   8 0.1738693 7.593123 0.7786906
 89   9 0.1022804 8.490377 0.8951078
-100 10 0.1251060 8.035877 0.4909804</code></pre>
+100 10 0.1251060 8.035877 0.4909805</code></pre>
 </div>
 </div>
 </section>

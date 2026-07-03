@@ -558,9 +558,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="optimizer-trace" class="level2">
 <h2 class="anchored" data-anchor-id="optimizer-trace">Optimizer trace</h2>
-<p>Pass <code>optimizer_trace = TRUE</code> to record per-iteration OFV and parameter values. Use <code>ferx_plot_trace()</code> to visualise convergence:</p>
+<p>Pass <code>optimizer_trace = TRUE</code> to record per-iteration OFV and parameter values. Use <code>plot()</code> to visualise convergence:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_trace <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit_trace)   <span class="co"># two-panel: OFV and convergence metric vs iteration</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_trace)   <span class="co"># two-panel: OFV and convergence metric vs iteration</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>(fit_trace)        <span class="co"># returns the raw data frame</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="gauss-newton-with-damping" class="level2">

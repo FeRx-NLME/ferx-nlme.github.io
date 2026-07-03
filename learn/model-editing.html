@@ -384,7 +384,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>ferx model files (<code>.ferx</code>) are plain text, so you can create and modify them entirely from R without opening an editor. This article covers the three functions that support that workflow: <code>ferx_model_new()</code>, <code>ferx_model_section()</code>, and <code>ferx_model_set_section()</code>.</p>
+<p>ferx model files (<code>.ferx</code>) are plain text, so you can create and modify them entirely from R without opening an editor. This article covers the three functions that support that workflow: <code>ferx_model()</code>, <code>ferx_model_get_section()</code>, and <code>ferx_model_set_section()</code>.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -401,21 +401,21 @@ Tip
 <hr>
 <section id="starting-from-scratch" class="level2">
 <h2 class="anchored" data-anchor-id="starting-from-scratch">Starting from scratch</h2>
-<p><code>ferx_model_new()</code> writes a skeleton <code>.ferx</code> file for one of five built-in templates: <code>"1cpt_oral"</code> (default), <code>"1cpt_iv"</code>, <code>"2cpt_oral"</code>, <code>"2cpt_iv"</code>, and <code>"ode"</code>.</p>
+<p><code>ferx_model()</code> writes a skeleton <code>.ferx</code> file for one of five built-in templates: <code>"1cpt_oral"</code> (default), <code>"1cpt_iv"</code>, <code>"2cpt_oral"</code>, <code>"2cpt_iv"</code>, and <code>"ode"</code>.</p>
 <p>Pass <code>print = TRUE</code> to preview a template in the console without writing any file — useful when you are exploring or copy-pasting a starting point:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(<span class="at">print =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(<span class="at">template =</span> <span class="st">"2cpt_iv"</span>, <span class="at">print =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(<span class="at">print =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(<span class="at">template =</span> <span class="st">"2cpt_iv"</span>, <span class="at">print =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>To write a file, supply a path. By default the file is also opened in your editor (<code>edit = TRUE</code>); pass <code>edit = FALSE</code> to skip that:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(<span class="st">"my_model.ferx"</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(<span class="at">path =</span> <span class="st">"my_model.ferx"</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="inspecting-a-section" class="level2">
 <h2 class="anchored" data-anchor-id="inspecting-a-section">Inspecting a section</h2>
-<p><code>ferx_model_section()</code> extracts the body of a named section and prints it. Start with the bundled warfarin example:</p>
+<p><code>ferx_model_get_section()</code> extracts the body of a named section and prints it. Start with the bundled warfarin example:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_get_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The return value is the character vector of lines, returned invisibly, so you can capture it:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">ferx_model_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">ferx_model_get_section</span>(ex<span class="sc">$</span>model, <span class="st">"parameters"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>params</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
@@ -427,7 +427,7 @@ Tip
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">file.copy</span>(ex<span class="sc">$</span>model, model_path))</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># read the section</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">ferx_model_section</span>(model_path, <span class="st">"parameters"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">ferx_model_get_section</span>(model_path, <span class="st">"parameters"</span>)</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># modify: change the TVCL initial value from 0.134 to 0.5</span></span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"TVCL</span><span class="sc">\\</span><span class="st">([^,]+,"</span>, <span class="st">"TVCL(0.5,"</span>, lines)</span>
@@ -436,7 +436,7 @@ Tip
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(model_path, <span class="st">"parameters"</span>, lines)</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># verify</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(model_path, <span class="st">"parameters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_get_section</span>(model_path, <span class="st">"parameters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>ferx_model_set_section()</code> replaces only the targeted section; all other sections are left untouched.</p>
 <hr>
 </section>
@@ -446,7 +446,7 @@ Tip
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"run1.ferx"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Write a skeleton</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(model_path, <span class="at">template =</span> <span class="st">"1cpt_oral"</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(<span class="at">path =</span> model_path, <span class="at">template =</span> <span class="st">"1cpt_oral"</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Switch method to focei</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(model_path, <span class="st">"fit_options"</span>, <span class="fu">c</span>(</span>
@@ -489,17 +489,17 @@ Tip
 </section>
 <section id="overwrite-guards" class="level2">
 <h2 class="anchored" data-anchor-id="overwrite-guards">Overwrite guards</h2>
-<p>By default <code>ferx_model_new()</code> refuses to overwrite an existing file:</p>
+<p>By default <code>ferx_model()</code> refuses to overwrite an existing file:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".ferx"</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(model_path, <span class="at">edit =</span> <span class="cn">FALSE</span>)            <span class="co"># creates the file</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(<span class="at">path =</span> model_path, <span class="at">edit =</span> <span class="cn">FALSE</span>)            <span class="co"># creates the file</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model_new</span>(model_path, <span class="at">edit =</span> <span class="cn">FALSE</span>),          <span class="co"># would overwrite — error</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model</span>(<span class="at">path =</span> model_path, <span class="at">edit =</span> <span class="cn">FALSE</span>),          <span class="co"># would overwrite — error</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) <span class="fu">message</span>(<span class="fu">conditionMessage</span>(e))</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Opt in explicitly with <code>overwrite = TRUE</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_new</span>(model_path, <span class="at">template =</span> <span class="st">"1cpt_iv"</span>, <span class="at">overwrite =</span> <span class="cn">TRUE</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_section</span>(model_path, <span class="st">"structural_model"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model</span>(<span class="at">path =</span> model_path, <span class="at">template =</span> <span class="st">"1cpt_iv"</span>, <span class="at">overwrite =</span> <span class="cn">TRUE</span>, <span class="at">edit =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_get_section</span>(model_path, <span class="st">"structural_model"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="function-reference" class="level2">
@@ -517,11 +517,11 @@ Tip
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>ferx_model_new()</code></td>
+<td><code>ferx_model()</code></td>
 <td>Write a skeleton <code>.ferx</code> file from a template</td>
 </tr>
 <tr class="even">
-<td><code>ferx_model_section()</code></td>
+<td><code>ferx_model_get_section()</code></td>
 <td>Extract the body of a named section</td>
 </tr>
 <tr class="odd">
@@ -529,11 +529,11 @@ Tip
 <td>Replace the body of a named section</td>
 </tr>
 <tr class="even">
-<td><code>ferx_get_section()</code></td>
+<td><code>ferx_model_get_section()</code></td>
 <td>Print a section mid-pipe (returns object unchanged)</td>
 </tr>
 <tr class="odd">
-<td><code>ferx_set_section()</code></td>
+<td><code>ferx_model_set_section()</code></td>
 <td>Rewrite a section mid-pipe (returns object unchanged)</td>
 </tr>
 <tr class="even">

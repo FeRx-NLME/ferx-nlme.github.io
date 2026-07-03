@@ -321,6 +321,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#diagnostics-output" id="toc-diagnostics-output" class="nav-link" data-scroll-target="#diagnostics-output">Diagnostics &amp; output</a></li>
   <li><a href="#data-filtering" id="toc-data-filtering" class="nav-link" data-scroll-target="#data-filtering">Data filtering</a></li>
   <li><a href="#utilities" id="toc-utilities" class="nav-link" data-scroll-target="#utilities">Utilities</a></li>
+  <li><a href="#other" id="toc-other" class="nav-link" data-scroll-target="#other">Other</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -355,6 +356,7 @@ ul.task-list li input[type="checkbox"] {
 <li><a href="../reference/ferx_fit_async.html"><code>ferx_fit_async</code></a></li>
 <li><a href="../reference/ferx_fit_async.html"><code>print.ferx_job</code></a></li>
 <li><a href="../reference/ferx_collect.html"><code>ferx_collect</code></a></li>
+<li><a href="../reference/ferx_stop.html"><code>ferx_stop</code></a></li>
 <li><a href="../reference/ferx_sir.html"><code>ferx_sir</code></a></li>
 <li><a href="../reference/summary.ferx_fit.html"><code>summary.ferx_fit</code></a></li>
 </ul>
@@ -375,16 +377,12 @@ ul.task-list li input[type="checkbox"] {
 <p>Create, inspect, and programmatically edit .ferx model files.</p>
 <ul>
 <li><a href="../reference/ferx_model.html"><code>ferx_model</code></a></li>
-<li><a href="../reference/ferx_model_new.html"><code>ferx_model_new</code></a></li>
 <li><a href="../reference/ferx_model_edit.html"><code>ferx_model_edit</code></a></li>
 <li><a href="../reference/ferx_model_show.html"><code>ferx_model_show</code></a></li>
 <li><a href="../reference/ferx_model_inspect.html"><code>ferx_model_inspect</code></a></li>
 <li><a href="../reference/ferx_model_validate.html"><code>ferx_model_validate</code></a></li>
-<li><a href="../reference/ferx_model_section.html"><code>ferx_model_section</code></a></li>
-<li><a href="../reference/ferx_get_section.html"><code>ferx_get_section</code></a></li>
-<li><a href="../reference/ferx_set_section.html"><code>ferx_set_section</code></a></li>
+<li><a href="../reference/ferx_model_get_section.html"><code>ferx_model_get_section</code></a></li>
 <li><a href="../reference/ferx_model_set_section.html"><code>ferx_model_set_section</code></a></li>
-<li><a href="../reference/ferx_to_frem.html"><code>ferx_to_frem</code></a></li>
 </ul>
 </section>
 <section id="diagnostics-output" class="level2">
@@ -393,14 +391,8 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li><a href="../reference/ferx_runlog.html"><code>ferx_runlog</code></a></li>
 <li><a href="../reference/ferx_runlog_iters.html"><code>ferx_runlog_iters</code></a></li>
-<li><a href="../reference/ferx_estimates.html"><code>ferx_estimates</code></a></li>
-<li><a href="../reference/ferx_warnings.html"><code>ferx_warnings</code></a></li>
-<li><a href="../reference/ferx_eta_cov.html"><code>ferx_eta_cov</code></a></li>
 <li><a href="../reference/ferx_cov_screen.html"><code>ferx_cov_screen</code></a></li>
-<li><a href="../reference/ferx_cor_matrix.html"><code>ferx_cor_matrix</code></a></li>
-<li><a href="../reference/ferx_plot_trace.html"><code>ferx_plot_trace</code></a></li>
 <li><a href="../reference/ferx_trace.html"><code>ferx_trace</code></a></li>
-<li><a href="../reference/ferx_npde.html"><code>ferx_npde</code></a></li>
 <li><a href="../reference/ferx_xpose.html"><code>ferx_xpose</code></a></li>
 <li><a href="../reference/check_diagnostics.html"><code>check_diagnostics</code></a></li>
 </ul>
@@ -409,8 +401,6 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="data-filtering">Data filtering</h2>
 <p>Preview and apply record-level data-selection filters before fitting.</p>
 <ul>
-<li><a href="../reference/ferx_selection.html"><code>ferx_selection</code></a></li>
-<li><a href="../reference/ferx_selection_excluded.html"><code>ferx_selection_excluded</code></a></li>
 <li><a href="../reference/print.ferx_data.html"><code>print.ferx_data</code></a></li>
 </ul>
 </section>
@@ -419,12 +409,23 @@ ul.task-list li input[type="checkbox"] {
 <p>Helper functions for exploring bundled examples and checking model initialisation.</p>
 <ul>
 <li><a href="../reference/ferx_example.html"><code>ferx_example</code></a></li>
-<li><a href="../reference/ferx_columns.html"><code>ferx_columns</code></a></li>
 <li><a href="../reference/ferx_check_init.html"><code>ferx_check_init</code></a></li>
 <li><a href="../reference/ferx_inits_from_nca.html"><code>ferx_inits_from_nca</code></a></li>
 <li><a href="../reference/ferx_inits_from_nca.html"><code>print.ferx_inits</code></a></li>
 <li><a href="../reference/ferx_save_fit.html"><code>ferx_save_fit</code></a></li>
 <li><a href="../reference/ferx_load_fit.html"><code>ferx_load_fit</code></a></li>
+</ul>
+</section>
+<section id="other" class="level2">
+<h2 class="anchored" data-anchor-id="other">Other</h2>
+<ul>
+<li><a href="../reference/ferx_apply_selection.html"><code>ferx_apply_selection</code></a></li>
+<li><a href="../reference/ferx_calc_npde.html"><code>ferx_calc_npde</code></a></li>
+<li><a href="../reference/ferx_conddist.html"><code>ferx_conddist</code></a></li>
+<li><a href="../reference/ferx_get_columns.html"><code>ferx_get_columns</code></a></li>
+<li><a href="../reference/ferx_get_warnings.html"><code>ferx_get_warnings</code></a></li>
+<li><a href="../reference/ferx_model_to_frem.html"><code>ferx_model_to_frem</code></a></li>
+<li><a href="../reference/plot.ferx_fit.html"><code>plot.ferx_fit</code></a></li>
 </ul>
 
 

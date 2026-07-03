@@ -527,7 +527,7 @@ sigma NAME ~ value (variance)   # explicit — same as default</code></pre>
 <p>The <code>(sd)</code> annotation tells the parser that the initial value is a standard deviation — it squares it before storing. This is the form used throughout the bundled examples because writing “I expect 2% CV” as <code>~ 0.02 (sd)</code> is more readable than computing the variance <code>0.02² = 0.0004</code> and writing <code>~ 0.0004</code>.</p>
 <pre><code>sigma PROP_ERR ~ 0.0004          # variance 0.0004  →  SD 0.02  →  2% CV
 sigma PROP_ERR ~ 0.02 (sd)       # same thing, SD coding</code></pre>
-<p>Regardless of how the initial value is written, <strong>estimates are always reported on the SD scale</strong> — both in <code>print(fit)</code> and in <code>ferx_estimates()</code>.</p>
+<p>Regardless of how the initial value is written, <strong>estimates are always reported on the SD scale</strong> — both in <code>print(fit)</code> and in <code>fit$estimates</code>.</p>
 <p>See <a href="../model-dsl/error-model.html#sigma-scale">Error Model — Sigma scale</a> for how each sigma is interpreted.</p>
 </section>
 <section id="parameter-level-correlation-in-output" class="level2">
@@ -591,7 +591,7 @@ theta TVLAG(0.25, FIX)                 # inside parens (no bounds)
 theta CL (FIX) (0.134, 0.001, 10.0)   # FIX anywhere before the bound triple
 omega ETA_CL (FIX) ~ 0.07             # FIX before the tilde
 omega ETA_CL ~ 0.07 FIX               # FIX after the value — both forms OK</code></pre>
-<p>Fixed parameters are shown in <code>print(fit)</code> and <code>ferx_estimates()</code> with <code>SE = fixed</code> and <code>%RSE = fixed</code>; they are excluded from the covariance matrix.</p>
+<p>Fixed parameters are shown in <code>print(fit)</code> and <code>fit$estimates</code> with <code>SE = fixed</code> and <code>%RSE = fixed</code>; they are excluded from the covariance matrix.</p>
 <p><strong>Typical uses:</strong> - Fix a lag time or Hill coefficient to a literature value - Fix omega to zero to temporarily remove BSV from a parameter - Fix sigma during a two-stage estimation (fix PK error while fitting PD)</p>
 </section>
 <section id="complete-examples" class="level2">

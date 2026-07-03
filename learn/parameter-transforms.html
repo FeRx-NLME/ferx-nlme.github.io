@@ -449,8 +449,8 @@ Tip
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_KA    [log-normal]  = 0.356897  CV% = 65.5  SE = N/A</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (covariance = FALSE, so SE columns are NA)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The CV% is derived from the log-scale variance as <code>CV% = 100 * sqrt(exp(omega_var) - 1)</code>. For small variances this is approximately <code>100 * sqrt(omega_var)</code>, but the exact formula is always used.</p>
-<p><code>ferx_estimates()</code> returns the omega variance on the log scale in <code>estimate</code>, with <code>transform = "variance"</code> (omega rows always use this label regardless of the ETA parameterisation style — the log-normal interpretation is conveyed by <code>print.ferx_fit()</code>, not by the tidy table). SE and 95 % CI columns are on the same log-variance scale:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span>
+<p><code>fit$estimates</code> returns the omega variance on the log scale in <code>estimate</code>, with <code>transform = "variance"</code> (omega rows always use this label regardless of the ETA parameterisation style — the log-normal interpretation is conveyed by <code>print.ferx_fit()</code>, not by the tidy table). SE and 95 % CI columns are on the same log-variance scale:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>estimates</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   param    transform  estimate   se  rse_pct  lower_95  upper_95</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL    variance  0.027888   NA       NA        NA        NA</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_V     variance  0.009489   NA       NA        NA        NA</span></span>
@@ -487,9 +487,9 @@ Tip
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit_logit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_logit<span class="sc">$</span>model, ex_logit<span class="sc">$</span>data)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fit_logit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>ferx_estimates()</code> populates <code>estimate_natural</code>, <code>lower_95_natural</code>, and <code>upper_95_natural</code> for logit-transformed thetas. The CI is computed symmetrically on the logit scale and then back-transformed through <code>inv_logit</code>, giving an asymmetric interval on the (0, 1) scale:</p>
+<p><code>fit$estimates</code> populates <code>estimate_natural</code>, <code>lower_95_natural</code>, and <code>upper_95_natural</code> for logit-transformed thetas. The CI is computed symmetrically on the logit scale and then back-transformed through <code>inv_logit</code>, giving an asymmetric interval on the (0, 1) scale:</p>
 <p>The <code>transform</code> value the backend reports for a logit-scaled theta is <code>"logit_probability"</code> (not <code>"logit"</code>):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">ferx_estimates</span>(fit_logit)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> fit_logit<span class="sc">$</span>estimates</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>est[est<span class="sc">$</span>param <span class="sc">==</span> <span class="st">"THETA_F"</span>, ]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   param           transform   estimate     se  rse_pct  lower_95  upper_95  estimate_natural  lower_95_natural  upper_95_natural</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   THETA_F  logit_probability   0.80197 0.00652   0.8136   0.78918   0.81476           0.69040           0.68766           0.69312</span></span>
@@ -515,8 +515,8 @@ Tip
 <p>After fitting, the <code>ETA_TLAG</code> row in the omega block is printed with <code>[additive]</code> and an SD in the original units (hours):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit_add <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_add<span class="sc">$</span>model, ex_add<span class="sc">$</span>data)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fit_add</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>ferx_estimates()</code> returns <code>transform = "variance"</code> for that omega element (all omega rows use this label). The <code>estimate</code> is the variance in the original units (hours²), and the CI is symmetric — no back-transform is applied:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit_add)</span>
+<p><code>fit$estimates</code> returns <code>transform = "variance"</code> for that omega element (all omega rows use this label). The <code>estimate</code> is the variance in the original units (hours²), and the CI is symmetric — no back-transform is applied:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fit_add<span class="sc">$</span>estimates</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     param  transform  estimate  se  rse_pct  lower_95  upper_95  init_as_sd</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  ETA_TLAG   variance   0.04003  NA       NA        NA        NA       FALSE</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># SD in original units = sqrt(0.04003) ~ 0.2001 h</span></span>
@@ -563,7 +563,7 @@ Tip
 <th>Transform</th>
 <th>Omega interpretation</th>
 <th>Print label</th>
-<th><code>ferx_estimates()</code> columns</th>
+<th><code>fit$estimates</code> columns</th>
 </tr>
 </thead>
 <tbody>

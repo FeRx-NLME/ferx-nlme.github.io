@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Correlation matrix of estimated parameters – ferx</title>
+<title>Per-subject SAEM conditional distribution of random effects – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -111,35 +111,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -395,7 +366,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Correlation matrix of estimated parameters</h1>
+<h1 class="title">Per-subject SAEM conditional distribution of random effects</h1>
 </div>
 
 
@@ -414,21 +385,21 @@ window.Quarto = {
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Converts the parameter covariance matrix (already stored on the fit object) into a correlation matrix, making off-diagonal structure immediately visible. A correlation close to <span class="math inline">\(\pm 1\)</span> between two parameters flags a structural identifiability problem in the model.</p>
+<p>Returns the per-subject / per-eta conditional distribution summary produced by the opt-in SAEM conditional-distribution pass (<code>[fit_options] conddist = true</code>). This is the shrinkage-unbiased analogue of saemix’s <code>conddist.saemix</code> / Monolix’s “Conditional Distribution” task: rather than only the conditional <strong><em>mode</em></strong> (the EBE on <code>fit$ebe_etas</code>), it reports the conditional <strong><em>mean</em></strong> and <strong><em>SD</em></strong> of each subject’s eta, i.e.&nbsp;<code>p(eta_i | y_i; theta_hat)</code>.</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_cor_matrix</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_conddist</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>fit</code>: A <code>ferx_fit</code> object returned by <code>[ferx_fit](ferx_fit.qmd)</code>.</li>
+<li><code>fit</code>: A <code>ferx_fit</code> object returned by <code>[ferx_fit](ferx_fit.qmd)</code> (or <code>[ferx_load_fit](ferx_load_fit.qmd)</code>), fit with <code>method = "saem"</code> and <code>settings = list(conddist = TRUE)</code>.</li>
 </ul>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p><code>[ferx_estimates](ferx_estimates.qmd)</code> for SEs and diagnostics: <code>[check_diagnostics](check_diagnostics.qmd)()</code>, <code>[ferx_cov_screen](ferx_cov_screen.qmd)()</code>, <code>[ferx_estimates](ferx_estimates.qmd)()</code>, <code>[ferx_eta_cov](ferx_eta_cov.qmd)()</code>, <code>[ferx_plot_trace](ferx_plot_trace.qmd)()</code>, <code>[ferx_runlog_iters](ferx_runlog_iters.qmd)()</code>, <code>[ferx_trace](ferx_trace.qmd)()</code>, <code>[ferx_warnings](ferx_warnings.qmd)()</code>, <code>[summary.ferx_fit](summary.ferx_fit.qmd)()</code></p>
+<p><code>[ferx_fit](ferx_fit.qmd)</code>’s <code>conddist</code> fit option (see <code>[fit_options]</code> in the model-file docs); <code>[ferx_get_warnings](ferx_get_warnings.qmd)</code>for other post-fit diagnostics. Other diagnostics: <code>[check_diagnostics](check_diagnostics.qmd)()</code>, <code>[ferx_cov_screen](ferx_cov_screen.qmd)()</code>, <code>[ferx_get_warnings](ferx_get_warnings.qmd)()</code>, <code>[ferx_runlog_iters](ferx_runlog_iters.qmd)()</code>, <code>[ferx_trace](ferx_trace.qmd)()</code>, <code>[plot.ferx_fit](plot.ferx_fit.qmd)()</code>, <code>[summary.ferx_fit](summary.ferx_fit.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -436,13 +407,16 @@ window.Quarto = {
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>Named correlation matrix (invisibly). Printed to the console.</p>
+<p>A data frame (classed <code>ferx_conddist</code>) with one row per subject x eta: <code>ID</code>, <code>ETA</code>, <code>COND_MEAN</code>, <code>COND_SD</code>, <code>COND_MODE</code>. The distribution-based eta-shrinkage (parallel to <code>fit$eta_names</code>) and the retained-draw bookkeeping are attached as attributes <code>"shrinkage"</code>, <code>"nsamp"</code>, <code>"burnin"</code>.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(fit<span class="sc">$</span>cov_matrix)) <span class="fu">ferx_cor_matrix</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_saem"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"saem"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">settings =</span> <span class="fu">list</span>(<span class="at">conddist =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>cd  <span class="ot">&lt;-</span> <span class="fu">ferx_conddist</span>(fit)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cd)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(cd, <span class="st">"shrinkage"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

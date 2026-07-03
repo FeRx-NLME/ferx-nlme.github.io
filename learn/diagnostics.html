@@ -379,16 +379,16 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#parameter-estimates-ferx_estimates" id="toc-parameter-estimates-ferx_estimates" class="nav-link active" data-scroll-target="#parameter-estimates-ferx_estimates">Parameter estimates — <code>ferx_estimates()</code></a></li>
-  <li><a href="#parameter-correlation-matrix-ferx_cor_matrix" id="toc-parameter-correlation-matrix-ferx_cor_matrix" class="nav-link" data-scroll-target="#parameter-correlation-matrix-ferx_cor_matrix">Parameter correlation matrix — <code>ferx_cor_matrix()</code></a></li>
-  <li><a href="#eta-covariate-correlations-ferx_eta_cov" id="toc-eta-covariate-correlations-ferx_eta_cov" class="nav-link" data-scroll-target="#eta-covariate-correlations-ferx_eta_cov">ETA-covariate correlations — <code>ferx_eta_cov()</code></a></li>
+  <li><a href="#parameter-estimates-fitestimates" id="toc-parameter-estimates-fitestimates" class="nav-link active" data-scroll-target="#parameter-estimates-fitestimates">Parameter estimates — <code>fit$estimates</code></a></li>
+  <li><a href="#parameter-correlation-matrix-fitcor_matrix" id="toc-parameter-correlation-matrix-fitcor_matrix" class="nav-link" data-scroll-target="#parameter-correlation-matrix-fitcor_matrix">Parameter correlation matrix — <code>fit$cor_matrix</code></a></li>
+  <li><a href="#eta-covariate-correlations-fiteta_cov" id="toc-eta-covariate-correlations-fiteta_cov" class="nav-link" data-scroll-target="#eta-covariate-correlations-fiteta_cov">ETA-covariate correlations — <code>fit$eta_cov</code></a></li>
   <li><a href="#iwres-autocorrelation-check_diagnostics" id="toc-iwres-autocorrelation-check_diagnostics" class="nav-link" data-scroll-target="#iwres-autocorrelation-check_diagnostics">IWRES autocorrelation — <code>check_diagnostics()</code></a></li>
   <li><a href="#goodness-of-fit-plots-from-fitsdtab" id="toc-goodness-of-fit-plots-from-fitsdtab" class="nav-link" data-scroll-target="#goodness-of-fit-plots-from-fitsdtab">Goodness-of-fit plots from <code>fit$sdtab</code></a></li>
-  <li><a href="#structured-warnings-ferx_warnings" id="toc-structured-warnings-ferx_warnings" class="nav-link" data-scroll-target="#structured-warnings-ferx_warnings">Structured warnings — <code>ferx_warnings()</code></a></li>
+  <li><a href="#structured-warnings-ferx_get_warnings" id="toc-structured-warnings-ferx_get_warnings" class="nav-link" data-scroll-target="#structured-warnings-ferx_get_warnings">Structured warnings — <code>ferx_get_warnings()</code></a></li>
   <li><a href="#run-log-ferx_runlog" id="toc-run-log-ferx_runlog" class="nav-link" data-scroll-target="#run-log-ferx_runlog">Run log — <code>ferx_runlog()</code></a></li>
   <li><a href="#other-ferx_fit-fields" id="toc-other-ferx_fit-fields" class="nav-link" data-scroll-target="#other-ferx_fit-fields">Other <code>ferx_fit</code> fields</a></li>
   <li><a href="#convergence-diagnostics-ferx_check_init" id="toc-convergence-diagnostics-ferx_check_init" class="nav-link" data-scroll-target="#convergence-diagnostics-ferx_check_init">Convergence diagnostics — <code>ferx_check_init()</code></a></li>
-  <li><a href="#optimizer-trace-ferx_trace-ferx_plot_trace" id="toc-optimizer-trace-ferx_trace-ferx_plot_trace" class="nav-link" data-scroll-target="#optimizer-trace-ferx_trace-ferx_plot_trace">Optimizer trace — <code>ferx_trace()</code> / <code>ferx_plot_trace()</code></a></li>
+  <li><a href="#optimizer-trace-ferx_trace-plot" id="toc-optimizer-trace-ferx_trace-plot" class="nav-link" data-scroll-target="#optimizer-trace-ferx_trace-plot">Optimizer trace — <code>ferx_trace()</code> / <code>plot()</code></a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -430,13 +430,13 @@ Tip
 </div>
 </div>
 <hr>
-<section id="parameter-estimates-ferx_estimates" class="level2">
-<h2 class="anchored" data-anchor-id="parameter-estimates-ferx_estimates">Parameter estimates — <code>ferx_estimates()</code></h2>
-<p><code>ferx_estimates()</code> collects all estimated parameters (theta, omega, sigma) into a tidy data frame. Run it after any fit that used <code>covariance = TRUE</code>:</p>
+<section id="parameter-estimates-fitestimates" class="level2">
+<h2 class="anchored" data-anchor-id="parameter-estimates-fitestimates">Parameter estimates — <code>fit$estimates</code></h2>
+<p><code>fit$estimates</code> collects all estimated parameters (theta, omega, sigma) into a tidy data frame. Run it after any fit that used <code>covariance = TRUE</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_estimates</span>(fit)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>estimates</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   param           transform    estimate      se  rse_pct  lower_95  upper_95</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVCL            identity       0.134  0.0108     8.1     0.113     0.155</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVV             identity       7.94   0.420      5.3     7.12      8.76</span></span>
@@ -495,10 +495,10 @@ Tip
 <p>See <a href="../learn/parameter-transforms.html">Parameter transforms</a> for how the <code>transform</code> column relates to log-normal, logit-normal, and additive ETAs.</p>
 <hr>
 </section>
-<section id="parameter-correlation-matrix-ferx_cor_matrix" class="level2">
-<h2 class="anchored" data-anchor-id="parameter-correlation-matrix-ferx_cor_matrix">Parameter correlation matrix — <code>ferx_cor_matrix()</code></h2>
-<p><code>ferx_cor_matrix()</code> converts the estimated parameter covariance matrix to correlations. A value near ±1 between two parameters signals a structural identifiability problem worth investigating:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_cor_matrix</span>(fit)</span>
+<section id="parameter-correlation-matrix-fitcor_matrix" class="level2">
+<h2 class="anchored" data-anchor-id="parameter-correlation-matrix-fitcor_matrix">Parameter correlation matrix — <code>fit$cor_matrix</code></h2>
+<p><code>fit$cor_matrix</code> converts the estimated parameter covariance matrix to correlations. A value near ±1 between two parameters signals a structural identifiability problem worth investigating:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>cor_matrix</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                TVCL   TVV  TVKA  ...</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVCL         1.00  0.12  0.03</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   TVV          0.12  1.00 -0.07</span></span>
@@ -506,14 +506,14 @@ Tip
 <p>High correlations between <code>CL</code> and <code>V</code> often arise in poorly-sampled datasets where absorption and elimination are not separately identifiable.</p>
 <hr>
 </section>
-<section id="eta-covariate-correlations-ferx_eta_cov" class="level2">
-<h2 class="anchored" data-anchor-id="eta-covariate-correlations-ferx_eta_cov">ETA-covariate correlations — <code>ferx_eta_cov()</code></h2>
-<p><code>ferx_eta_cov()</code> computes Pearson correlations between individual ETA estimates (EBEs) and numeric covariate columns. Identifies covariates worth including in a formal covariate search.</p>
+<section id="eta-covariate-correlations-fiteta_cov" class="level2">
+<h2 class="anchored" data-anchor-id="eta-covariate-correlations-fiteta_cov">ETA-covariate correlations — <code>fit$eta_cov</code></h2>
+<p><code>fit$eta_cov</code> computes Pearson correlations between individual ETA estimates (EBEs) and numeric covariate columns. Identifies covariates worth including in a formal covariate search.</p>
 <p>The warfarin dataset has no covariate columns. The following example uses <code>two_cpt_oral_cov</code>, which includes body weight (WT) and creatinine clearance (CRCL):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ex_cov   <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_cov"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fit_cov  <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex_cov<span class="sc">$</span>model, ex_cov<span class="sc">$</span>data)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>data_cov <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex_cov<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_eta_cov</span>(fit_cov, data_cov)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit_cov<span class="sc">$</span>eta_cov</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   eta      covariate    r   p_val  flag</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL   WT        0.38  0.008   [!]</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   ETA_CL   CRCL      0.41  0.003   [!]</span></span>
@@ -645,10 +645,10 @@ Tip
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CWRES vs PRED"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
-<section id="structured-warnings-ferx_warnings" class="level2">
-<h2 class="anchored" data-anchor-id="structured-warnings-ferx_warnings">Structured warnings — <code>ferx_warnings()</code></h2>
-<p>ferx classifies non-fatal issues from a run into severity levels and categories and makes them available via <code>ferx_warnings()</code>. Critical issues are also surfaced inline in the <code>STATUS</code> line of <code>print(fit)</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_warnings</span>(fit)</span>
+<section id="structured-warnings-ferx_get_warnings" class="level2">
+<h2 class="anchored" data-anchor-id="structured-warnings-ferx_get_warnings">Structured warnings — <code>ferx_get_warnings()</code></h2>
+<p>ferx classifies non-fatal issues from a run into severity levels and categories and makes them available via <code>ferx_get_warnings()</code>. Critical issues are also surfaced inline in the <code>STATUS</code> line of <code>print(fit)</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_warnings</span>(fit)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   severity  category              message</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   warning   shrinkage             ETA_KA shrinkage = 0.58 (&gt; 0.40): EBEs</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   unreliable for this parameter</span></span>
@@ -836,16 +836,16 @@ RUNTIME
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#        5     -180.2   -186.3      6.1      FALSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
-<section id="optimizer-trace-ferx_trace-ferx_plot_trace" class="level2">
-<h2 class="anchored" data-anchor-id="optimizer-trace-ferx_trace-ferx_plot_trace">Optimizer trace — <code>ferx_trace()</code> / <code>ferx_plot_trace()</code></h2>
+<section id="optimizer-trace-ferx_trace-plot" class="level2">
+<h2 class="anchored" data-anchor-id="optimizer-trace-ferx_trace-plot">Optimizer trace — <code>ferx_trace()</code> / <code>plot()</code></h2>
 <p>When <code>optimizer_trace = TRUE</code> is passed to <code>ferx_fit()</code>, ferx writes a per-iteration CSV. Read and plot it:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>tr <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)          <span class="co"># data frame with one row per outer iteration</span></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tr[, <span class="fu">c</span>(<span class="st">"iter"</span>, <span class="st">"ofv"</span>, <span class="st">"grad_norm"</span>)])</span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit)           <span class="co"># two-panel plot: OFV + method-specific metric</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(fit, <span class="at">log_ofv =</span> <span class="cn">TRUE</span>)  <span class="co"># OFV on log scale (OFV - min(OFV))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)           <span class="co"># two-panel plot: OFV + method-specific metric</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, <span class="at">log_ofv =</span> <span class="cn">TRUE</span>)  <span class="co"># OFV on log scale (OFV - min(OFV))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>ferx_trace()</code> with no argument recalls the trace from the last <code>ferx_fit()</code> call in the current session:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>()    <span class="co"># same as ferx_trace(fit) after the above</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>See <a href="https://ferx-nlme.github.io/ferx-core/output.html#optimizer-trace-csv">Output Files — Optimizer trace CSV (ferx-core book)</a> for the full column reference.</p>

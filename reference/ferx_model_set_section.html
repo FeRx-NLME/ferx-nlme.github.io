@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Replace a section in a ferx model file – ferx</title>
+<title>Set a section in a ferx model – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -353,6 +353,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -366,7 +367,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Replace a section in a ferx model file</h1>
+<h1 class="title">Set a section in a ferx model</h1>
 </div>
 
 
@@ -385,23 +386,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Overwrites the body of a named section in a <code>.ferx</code> file with new lines, leaving all other sections untouched. Use this to modify a model programmatically without opening an editor.</p>
+<p>Replaces the body of a named section in a <code>.ferx</code> model with new lines, leaving all other sections untouched, and returns <code>x</code> so calls can be chained with <code>|&gt;</code> or <code>%&gt;%</code>.</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(path, section, lines)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(x, section, lines)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>path</code>: Path to a <code>.ferx</code> model file.</li>
+<li><code>x</code>: A <code>ferx_model</code> object or a path to a <code>.ferx</code> file.</li>
 <li><code>section</code>: Name of the section to replace, without brackets (e.g. <code>"fit_options"</code>).</li>
-<li><code>lines</code>: Character vector of replacement lines. These become the new body of the section (do not include the <code>[section]</code> header line).</li>
+<li><code>lines</code>: Character vector of replacement lines (do not include the <code>[section]</code> header line).</li>
 </ul>
+</section>
+<section id="details" class="level2">
+<h2 class="anchored" data-anchor-id="details">Details</h2>
+<p>When <code>x</code> is a <code>ferx_model</code> object the section is written to <code>x$model</code>. <strong><em>Copy-on-write for bundled examples</em></strong>: if <code>x$model</code> points to a file inside the installed <code>ferx</code> package directory (typically the result of <code>[ferx_example](ferx_example.qmd)()</code>), the file is first copied to <code>tempdir()</code> and <code>x$model</code> is updated to that copy before the edit. This prevents accidental modification of read-only package examples. When <code>x</code> is a plain path string the file is edited in place.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p><code>[ferx_model_section](ferx_model_section.qmd)</code>, <code>[ferx_model_show](ferx_model_show.qmd)</code>, <code>[ferx_model_new](ferx_model_new.qmd)</code>Other model-editing: <code>[ferx_get_section](ferx_get_section.qmd)()</code>, <code>[ferx_model](ferx_model.qmd)()</code>, <code>[ferx_model_edit](ferx_model_edit.qmd)()</code>, <code>[ferx_model_inspect](ferx_model_inspect.qmd)()</code>, <code>[ferx_model_new](ferx_model_new.qmd)()</code>, <code>[ferx_model_section](ferx_model_section.qmd)()</code>, <code>[ferx_model_show](ferx_model_show.qmd)()</code>, <code>[ferx_model_validate](ferx_model_validate.qmd)()</code>, <code>[ferx_set_section](ferx_set_section.qmd)()</code></p>
+<p><code>[ferx_model_get_section](ferx_model_get_section.qmd)</code>Other model-editing: <code>[ferx_model](ferx_model.qmd)()</code>, <code>[ferx_model_edit](ferx_model_edit.qmd)()</code>, <code>[ferx_model_get_section](ferx_model_get_section.qmd)()</code>, <code>[ferx_model_inspect](ferx_model_inspect.qmd)()</code>, <code>[ferx_model_show](ferx_model_show.qmd)()</code>, <code>[ferx_model_validate](ferx_model_validate.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -409,21 +414,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p><code>path</code>, invisibly.</p>
+<p><code>x</code>, invisibly. For a <code>ferx_model</code> pointing at a bundled package file, the returned object’s <code>$model</code> field will point at the temp-directory copy that was actually edited.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Switch estimation method without opening an editor</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(<span class="st">"my_model.ferx"</span>, <span class="st">"fit_options"</span>, <span class="fu">c</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  method     = focei"</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  maxiter    = 500"</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  covariance = false"</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Read-modify-write a section</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">ferx_model_section</span>(<span class="st">"my_model.ferx"</span>, <span class="st">"parameters"</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"TVCL</span><span class="sc">\\</span><span class="st">(.*</span><span class="sc">\\</span><span class="st">)"</span>, <span class="st">"TVCL(0.5, 0.001, 10.0)"</span>, lines)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(<span class="st">"my_model.ferx"</span>, <span class="st">"parameters"</span>, lines)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plain path: edited in place</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_set_section</span>(ex<span class="sc">$</span>model, <span class="st">"fit_options"</span>, <span class="fu">c</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  method     = focei"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  maxiter    = 500"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  covariance = true"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ferx_model: safe by default. Editing a bundled example transparently</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># copies the file to tempdir() and edits the copy; ex$model on disk is</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># untouched.</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model_set_section</span>(<span class="st">"fit_options"</span>, <span class="fu">c</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  method     = focei"</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  maxiter    = 500"</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  covariance = true"</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_fit</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

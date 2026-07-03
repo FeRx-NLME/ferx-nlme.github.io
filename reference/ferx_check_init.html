@@ -403,7 +403,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other fitting: <code>[ferx_collect](ferx_collect.qmd)()</code>, <code>[ferx_fit](ferx_fit.qmd)()</code>, <code>[ferx_fit_async](ferx_fit_async.qmd)()</code>, <code>[ferx_inits_from_nca](ferx_inits_from_nca.qmd)()</code>, <code>[ferx_sir](ferx_sir.qmd)()</code></p>
+<p>Other fitting: <code>[ferx_collect](ferx_collect.qmd)()</code>, <code>[ferx_fit](ferx_fit.qmd)()</code>, <code>[ferx_inits_from_nca](ferx_inits_from_nca.qmd)()</code>, <code>[ferx_sir](ferx_sir.qmd)()</code>, <code>[ferx_stop](ferx_stop.qmd)()</code>, <code>[print.ferx_job](ferx_fit_async.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -424,7 +424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>chk<span class="sc">$</span>summary   <span class="co"># ofv_start, ofv_end, ofv_drop</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect per-iteration trace to spot early divergence or slow descent</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_plot_trace</span>(chk<span class="sc">$</span>fit)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(chk<span class="sc">$</span>fit)</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Pipe style: data flows in from the ferx_model object</span></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>ex<span class="sc">$</span>data <span class="sc">|&gt;</span></span>

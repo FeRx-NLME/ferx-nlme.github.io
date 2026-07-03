@@ -406,7 +406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p><code>[ferx_load_fit](ferx_load_fit.qmd)</code>, <code>[ferx_fit](ferx_fit.qmd)</code> (and its <code>output</code> argument for save-during-fit). Other utilities: <code>[ferx_columns](ferx_columns.qmd)()</code>, <code>[ferx_example](ferx_example.qmd)()</code>, <code>[ferx_load_fit](ferx_load_fit.qmd)()</code></p>
+<p><code>[ferx_load_fit](ferx_load_fit.qmd)</code>, <code>[ferx_fit](ferx_fit.qmd)</code> (and its <code>output</code> argument for save-during-fit). Other utilities: <code>[ferx_example](ferx_example.qmd)()</code>, <code>[ferx_get_columns](ferx_get_columns.qmd)()</code>, <code>[ferx_load_fit](ferx_load_fit.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -415,7 +415,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
 <p>Invisibly returns <code>fit</code>, so the function can be used inside a pipe without breaking the chain:</p>
-<pre><code>fit |&gt; ferx_save_fit("run1.fitrx") |&gt; ferx_estimates()</code></pre>
+<pre><code>fit |&gt; ferx_save_fit("run1.fitrx") |&gt; (\(f) f$estimates)()</code></pre>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>

@@ -449,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="data-structure">Data structure</h2>
 <p>The dataset has one dose row per subject with <code>ADDL=6, II=24</code> and observations spread across seven days: rich sampling on day 1, daily troughs at t = 24, 72, 120, 144 h (where <code>TAD</code> resets to 0 at each expanded dose), and rich steady-state sampling on day 7.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_columns</span>(ex)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_columns</span>(ex)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data file: /home/runner/work/_temp/Library/ferx/examples/data/warfarin_addl.csv
 10 columns
@@ -483,7 +483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  Model: warfarin_addl            Dataset: warfarin_addl
  Method: FOCE | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 160
 
- STATUS: CONVERGED   83 iterations   1.7s
+ STATUS: NOT CONVERGED   (convergence)   62 iterations   1.6s
  OFV: 437.3381    AIC: 451.3381    BIC: 472.8643
 
 MODEL STRUCTURE (auto-derived)
@@ -522,12 +522,15 @@ DIAGNOSTICS
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): auto   (used: analytic (Dual2))
- ferx v0.1.6 (core v0.1.6)
+ ferx v0.2.0 (core v0.2.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
   method                       foce  [model only]
   maxiter                      300  [model only]
+
+------------------------------------------------------------
+ 1 critical  --  call ferx_get_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>

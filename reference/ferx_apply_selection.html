@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Inspect column headers of a NONMEM data file – ferx</title>
+<title>Preview data-selection filtering – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -356,7 +356,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -366,7 +365,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Inspect column headers of a NONMEM data file</h1>
+<h1 class="title">Preview data-selection filtering</h1>
 </div>
 
 
@@ -385,42 +384,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Reads only the header row of a NONMEM-format CSV file and prints the column names grouped into required NONMEM columns, optional NONMEM columns, and covariates / user-defined columns. Only the first line is read, so this is fast even on large datasets.</p>
+<p>Applies IGNORE/ACCEPT record-level filters to a NONMEM dataset in pure R, approximating the semantics of the <code>[data_selection]</code> model block. This is a <strong><em>preview</em></strong> function: the canonical, engine-validated filtering happens in Rust at fit time. The R-side implementation is intentionally lenient: unparseable expressions and unknown column names are silently treated as non-matching (no exclusion), whereas Rust will error on invalid filters. Use <code>ferx_apply_selection()</code> to inspect which records will be excluded before committing to a fit, or to pass pre-built conditions directly to <code>[ferx_fit](ferx_fit.qmd)</code>.</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_columns</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_apply_selection</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">ignore =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">accept =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ignore_ids =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">excluded =</span> <span class="cn">FALSE</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
 <li><code>data</code>: One of:</li>
-<li>A character string path to a NONMEM CSV file.</li>
-<li>A <code>ferx_fit</code> object – uses <code>fit$data_path</code>.</li>
-<li>The list returned by <code>[ferx_example](ferx_example.qmd)</code> – uses <code>x$data</code>.</li>
+<li>a character path to a NONMEM CSV file (recorded on the returned object so <code>[ferx_fit](ferx_fit.qmd)(data = &lt;result&gt;)</code> can pass it through to Rust without writing a temporary file),</li>
+<li>a data.frame already read into memory,</li>
+<li>a <code>ferx_data</code> object returned by an earlier call (its cached selection is reused; combine with <code>excluded = TRUE</code> to pull the excluded records back out), or</li>
+<li>a <code>ferx_fit</code> object, whose fired data-selection rules are replayed against the original dataset.</li>
+<li><code>ignore</code>: Character vector of filter expressions. A record is <strong><em>excluded</em></strong> when any expression evaluates to <code>TRUE</code>. Expressions use column names with standard comparison operators (<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>); use <code>&amp;&amp;</code> for AND within one expression. Example: <code>c("DV &lt; 0.001", "EVID != 0")</code>.</li>
+<li><code>accept</code>: Character vector of filter expressions. A record is <strong><em>kept</em></strong> only when all conditions pass; excluded if any fail.</li>
+<li><code>ignore_ids</code>: Numeric or character vector of subject IDs to exclude entirely.</li>
+<li><code>excluded</code>: Logical. When <code>FALSE</code> (default) the retained records are returned as a <code>ferx_data</code> object. When <code>TRUE</code> the function returns a plain data.frame of the <strong><em>excluded</em></strong> records instead, with an extra <code>.exclude_reason</code> column naming the first rule that dropped each record (this replaces the former <code>ferx_selection_excluded()</code> accessor).</li>
 </ul>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other utilities: <code>[ferx_example](ferx_example.qmd)()</code>, <code>[ferx_load_fit](ferx_load_fit.qmd)()</code>, <code>[ferx_save_fit](ferx_save_fit.qmd)()</code></p>
+<p><code>[ferx_fit](ferx_fit.qmd)</code> which accepts a <code>ferx_data</code> object as <code>data</code>. Pass <code>excluded = TRUE</code> to retrieve the excluded rows.</p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
-<p>utilities</p>
+<p>data selection</p>
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A character vector of column names, returned invisibly.</p>
-</section>
-<section id="examples" class="level2">
-<h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_columns</span>(ex)        <span class="co"># pass the ferx_example() list directly</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_columns</span>(ex<span class="sc">$</span>data)   <span class="co"># or pass the path</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_columns</span>(fit)       <span class="co"># inspect the data used for a fit</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When <code>excluded = FALSE</code>, an object of class <code>"ferx_data"</code>(also a <code>data.frame</code>) containing the <strong><em>retained</em></strong> records. When <code>excluded = TRUE</code>, a plain data.frame of the excluded records. The <code>ferx_data</code> object carries these attributes:</p>
+<ul>
+<li><code>source_path</code>: Character path supplied as <code>data</code>, or <code>NULL</code> when <code>data</code> was a data.frame.</li>
+<li><code>ignore</code>, <code>accept</code>, <code>ignore_ids</code>: The filter conditions used (character / character / character vectors).</li>
+<li><code>excluded_rows</code>: A data.frame of the excluded records with an extra column <code>.exclude_reason</code> (first matching rule string).</li>
+<li><code>exclusions</code>: A named list mirroring <code>fit$exclusions</code>: <code>n_records_total</code>, <code>n_obs_excluded</code>, <code>n_dose_excluded</code>, <code>n_other_excluded</code>, <code>excluded_subject_ids</code>, <code>fired_ignore</code>, <code>fired_accept</code>.</li>
+</ul>
 
 
 </section>

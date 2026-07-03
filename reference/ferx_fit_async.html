@@ -391,18 +391,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_fit_async</span>(model, <span class="at">data =</span> <span class="cn">NULL</span>, ..., <span class="at">tail_n =</span> <span class="dv">6</span>L, <span class="at">poll_interval =</span> <span class="fl">0.5</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># S3 method for ferx_job</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x, ...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># S3 method for ferx_job</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x, ...)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_fit_async</span>(model, <span class="at">data =</span> <span class="cn">NULL</span>, ..., <span class="at">tail_n =</span> <span class="dv">6</span>L, <span class="at">poll_interval =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
+<li><code>x</code>: A <code>ferx_job</code> handle returned by <code>ferx_fit_async()</code>.</li>
 <li><code>model, data, ...</code>: Forwarded to <code>[ferx_fit](ferx_fit.qmd)</code>. See its documentation for the full argument list.</li>
 <li><code>tail_n</code>: Integer. Number of recent trace rows to keep visible per poll in <code>[ferx_collect](ferx_collect.qmd)</code>. Default 6.</li>
 <li><code>poll_interval</code>: Numeric. Seconds between polls in <code>[ferx_collect](ferx_collect.qmd)</code>. Default 0.5.</li>
-<li><code>x</code>: A <code>ferx_job</code> handle returned by <code>ferx_fit_async()</code>.</li>
 </ul>
 </section>
 <section id="details" class="level2">
@@ -415,7 +415,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other fitting: <code>[ferx_check_init](ferx_check_init.qmd)()</code>, <code>[ferx_collect](ferx_collect.qmd)()</code>, <code>[ferx_fit](ferx_fit.qmd)()</code>, <code>[ferx_inits_from_nca](ferx_inits_from_nca.qmd)()</code>, <code>[ferx_sir](ferx_sir.qmd)()</code></p>
+<p>Other fitting: <code>[ferx_check_init](ferx_check_init.qmd)()</code>, <code>[ferx_collect](ferx_collect.qmd)()</code>, <code>[ferx_fit](ferx_fit.qmd)()</code>, <code>[ferx_inits_from_nca](ferx_inits_from_nca.qmd)()</code>, <code>[ferx_sir](ferx_sir.qmd)()</code>, <code>[ferx_stop](ferx_stop.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A <code>ferx_job</code> handle. Pass it to <code>[ferx_collect](ferx_collect.qmd)</code>to retrieve the <code>ferx_fit</code> result. In non-interactive sessions (<code>Rscript</code>, knitr, batch mode) the function falls back to a synchronous <code>[ferx_fit](ferx_fit.qmd)</code> call and returns the result directly.</p>
+<p>A <code>ferx_job</code> handle. Pass it to <code>[ferx_collect](ferx_collect.qmd)</code>to retrieve the <code>ferx_fit</code> result. <code>handle$trace_path</code> reads the discovered trace CSV path on demand (<code>NULL</code> until the background fit has written its first trace row). In non-interactive sessions (<code>Rscript</code>, knitr, batch mode) the function falls back to a synchronous <code>[ferx_fit](ferx_fit.qmd)</code> call and returns the result directly.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>

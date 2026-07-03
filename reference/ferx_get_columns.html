@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Simulation-based NPDE / NPD diagnostics from a fit – ferx</title>
+<title>Inspect column headers of a NONMEM data file – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -366,7 +366,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Simulation-based NPDE / NPD diagnostics from a fit</h1>
+<h1 class="title">Inspect column headers of a NONMEM data file</h1>
 </div>
 
 
@@ -385,40 +385,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Computes Normalized Prediction Distribution Errors (<code>NPDE</code>, decorrelated within subject) and Normalized Prediction Discrepancies (<code>NPD</code>) post-hoc by Monte-Carlo simulation under the fitted model (Brendel et al.&nbsp;2006; Comets et al.&nbsp;2008). Use this when a model was fitted without <code>[fit_options] npde_nsim</code> and you want the diagnostics without re-running <code>[ferx_fit](ferx_fit.qmd)</code>. Unlike CWRES, NPDE/NPD are robust to model nonlinearity and non-Gaussian random effects, and follow N(0, 1) under a correctly specified model.</p>
+<p>Reads only the header row of a NONMEM-format CSV file and prints the column names grouped into required NONMEM columns, optional NONMEM columns, and covariates / user-defined columns. Only the first line is read, so this is fast even on large datasets.</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_npde</span>(fit, <span class="at">nsim =</span> <span class="dv">1000</span>L, <span class="at">seed =</span> <span class="cn">NULL</span>, <span class="at">model =</span> <span class="cn">NULL</span>, <span class="at">data =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_columns</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>fit</code>: A <code>ferx_fit</code> result, carrying <code>theta</code>, <code>omega</code>, <code>sigma</code>, and (unless overridden) the <code>model_path</code> / <code>data_path</code> captured at fit time.</li>
-<li><code>nsim</code>: Number of Monte-Carlo replicates per subject (default <code>1000</code>). NPDE needs <code>nsim</code> greater than each subject’s observation count for a full-rank simulated covariance; subjects that fail this get <code>NA</code> NPDE (NPD is still computed).</li>
-<li><code>seed</code>: Optional integer RNG seed for reproducibility. <code>NULL</code> (default) uses the engine’s built-in default seed.</li>
-<li><code>model</code>: Path to the <code>.ferx</code> model file. Defaults to <code>fit$model_path</code>.</li>
-<li><code>data</code>: Path to the NONMEM-format CSV. Defaults to <code>fit$data_path</code>.</li>
+<li><code>data</code>: One of:</li>
+<li>A character string path to a NONMEM CSV file.</li>
+<li>A <code>ferx_fit</code> object – uses <code>fit$data_path</code>.</li>
+<li>The list returned by <code>[ferx_example](ferx_example.qmd)</code> – uses <code>x$data</code>.</li>
 </ul>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other simulation: <code>[ferx_predict](ferx_predict.qmd)()</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)()</code>, <code>[ferx_simulate](ferx_simulate.qmd)()</code>, <code>[ferx_simulate_adaptive](ferx_simulate_adaptive.qmd)()</code>, <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)()</code></p>
+<p>Other utilities: <code>[ferx_example](ferx_example.qmd)()</code>, <code>[ferx_load_fit](ferx_load_fit.qmd)()</code>, <code>[ferx_save_fit](ferx_save_fit.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
-<p>simulation</p>
+<p>utilities</p>
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>The input <code>fit</code>, with <code>NPDE</code> and <code>NPD</code> columns added to its <code>sdtab</code> data frame (replacing any existing ones). Because the diagnostics live in <code>fit$sdtab</code>, downstream consumers such as <code>[ferx_xpose](ferx_xpose.qmd)</code> and goodness-of-fit plots pick them up automatically.</p>
+<p>A character vector of column names, returned invisibly.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_npde</span>(fit, <span class="at">nsim =</span> <span class="dv">1000</span>L, <span class="at">seed =</span> <span class="dv">12345</span>L)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"NPDE"</span>, <span class="st">"NPD"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_columns</span>(ex)        <span class="co"># pass the ferx_example() list directly</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_columns</span>(ex<span class="sc">$</span>data)   <span class="co"># or pass the path</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_columns</span>(fit)       <span class="co"># inspect the data used for a fit</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
