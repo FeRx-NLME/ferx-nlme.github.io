@@ -502,8 +502,8 @@ elements are non-positive; correlation matrix may not be meaningful.</code></pre
  Model: warfarin_derived_pkpd    Dataset: warfarin
  Method: FOCE | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 110
 
- STATUS: NOT CONVERGED   (convergence)   49 iterations   2.4s
- OFV: -280.3640    AIC: -266.3640    BIC: -247.4606
+ STATUS: NOT CONVERGED   (convergence)   55 iterations   1.9s
+ OFV: -280.3640    AIC: -266.3640    BIC: -247.4607
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -516,22 +516,22 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132970     0.006628        5.0
-TVV                  7.730772     0.234062        3.0
-TVKA                 0.725187     0.124560       17.2
+TVCL                 0.132968     0.006629        5.0
+TVV                  7.730703     0.234070        3.0
+TVKA                 0.725274     0.124596       17.2
 MEC                  0.500000     0.000000        0.0
 EMAX                80.000000     0.000000        0.0
 EC50                 3.000000     0.000000        0.0
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028585  CV% = 17.0  SE = 0.012789
-  ETA_V                    [log-normal]  = 0.009575  CV% = 9.8  SE = 0.004295
-  ETA_KA                   [log-normal]  = 0.348959  CV% = 64.6  SE = 0.160827
+  ETA_CL                   [log-normal]  = 0.028595  CV% = 17.0  SE = 0.012797
+  ETA_V                    [log-normal]  = 0.009577  CV% = 9.8  SE = 0.004296
+  ETA_KA                   [log-normal]  = 0.348974  CV% = 64.6  SE = 0.160862
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010749  (var = 0.000116, CV% = 1.1)  SE = 0.000942  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010748  (var = 0.000116, CV% = 1.1)  SE = 0.000942  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
@@ -561,27 +561,27 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>estimates</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      param    transform     estimate           se   rse_pct     lower_95
-1      TVCL     identity  0.132969621 0.0066280332  4.984622  0.119978676
-2       TVV     identity  7.730771790 0.2340617358  3.027663  7.272010788
-3      TVKA     identity  0.725187179 0.1245597053 17.176214  0.481050157
+1      TVCL     identity  0.132967859 0.0066293130  4.985651  0.119974406
+2       TVV     identity  7.730702605 0.2340702801  3.027801  7.271924856
+3      TVKA     identity  0.725273960 0.1245956821 17.179120  0.481066423
 4       MEC     identity  0.500000000 0.0000000000  0.000000  0.500000000
 5      EMAX     identity 80.000000000 0.0000000000  0.000000 80.000000000
 6      EC50     identity  3.000000000 0.0000000000  0.000000  3.000000000
-7    ETA_CL     variance  0.028585184 0.0127893980 44.741353  0.003517964
-8     ETA_V     variance  0.009575279 0.0042954288 44.859567  0.001156239
-9    ETA_KA     variance  0.348959097 0.1608274013 46.087751  0.033737390
-10 PROP_ERR proportional  0.010748786 0.0009418125  8.762037  0.008902833
+7    ETA_CL     variance  0.028595413 0.0127967421 44.751031  0.003513799
+8     ETA_V     variance  0.009576823 0.0042964874 44.863389  0.001155708
+9    ETA_KA     variance  0.348974076 0.1608615845 46.095569  0.033685371
+10 PROP_ERR proportional  0.010748464 0.0009418927  8.763044  0.008902354
       upper_95 estimate_natural lower_95_natural upper_95_natural init_as_sd
-1   0.14596057               NA               NA               NA      FALSE
-2   8.18953279               NA               NA               NA      FALSE
-3   0.96932420               NA               NA               NA      FALSE
+1   0.14596131               NA               NA               NA      FALSE
+2   8.18948035               NA               NA               NA      FALSE
+3   0.96948150               NA               NA               NA      FALSE
 4   0.50000000               NA               NA               NA      FALSE
 5  80.00000000               NA               NA               NA      FALSE
 6   3.00000000               NA               NA               NA      FALSE
-7   0.05365240               NA               NA               NA      FALSE
-8   0.01799432               NA               NA               NA      FALSE
-9   0.66418080               NA               NA               NA      FALSE
-10  0.01259474               NA               NA               NA       TRUE</code></pre>
+7   0.05367703               NA               NA               NA      FALSE
+8   0.01799794               NA               NA               NA      FALSE
+9   0.66426278               NA               NA               NA      FALSE
+10  0.01259457               NA               NA               NA       TRUE</code></pre>
 </div>
 </div>
 </section>
@@ -592,18 +592,18 @@ SETTINGS  (model file / call-time override)
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"CMAX_INTERVAL"</span>)], <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID  TIME     IPRED      EFF TAM_TAU TAM_D1 CMAX_INTERVAL
-1   1   0.5  5.351751 51.26351      24     24      11.38329
-2   1   1.0  8.283413 58.72984      24     24      11.38329
-3   1   2.0 10.708454 62.49256      24     24      11.38329
-4   1   4.0 11.383285 63.31397      24     24      11.38329
-5   1   8.0 10.757786 62.55533      24     24      11.38329
-6   1  12.0 10.069303 61.63636      24     24      11.38329
-7   1  24.0  8.254797 58.67576      24     24      11.38329
-8   1  48.0  5.547784 51.92255      24     24      11.38329
-9   1  72.0  3.728488 44.33077      24     24      11.38329
-10  1  96.0  2.505797 36.40958      24     24      11.38329
-11  1 120.0  1.684066 28.76246      24     24      11.38329
-12  2   0.5  3.227396 41.46062      24     24      12.10571</code></pre>
+1   1   0.5  5.351751 51.26351      24     24      11.38328
+2   1   1.0  8.283413 58.72984      24     24      11.38328
+3   1   2.0 10.708454 62.49256      24     24      11.38328
+4   1   4.0 11.383285 63.31396      24     24      11.38328
+5   1   8.0 10.757785 62.55533      24     24      11.38328
+6   1  12.0 10.069303 61.63636      24     24      11.38328
+7   1  24.0  8.254797 58.67576      24     24      11.38328
+8   1  48.0  5.547784 51.92255      24     24      11.38328
+9   1  72.0  3.728488 44.33077      24     24      11.38328
+10  1  96.0  2.505797 36.40958      24     24      11.38328
+11  1 120.0  1.684066 28.76246      24     24      11.38328
+12  2   0.5  3.227396 41.46062      24     24      12.10572</code></pre>
 </div>
 </div>
 <p><code>EFF</code> varies per time point (it depends on <code>IPRED</code>). <code>CMAX_INTERVAL</code>, <code>TAM_TAU</code>, and <code>TAM_D1</code> are aggregate quantities — constant per 24-h window or per subject.</p>

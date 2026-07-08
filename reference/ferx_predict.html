@@ -389,13 +389,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_predict</span>(model, data, <span class="at">fit =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_predict</span>(model, <span class="at">data =</span> <span class="cn">NULL</span>, <span class="at">fit =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
 <li><code>model</code>: Path to a .ferx model file</li>
-<li><code>data</code>: Path to a NONMEM-format CSV</li>
+<li><code>data</code>: Path to a NONMEM-format CSV. When omitted, the model file’s <code>[data]</code> block (<code>path = ...</code>) is used.</li>
 <li><code>fit</code>: Optional <code>ferx_fit</code> result. When provided, predictions use <code>fit$theta</code> instead of the model file’s initial estimate for theta.</li>
 </ul>
 </section>

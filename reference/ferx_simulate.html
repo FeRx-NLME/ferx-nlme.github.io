@@ -391,7 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_simulate</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  model,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="cn">NULL</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_sim =</span> <span class="dv">1</span>L,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">42</span>L,</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fit =</span> <span class="cn">NULL</span>,</span>
@@ -403,7 +403,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
 <li><code>model</code>: Path to a .ferx model file</li>
-<li><code>data</code>: Path to a NONMEM-format CSV (provides population structure: doses, obs times)</li>
+<li><code>data</code>: Path to a NONMEM-format CSV (provides population structure: doses, obs times). When omitted, the model file’s <code>[data]</code> block (<code>path = ...</code>) is used.</li>
 <li><code>n_sim</code>: Number of simulation replicates</li>
 <li><code>seed</code>: Random seed for reproducibility</li>
 <li><code>fit</code>: Optional <code>ferx_fit</code> result. When provided, simulation uses <code>fit$theta</code>, <code>fit$omega</code>, and <code>fit$sigma</code> instead of the model file’s initial values.</li>

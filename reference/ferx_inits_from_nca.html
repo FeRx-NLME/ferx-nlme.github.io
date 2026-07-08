@@ -405,7 +405,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
 <li><code>model</code>: A path to a <code>.ferx</code> model file, or a <code>ferx_model</code> object created with <code>[ferx_model](ferx_model.qmd)</code>.</li>
-<li><code>data</code>: Path to a NONMEM-format CSV file. When <code>model</code> is a <code>ferx_model</code> object that already carries a data path, this may be left <code>NULL</code>.</li>
+<li><code>data</code>: Path to a NONMEM-format CSV file. When <code>model</code> is a <code>ferx_model</code> object that already carries a data path, or when the model file declares a <code>[data]</code> block (<code>path = ...</code>), this may be left <code>NULL</code>.</li>
 <li><code>method</code>: One of <code>"nca_sweep"</code> (default), <code>"nca"</code>, or <code>"nca_ebe"</code>. See Details.</li>
 <li><code>x</code>: A <code>ferx_inits</code> object returned by <code>ferx_inits_from_nca()</code>.</li>
 <li><code>...</code>: Ignored.</li>
@@ -430,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p><code>[ferx_fit](ferx_fit.qmd)</code>, whose <code>inits_from_nca</code> argument applies these values automatically before the optimizer runs. Other fitting: <code>[ferx_check_init](ferx_check_init.qmd)()</code>, <code>[ferx_collect](ferx_collect.qmd)()</code>, <code>[ferx_fit](ferx_fit.qmd)()</code>, <code>[ferx_sir](ferx_sir.qmd)()</code>, <code>[ferx_stop](ferx_stop.qmd)()</code>, <code>[print.ferx_job](ferx_fit_async.qmd)()</code></p>
+<p><code>[ferx_fit](ferx_fit.qmd)</code>, whose <code>inits_from_nca</code> argument applies these values automatically before the optimizer runs. Other fitting: <code>[ferx_check_init](ferx_check_init.qmd)()</code>, <code>[ferx_collect](ferx_collect.qmd)()</code>, <code>[ferx_covariance](ferx_covariance.qmd)()</code>, <code>[ferx_fit](ferx_fit.qmd)()</code>, <code>[ferx_sir](ferx_sir.qmd)()</code>, <code>[ferx_stop](ferx_stop.qmd)()</code>, <code>[print.ferx_job](ferx_fit_async.qmd)()</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>

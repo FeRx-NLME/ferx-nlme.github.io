@@ -477,8 +477,8 @@ Note
  Model: warfarin_ode_time        Dataset: warfarin
  Method: FOCE | Gradient: FD | Subjects: 10 | Obs: 110
 
- STATUS: NOT CONVERGED   (convergence, condition_number)   49 iterations   95.4s
- OFV: 20763.4095    AIC: 20777.4095    BIC: 20796.3129
+ STATUS: NOT CONVERGED   (convergence)   49 iterations   23.2s
+ OFV: -280.3624    AIC: -266.3624    BIC: -247.4590
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -491,27 +491,27 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132966     1.452400     1092.3
-TVV                  7.730734   484.529877     6267.6
-TVKA                 0.725203    45.504954     6274.8
+TVCL                 0.132966     0.006629        5.0
+TVV                  7.730734     0.234093        3.0
+TVKA                 0.725203     0.124484       17.2
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028593  CV% = 17.0  SE = 3.570694
-  ETA_V                    [log-normal]  = 0.009578  CV% = 9.8  SE = 1.198408
-  ETA_KA                   [log-normal]  = 0.348937  CV% = 64.6  SE = 43.715095
+  ETA_CL                   [log-normal]  = 0.028593  CV% = 17.0  SE = 0.012792
+  ETA_V                    [log-normal]  = 0.009578  CV% = 9.8  SE = 0.004299
+  ETA_KA                   [log-normal]  = 0.348937  CV% = 64.6  SE = 0.161008
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010749  (var = 0.000116, CV% = 1.1)  SE = 0.170969  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010749  (var = 0.000116, CV% = 1.1)  SE = 0.000942  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 10.1%   ETA_V: -3.4%   ETA_KA: -278.1%   EPS: -778.9%
+ ETA_CL: 0.0%   ETA_V: 0.1%   ETA_KA: 0.2%   EPS: 16.1%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 2883354352.3   DW: 0.39 [positive autocorrelation]   IWRES lag-1 r: 0.707
+ Covariance: computed   Cond: 2.6   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
 
 RUN INFO
 ------------------------------------------------------------
@@ -524,7 +524,7 @@ SETTINGS  (model file / call-time override)
   maxiter                      300  [model only]
 
 ------------------------------------------------------------
- 2 critical   4 warning  --  call ferx_get_warnings(fit) for details
+ 1 critical   1 warning  --  call ferx_get_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>
@@ -548,7 +548,7 @@ SETTINGS  (model file / call-time override)
 12  2 0.01860713 37.25170 12.10571 544.4706
 23  3 0.01532056 45.24294 11.01640 515.0692
 34  4 0.02064343 33.57713 13.56174 594.7006
-45  5 0.01996430 34.71934 14.83891 607.6903
+45  5 0.01536630 45.10828 13.82087 638.4452
 56  6 0.01586528 43.68958 11.70240 522.1093</code></pre>
 </div>
 </div>

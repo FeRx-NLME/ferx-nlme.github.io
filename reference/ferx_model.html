@@ -403,7 +403,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>data</code>: Optional path to a NONMEM-format CSV data file. Can be omitted here and supplied later to <code>[ferx_fit](ferx_fit.qmd)</code>.</li>
+<li><code>data</code>: Optional path to a NONMEM-format CSV data file. Can be omitted here and supplied later to <code>[ferx_fit](ferx_fit.qmd)</code>. When omitted, it defaults to the dataset declared in the model file’s <code>[data]</code> block (<code>path = ...</code>) if the model file has one.</li>
 <li><code>model</code>: Path to an existing <code>.ferx</code> model file (wrap mode). The file must exist. Leave <code>NULL</code> in scaffold mode.</li>
 <li><code>template</code>: Scaffold mode. One of <code>"1cpt_oral"</code> (default), <code>"1cpt_iv"</code>, <code>"2cpt_oral"</code>, <code>"2cpt_iv"</code>, or <code>"ode"</code>. Supplying it (or <code>print = TRUE</code>) triggers scaffold mode.</li>
 <li><code>path</code>: Scaffold mode. Path for the new <code>.ferx</code> file. Required unless <code>print = TRUE</code>. Must not already exist unless <code>overwrite = TRUE</code>.</li>

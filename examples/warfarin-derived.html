@@ -502,8 +502,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  Model: warfarin_derived         Dataset: warfarin
  Method: FOCE | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 110
 
- STATUS: NOT CONVERGED   (convergence)   49 iterations   1.4s
- OFV: -280.3640    AIC: -266.3640    BIC: -247.4606
+ STATUS: NOT CONVERGED   (convergence)   55 iterations   1.2s
+ OFV: -280.3640    AIC: -266.3640    BIC: -247.4607
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -516,19 +516,19 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132970     0.006628        5.0
-TVV                  7.730772     0.234062        3.0
-TVKA                 0.725187     0.124560       17.2
+TVCL                 0.132968     0.006629        5.0
+TVV                  7.730703     0.234070        3.0
+TVKA                 0.725274     0.124596       17.2
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028585  CV% = 17.0  SE = 0.012789
-  ETA_V                    [log-normal]  = 0.009575  CV% = 9.8  SE = 0.004295
-  ETA_KA                   [log-normal]  = 0.348959  CV% = 64.6  SE = 0.160827
+  ETA_CL                   [log-normal]  = 0.028595  CV% = 17.0  SE = 0.012797
+  ETA_V                    [log-normal]  = 0.009577  CV% = 9.8  SE = 0.004296
+  ETA_KA                   [log-normal]  = 0.348974  CV% = 64.6  SE = 0.160862
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010749  (var = 0.000116, CV% = 1.1)  SE = 0.000942  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010748  (var = 0.000116, CV% = 1.1)  SE = 0.000942  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
@@ -597,13 +597,13 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"TMAX"</span>, <span class="st">"AUC_0_72"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    ID     CMAX TMAX AUC_0_72
-1    1 11.38329    4 510.6520
-12   2 12.10571    8 544.1912
+1    1 11.38328    4 510.6520
+12   2 12.10572    8 544.1912
 23   3 11.01643    4 514.5164
-34   4 13.56179    8 594.6227
-45   5 13.82101    4 637.5880
+34   4 13.56179    8 594.6228
+45   5 13.82101    4 637.5881
 56   6 11.70240    2 521.3665
-67   7 10.32414    8 441.9933
+67   7 10.32402    8 441.9885
 78   8 11.77892    4 467.5516
 89   9 11.04441    4 563.9460
 100 10 11.09372    8 533.1617</code></pre>
@@ -617,13 +617,13 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"CMAX_D1"</span>, <span class="st">"TMAX"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    ID     CMAX  CMAX_D1 TMAX
-1    1 11.38329 11.38329    4
-12   2 12.10571 12.10571    8
+1    1 11.38328 11.38328    4
+12   2 12.10572 12.10572    8
 23   3 11.01643 11.01643    4
 34   4 13.56179 13.56179    8
 45   5 13.82101 13.82101    4
 56   6 11.70240 11.70240    2
-67   7 10.32414 10.32414    8
+67   7 10.32402 10.32402    8
 78   8 11.77892 11.77892    4
 89   9 11.04441 11.04441    4
 100 10 11.09372 11.09372    8</code></pre>
@@ -639,12 +639,12 @@ SETTINGS  (model file / call-time override)
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">c</span>(<span class="st">"TIME"</span>, <span class="st">"TAFD"</span>, <span class="st">"AUC_TAU"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    TIME  TAFD   AUC_TAU
-1    0.5   0.5 233.55469
-2    1.0   1.0 233.55469
-3    2.0   2.0 233.55469
-4    4.0   4.0 233.55469
-5    8.0   8.0 233.55469
-6   12.0  12.0 233.55469
+1    0.5   0.5 233.55468
+2    1.0   1.0 233.55468
+3    2.0   2.0 233.55468
+4    4.0   4.0 233.55468
+5    8.0   8.0 233.55468
+6   12.0  12.0 233.55468
 7   24.0  24.0 165.76632
 8   48.0  48.0 111.40623
 9   72.0  72.0  74.87255
@@ -663,10 +663,10 @@ SETTINGS  (model file / call-time override)
 1    1 510.6520  506.8519
 12   2 544.1912  540.0808
 23   3 514.5164  510.2423
-34   4 594.6227  593.2185
-45   5 637.5880  632.7343
+34   4 594.6228  593.2185
+45   5 637.5881  632.7343
 56   6 521.3665  516.7186
-67   7 441.9933  440.5478
+67   7 441.9885  440.5478
 78   8 467.5516  464.2751
 89   9 563.9460  563.1022
 100 10 533.1617  530.3337</code></pre>
@@ -680,15 +680,15 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"CL"</span>, <span class="st">"V"</span>, <span class="st">"KA"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    ID        CL        V        KA
-1    1 0.1367378 8.258033 1.1738302
-12   2 0.1350286 7.256836 0.5366661
-23   3 0.1297238 8.467318 0.9441843
-34   4 0.1291865 6.258012 0.3906890
-45   5 0.1052014 6.846145 1.3118067
-56   6 0.1315967 8.294638 2.8192264
-67   7 0.1776121 8.230884 0.4165787
-78   8 0.1738693 7.593123 0.7786906
-89   9 0.1022804 8.490377 0.8951078
+1    1 0.1367378 8.258033 1.1738303
+12   2 0.1350286 7.256836 0.5366660
+23   3 0.1297238 8.467319 0.9441845
+34   4 0.1291865 6.258010 0.3906889
+45   5 0.1052014 6.846145 1.3118066
+56   6 0.1315967 8.294639 2.8192279
+67   7 0.1776139 8.230975 0.4165754
+78   8 0.1738693 7.593124 0.7786907
+89   9 0.1022804 8.490378 0.8951080
 100 10 0.1251060 8.035877 0.4909805</code></pre>
 </div>
 </div>

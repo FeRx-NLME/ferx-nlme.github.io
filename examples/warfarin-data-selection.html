@@ -476,8 +476,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  Model: warfarin_data_selection  Dataset: warfarin
  Method: FOCE | Gradient: FD | Subjects: 10 | Obs: 108
 
- STATUS: CONVERGED   96 iterations   0.2s
- OFV: -266.9150    AIC: -252.9150    BIC: -234.1401
+ STATUS: CONVERGED   90 iterations   0.1s
+ OFV: -266.9155    AIC: -252.9155    BIC: -234.1406
 
 DATA SELECTION
 ------------------------------------------------------------
@@ -495,23 +495,23 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132905     0.006664        5.0
-TVV                  7.730678     0.233804        3.0
-TVKA                 0.722044     0.124469       17.2
+TVCL                 0.132887     0.006682        5.0
+TVV                  7.729864     0.233518        3.0
+TVKA                 0.724555     0.124580       17.2
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028609  CV% = 17.0  SE = 0.012757
-  ETA_V                    [log-normal]  = 0.009509  CV% = 9.8  SE = 0.004259
-  ETA_KA                   [log-normal]  = 0.349301  CV% = 64.7  SE = 0.161022
+  ETA_CL                   [log-normal]  = 0.028804  CV% = 17.1  SE = 0.012888
+  ETA_V                    [log-normal]  = 0.009487  CV% = 9.8  SE = 0.004245
+  ETA_KA                   [log-normal]  = 0.349260  CV% = 64.7  SE = 0.160800
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010776  (var = 0.000116, CV% = 1.1)  SE = 0.000952  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010772  (var = 0.000116, CV% = 1.1)  SE = 0.000952  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: -0.3%   ETA_V: 0.1%   ETA_KA: -0.0%   EPS: 17.9%
+ ETA_CL: 0.0%   ETA_V: -0.0%   ETA_KA: 0.1%   EPS: 17.9%
 
 DIAGNOSTICS
 ------------------------------------------------------------
@@ -569,7 +569,7 @@ SETTINGS  (model file / call-time override)
 <div class="cell-output cell-output-stdout">
 <pre><code>           TVCL.TVCL TVV.TVV
 unfiltered    0.1330  7.7307
-filtered      0.1329  7.7307</code></pre>
+filtered      0.1329  7.7299</code></pre>
 </div>
 </div>
 </section>
