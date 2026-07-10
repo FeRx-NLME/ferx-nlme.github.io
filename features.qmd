@@ -24,7 +24,6 @@ Maturity labels — **stable**, **beta**, **experimental** — follow the
 | **IMPMAP** | MAP-anchored importance sampling | beta |
 | **SIR** | Sampling Importance Resampling — posterior parameter uncertainty | beta |
 | **Bayesian (MCMC)** | Full Markov-chain posterior sampling | experimental |
-| **Time-to-event (TTE)** | Survival / event endpoints | beta |
 
 Methods can be **chained** (e.g. `method = [saem, focei]`) — a robust global pass
 followed by a FOCEI polish.
