@@ -16,6 +16,17 @@ read_changelog <- function(local, ci) {
     return(sprintf("_Changelog source not found (`%s`)._", path))
   }
   lines <- readLines(path)
+  # Drop the Keep-a-Changelog / Semantic Versioning preamble paragraph. It is
+  # boilerplate that adds no value on the rendered site (see issue #19). The
+  # paragraph runs from the "format is based on" line to the next blank line.
+  start <- grep("format is based on \\[Keep a Changelog\\]", lines)
+  if (length(start)) {
+    start <- start[1]
+    blanks <- which(lines == "")
+    stop  <- blanks[blanks >= start]
+    stop  <- if (length(stop)) stop[1] else length(lines)
+    lines <- lines[-(start:stop)]
+  }
   # Demote every real markdown heading by two levels so it sits below the
   # `##` tab titles (otherwise each `#`/`##` would open a spurious tab).
   # Skip lines inside fenced code blocks so `#`/`#>` R comments are untouched.
