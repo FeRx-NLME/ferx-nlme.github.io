@@ -21,6 +21,8 @@ website:
     left:
       - text: "Get started"
         href: get-started.qmd
+      - text: "Design"
+        href: design.qmd
       - text: "Features"
         href: features.qmd
       - text: "Changelog"
