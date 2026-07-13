@@ -1,0 +1,43 @@
+---
+title: "Design principles"
+---
+
+FeRx is built around a small set of design principles that guide every feature
+decision. They explain why the engine lives in Rust, why the R, Python, and CLI
+interfaces are deliberately thin, and why standard NLME datasets and results
+work without translation.
+
+---
+
+## Environment-agnostic
+
+FeRx is a Rust-based library designed to integrate seamlessly into any computing
+environment, including command-line interfaces, R, Python, and Julia.
+
+## Computation-focused architecture
+
+Computational and numeric processing are handled exclusively by the Rust
+library. Language-specific interfaces (e.g., R, Python, CLI) serve only as thin
+wrappers for minimal data parsing and result formatting. All file I/O relies on
+language-agnostic formats, avoiding language-specific file types like RDS.
+
+## Feature parity
+
+FeRx aims to support all major features found in industry-standard NLME tools,
+delivering performance that matches or exceeds current standards.
+
+## Dataset compatibility
+
+Standard NLME datasets are fully compatible with FeRx without requiring
+modifications. When utilizing equivalent methods and configurations, results
+will align closely with established NLME software.
+
+## Usability-first design
+
+While FeRx mirrors the functionality of gold-standard NLME tools, every feature
+is redesigned with a focus on modern usability and user experience.
+
+## Comprehensive documentation
+
+FeRx provides exhaustive documentation, featuring detailed function references,
+clear method explanations, and complete syntax guides.
