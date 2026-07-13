@@ -303,6 +303,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Get started</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../design.html"> 
+<span class="menu-text">Design</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../features.html"> 
 <span class="menu-text">Features</span></a>
   </li>  
@@ -425,7 +429,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A data.frame. Gaussian rows carry DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM (with <code>OBSERVED = NA</code>). For a joint PK-TTE model each subject also yields a TTE row on the event CMT, where TIME is the sampled event/censor time and <code>OBSERVED</code> is 1 (event before <code>horizon</code>) or 0 (right-censored at it); its IPRED and DV_SIM are <code>NA</code>. Use <code>is.na(OBSERVED)</code> to separate continuous rows from event rows.</p>
+<p>A data.frame. Gaussian rows carry DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM (with <code>OBSERVED = NA</code>). For a joint PK-TTE model each subject also yields a TTE row on the event CMT, where TIME is the sampled event/censor time and <code>OBSERVED</code> is 1 (event before <code>horizon</code>) or 0 (right-censored at it); its IPRED and DV_SIM are <code>NA</code>. Use <code>is.na(OBSERVED)</code> to separate continuous rows from event rows. The returned frame carries a <code>simulation_warnings</code> attribute (a character vector, empty for a clean run) listing any per-subject simulation diagnostics from ferx-core (e.g.&nbsp;a degenerate or pathological hazard that censored a subject with no event); these are also raised as an R warning.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>

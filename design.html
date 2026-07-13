@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ADDL/multiple-dose (warfarin) – ferx</title>
+<title>Design principles – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,66 +23,31 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-29f8cd1fefaa5c6c5e5c22e76d53a9a7.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-d6ca0237fbedf1b081249f92efe508f3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-29f8cd1fefaa5c6c5e5c22e76d53a9a7.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-d6ca0237fbedf1b081249f92efe508f3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -112,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -284,11 +249,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
+    <img src="./assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">ferx</span>
     </a>
   </div>
@@ -299,23 +264,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../get-started.html"> 
+    <a class="nav-link" href="./get-started.html"> 
 <span class="menu-text">Get started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../design.html"> 
+    <a class="nav-link active" href="./design.html" aria-current="page"> 
 <span class="menu-text">Design</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../features.html"> 
+    <a class="nav-link" href="./features.html"> 
 <span class="menu-text">Features</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../changelog.html"> 
+    <a class="nav-link" href="./changelog.html"> 
 <span class="menu-text">Changelog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../roadmap.html"> 
+    <a class="nav-link" href="./roadmap.html"> 
 <span class="menu-text">Roadmap</span></a>
   </li>  
 </ul>
@@ -329,7 +294,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">ferx-r</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../reference/index.html"> 
+    <a class="nav-link" href="./reference/index.html"> 
 <span class="menu-text">Reference</span></a>
   </li>  
   <li class="nav-item compact">
@@ -354,11 +319,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#model" id="toc-model" class="nav-link active" data-scroll-target="#model">Model</a></li>
-  <li><a href="#data-structure" id="toc-data-structure" class="nav-link" data-scroll-target="#data-structure">Data structure</a></li>
-  <li><a href="#fit" id="toc-fit" class="nav-link" data-scroll-target="#fit">Fit</a></li>
-  <li><a href="#derived-columns" id="toc-derived-columns" class="nav-link" data-scroll-target="#derived-columns">Derived columns</a></li>
-  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
+  <li><a href="#environment-agnostic" id="toc-environment-agnostic" class="nav-link active" data-scroll-target="#environment-agnostic">Environment-agnostic</a></li>
+  <li><a href="#computation-focused-architecture" id="toc-computation-focused-architecture" class="nav-link" data-scroll-target="#computation-focused-architecture">Computation-focused architecture</a></li>
+  <li><a href="#feature-parity" id="toc-feature-parity" class="nav-link" data-scroll-target="#feature-parity">Feature parity</a></li>
+  <li><a href="#dataset-compatibility" id="toc-dataset-compatibility" class="nav-link" data-scroll-target="#dataset-compatibility">Dataset compatibility</a></li>
+  <li><a href="#usability-first-design" id="toc-usability-first-design" class="nav-link" data-scroll-target="#usability-first-design">Usability-first design</a></li>
+  <li><a href="#comprehensive-documentation" id="toc-comprehensive-documentation" class="nav-link" data-scroll-target="#comprehensive-documentation">Comprehensive documentation</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -368,7 +334,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">ADDL/multiple-dose (warfarin)</h1>
+<h1 class="title">Design principles</h1>
 </div>
 
 
@@ -385,267 +351,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Demonstrates the <code>ADDL</code> column for multiple-dose designs. A single dose row per subject (<code>ADDL=6, II=24</code>) is expanded to seven daily doses at read time; <code>TAD</code> resets to 0 at each expanded dose automatically. The <a href="../model-dsl/derived.html"><code>[derived]</code></a> block computes daily trough (<code>CMIN_TAU</code>), peak (<code>CMAX</code>), and periodic AUC (<code>AUC_TAU</code>).</p>
-<section id="model" class="level2">
-<h2 class="anchored" data-anchor-id="model">Model</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_addl"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_show</span>(ex<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># model: warfarin_addl.ferx 
-# Warfarin: multiple-dose design using ADDL column.
-# The dataset has a single EVID=1 row per subject: ADDL=6, II=24
-# (dose on day 1 + 6 additional doses = 7 daily doses).
-# After ADDL expansion, subject.doses contains 7 explicit DoseEvents
-# and TAD resets to 0 at each one automatically.
-
-[parameters]
-  theta TVCL(0.2, 0.001, 10.0)
-  theta TVV(10.0, 0.1, 500.0)
-  theta TVKA(1.5, 0.01, 50.0)
-
-  omega ETA_CL ~ 0.09
-  omega ETA_V  ~ 0.04
-  omega ETA_KA ~ 0.30
-
-  sigma PROP_ERR ~ 0.02 (sd)
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V  = TVV  * exp(ETA_V)
-  KA = TVKA * exp(ETA_KA)
-
-[structural_model]
-  pk one_cpt_oral(cl=CL, v=V, ka=KA)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-
-[derived]
-  KE     = CL / V
-  T_HALF = 0.6931472 / KE
-
-  # TAFD uses the first dose time; TAD resets at each expanded dose
-  DAY    = floor(TAFD / 24) + 1
-
-  CMAX   = max(IPRED)
-
-  # Trough: minimum IPRED at dose time (TAD ~= 0 after ADDL expansion).
-  # 1e-10 absorbs floating-point residuals from modular arithmetic.
-  CMIN_TAU = min(IPRED, TAD &lt; 1e-10)
-
-  # Trough via window: last 4 h of the interval (no precision concern)
-  CMIN_LATE = min(IPRED, TAD &gt; 20)
-
-  AUC_TAU = integral(IPRED, window=24, anchor=0, step=0.1)
-
-[output]
-  CL V KA
-
-[fit_options]
-  method  = foce
-  maxiter = 300</code></pre>
-</div>
-</div>
+<p>FeRx is built around a small set of design principles that guide every feature decision. They explain why the engine lives in Rust, why the R, Python, and CLI interfaces are deliberately thin, and why standard NLME datasets and results work without translation.</p>
+<hr>
+<section id="environment-agnostic" class="level2">
+<h2 class="anchored" data-anchor-id="environment-agnostic">Environment-agnostic</h2>
+<p>FeRx is a Rust-based library designed to integrate seamlessly into any computing environment, including command-line interfaces, R, Python, and Julia.</p>
 </section>
-<section id="data-structure" class="level2">
-<h2 class="anchored" data-anchor-id="data-structure">Data structure</h2>
-<p>The dataset has one dose row per subject with <code>ADDL=6, II=24</code> and observations spread across seven days: rich sampling on day 1, daily troughs at t = 24, 72, 120, 144 h (where <code>TAD</code> resets to 0 at each expanded dose), and rich steady-state sampling on day 7.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_columns</span>(ex)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Data file: /home/runner/work/_temp/Library/ferx/examples/data/warfarin_addl.csv
-10 columns
-
- Required NONMEM:      [1] ID  [2] TIME  [3] DV  [4] EVID  [5] AMT  [6] CMT
- Optional NONMEM:      [7] RATE  [8] MDV  [9] II
- Covariates / other:   [10] ADDL</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(ex<span class="sc">$</span>data)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat[dat<span class="sc">$</span>EVID <span class="sc">==</span> <span class="dv">1</span>, ])   <span class="co"># dose rows: ADDL=6, II=24</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   ID TIME DV EVID AMT CMT RATE MDV II ADDL
-1   1    0  .    1 100   1    0   1 24    6
-18  2    0  .    1 100   1    0   1 24    6
-35  3    0  .    1 100   1    0   1 24    6
-52  4    0  .    1 100   1    0   1 24    6
-69  5    0  .    1 100   1    0   1 24    6
-86  6    0  .    1 100   1    0   1 24    6</code></pre>
-</div>
-</div>
+<section id="computation-focused-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="computation-focused-architecture">Computation-focused architecture</h2>
+<p>Computational and numeric processing are handled exclusively by the Rust library. Language-specific interfaces (e.g., R, Python, CLI) serve only as thin wrappers for minimal data parsing and result formatting. All file I/O relies on language-agnostic formats, avoiding language-specific file types like RDS.</p>
 </section>
-<section id="fit" class="level2">
-<h2 class="anchored" data-anchor-id="fit">Fit</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>============================================================
- NONLINEAR MIXED EFFECTS MODEL ESTIMATION
-============================================================
- Model: warfarin_addl            Dataset: warfarin_addl
- Method: FOCE | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 160
-
- STATUS: NOT CONVERGED   (convergence)   62 iterations   1.6s
- OFV: 437.3381    AIC: 451.3381    BIC: 472.8643
-
-MODEL STRUCTURE (auto-derived)
-------------------------------------------------------------
-  Structural:  1-cpt oral  (TVCL, TVV, TVKA)
-  IIV:         ETA_CL, ETA_V, ETA_KA
-  IOV:         none
-  Residual:    proportional
-
-THETA
-------------------------------------------------------------
-Parameter            Estimate           SE       %RSE
-----------------------------------------------------
-TVCL                 0.220865     0.014598        6.6
-TVV                 10.594506     0.760543        7.2
-TVKA                 1.668516     0.329271       19.7
-
-OMEGA  (between-subject variability)
-------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.045071  CV% = 21.5  SE = 0.022693
-  ETA_V                    [log-normal]  = 0.049064  CV% = 22.4  SE = 0.025252
-  ETA_KA                   [log-normal]  = 0.317467  CV% = 61.1  SE = 0.208533
-
-SIGMA  (residual error)
-------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.162628  (var = 0.026448, CV% = 16.3)  SE = 0.013296  [initial specified as SD]
-
-SHRINKAGE
-------------------------------------------------------------
- ETA_CL: 4.9%   ETA_V: 10.2%   ETA_KA: 13.2%   EPS: 7.6%
-
-DIAGNOSTICS
-------------------------------------------------------------
- Covariance: computed   Cond: 4.8   DW: 2.07 [no autocorrelation]   IWRES lag-1 r: -0.100
-
-RUN INFO
-------------------------------------------------------------
- Gradient (requested): auto   (used: analytic (Dual2))
- ferx v0.2.0 (core v0.2.0)
-
-SETTINGS  (model file / call-time override)
-------------------------------------------------------------
-  method                       foce  [model only]
-  maxiter                      300  [model only]
-
-------------------------------------------------------------
- 1 critical  --  call ferx_get_warnings(fit) for details
-============================================================</code></pre>
-</div>
-</div>
+<section id="feature-parity" class="level2">
+<h2 class="anchored" data-anchor-id="feature-parity">Feature parity</h2>
+<p>FeRx aims to support all major features found in industry-standard NLME tools, delivering performance that matches or exceeds current standards.</p>
 </section>
-<section id="derived-columns" class="level2">
-<h2 class="anchored" data-anchor-id="derived-columns">Derived columns</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Per-subject summary (scalar derived quantities broadcast to all rows)</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>subj_summary <span class="ot">&lt;-</span> <span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"KE"</span>, <span class="st">"T_HALF"</span>, <span class="st">"CMAX"</span>, <span class="st">"CMIN_TAU"</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">"CMIN_LATE"</span>, <span class="st">"AUC_TAU"</span>)])</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(subj_summary, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> ID         KE   T_HALF     CMAX CMIN_TAU CMIN_LATE  AUC_TAU
-  1 0.02105308 32.92379 21.80407 5.690902 13.929523 173.9020
-  1 0.02105308 32.92379 21.80407 5.690902 13.929523 296.6108
-  1 0.02105308 32.92379 21.80407 5.690902 13.929523 268.7053
-  1 0.02105308 32.92379 21.80407 5.690902 13.929523 322.2378
-  1 0.02105308 32.92379 21.80407 5.690902 13.929523 430.5146
-  1 0.02105308 32.92379 21.80407 5.690902 13.929523 334.3086
-  2 0.02756601 25.14500 19.41667 5.243885 10.729637 175.5885
-  2 0.02756601 25.14500 19.41667 5.243885 10.729637 287.7194
-  2 0.02756601 25.14500 19.41667 5.243885 10.729637 224.3112
-  2 0.02756601 25.14500 19.41667 5.243885 10.729637 252.8226
-  2 0.02756601 25.14500 19.41667 5.243885 10.729637 361.4935
-  2 0.02756601 25.14500 19.41667 5.243885 10.729637 257.5113
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 215.6498
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 355.0844
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 291.4773
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 334.8580
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 467.9988
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 342.8299
-  4 0.01330337 52.10312 28.02893 6.611472 21.600639 178.4672
-  4 0.01330337 52.10312 28.02893 6.611472 21.600639 325.9845
-  4 0.01330337 52.10312 28.02893 6.611472 21.600639 357.7689
-  4 0.01330337 52.10312 28.02893 6.611472 21.600639 478.9092
-  4 0.01330337 52.10312 28.02893 6.611472 21.600639 602.0438
-  4 0.01330337 52.10312 28.02893 6.611472 21.600639 518.4153
-  5 0.02662713 26.03161 23.26077 6.534187 13.679675 210.8681
-  5 0.02662713 26.03161 23.26077 6.534187 13.679675 355.1982
-  5 0.02662713 26.03161 23.26077 6.534187 13.679675 283.2740
-  5 0.02662713 26.03161 23.26077 6.534187 13.679675 321.6976
-  5 0.02662713 26.03161 23.26077 6.534187 13.679675 451.2211
-  5 0.02662713 26.03161 23.26077 6.534187 13.679675 328.3122
-  6 0.01399686 49.52164 21.17167 4.918681 15.597344 138.6984
-  6 0.01399686 49.52164 21.17167 4.918681 15.597344 244.1052
-  6 0.01399686 49.52164 21.17167 4.918681 15.597344 262.7095
-  6 0.01399686 49.52164 21.17167 4.918681 15.597344 347.5560
-  6 0.01399686 49.52164 21.17167 4.918681 15.597344 441.9387
-  6 0.01399686 49.52164 21.17167 4.918681 15.597344 374.3363
-  7 0.02154641 32.16997 21.67692 5.774092 13.917675 175.7851
-  7 0.02154641 32.16997 21.67692 5.774092 13.917675 301.9107
-  7 0.02154641 32.16997 21.67692 5.774092 13.917675 270.4686
-  7 0.02154641 32.16997 21.67692 5.774092 13.917675 322.5552
-  7 0.02154641 32.16997 21.67692 5.774092 13.917675 431.5141
-  7 0.02154641 32.16997 21.67692 5.774092 13.917675 334.0242
-  8 0.02637467 26.28079 14.92158 4.327036  9.116282 133.6985
-  8 0.02637467 26.28079 14.92158 4.327036  9.116282 232.3967
-  8 0.02637467 26.28079 14.92158 4.327036  9.116282 188.2741
-  8 0.02637467 26.28079 14.92158 4.327036  9.116282 214.2617
-  8 0.02637467 26.28079 14.92158 4.327036  9.116282 294.8110
-  8 0.02637467 26.28079 14.92158 4.327036  9.116282 218.7908
-  9 0.01976330 35.07245 20.34532 5.089378 12.987921 156.4035
-  9 0.01976330 35.07245 20.34532 5.089378 12.987921 262.7954
-  9 0.01976330 35.07245 20.34532 5.089378 12.987921 245.4599
-  9 0.01976330 35.07245 20.34532 5.089378 12.987921 298.8920
-  9 0.01976330 35.07245 20.34532 5.089378 12.987921 396.7068
-  9 0.01976330 35.07245 20.34532 5.089378 12.987921 311.7101
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 231.5649
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 381.4126
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 299.3396
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 338.1659
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 481.3399
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 344.6425</code></pre>
-</div>
-</div>
-<p><code>CMIN_TAU</code> uses <code>TAD &lt; 1e-10</code> to locate the observation at the exact start of each dosing interval (where <code>TAD</code> resets to 0 after ADDL expansion). <code>CMIN_LATE</code> uses <code>TAD &gt; 20</code> as an alternative window-based trough — less precise but avoids the floating-point boundary.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DAY = floor(TAFD / 24) + 1; shows which dosing day each observation belongs to</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"TAFD"</span>, <span class="st">"TAD"</span>, <span class="st">"DAY"</span>, <span class="st">"IPRED"</span>)], <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   ID  TIME  TAFD  TAD DAY     IPRED
-1   1   0.5   0.5  0.5   1  5.250084
-2   1   1.0   1.0  1.0   1  7.467992
-3   1   2.0   2.0  2.0   1  8.712081
-4   1   4.0   4.0  4.0   1  8.658896
-5   1   8.0   8.0  8.0   1  7.970254
-6   1  24.0  24.0  0.0   2  5.690902
-7   1  28.0  28.0  4.0   2 13.890178
-8   1  32.0  32.0  8.0   2 12.779037
-9   1  72.0  72.0  0.0   4 11.196053
-10  1 120.0 120.0  0.0   6 13.200035
-11  1 144.0 144.0  0.0   7 13.655015
-12  1 145.0 145.0  1.0   7 20.838532
-13  1 146.0 146.0  2.0   7 21.804073
-14  1 148.0 148.0  4.0   7 21.211078
-15  1 152.0 152.0  8.0   7 19.508672
-16  1 168.0 168.0 24.0   8 13.929523
-17  2   0.5   0.5  0.5   1  5.956461
-18  2   1.0   1.0  1.0   1  8.258441
-19  2   2.0   2.0  2.0   1  9.356280
-20  2   4.0   4.0  4.0   1  9.094307</code></pre>
-</div>
-</div>
+<section id="dataset-compatibility" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-compatibility">Dataset compatibility</h2>
+<p>Standard NLME datasets are fully compatible with FeRx without requiring modifications. When utilizing equivalent methods and configurations, results will align closely with established NLME software.</p>
 </section>
-<section id="see-also" class="level2">
-<h2 class="anchored" data-anchor-id="see-also">See also</h2>
-<ul>
-<li><a href="../model-dsl/steady-state.html#addl-multiple-additional-doses">Model DSL: ADDL — multiple additional doses</a></li>
-<li><a href="../model-dsl/derived.html">Model DSL: Derived columns</a></li>
-<li><a href="../examples/warfarin-derived.html">Example: Derived columns (warfarin)</a></li>
-</ul>
+<section id="usability-first-design" class="level2">
+<h2 class="anchored" data-anchor-id="usability-first-design">Usability-first design</h2>
+<p>While FeRx mirrors the functionality of gold-standard NLME tools, every feature is redesigned with a focus on modern usability and user experience.</p>
+</section>
+<section id="comprehensive-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="comprehensive-documentation">Comprehensive documentation</h2>
+<p>FeRx provides exhaustive documentation, featuring detailed function references, clear method explanations, and complete syntax guides.</p>
 
 
 </section>
