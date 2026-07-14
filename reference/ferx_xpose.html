@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-d6ca0237fbedf1b081249f92efe508f3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-dark-25dc8fbe819e5a560a0f56bcd5e2d593.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -358,7 +358,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
   <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
-  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
+  <li><a href="#estimation-iteration-trace" id="toc-estimation-iteration-trace" class="nav-link" data-scroll-target="#estimation-iteration-trace">Estimation-iteration trace</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   </ul>
@@ -398,8 +398,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">backend =</span> <span class="fu">c</span>(<span class="st">"xpose"</span>, <span class="st">"xpose4"</span>),</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">continuous =</span> <span class="cn">NULL</span>,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">categorical =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">runno =</span> <span class="dv">1</span>L</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">runno =</span> <span class="dv">1</span>L,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iterations =</span> <span class="cn">TRUE</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
@@ -408,6 +409,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>backend</code>: Which Xpose package to target: <code>"xpose"</code> (the modern tidyverse package, the default) or <code>"xpose4"</code> (the classic S4 package).</li>
 <li><code>continuous, categorical</code>: Optional character vectors naming covariates to treat as continuous / categorical, overriding the <code>fit$covariate_types</code> classification. Names not present among the fit’s covariates are ignored with a warning.</li>
 <li><code>runno</code>: Run number recorded on the resulting Xpose object (cosmetic).</li>
+<li><code>iterations</code>: Logical; when <code>TRUE</code> (the default) and the fit carries a per-parameter optimizer trace (from <code>optimizer_trace = TRUE</code>), populate the <code>$files</code> slot so <code>xpose::prm_vs_iteration()</code> and <code>xpose::grd_vs_iteration()</code> work. Ignored by the <code>"xpose4"</code> backend and a no-op when no trace is present.</li>
 </ul>
 </section>
 <section id="details" class="level2">
@@ -419,22 +421,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong><em>cotab</em></strong>/<strong><em>catab</em></strong>: covariates, split into continuous and categorical using <code>fit$covariate_types</code> (override with the <code>continuous</code> and <code>categorical</code> arguments). Covariate values are taken from <code>fit$sdtab</code> when echoed there, otherwise carried forward (LOCF) from <code>fit$covtab</code>.</li>
 </ul>
 </section>
-<section id="limitations" class="level2">
-<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
-<p>Only the table data is populated, not the estimation-iteration trace. Xpose functions that read the NONMEM <code>.ext</code> / <code>.grd</code> files - notably <code>xpose::prm_vs_iteration()</code> and <code>xpose::grd_vs_iteration()</code> - therefore do not work on the returned object: ferx records only a scalar OFV and gradient norm per iteration, not the per-parameter value/gradient trajectory those plots need. For an OFV-over-iterations view use <code>[plot.ferx_fit](plot.ferx_fit.qmd)</code> (requires <code>optimizer_trace = TRUE</code> at fit time).</p>
+<section id="estimation-iteration-trace" class="level2">
+<h2 class="anchored" data-anchor-id="estimation-iteration-trace">Estimation-iteration trace</h2>
+<p>When the fit was run with <code>optimizer_trace = TRUE</code> and <code>iterations = TRUE</code>(the default), the per-iteration parameter and gradient trajectories are populated into the <code>$files</code> slot of the returned <code>"xpose"</code> object as synthetic NONMEM <code>.ext</code> / <code>.grd</code> tables, so <code>xpose::prm_vs_iteration()</code> (parameter value vs iteration) and <code>xpose::grd_vs_iteration()</code> (gradient vs iteration) work out-of-the-box. The <code>.ext</code> table carries one column per parameter (using the fit’s declared parameter names, e.g.&nbsp;<code>TVCL</code>, <code>ETA_CL</code>) plus <code>OBJ</code>; the <code>.grd</code> table carries one <code>GRD(n)</code> column per parameter and is only emitted for gradient-based methods (a derivative-free trace has no gradient to plot). When no per-parameter trace is present - the fit was run without <code>optimizer_trace = TRUE</code>, or predates ferx recording per-parameter values - the slot is left empty: the iteration plots then raise xpose’s usual “no files” message, while the table (goodness-of-fit / covariate) plots are unaffected. For an OFV-over-iterations view use <code>[plot.ferx_fit](plot.ferx_fit.qmd)</code>. Only the <code>"xpose"</code> backend populates this slot; <code>"xpose4"</code> ignores <code>iterations</code>.</p>
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>For <code>backend = "xpose"</code>, an <code>xpose_data</code> object. For <code>backend = "xpose4"</code>, an <code>xpose.data</code> (S4) object.</p>
+<p>For <code>backend = "xpose"</code>, an <code>xpose_data</code> object (with a populated <code>$files</code> slot when an optimizer trace is present, see the “Estimation-iteration trace” section). For <code>backend = "xpose4"</code>, an <code>xpose.data</code> (S4) object.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(<span class="st">"warfarin.ferx"</span>, <span class="at">data =</span> <span class="st">"warfarin.csv"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>xpdb <span class="ot">&lt;-</span> <span class="fu">ferx_xpose</span>(fit)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>xpose<span class="sc">::</span><span class="fu">dv_vs_ipred</span>(xpdb)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>xpdb4 <span class="ot">&lt;-</span> <span class="fu">ferx_xpose</span>(fit, <span class="at">backend =</span> <span class="st">"xpose4"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>xpose4<span class="sc">::</span><span class="fu">basic.gof</span>(xpdb4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit  <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(<span class="st">"warfarin.ferx"</span>, <span class="at">data =</span> <span class="st">"warfarin.csv"</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>xpdb <span class="ot">&lt;-</span> <span class="fu">ferx_xpose</span>(fit)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>xpose<span class="sc">::</span><span class="fu">dv_vs_ipred</span>(xpdb)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>xpose<span class="sc">::</span><span class="fu">prm_vs_iteration</span>(xpdb)   <span class="co"># parameter trajectories (needs the trace)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>xpose<span class="sc">::</span><span class="fu">grd_vs_iteration</span>(xpdb)   <span class="co"># gradient trajectories (gradient methods)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>xpdb4 <span class="ot">&lt;-</span> <span class="fu">ferx_xpose</span>(fit, <span class="at">backend =</span> <span class="st">"xpose4"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>xpose4<span class="sc">::</span><span class="fu">basic.gof</span>(xpdb4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
