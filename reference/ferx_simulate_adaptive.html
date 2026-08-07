@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -75,14 +78,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-29f8cd1fefaa5c6c5e5c22e76d53a9a7.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-31632d092df9090a2ed68f79c078059d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-25dc8fbe819e5a560a0f56bcd5e2d593.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-799c843cd16c28e5d529fe036c5ba5c3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -407,7 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
 <li><code>model</code>: Path to a .ferx model file containing an <code>[adaptive_dosing]</code> block</li>
-<li><code>data</code>: Path to a NONMEM-format CSV (dose-free base subjects + observation times). When omitted, the model file’s <code>[data]</code> block (<code>path = ...</code>) is used.</li>
+<li><code>data</code>: Path to a NONMEM-format CSV: an observation grid, any covariates, and optionally a pre-scheduled base regimen (dose rows). When omitted, the model file’s <code>[data]</code> block (<code>path = ...</code>) is used.</li>
 <li><code>n_sim</code>: Number of simulation replicates</li>
 <li><code>seed</code>: Random seed for reproducibility</li>
 <li><code>verify</code>: Run the frozen-schedule replay verifier after every (subject, replicate) (default <code>TRUE</code>). A divergence is a hard error, not a warning: it means the realized dose ledger does not reproduce the trajectory, so the result is not trustworthy.</li>
@@ -416,11 +419,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="details" class="level2">
 <h2 class="anchored" data-anchor-id="details">Details</h2>
-<p>The base subjects must be <strong><em>dose-free</em></strong>: the controller supplies every dose, so the data provides only the observation grid and any covariates. A model without an <code>[adaptive_dosing]</code> block is an error.</p>
+<p>The data may carry a <strong><em>pre-scheduled base regimen</em></strong> - ordinary dose rows (<code>EVID = 1</code> or <code>4</code>, with <code>AMT</code>, and optionally <code>RATE</code>, <code>SS</code>, <code>II</code>) such as a loading or maintenance dose. The controller then <em>augments</em> that standing prescription: at each decision time it reads the simulated (optionally assay-noised) state and appends its own dose. A dose-free base subject (observation grid only) is equally valid - the controller simply supplies the entire regimen. A model without an <code>[adaptive_dosing]</code> block is an error. <strong><em>The dose ledger (<code>$doses</code>) holds controller-issued doses only.</em></strong>Pre-scheduled base doses never appear in it, so <code>$metrics$CUM_DOSE</code> and <code>$metrics$N_DOSES</code><em>exclude</em> the base regimen (e.g.&nbsp;a 1500 mg loading dose is not counted). The full realized regimen is the union of <code>$doses</code> with the input CSV’s <code>EVID = 1/4</code> rows. In contrast <code>$trajectories</code>, <code>$decisions</code>, <code>PCT_TIME_IN_WINDOW</code>, and the <code>auc_target</code> attainment metric <em>do</em> reflect the base regimen. A base dose scheduled exactly at a decision time is read <strong><em>pre-dose</em></strong> (the trough), and a base dose scheduled after a <code>stop</code> still lands - a <code>stop</code> ends controller augmentation, not the standing prescription. <strong><em>System resets.</em></strong> An <code>EVID = 3</code> row zeroes the compartments (and re-seeds any <code>init(state) = expr</code>) at its time; <code>EVID = 4</code> does the same and then doses. Ordering at a shared time is reset, then dose, then observation. Some combinations remain rejected with a typed error rather than silently mis-integrated: a base regimen combined with a reset <em>under</em> a time-varying covariate or IOV; a steady-state, lag-timed, or modeled-rate (<code>RATE</code>) base dose <em>under</em> a time-varying covariate or IOV (these are supported on the constant-covariate path); and an <code>auc_target</code> metric combined with a time-varying covariate, a <code>TIME</code>-dependent PK parameter, IOV, or a reset.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other simulation: <code>[ferx_calc_npde](ferx_calc_npde.qmd)()</code>, <code>[ferx_predict](ferx_predict.qmd)()</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)()</code>, <code>[ferx_simulate](ferx_simulate.qmd)()</code>, <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)()</code></p>
+<p>Other simulation: <code>[ferx_calc_npde](ferx_calc_npde.qmd)</code>, <code>[ferx_predict](ferx_predict.qmd)</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)</code>, <code>[ferx_simulate](ferx_simulate.qmd)</code>, <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -431,9 +434,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>A list of four data frames:</p>
 <ul>
 <li><code>trajectories</code>: DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM, OBSERVED - the per-observation predictions, as in <code>[ferx_simulate](ferx_simulate.qmd)</code> (<code>OBSERVED</code> is <code>NA</code> here: the adaptive path has no time-to-event endpoint).</li>
-<li><code>doses</code>: The realized dose ledger: DRAW, SIM, ID, TIME, AMT, CMT, RATE, DECISION, SIGNAL (the value the controller titrated on - assay-noised when <code>with_assay_error</code>), RULE (the rule that fired).</li>
+<li><code>doses</code>: The realized dose ledger, <strong><em>controller-issued doses only</em></strong> (pre-scheduled base doses are excluded): DRAW, SIM, ID, TIME, AMT, CMT, RATE, DECISION, SIGNAL (the value the controller titrated on - assay-noised when <code>with_assay_error</code>), RULE (the rule that fired).</li>
 <li><code>decisions</code>: One row per decision including holds: DRAW, SIM, ID, DECISION, TIME, SIGNAL, OUTCOME (“dosed” / “hold” / “stop”), N_DOSED.</li>
-<li><code>metrics</code>: One row per realized run (subject x draw x replicate) - the per-subject outcome summary: DRAW, SIM, ID, CUM_DOSE (sum of realized doses), N_DOSES, N_INCREASES / N_DECREASES (realized dose-change counts, by dose delta), N_HOLDS, DISCONTINUED, TIME_TO_DISCONT, SIGNAL_MIN / SIGNAL_MAX / SIGNAL_MEAN (over the decisions that recorded a signal), and PCT_TIME_IN_WINDOW - the fraction of signal-bearing decisions whose observed value fell inside the model’s <code>[adaptive_dosing]</code> <code>target_window</code> (NA when no <code>target_window</code> is declared).</li>
+<li><code>metrics</code>: One row per realized run (subject x draw x replicate) - the per-subject outcome summary: DRAW, SIM, ID, CUM_DOSE (sum of controller-issued doses; excludes the base regimen), N_DOSES (controller doses only), N_INCREASES / N_DECREASES (realized dose-change counts, by dose delta), N_HOLDS, DISCONTINUED, TIME_TO_DISCONT, SIGNAL_MIN / SIGNAL_MAX / SIGNAL_MEAN (over the decisions that recorded a signal), and PCT_TIME_IN_WINDOW - the fraction of signal-bearing decisions whose observed value fell inside the model’s <code>[adaptive_dosing]</code> <code>target_window</code> (NA when no <code>target_window</code> is declared).</li>
 </ul>
 </section>
 <section id="examples" class="level2">

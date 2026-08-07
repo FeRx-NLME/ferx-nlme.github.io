@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -75,14 +78,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-29f8cd1fefaa5c6c5e5c22e76d53a9a7.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-f381374abff134079ce64cf499b0d527.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-31632d092df9090a2ed68f79c078059d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-25dc8fbe819e5a560a0f56bcd5e2d593.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-6a3ddceba8b75a484d058f0d77f2dfe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-799c843cd16c28e5d529fe036c5ba5c3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -504,10 +507,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  NONLINEAR MIXED EFFECTS MODEL ESTIMATION
 ============================================================
  Model: warfarin_derived         Dataset: warfarin
- Method: FOCE | Gradient: ANALYTIC (DUAL2) | Subjects: 10 | Obs: 110
+ Method: FOCE | Gradient: ANALYTIC | Subjects: 10 | Obs: 110
 
- STATUS: NOT CONVERGED   (convergence)   55 iterations   1.4s
- OFV: -280.3640    AIC: -266.3640    BIC: -247.4607
+ STATUS: CONVERGED   50 iterations   1.4s
+ OFV: -280.3640    AIC: -266.3640    BIC: -247.4606
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -520,19 +523,19 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132968     0.006629        5.0
-TVV                  7.730703     0.234070        3.0
-TVKA                 0.725274     0.124596       17.2
+TVCL                 0.132969     0.006627        5.0
+TVV                  7.730700     0.234055        3.0
+TVKA                 0.725207     0.124530       17.2
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028595  CV% = 17.0  SE = 0.012797
-  ETA_V                    [log-normal]  = 0.009577  CV% = 9.8  SE = 0.004296
-  ETA_KA                   [log-normal]  = 0.348974  CV% = 64.6  SE = 0.160862
+  ETA_CL                   [log-normal]  = 0.028595  CV% = 17.0  SE = 0.012798
+  ETA_V                    [log-normal]  = 0.009577  CV% = 9.8  SE = 0.004297
+  ETA_KA                   [log-normal]  = 0.348964  CV% = 64.6  SE = 0.160819
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010748  (var = 0.000116, CV% = 1.1)  SE = 0.000942  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010749  (var = 0.000116, CV% = 1.1)  SE = 0.000942  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
@@ -544,8 +547,8 @@ DIAGNOSTICS
 
 RUN INFO
 ------------------------------------------------------------
- Gradient (requested): auto   (used: analytic (Dual2))
- ferx v0.2.0 (core v0.2.0)
+ Gradient (requested): auto   (used: analytic)
+ ferx v0.3.0 (core v0.3.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -554,7 +557,7 @@ SETTINGS  (model file / call-time override)
   covariance                   true  [model only]
 
 ------------------------------------------------------------
- 1 critical   1 warning  --  call ferx_get_warnings(fit) for details
+ 1 warning  --  call ferx_get_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>
@@ -601,13 +604,13 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"TMAX"</span>, <span class="st">"AUC_0_72"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    ID     CMAX TMAX AUC_0_72
-1    1 11.38328    4 510.6520
+1    1 11.38329    4 510.6520
 12   2 12.10572    8 544.1912
 23   3 11.01643    4 514.5164
 34   4 13.56179    8 594.6228
 45   5 13.82101    4 637.5881
 56   6 11.70240    2 521.3665
-67   7 10.32402    8 441.9885
+67   7 10.32414    8 441.9932
 78   8 11.77892    4 467.5516
 89   9 11.04441    4 563.9460
 100 10 11.09372    8 533.1617</code></pre>
@@ -621,13 +624,13 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"CMAX_D1"</span>, <span class="st">"TMAX"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    ID     CMAX  CMAX_D1 TMAX
-1    1 11.38328 11.38328    4
+1    1 11.38329 11.38329    4
 12   2 12.10572 12.10572    8
 23   3 11.01643 11.01643    4
 34   4 13.56179 13.56179    8
 45   5 13.82101 13.82101    4
 56   6 11.70240 11.70240    2
-67   7 10.32402 10.32402    8
+67   7 10.32414 10.32414    8
 78   8 11.77892 11.77892    4
 89   9 11.04441 11.04441    4
 100 10 11.09372 11.09372    8</code></pre>
@@ -670,7 +673,7 @@ SETTINGS  (model file / call-time override)
 34   4 594.6228  593.2185
 45   5 637.5881  632.7343
 56   6 521.3665  516.7186
-67   7 441.9885  440.5478
+67   7 441.9932  440.5478
 78   8 467.5516  464.2751
 89   9 563.9460  563.1022
 100 10 533.1617  530.3337</code></pre>
@@ -686,14 +689,14 @@ SETTINGS  (model file / call-time override)
 <pre><code>    ID        CL        V        KA
 1    1 0.1367378 8.258033 1.1738303
 12   2 0.1350286 7.256836 0.5366660
-23   3 0.1297238 8.467319 0.9441845
+23   3 0.1297238 8.467319 0.9441844
 34   4 0.1291865 6.258010 0.3906889
-45   5 0.1052014 6.846145 1.3118066
-56   6 0.1315967 8.294639 2.8192279
-67   7 0.1776139 8.230975 0.4165754
-78   8 0.1738693 7.593124 0.7786907
-89   9 0.1022804 8.490378 0.8951080
-100 10 0.1251060 8.035877 0.4909805</code></pre>
+45   5 0.1052014 6.846145 1.3118065
+56   6 0.1315967 8.294638 2.8192271
+67   7 0.1776121 8.230885 0.4165788
+78   8 0.1738693 7.593124 0.7786906
+89   9 0.1022804 8.490378 0.8951079
+100 10 0.1251060 8.035877 0.4909804</code></pre>
 </div>
 </div>
 </section>
