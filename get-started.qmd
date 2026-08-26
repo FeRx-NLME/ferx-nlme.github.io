@@ -16,7 +16,62 @@ Both call the same engine and produce the **same estimates**.
 
 ## Run from R
 
-Install the package:
+### Prerequisites
+
+The R package compiles the Rust engine from source, so a **stable Rust
+toolchain** and **cmake** must be present *before* you install it. `pak` does
+not install them for you — without them the install fails at the compile step.
+
+::: {.panel-tabset}
+
+## macOS
+
+```bash
+brew install cmake
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source "$HOME/.cargo/env"
+```
+
+## Linux
+
+```bash
+sudo apt install cmake            # Debian/Ubuntu; use your package manager
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source "$HOME/.cargo/env"
+```
+
+## Windows
+
+Install [Rtools45](https://cran.r-project.org/bin/windows/Rtools/) (it bundles
+cmake) and [rustup](https://www.rust-lang.org/tools/install), then add the
+GNU-ABI toolchain in PowerShell:
+
+```powershell
+rustup toolchain install stable-x86_64-pc-windows-gnu
+```
+
+The package build pins this toolchain automatically — no `rustup default`
+needed.
+
+:::
+
+Verify the toolchain is visible before continuing:
+
+```bash
+rustc --version
+cmake --version
+```
+
+The first install compiles the Rust backend: roughly 15-30 minutes on a fast
+machine, up to 1-2 hours on an older laptop. Later installs reuse Cargo's cache
+and are much faster.
+
+Platform gotchas — notably RStudio on macOS starting with a PATH that hides
+`cargo` — are covered in the
+**[installation chapter](https://ferx-nlme.github.io/ferx-book/chapters/01-installation.html)**
+of the ferx-r book.
+
+### Install
 
 ```r
 pak::pak("FeRx-NLME/ferx-r")
@@ -41,7 +96,9 @@ see the **[ferx-r book](https://ferx-nlme.github.io/ferx-book/)**.
 
 ## Run from the CLI
 
-The CLI ships with `ferx-core`. Point it at a `.ferx` model and a CSV:
+The CLI ships with `ferx-core`. Building it from source needs the same stable
+Rust toolchain as above (`cargo build --release`). Point it at a `.ferx` model
+and a CSV:
 
 ```bash
 ferx warfarin.ferx --data warfarin.csv
