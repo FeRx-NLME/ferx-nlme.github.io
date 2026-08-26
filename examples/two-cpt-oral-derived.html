@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-799c843cd16c28e5d529fe036c5ba5c3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a2387e3fbb85f2d0ae08932c987fb4fc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ced4b2c9110ffe2aa0befc1bd6198a60.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a2387e3fbb85f2d0ae08932c987fb4fc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -526,7 +526,7 @@ Note
  Model: two_cpt_oral_derived     Dataset: two_cpt_oral_cov
  Method: FOCEI | Gradient: ANALYTIC | Subjects: 30 | Obs: 300
 
- STATUS: CONVERGED   79 iterations   2.5s
+ STATUS: CONVERGED   58 iterations   2.5s
  OFV: -696.7943    AIC: -680.7943    BIC: -651.1641
 
 MODEL STRUCTURE (auto-derived)
@@ -540,16 +540,16 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 4.414336     0.349622        7.9
-TVV1                50.331634     3.729802        7.4
-TVQ                  8.900906     0.389988        4.4
-TVV2                91.174884     2.717180        3.0
-TVKA                 1.274237     0.086413        6.8
+TVCL                 4.414349     0.349623        7.9
+TVV1                50.332157     3.729874        7.4
+TVQ                  8.900890     0.389987        4.4
+TVV2                91.174939     2.717188        3.0
+TVKA                 1.274236     0.086413        6.8
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
   ETA_CL                   [log-normal]  = 0.181992  CV% = 44.7  SE = 0.049934
-  ETA_V1                   [log-normal]  = 0.109042  CV% = 33.9  SE = 0.029767
+  ETA_V1                   [log-normal]  = 0.109046  CV% = 33.9  SE = 0.029769
 
 SIGMA  (residual error)
 ------------------------------------------------------------
@@ -596,13 +596,13 @@ SETTINGS  (model file / call-time override)
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"CL"</span>, <span class="st">"V1"</span>, <span class="st">"Q"</span>, <span class="st">"V2"</span>, <span class="st">"K10"</span>, <span class="st">"K12"</span>, <span class="st">"K21"</span>)]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   ID       CL       V1        Q       V2        K10       K12        K21
-1   1 4.269122 34.27204 8.900906 91.17488 0.12456572 0.2597133 0.09762454
-11  2 5.684280 42.37496 8.900906 91.17488 0.13414244 0.2100511 0.09762454
-21  3 4.786121 51.33898 8.900906 91.17488 0.09322587 0.1733752 0.09762454
-31  4 3.070183 27.35196 8.900906 91.17488 0.11224725 0.3254211 0.09762454
-41  5 5.614791 44.67357 8.900906 91.17488 0.12568484 0.1992432 0.09762454
-51  6 7.805921 41.54367 8.900906 91.17488 0.18789677 0.2142542 0.09762454</code></pre>
+<pre><code>   ID       CL       V1       Q       V2       K10       K12       K21
+1   1 4.269120 34.27203 8.90089 91.17494 0.1245657 0.2597129 0.0976243
+11  2 5.684279 42.37496 8.90089 91.17494 0.1341424 0.2100507 0.0976243
+21  3 4.786120 51.33901 8.90089 91.17494 0.0932258 0.1733748 0.0976243
+31  4 3.070182 27.35195 8.90089 91.17494 0.1122473 0.3254207 0.0976243
+41  5 5.614789 44.67359 8.90089 91.17494 0.1256848 0.1992428 0.0976243
+51  6 7.805920 41.54366 8.90089 91.17494 0.1878968 0.2142539 0.0976243</code></pre>
 </div>
 </div>
 </section>
@@ -612,11 +612,11 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"CMAX"</span>, <span class="st">"TMAX"</span>, <span class="st">"AUC_0_168"</span>)]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID     CMAX TMAX AUC_0_168
-1   1 4.214750    1  88.36858
-11  2 3.508051    2  65.50441
-21  3 3.190077    2  79.24877
-31  4 5.129848    1 121.02102
-41  5 3.407356    2  66.55003
+1   1 4.214751    1  88.36859
+11  2 3.508053    2  65.50442
+21  3 3.190076    2  79.24877
+31  4 5.129851    1 121.02101
+41  5 3.407356    2  66.55004
 51  6 3.438284    1  45.33505</code></pre>
 </div>
 </div>
@@ -628,17 +628,17 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>sdtab[fit<span class="sc">$</span>sdtab<span class="sc">$</span>ID <span class="sc">==</span> fit<span class="sc">$</span>sdtab<span class="sc">$</span>ID[<span class="dv">1</span>],</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">c</span>(<span class="st">"TIME"</span>, <span class="st">"TAFD"</span>, <span class="st">"AUC_TAU"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   TIME TAFD   AUC_TAU
-1   0.5  0.5 35.689405
-2   1.0  1.0 35.689405
-3   2.0  2.0 35.689405
-4   4.0  4.0 35.689405
-5   6.0  6.0 35.689405
-6   8.0  8.0 35.689405
-7  12.0 12.0 35.689405
-8  24.0 24.0 11.635928
-9  36.0 36.0 11.635928
-10 48.0 48.0  8.208649</code></pre>
+<pre><code>   TIME TAFD  AUC_TAU
+1   0.5  0.5 35.68941
+2   1.0  1.0 35.68941
+3   2.0  2.0 35.68941
+4   4.0  4.0 35.68941
+5   6.0  6.0 35.68941
+6   8.0  8.0 35.68941
+7  12.0 12.0 35.68941
+8  24.0 24.0 11.63592
+9  36.0 36.0 11.63592
+10 48.0 48.0  8.20865</code></pre>
 </div>
 </div>
 </section>

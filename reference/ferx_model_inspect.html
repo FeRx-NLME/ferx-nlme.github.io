@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-799c843cd16c28e5d529fe036c5ba5c3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a2387e3fbb85f2d0ae08932c987fb4fc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ced4b2c9110ffe2aa0befc1bd6198a60.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a2387e3fbb85f2d0ae08932c987fb4fc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -412,7 +412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="model-dsl-features-detected" class="level2">
 <h2 class="anchored" data-anchor-id="model-dsl-features-detected">Model DSL features detected</h2>
-<p><code>ferx_model_inspect()</code> reflects the parser’s view of a <code>.ferx</code> file. Recently added DSL features that surface here include multi-endpoint residual error (per-CMT <code>[error_model]</code>), the <code>[scaling]</code> block for unit conversion / ODE readout (see <code>NEWS.md</code> for Form A/B/C details), and inter-occasion variability via <code>kappa_*</code> declarations. Steady-state dosing (<code>SS</code>/<code>II</code>columns) is a data-side feature and is documented under <code>[ferx_fit](ferx_fit.qmd)</code>.</p>
+<p><code>ferx_model_inspect()</code> reflects the parser’s view of a <code>.ferx</code> file. Recently added DSL features that surface here include multi-endpoint residual error (per-CMT <code>[error_model]</code>), the <code>[scaling]</code> block for unit conversion / ODE readout (see <code>NEWS.md</code> for Form A/B/C details), and inter-occasion variability via <code>kappa_*</code> declarations. Steady-state dosing (<code>SS</code>/<code>II</code>columns) is a data-side feature and is documented under <code>[ferx_fit](ferx_fit.qmd)</code>. A sample-size-weighted kappa - <code>kappa KAPPA_EMAX ~ 2.0 (sd) weight = NARM</code>, meaning <code>kappa_ik ~ N(0, Omega_IOV / N_ik)</code> - is annotated on the IOV line as <code>KAPPA_EMAX (weight = NARM)</code> and returned in <code>iov_weights</code>.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
@@ -424,7 +424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A named list (invisibly) with fields: <code>theta_names</code>(character vector of population parameter names), <code>model_type</code>(short label such as <code>"1-cpt oral"</code> or <code>NULL</code> when not unambiguously detectable), <code>iiv</code> (omega names), <code>iov</code>(kappa names), and <code>residual</code> (error type - one of <code>"proportional"</code>, <code>"additive"</code>, <code>"combined"</code>, or <code>"additive (log-transformed)"</code> for log-transform-both-sides models written as <code>log(DV) ~ additive(...)</code> or <code>DV ~ log_additive(...)</code>). For multi-endpoint (per-CMT) error models, <code>residual</code> is reported as a string of the form <code>"per-CMT (CMT2=proportional, CMT3=additive)"</code>.</p>
+<p>A named list (invisibly) with fields: <code>theta_names</code>(character vector of population parameter names), <code>model_type</code>(short label such as <code>"1-cpt oral"</code> or <code>NULL</code> when not unambiguously detectable), <code>iiv</code> (omega names), <code>iov</code>(kappa names), <code>iov_weights</code> (per-kappa sample-size weight expressions from <code>kappa K ~ &lt;var&gt; weight = &lt;expr&gt;</code>, <code>NA</code> for an unweighted kappa and <code>character(0)</code> when no kappa is weighted), and <code>residual</code> (error type - one of <code>"proportional"</code>, <code>"additive"</code>, <code>"combined"</code>, or <code>"additive (log-transformed)"</code> for log-transform-both-sides models written as <code>log(DV) ~ additive(...)</code> or <code>DV ~ log_additive(...)</code>). For multi-endpoint (per-CMT) error models, <code>residual</code> is reported as a string of the form <code>"per-CMT (CMT2=proportional, CMT3=additive)"</code>.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>

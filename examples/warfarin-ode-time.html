@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-799c843cd16c28e5d529fe036c5ba5c3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a2387e3fbb85f2d0ae08932c987fb4fc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ced4b2c9110ffe2aa0befc1bd6198a60.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a2387e3fbb85f2d0ae08932c987fb4fc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -484,8 +484,8 @@ Note
  Model: warfarin_ode_time        Dataset: warfarin
  Method: FOCE | Gradient: ANALYTIC | Subjects: 10 | Obs: 110
 
- STATUS: NOT CONVERGED   (convergence, condition_number)   59 iterations   105.5s
- OFV: 20403.3457    AIC: 20417.3457    BIC: 20436.2490
+ STATUS: CONVERGED   59 iterations   59.9s
+ OFV: -280.3624    AIC: -266.3624    BIC: -247.4590
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -498,27 +498,27 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132967     6.584728     4952.2
-TVV                  7.730867   382.710914     4950.4
-TVKA                 0.725220    35.914574     4952.2
+TVCL                 0.132969     0.006629        5.0
+TVV                  7.730687     0.234074        3.0
+TVKA                 0.725213     0.124491       17.2
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028595  CV% = 17.0  SE = 2.606933
-  ETA_V                    [log-normal]  = 0.009577  CV% = 9.8  SE = 0.930164
-  ETA_KA                   [log-normal]  = 0.348963  CV% = 64.6  SE = 15.558312
+  ETA_CL                   [log-normal]  = 0.028593  CV% = 17.0  SE = 0.012792
+  ETA_V                    [log-normal]  = 0.009577  CV% = 9.8  SE = 0.004298
+  ETA_KA                   [log-normal]  = 0.348972  CV% = 64.6  SE = 0.161030
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.010749  (var = 0.000116, CV% = 1.1)  SE = 0.529902  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.010749  (var = 0.000116, CV% = 1.1)  SE = 0.000942  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 9.4%   ETA_V: 5.9%   ETA_KA: -276.5%   EPS: -741.1%
+ ETA_CL: 0.0%   ETA_V: 0.1%   ETA_KA: 0.2%   EPS: 16.1%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 6499190947.1   DW: 0.48 [positive autocorrelation]   IWRES lag-1 r: 0.655
+ Covariance: computed   Cond: 2.6   DW: 2.61 [negative autocorrelation]   IWRES lag-1 r: -0.365
 
 RUN INFO
 ------------------------------------------------------------
@@ -531,7 +531,7 @@ SETTINGS  (model file / call-time override)
   maxiter                      300  [model only]
 
 ------------------------------------------------------------
- 2 critical   5 warning  --  call ferx_get_warnings(fit) for details
+ 1 warning  --  call ferx_get_warnings(fit) for details
 ============================================================</code></pre>
 </div>
 </div>
@@ -555,8 +555,8 @@ SETTINGS  (model file / call-time override)
 12  2 0.01860713 37.25170 12.10571 544.4705
 23  3 0.01532056 45.24294 11.01640 515.0692
 34  4 0.02064343 33.57713 13.56174 594.7005
-45  5 0.01949619 35.55295 13.64396 562.2764
-56  6 0.01586528 43.68958 11.70240 522.1093</code></pre>
+45  5 0.01536665 45.10724 13.82098 638.4450
+56  6 0.01586528 43.68957 11.70240 522.1093</code></pre>
 </div>
 </div>
 </section>

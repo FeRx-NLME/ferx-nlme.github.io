@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-799c843cd16c28e5d529fe036c5ba5c3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1866788271b8088bbd3cfd833017a9a3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a2387e3fbb85f2d0ae08932c987fb4fc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ced4b2c9110ffe2aa0befc1bd6198a60.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a2387e3fbb85f2d0ae08932c987fb4fc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -418,6 +418,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>warfarin_logit_f: One-compartment oral with logit-normal bioavailability</li>
 <li>warfarin_if: Two-compartment oral with conditional if/else covariate (WT)</li>
 <li>one_cpt_iv: One-compartment IV (analytical <code>one_cpt_iv</code>)</li>
+<li>one_cpt_iv_pooled: One-compartment IV with <em>no random effects</em> – a fixed-effects-only (naive-pooled) fit (ferx-core #989). Every subject shares one CL and one V, and <code>sigma</code> alone carries the spread. With <code>n_eta = 0</code> there is no inner empirical-Bayes problem and no <code>log|Omega|</code> term, so FOCE/FOCEI collapse to plain maximum likelihood; <code>PRED</code> equals <code>IPRED</code> and <code>CWRES</code> equals <code>IWRES</code>. An <code>[error_model]</code> and its <code>sigma</code> are still required – only Omega is optional. Anchored against a NONMEM 7.6.0 run of the same model written as <code>$OMEGA 0 FIX</code></li>
 <li>two_cpt_iv: Two-compartment IV bolus</li>
 <li>two_cpt_oral_cov: Two-compartment oral with continuous covariates (WT, CRCL)</li>
 <li>three_cpt_iv: Three-compartment IV bolus</li>
