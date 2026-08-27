@@ -1,5 +1,12 @@
 ---
 title: "Simulation, prediction, and uncertainty propagation"
+description-meta: "Predict and simulate population PK/PD outcomes with ferx, including parameter uncertainty, between-subject variability, and residual error."
+open-graph:
+  title: "Simulation, prediction, and uncertainty propagation"
+  description: "Predict and simulate population PK/PD outcomes with ferx, including parameter uncertainty, between-subject variability, and residual error."
+twitter-card:
+  title: "Simulation, prediction, and uncertainty propagation"
+  description: "Predict and simulate population PK/PD outcomes with ferx, including parameter uncertainty, between-subject variability, and residual error."
 ---
 
 After a model has been fit, three functions cover the standard

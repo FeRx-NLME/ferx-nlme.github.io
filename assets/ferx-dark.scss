@@ -267,6 +267,13 @@ h2 { letter-spacing: -0.02em; }
     color: $slate-soft-dark;
     margin-bottom: 28px;
     b { color: $slate-ink-dark; font-weight: 600; }
+    a {
+      color: $slate-ink-dark;
+      text-decoration-color: rgba($slate-teal-dark, 0.55);
+      text-underline-offset: 3px;
+      &:hover { color: $slate-teal-dark; }
+      b { color: inherit; }
+    }
   }
 }
 

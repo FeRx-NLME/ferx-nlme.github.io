@@ -1,5 +1,12 @@
 ---
 title: "Design principles"
+description-meta: "Learn how ferx combines an open-source Rust NLME engine with thin R and command-line interfaces, standard data formats, and usability-first design."
+open-graph:
+  title: "Design principles"
+  description: "Learn how ferx combines an open-source Rust NLME engine with thin R and command-line interfaces, standard data formats, and usability-first design."
+twitter-card:
+  title: "Design principles"
+  description: "Learn how ferx combines an open-source Rust NLME engine with thin R and command-line interfaces, standard data formats, and usability-first design."
 ---
 
 FeRx is built around a small set of design principles that guide every feature

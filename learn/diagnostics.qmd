@@ -1,5 +1,12 @@
 ---
 title: "Post-fit diagnostics"
+description-meta: "Evaluate ferx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics."
+open-graph:
+  title: "Post-fit diagnostics"
+  description: "Evaluate ferx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics."
+twitter-card:
+  title: "Post-fit diagnostics"
+  description: "Evaluate ferx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics."
 ---
 
 After fitting, ferx returns a rich `ferx_fit` object with all the diagnostics

@@ -1,5 +1,12 @@
 ---
 title: "Model DSL Overview"
+description-meta: "Learn the readable .ferx model syntax for parameters, random effects, structural PK/PD models, residual error, covariates, fitting, and simulation."
+open-graph:
+  title: "Model DSL Overview"
+  description: "Learn the readable .ferx model syntax for parameters, random effects, structural PK/PD models, residual error, covariates, fitting, and simulation."
+twitter-card:
+  title: "Model DSL Overview"
+  description: "Learn the readable .ferx model syntax for parameters, random effects, structural PK/PD models, residual error, covariates, fitting, and simulation."
 ---
 
 A ferx model is a plain-text `.ferx` file divided into labelled sections. The

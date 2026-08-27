@@ -1,5 +1,12 @@
 ---
 title: "SIR uncertainty quantification"
+description-meta: "Use Sampling Importance Resampling in ferx to estimate nonlinear mixed-effects parameter uncertainty beyond asymptotic confidence intervals."
+open-graph:
+  title: "SIR uncertainty quantification"
+  description: "Use Sampling Importance Resampling in ferx to estimate nonlinear mixed-effects parameter uncertainty beyond asymptotic confidence intervals."
+twitter-card:
+  title: "SIR uncertainty quantification"
+  description: "Use Sampling Importance Resampling in ferx to estimate nonlinear mixed-effects parameter uncertainty beyond asymptotic confidence intervals."
 ---
 
 Sampling Importance Resampling (SIR) refines the uncertainty estimate from a
