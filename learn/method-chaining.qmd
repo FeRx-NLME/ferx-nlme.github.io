@@ -1,5 +1,6 @@
 ---
 title: "Method chaining, optimizers, and advanced fit options"
+description-meta: "Chain FOCEI, SAEM, and importance sampling in ferx; compare NLME optimizers; and configure convergence and advanced fitting options."
 ---
 
 ferx supports running multiple estimation methods in sequence (method chains),

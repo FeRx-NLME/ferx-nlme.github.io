@@ -1,5 +1,6 @@
 ---
 title: "Model workflow: inspect, edit, fit"
+description-meta: "Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based ferx workflows."
 ---
 
 This article covers two complementary workflows for running a ferx model:

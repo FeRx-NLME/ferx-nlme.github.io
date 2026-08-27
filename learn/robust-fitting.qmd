@@ -1,5 +1,6 @@
 ---
 title: "Robust fitting strategies"
+description-meta: "Improve difficult NLME fits in ferx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies."
 ---
 
 This page covers techniques for fitting models that are difficult to converge:

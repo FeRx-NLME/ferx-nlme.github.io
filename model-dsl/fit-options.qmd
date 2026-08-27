@@ -1,5 +1,6 @@
 ---
 title: "Fit options"
+description-meta: "Configure ferx estimation methods, optimizers, convergence controls, covariance, diagnostics, simulation, and advanced NLME fit settings."
 ---
 
 The `[fit_options]` block in a `.ferx` file, and the arguments to `ferx_fit()`,

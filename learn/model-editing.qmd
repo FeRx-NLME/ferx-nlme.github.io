@@ -1,5 +1,6 @@
 ---
 title: "Editing ferx model files programmatically"
+description-meta: "Create, inspect, and modify .ferx nonlinear mixed-effects model files programmatically from R."
 ---
 
 ferx model files (`.ferx`) are plain text, so you can create and modify them

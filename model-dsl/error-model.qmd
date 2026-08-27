@@ -1,5 +1,6 @@
 ---
 title: "Error Model"
+description-meta: "Specify additive, proportional, combined, log-scale, censored, and multi-endpoint residual error models in ferx."
 ---
 
 The `[error_model]` block defines the residual error structure, specifying how

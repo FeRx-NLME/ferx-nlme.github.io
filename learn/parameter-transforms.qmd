@@ -1,5 +1,6 @@
 ---
 title: "Parameter transforms: log, logit, and additive ETAs"
+description-meta: "Choose log-normal, logit-normal, or additive random-effect parameterizations for population PK/PD models in ferx."
 ---
 
 ferx supports three parameterisation styles for individual parameters:

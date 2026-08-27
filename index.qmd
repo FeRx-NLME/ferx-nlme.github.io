@@ -1,5 +1,16 @@
 ---
-pagetitle: "ferx · open-source NLME for population PK"
+pagetitle: "ferx: Open-source NLME for population PK/PD"
+description: "ferx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
+title-block-style: none
+image: false
+keywords:
+  - nonlinear mixed-effects modeling
+  - NLME
+  - population pharmacokinetics
+  - population PK/PD
+  - pharmacometrics
+  - FOCEI
+  - SAEM
 toc: false
 page-layout: full
 ---
@@ -14,21 +25,21 @@ page-layout: full
 Fe[·]{.dot}[R[*x*]{style="font-style:italic"}]{.rx}
 :::
 
-### A nonlinear mixed-effects engine for *pharmacometrics*, written in Rust. {.headline}
+# Open-source nonlinear mixed-effects modeling for *pharmacometrics* {.headline}
 
 ::: {.lede}
-ferx fits models defined in comprehensible syntax, using state-of-art algorithms powered by a Rust backend. In any data science environment.
+Fit population PK/PD models with FOCEI, SAEM, simulation, and readable model
+syntax using the ferx R package or high-performance Rust CLI.
 :::
 
 ::: {.meta}
-[**MIT** — license]{}
+[**MIT licensed**](https://github.com/FeRx-NLME/ferx-core/blob/main/LICENSE) · [**Source on GitHub**](https://github.com/FeRx-NLME)
 :::
 
 :::
 
 :::
 
-:::
 :::
 :::
 
@@ -77,7 +88,7 @@ Introduction to FeRx and guide for working with FeRx from R.
 
 ::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
 **[ferx-core](https://ferx-nlme.github.io/ferx-core/)**\
-Guiden and reference for working with FeRx using the CLI or Rust library.
+Guide and reference for working with FeRx using the CLI or Rust library.
 :::
 
 ::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}

@@ -1,5 +1,6 @@
 ---
 title: "Get started"
+description-meta: "Install ferx and fit your first nonlinear mixed-effects population PK model from R or the command line."
 ---
 
 ferx fits nonlinear mixed-effects models defined in a small, readable DSL
