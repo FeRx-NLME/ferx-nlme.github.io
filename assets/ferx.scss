@@ -265,6 +265,13 @@ h2 { letter-spacing: -0.02em; }
     color: $slate-soft;
     margin-bottom: 28px;
     b { color: $slate-ink; font-weight: 600; }
+    a {
+      color: $slate-ink;
+      text-decoration-color: rgba($slate-teal, 0.45);
+      text-underline-offset: 3px;
+      &:hover { color: $slate-teal; }
+      b { color: inherit; }
+    }
   }
 }
 

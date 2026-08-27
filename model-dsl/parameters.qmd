@@ -1,6 +1,12 @@
 ---
 title: "Parameters"
 description-meta: "Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in ferx models."
+open-graph:
+  title: "Parameters"
+  description: "Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in ferx models."
+twitter-card:
+  title: "Parameters"
+  description: "Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in ferx models."
 ---
 
 The `[parameters]` block defines all model parameters: fixed effects (theta),

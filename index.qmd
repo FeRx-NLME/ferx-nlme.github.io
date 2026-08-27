@@ -1,16 +1,13 @@
 ---
 pagetitle: "ferx: Open-source NLME for population PK/PD"
-description: "ferx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
-title-block-style: none
+description-meta: "ferx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
+open-graph:
+  title: "ferx: Open-source NLME for population PK/PD"
+  description: "ferx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
+twitter-card:
+  title: "ferx: Open-source NLME for population PK/PD"
+  description: "ferx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
 image: false
-keywords:
-  - nonlinear mixed-effects modeling
-  - NLME
-  - population pharmacokinetics
-  - population PK/PD
-  - pharmacometrics
-  - FOCEI
-  - SAEM
 toc: false
 page-layout: full
 ---

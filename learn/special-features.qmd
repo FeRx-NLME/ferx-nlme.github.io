@@ -1,6 +1,12 @@
 ---
 title: "Special features: IOV, BLOQ, steady state, and unit scaling"
 description-meta: "Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in ferx."
+open-graph:
+  title: "Special features: IOV, BLOQ, steady state, and unit scaling"
+  description: "Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in ferx."
+twitter-card:
+  title: "Special features: IOV, BLOQ, steady state, and unit scaling"
+  description: "Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in ferx."
 ---
 
 This article is a tour of four `.ferx` features that go beyond the standard

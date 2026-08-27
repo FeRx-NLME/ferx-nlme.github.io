@@ -1,6 +1,12 @@
 ---
 title: "Structural Model"
 description-meta: "Define analytical compartmental PK or custom ODE structural models in the ferx nonlinear mixed-effects model language."
+open-graph:
+  title: "Structural Model"
+  description: "Define analytical compartmental PK or custom ODE structural models in the ferx nonlinear mixed-effects model language."
+twitter-card:
+  title: "Structural Model"
+  description: "Define analytical compartmental PK or custom ODE structural models in the ferx nonlinear mixed-effects model language."
 ---
 
 The `[structural_model]` block specifies the pharmacokinetic model used to

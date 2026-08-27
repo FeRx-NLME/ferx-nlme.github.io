@@ -1,6 +1,12 @@
 ---
 title: "Features"
 description-meta: "Explore ferx support for FOCEI, SAEM, population PK/PD, ODE and SDE models, simulation, diagnostics, covariates, and NONMEM-compatible data."
+open-graph:
+  title: "Features"
+  description: "Explore ferx support for FOCEI, SAEM, population PK/PD, ODE and SDE models, simulation, diagnostics, covariates, and NONMEM-compatible data."
+twitter-card:
+  title: "Features"
+  description: "Explore ferx support for FOCEI, SAEM, population PK/PD, ODE and SDE models, simulation, diagnostics, covariates, and NONMEM-compatible data."
 ---
 
 ferx implements the same statistical methodology as NONMEM, Monolix, and Pumas,
