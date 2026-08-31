@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Read the optimizer trace from a ferx fit – ferx</title>
+<title>Non-parametric case bootstrap – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,14 +116,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Read the optimizer trace from a ferx fit – ferx">
+<meta property="og:title" content="Non-parametric case bootstrap – ferx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta property="og:site_name" content="ferx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Read the optimizer trace from a ferx fit – ferx">
+<meta name="twitter:title" content="Non-parametric case bootstrap – ferx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
-<link rel="canonical" href="https://ferx-nlme.github.io/reference/ferx_trace.html">
+<link rel="canonical" href="https://ferx-nlme.github.io/reference/ferx_bootstrap.html">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -368,7 +368,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
-  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
+  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a>
+  <ul class="collapse">
+  <li><a href="#what-the-bootstrap-buys-over-the-covariance-step" id="toc-what-the-bootstrap-buys-over-the-covariance-step" class="nav-link" data-scroll-target="#what-the-bootstrap-buys-over-the-covariance-step">What the bootstrap buys over the covariance step</a></li>
+  <li><a href="#exclusions" id="toc-exclusions" class="nav-link" data-scroll-target="#exclusions">Exclusions</a></li>
+  <li><a href="#cost" id="toc-cost" class="nav-link" data-scroll-target="#cost">Cost</a></li>
+  </ul></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -382,7 +387,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Read the optimizer trace from a ferx fit</h1>
+<h1 class="title">Non-parametric case bootstrap</h1>
 </div>
 
 
@@ -401,41 +406,103 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Reads the per-iteration trace CSV written when <code>optimizer_trace = TRUE</code>was passed to <code>[ferx_fit](ferx_fit.qmd)</code>. Returns a tidy data frame with one row per optimizer iteration (or per OFV evaluation for NLopt-based methods).</p>
+<p>Resample whole subjects with replacement, refit the same model to each replicate, and summarise the spread of the estimates into bias, standard errors and confidence intervals. Feature target: PsN’s <code>bootstrap</code>.</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_bootstrap</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  model,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">samples =</span> <span class="dv">200</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">1</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">threads =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">stratify_on =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample_size =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">update_inits =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">run_base_model =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">keep_covariance =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">dofv =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip_minimization_terminated =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip_estimate_near_boundary =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip_covariance_step_terminated =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip_with_covstep_warnings =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="dv">95</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">directory =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>fit</code>: Optional. A <code>ferx_fit</code> object returned by <code>[ferx_fit](ferx_fit.qmd)</code>, or a character string giving the path to a trace CSV file written by ferx. If omitted, uses the trace from the last <code>ferx_fit()</code> call in this session.</li>
+<li><code>model</code>: Path to a <code>.ferx</code> model file, or a <code>ferx_model</code> object from <code>[ferx_model](ferx_model.qmd)</code>.</li>
+<li><code>data</code>: Path to a NONMEM-format CSV. <code>NULL</code> (the default) uses the model’s <code>[data]</code> block.</li>
+<li><code>samples</code>: Number of bootstrap datasets. Default 200, PsN’s default and its stated rule of thumb for standard errors.</li>
+<li><code>seed</code>: Master seed. Each replicate’s draw is derived from this and its own index, so a run is reproducible and independent of <code>threads</code>.</li>
+<li><code>threads</code>: Replicates to fit concurrently. <code>NULL</code> (the default) uses the engine default.</li>
+<li><code>stratify_on</code>: Name of a data column defining the resampling strata, or <code>NULL</code> (the default) for an unstratified run. Stratifying on study or arm keeps each replicate’s composition close to the original dataset’s.</li>
+<li><code>sample_size</code>: How many subjects each replicate draws. <code>NULL</code> (the default) draws as many as the original dataset has - the only case where a stratified proportional split is guaranteed to sum back to the request. A single number sets one total for the replicate; a <strong><em>named</em></strong> numeric vector (<code>c("1001" = 12, "1002" = 24)</code>) sets an explicit count per stratum and is only meaningful together with <code>stratify_on</code>. Every count must be a whole number &gt;= 1. It is PsN’s <code>-sample_size=1001=&gt;12,1002=&gt;24</code>, spelled the R way.</li>
+<li><code>update_inits</code>: Start each replicate from the base fit’s final estimates (PsN default, <code>TRUE</code>). Requires <code>run_base_model = TRUE</code>.</li>
+<li><code>run_base_model</code>: Fit the original dataset first. Required for <code>update_inits</code>, for the bias column, and for the normal-approximation intervals. Default <code>TRUE</code>.</li>
+<li><code>keep_covariance</code>: Run the covariance step for each replicate. Off by default: it is most of the cost, and the bootstrap standard error comes from the spread of the estimates, not from any per-replicate <code>R^-1</code>. Turning it on adds <code>se_&lt;parameter&gt;</code> columns to <code>$raw</code> and is what the two covariance-step exclusion filters read.</li>
+<li><code>dofv</code>: Compute the change in objective function value: evaluate each replicate’s parameter vector on the <em>original</em> dataset with no estimation (NONMEM <code>MAXEVAL=0</code>) and subtract the original fit’s OFV. Roughly doubles the run time. Default <code>FALSE</code>.</li>
+<li><code>skip_minimization_terminated</code>: Exclude replicates whose minimization terminated. Default <code>TRUE</code> (PsN’s default).</li>
+<li><code>skip_estimate_near_boundary</code>: Exclude replicates whose estimate sits on a boundary. Default <code>TRUE</code> (PsN’s default).</li>
+<li><code>skip_covariance_step_terminated, skip_with_covstep_warnings</code>: Exclude replicates on the covariance step’s outcome. Both default <code>FALSE</code>, and both require <code>keep_covariance = TRUE</code> - asking for one without it is an error rather than a silently dropped filter.</li>
+<li><code>ci</code>: Two-sided confidence level, in percent. Default 95.</li>
+<li><code>directory</code>: Where to write the CSV artefacts (<code>raw_results.csv</code>, <code>bootstrap_results.csv</code>, <code>bootstrap_diagnostics.csv</code>, the individual and key files, and <code>delta_ofv.csv</code> when <code>dofv = TRUE</code>). <code>NULL</code>, the default, computes everything in memory and writes nothing - an R user has the data frames in hand and rarely wants eight files appearing in the working directory. The CLI defaults the other way. Set it if you want to be able to call <code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code> later.</li>
+<li><code>verbose</code>: Print a one-line run header to stderr. Default <code>FALSE</code>.</li>
 </ul>
 </section>
 <section id="details" class="level2">
 <h2 class="anchored" data-anchor-id="details">Details</h2>
-<p>Called with no argument, returns the trace from the most recent <code>ferx_fit()</code> call in the current R session and prints a one-line message indicating when that fit was started. Named <code>ferx_trace()</code>rather than <code>trace()</code> to avoid masking <code>base::trace()</code>.</p>
+<p>The bootstrap runs in the engine (ferx-core’s <code>ferx-tools</code> crate); this function is a thin wrapper. The percentile estimator, the exclusion filters, the parameter naming and the <code>sample_size</code> syntax all live there, so an R session and the <code>ferx bootstrap</code> CLI produce the same numbers from the same seed.</p>
+<section id="what-the-bootstrap-buys-over-the-covariance-step" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-bootstrap-buys-over-the-covariance-step">What the bootstrap buys over the covariance step</h3>
+<p>ferx’s standard errors are the asymptotic <code>R^-1</code> matrix, symmetric by construction. The bootstrap distribution assumes neither normality nor symmetry: it survives a failed or non-positive-definite covariance step, and it shows asymmetry in poorly identified parameters instead of averaging it away. Both intervals are returned side by side (<code>ci_lower</code> / <code>ci_upper</code> for the percentile interval, <code>ci_lower_normal</code> / <code>ci_upper_normal</code> for the normal approximation built from the bootstrap standard error) precisely so the disagreement between them is visible.</p>
+</section>
+<section id="exclusions" class="level3">
+<h3 class="anchored" data-anchor-id="exclusions">Exclusions</h3>
+<p>A replicate whose minimization terminated, or whose estimate sits on a boundary, is not a draw from the sampling distribution of a converged fit, so by default it is excluded from the statistics (PsN’s defaults). The replicate is still fitted and still appears in <code>$raw</code>; only the summary drops it. <code>$diagnostics</code> reports how many were dropped and why. To change the criteria after a run has finished, use <code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code>instead of refitting - but that needs <code>directory</code> to have been set.</p>
+</section>
+<section id="cost" class="level3">
+<h3 class="anchored" data-anchor-id="cost">Cost</h3>
+<p>This is <code>samples</code> (+ 1) complete fits. At PsN’s rule-of-thumb 200 samples a model that takes a minute to fit takes over three hours, so <code>threads</code> is the argument that matters most. Note that the run is <strong><em>not</em></strong> interruptible with Ctrl-C once the replicates are underway.</p>
+</section>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other diagnostics: <code>[check_diagnostics](check_diagnostics.qmd)</code>, <code>[ferx_conddist](ferx_conddist.qmd)</code>, <code>[ferx_cov_screen](ferx_cov_screen.qmd)</code>, <code>[ferx_get_warnings](ferx_get_warnings.qmd)</code>, <code>[ferx_runlog_iters](ferx_runlog_iters.qmd)</code>, <code>[plot.ferx_bootstrap](plot.ferx_bootstrap.qmd)</code>, <code>[plot.ferx_fit](plot.ferx_fit.qmd)</code>, <code>[summary.ferx_fit](summary.ferx_fit.qmd)</code></p>
+<p><code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code> to change the exclusion criteria on a finished run, <code>[ferx_sir](ferx_sir.qmd)</code> and <code>[ferx_covariance](ferx_covariance.qmd)</code> for the parametric uncertainty routes. Other fitting: <code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code>, <code>[ferx_check_init](ferx_check_init.qmd)</code>, <code>[ferx_collect](ferx_collect.qmd)</code>, <code>[ferx_covariance](ferx_covariance.qmd)</code>, <code>[ferx_fit](ferx_fit.qmd)</code>, <code>[ferx_inits_from_nca](ferx_inits_from_nca.qmd)</code>, <code>[ferx_sir](ferx_sir.qmd)</code>, <code>[ferx_stop](ferx_stop.qmd)</code>, <code>[print.ferx_job](ferx_fit_async.qmd)</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
-<p>diagnostics</p>
+<p>fitting</p>
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A data frame with columns:</p>
+<p>An object of class <code>ferx_bootstrap</code>, a list with:</p>
+<ul>
+<li>parameters: Data frame, one row per parameter: <code>parameter</code>, <code>original</code>, <code>mean</code>, <code>bias</code>, <code>standard_error</code>, <code>median</code>, <code>ci_lower</code>, <code>ci_upper</code>, <code>ci_lower_normal</code>, <code>ci_upper_normal</code>. This is <code>bootstrap_results.csv</code>.</li>
+<li>raw: Data frame, one row per fit with the original dataset first (<code>sample = 0</code>), carrying the estimates <em>and</em> the termination diagnostics the exclusion filters read. This is <code>raw_results.csv</code>, and it is what makes a custom R-side filter or re-summarisation possible.</li>
+<li>diagnostics: Data frame of <code>statistic</code> / <code>value</code>: the run counts, the exclusion tallies (<code>excluded: ...</code>) and the diagnostic means (<code>mean: ...</code>).</li>
+<li>delta_ofv: Data frame of <code>sample</code> / <code>delta_ofv</code> when <code>dofv = TRUE</code>, otherwise <code>NULL</code>.</li>
+<li>parameter_names, subject_ids, n_completed, n_included, chi_square_df, confidence_level, samples, seed, model, data, directory: Run metadata. <code>chi_square_df</code> is the number of estimated parameters, the reference degrees of freedom for the <code>dofv</code> panel of <code>[plot.ferx_bootstrap](plot.ferx_bootstrap.qmd)</code>.</li>
+</ul>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tr  <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>bs <span class="ot">&lt;-</span> <span class="fu">ferx_bootstrap</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">samples =</span> <span class="dv">200</span>, <span class="at">seed =</span> <span class="dv">12345</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">threads =</span> <span class="dv">8</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>bs</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>bs<span class="sc">$</span>parameters</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bs)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Stratified, with artefacts on disk so the run can be re-summarised later</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>bs <span class="ot">&lt;-</span> <span class="fu">ferx_bootstrap</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">samples =</span> <span class="dv">200</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stratify_on =</span> <span class="st">"SEX"</span>, <span class="at">directory =</span> <span class="st">"warfarin-bootstrap"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_bootstrap_summarize</span>(<span class="st">"warfarin-bootstrap"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">skip_estimate_near_boundary =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

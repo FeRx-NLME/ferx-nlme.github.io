@@ -388,7 +388,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td><strong>FOCE / FOCEI</strong></td>
 <td>First-Order Conditional Estimation, with or without interaction — the PopPK gold standard</td>
-<td>beta</td>
+<td>stable</td>
 </tr>
 <tr class="even">
 <td><strong>SAEM</strong></td>
@@ -396,26 +396,31 @@ ul.task-list li input[type="checkbox"] {
 <td>stable</td>
 </tr>
 <tr class="odd">
+<td><strong>Variational Inference (VI)</strong></td>
+<td>Gradient-based ELBO maximization with <code>full_rank</code> / <code>mean_field</code> posteriors — fast approximate fit; chain into <code>imp</code>/<code>laplace</code> for a marginal likelihood</td>
+<td>beta</td>
+</tr>
+<tr class="even">
 <td><strong>Gauss-Newton (BHHH)</strong></td>
 <td>Fast outer optimizer with Levenberg–Marquardt damping; <code>gn</code> and a <code>gn_hybrid</code> GN+FOCEI polish</td>
 <td>beta</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Importance Sampling (IMP)</strong></td>
 <td>Exact marginal likelihood by Monte-Carlo integration</td>
 <td>beta</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>IMPMAP</strong></td>
 <td>MAP-anchored importance sampling</td>
 <td>beta</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>SIR</strong></td>
 <td>Sampling Importance Resampling — posterior parameter uncertainty</td>
 <td>beta</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Bayesian (MCMC)</strong></td>
 <td>Full Markov-chain posterior sampling</td>
 <td>experimental</td>

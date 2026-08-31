@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Read the optimizer trace from a ferx fit – ferx</title>
+<title>Print a bootstrap result – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,14 +116,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Read the optimizer trace from a ferx fit – ferx">
+<meta property="og:title" content="Print a bootstrap result – ferx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta property="og:site_name" content="ferx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Read the optimizer trace from a ferx fit – ferx">
+<meta name="twitter:title" content="Print a bootstrap result – ferx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
-<link rel="canonical" href="https://ferx-nlme.github.io/reference/ferx_trace.html">
+<link rel="canonical" href="https://ferx-nlme.github.io/reference/print.ferx_bootstrap.html">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -368,11 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
-  <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
-  <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
-  <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -382,7 +378,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Read the optimizer trace from a ferx fit</h1>
+<h1 class="title">Print a bootstrap result</h1>
 </div>
 
 
@@ -401,41 +397,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Reads the per-iteration trace CSV written when <code>optimizer_trace = TRUE</code>was passed to <code>[ferx_fit](ferx_fit.qmd)</code>. Returns a tidy data frame with one row per optimizer iteration (or per OFV evaluation for NLopt-based methods).</p>
+<p>Print a bootstrap result</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># S3 method for ferx_bootstrap</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x, <span class="at">digits =</span> <span class="dv">4</span>, ...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>fit</code>: Optional. A <code>ferx_fit</code> object returned by <code>[ferx_fit](ferx_fit.qmd)</code>, or a character string giving the path to a trace CSV file written by ferx. If omitted, uses the trace from the last <code>ferx_fit()</code> call in this session.</li>
+<li><code>x</code>: A <code>ferx_bootstrap</code> object.</li>
+<li><code>digits</code>: Significant digits for the parameter table. Default 4.</li>
+<li><code>...</code>: Ignored.</li>
 </ul>
-</section>
-<section id="details" class="level2">
-<h2 class="anchored" data-anchor-id="details">Details</h2>
-<p>Called with no argument, returns the trace from the most recent <code>ferx_fit()</code> call in the current R session and prints a one-line message indicating when that fit was started. Named <code>ferx_trace()</code>rather than <code>trace()</code> to avoid masking <code>base::trace()</code>.</p>
-</section>
-<section id="seealso" class="level2">
-<h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other diagnostics: <code>[check_diagnostics](check_diagnostics.qmd)</code>, <code>[ferx_conddist](ferx_conddist.qmd)</code>, <code>[ferx_cov_screen](ferx_cov_screen.qmd)</code>, <code>[ferx_get_warnings](ferx_get_warnings.qmd)</code>, <code>[ferx_runlog_iters](ferx_runlog_iters.qmd)</code>, <code>[plot.ferx_bootstrap](plot.ferx_bootstrap.qmd)</code>, <code>[plot.ferx_fit](plot.ferx_fit.qmd)</code>, <code>[summary.ferx_fit](summary.ferx_fit.qmd)</code></p>
-</section>
-<section id="concept" class="level2">
-<h2 class="anchored" data-anchor-id="concept">Concept</h2>
-<p>diagnostics</p>
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A data frame with columns:</p>
-</section>
-<section id="examples" class="level2">
-<h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>, <span class="at">covariance =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tr  <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>x</code>, invisibly.</p>
 
 
 </section>
