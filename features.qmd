@@ -24,8 +24,9 @@ Maturity labels — **stable**, **beta**, **experimental** — follow the
 
 | Method | Notes | Maturity |
 |--------|-------|----------|
-| **FOCE / FOCEI** | First-Order Conditional Estimation, with or without interaction — the PopPK gold standard | beta |
+| **FOCE / FOCEI** | First-Order Conditional Estimation, with or without interaction — the PopPK gold standard | stable |
 | **SAEM** | Stochastic Approximation EM — robust on complex / poorly-identified models | stable |
+| **Variational Inference (VI)** | Gradient-based ELBO maximization with `full_rank` / `mean_field` posteriors — fast approximate fit; chain into `imp`/`laplace` for a marginal likelihood | beta |
 | **Gauss-Newton (BHHH)** | Fast outer optimizer with Levenberg–Marquardt damping; `gn` and a `gn_hybrid` GN+FOCEI polish | beta |
 | **Importance Sampling (IMP)** | Exact marginal likelihood by Monte-Carlo integration | beta |
 | **IMPMAP** | MAP-anchored importance sampling | beta |
