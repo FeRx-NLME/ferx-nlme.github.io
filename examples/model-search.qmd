@@ -429,11 +429,15 @@ tool.
 
 ## Notes
 
-- **`[globalsearch]` and `[structsearch]` have no R tool.** Both are valid
-  `.ferxsearch` sections for the engine, so a file carrying one loads; ferx
-  warns that no R tool consumes it, because the stepwise tools would otherwise
-  run a stepwise search without saying so. Run those with the `ferx`
-  command-line tool.
+- **Some `.ferxsearch` sections have no R tool.** The engine accepts a section
+  for every tool *it* knows, which is more than this package binds —
+  `[globalsearch]` and `[structsearch]` today. Such a file loads, and ferx
+  warns that no R tool consumes the section, because the stepwise tools would
+  otherwise run a stepwise search without saying so. Where the section can be
+  run elsewhere the warning says where: `[globalsearch]` is the engine's own
+  tool, behind `ferx globalsearch`. `[structsearch]` is accepted vocabulary
+  with no engine module behind it yet, so it is reported without a
+  remediation rather than with one that names a command that does not exist.
 - **Cancelling** a search from R interrupts it at the next candidate boundary;
   the run still writes its partial tables.
 - **The strictness gate is shared.** `[strictness]` in the configuration
