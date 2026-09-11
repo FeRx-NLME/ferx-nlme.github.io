@@ -259,22 +259,31 @@ Notes:
     `iiv_on_ruv` needs one (focei, imp, impmap or saem)
 ```
 
-The remaining two:
+The remaining two need a model that declares its covariates, so they switch
+examples: `two_cpt_oral_base` is the covariate-free two-compartment oral model,
+and its `[covariates]` block is what makes `@CONTINUOUS` resolvable and `WT`
+available to scale on.
 
 ```r
+cov_ex <- ferx_example("two_cpt_oral_base")
+
 # Stepwise covariate modelling (forward, then backward elimination)
-ferx_covsearch(model = ex$model, data = ex$data,
+ferx_covsearch(model = cov_ex$model, data = cov_ex$data,
                search_space = "COVARIATE?(@IIV, @CONTINUOUS, [pow, lin])",
                p_forward = 0.01, p_backward = 0.001,
                directory = "covsearch-run")
 
-# Allometric scaling: a transform, so it can run without fitting at all
-ferx_allometry(ex$model, ex$data, on = c("CL", "V"), covariate = "WT",
+# Allometric scaling: a transform, so it can run without fitting at all.
+# `parameters` is left at its default, which takes every clearance and volume
+# the `pk` template line binds.
+ferx_allometry(cov_ex$model, cov_ex$data, covariate = "WT",
                reference = 70, fit = FALSE)
 ```
 
 ```
 ferx allometric scaling
+  Data:  .../examples/data/two_cpt_oral_cov.csv
+  Model: .../ferx-allometry-544f261810ae.ferx
 
 Scaling on WT (reference 70):
   CL ~ WT power(center = 70, fix = 0.75)
@@ -441,8 +450,12 @@ tool.
 - **Cancelling** a search from R interrupts it at the next candidate boundary;
   the run still writes its partial tables.
 - **The strictness gate is shared.** `[strictness]` in the configuration
-  applies to every tool, and every result table carries `converged` and
-  `passed` columns. Inside an AMD step the init-stall gate is turned off by
+  applies to every tool, and every table with one row per fitted model carries
+  `converged` and `passed` columns — `$models` for modelsearch, iivsearch and
+  iovsearch, `$steps` for covsearch and ruvsearch, `$comparison` for allometry.
+  (The per-stage ranking `$steps` of iivsearch and iovsearch, and allometry's
+  `$scalings`, are not model tables and carry no gate columns; the models they
+  rank are in `$models`.) Inside an AMD step the init-stall gate is turned off by
   design: each step starts from a model already at its own optimum, where "did
   not move from the initial estimates" is the expected outcome.
 
