@@ -82,6 +82,32 @@ poorly-identified models.
 - **BLOQ** — Beal M3 likelihood for below-LLOQ observations
 - **Data selection** and **derived columns** in the model file
 
+## Model search & automatic model development
+
+Pharmpy's `amd` tool chain, in the engine and callable from R.
+
+| Tool | Decides | Maturity |
+|--------|-------|----------|
+| **modelsearch** | structural model — absorption, peripherals, transits, lag time | beta |
+| **iivsearch** | which parameters carry an eta, and which etas are correlated | beta |
+| **iovsearch** | which parameters carry inter-occasion variability | beta |
+| **ruvsearch** | residual-error model, by likelihood-ratio test | beta |
+| **covsearch** | covariate effects, by SCM forward / forward-backward | beta |
+| **allometry** | allometric scaling on body size | beta |
+| **amd** | the whole pipeline, each step starting from what the last one selected | beta |
+
+- Search spaces are written in **MFL** (Pharmpy's Model Feature Language), so a
+  space is portable between the two tools
+- A **strictness gate** applies to every candidate, and the termination status
+  and the gate verdict are columns of every table with one row per fitted model
+  — a model that did not converge or came back ill-conditioned cannot win a
+  step silently
+- Runs are resumable, parallel across candidates, and written to disk as CSV,
+  so a run driven from the CLI reads back in R and vice versa
+- Ranking on OFV, AIC, the four BIC variants, or pyDarwin-style penalized fitness
+
+See [Example: Model search and automatic model development](examples/model-search.qmd).
+
 ## Initialization & diagnostics
 
 - **NCA-based starting values** (`inits_from_nca`) — AUC, terminal-slope,
