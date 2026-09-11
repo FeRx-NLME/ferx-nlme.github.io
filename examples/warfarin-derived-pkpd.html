@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-12eadd660f3a158994fcf91a0fc8323c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-cc8de2ccd46953379f7d11a74152019b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -517,7 +517,7 @@ elements are non-positive; correlation matrix may not be meaningful.</code></pre
  Model: warfarin_derived_pkpd    Dataset: warfarin
  Method: FOCE | Gradient: ANALYTIC | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   64 iterations   2.4s
+ STATUS: CONVERGED   67 iterations   2.1s
  OFV: -280.3640    AIC: -266.3640    BIC: -247.4606
 
 MODEL STRUCTURE (auto-derived)
@@ -559,7 +559,7 @@ DIAGNOSTICS
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): auto   (used: analytic)
- ferx v0.3.0 (core v0.3.0)
+ ferx v0.3.0 (core v0.4.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -575,39 +575,39 @@ SETTINGS  (model file / call-time override)
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>estimates</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      param    transform     estimate           se   rse_pct     lower_95
-1      TVCL     identity  0.132969034 0.0066273866  4.984158  0.119979356
-2       TVV     identity  7.730700035 0.2340547936  3.027602  7.271952640
-3      TVKA     identity  0.725206965 0.1245295476 17.171587  0.481129051
-4       MEC     identity  0.500000000 0.0000000000  0.000000  0.500000000
-5      EMAX     identity 80.000000000 0.0000000000  0.000000 80.000000000
-6      EC50     identity  3.000000000 0.0000000000  0.000000  3.000000000
-7    ETA_CL     variance  0.028594958 0.0127980783 44.756416  0.003510724
-8     ETA_V     variance  0.009576922 0.0042973101 44.871517  0.001154194
-9    ETA_KA     variance  0.348964233 0.1608188215 46.084615  0.033759343
-10 PROP_ERR proportional  0.010748528 0.0009417291  8.761470  0.008902739
-      upper_95 estimate_natural lower_95_natural upper_95_natural init_as_sd
-1   0.14595871               NA               NA               NA      FALSE
-2   8.18944743               NA               NA               NA      FALSE
-3   0.96928488               NA               NA               NA      FALSE
-4   0.50000000               NA               NA               NA      FALSE
-5  80.00000000               NA               NA               NA      FALSE
-6   3.00000000               NA               NA               NA      FALSE
-7   0.05367919               NA               NA               NA      FALSE
-8   0.01799965               NA               NA               NA      FALSE
-9   0.66416912               NA               NA               NA      FALSE
-10  0.01259432               NA               NA               NA       TRUE
-   weight
-1    &lt;NA&gt;
-2    &lt;NA&gt;
-3    &lt;NA&gt;
-4    &lt;NA&gt;
-5    &lt;NA&gt;
-6    &lt;NA&gt;
-7    &lt;NA&gt;
-8    &lt;NA&gt;
-9    &lt;NA&gt;
-10   &lt;NA&gt;</code></pre>
+<pre><code>            param    transform     estimate           se   rse_pct     lower_95
+TVCL         TVCL     identity  0.132969032 0.0066273862  4.984158  0.119979355
+TVV           TVV     identity  7.730699911 0.2340548168  3.027602  7.271952470
+TVKA         TVKA     identity  0.725207008 0.1245295553 17.171587  0.481129080
+MEC           MEC     identity  0.500000000 0.0000000000  0.000000  0.500000000
+EMAX         EMAX     identity 80.000000000 0.0000000000  0.000000 80.000000000
+EC50         EC50     identity  3.000000000 0.0000000000  0.000000  3.000000000
+ETA_CL     ETA_CL     variance  0.028594955 0.0127980762 44.756414  0.003510725
+ETA_V       ETA_V     variance  0.009576924 0.0042973116 44.871523  0.001154193
+ETA_KA     ETA_KA     variance  0.348964242 0.1608188259 46.084615  0.033759343
+PROP_ERR PROP_ERR proportional  0.010748528 0.0009417291  8.761470  0.008902739
+            upper_95 estimate_natural lower_95_natural upper_95_natural
+TVCL      0.14595871               NA               NA               NA
+TVV       8.18944735               NA               NA               NA
+TVKA      0.96928494               NA               NA               NA
+MEC       0.50000000               NA               NA               NA
+EMAX     80.00000000               NA               NA               NA
+EC50      3.00000000               NA               NA               NA
+ETA_CL    0.05367918               NA               NA               NA
+ETA_V     0.01799965               NA               NA               NA
+ETA_KA    0.66416914               NA               NA               NA
+PROP_ERR  0.01259432               NA               NA               NA
+         init_as_sd weight
+TVCL          FALSE   &lt;NA&gt;
+TVV           FALSE   &lt;NA&gt;
+TVKA          FALSE   &lt;NA&gt;
+MEC           FALSE   &lt;NA&gt;
+EMAX          FALSE   &lt;NA&gt;
+EC50          FALSE   &lt;NA&gt;
+ETA_CL        FALSE   &lt;NA&gt;
+ETA_V         FALSE   &lt;NA&gt;
+ETA_KA        FALSE   &lt;NA&gt;
+PROP_ERR       TRUE   &lt;NA&gt;</code></pre>
 </div>
 </div>
 </section>

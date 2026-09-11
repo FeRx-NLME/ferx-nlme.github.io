@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-12eadd660f3a158994fcf91a0fc8323c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-cc8de2ccd46953379f7d11a74152019b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -491,8 +491,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  Model: warfarin_data_selection  Dataset: warfarin
  Method: FOCE | Gradient: FD | Subjects: 10 | Obs: 108
 
- STATUS: CONVERGED   75 iterations   0.2s
- OFV: -266.9132    AIC: -252.9132    BIC: -234.1383
+ STATUS: CONVERGED   75 iterations   0.1s
+ OFV: -266.9131    AIC: -252.9131    BIC: -234.1382
 
 DATA SELECTION
 ------------------------------------------------------------
@@ -510,15 +510,15 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.132891     0.006710        5.0
-TVV                  7.724859     0.234067        3.0
-TVKA                 0.725241     0.124035       17.1
+TVCL                 0.132890     0.006710        5.0
+TVV                  7.724910     0.233948        3.0
+TVKA                 0.725494     0.124035       17.1
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.029095  CV% = 17.2  SE = 0.013084
-  ETA_V                    [log-normal]  = 0.009546  CV% = 9.8  SE = 0.004284
-  ETA_KA                   [log-normal]  = 0.344108  CV% = 64.1  SE = 0.157321
+  ETA_CL                   [log-normal]  = 0.029093  CV% = 17.2  SE = 0.013082
+  ETA_V                    [log-normal]  = 0.009536  CV% = 9.8  SE = 0.004278
+  ETA_KA                   [log-normal]  = 0.343887  CV% = 64.1  SE = 0.157160
 
 SIGMA  (residual error)
 ------------------------------------------------------------
@@ -526,7 +526,7 @@ SIGMA  (residual error)
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 0.5%   ETA_V: 0.3%   ETA_KA: -0.7%   EPS: 17.8%
+ ETA_CL: 0.5%   ETA_V: 0.2%   ETA_KA: -0.7%   EPS: 17.8%
 
 DIAGNOSTICS
 ------------------------------------------------------------
@@ -535,7 +535,7 @@ DIAGNOSTICS
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): fd   (used: fd)
- ferx v0.3.0 (core v0.3.0)
+ ferx v0.3.0 (core v0.4.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------

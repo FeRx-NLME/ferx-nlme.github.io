@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-12eadd660f3a158994fcf91a0fc8323c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-cc8de2ccd46953379f7d11a74152019b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -432,7 +432,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A named list (invisibly) with fields: <code>theta_names</code>(character vector of population parameter names), <code>model_type</code>(short label such as <code>"1-cpt oral"</code> or <code>NULL</code> when not unambiguously detectable), <code>iiv</code> (omega names), <code>iov</code>(kappa names), <code>iov_weights</code> (per-kappa sample-size weight expressions from <code>kappa K ~ &lt;var&gt; weight = &lt;expr&gt;</code>, <code>NA</code> for an unweighted kappa and <code>character(0)</code> when no kappa is weighted), and <code>residual</code> (error type - one of <code>"proportional"</code>, <code>"additive"</code>, <code>"combined"</code>, or <code>"additive (log-transformed)"</code> for log-transform-both-sides models written as <code>log(DV) ~ additive(...)</code> or <code>DV ~ log_additive(...)</code>). For multi-endpoint (per-CMT) error models, <code>residual</code> is reported as a string of the form <code>"per-CMT (CMT2=proportional, CMT3=additive)"</code>.</p>
+<p>A named list (invisibly) with fields: <code>theta_names</code>(character vector of population parameter names), <code>model_type</code>(short label such as <code>"1-cpt oral"</code>, <code>"ODE"</code>, or <code>"compartment-free"</code>, or <code>NULL</code> when not unambiguously detectable), <code>iiv</code> (omega names), <code>iov</code>(kappa names), <code>iov_weights</code> (per-kappa sample-size weight expressions from <code>kappa K ~ &lt;var&gt; weight = &lt;expr&gt;</code>, <code>NA</code> for an unweighted kappa and <code>character(0)</code> when no kappa is weighted), and <code>residual</code> (error type - one of <code>"proportional"</code>, <code>"additive"</code>, <code>"combined"</code>, or <code>"additive (log-transformed)"</code> for log-transform-both-sides models written as <code>log(DV) ~ additive(...)</code> or <code>DV ~ log_additive(...)</code>). For multi-endpoint (per-CMT) error models, <code>residual</code> is reported as a string of the form <code>"per-CMT (CMT2=proportional, CMT3=additive)"</code>.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>

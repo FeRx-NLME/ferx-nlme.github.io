@@ -49,9 +49,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-12eadd660f3a158994fcf91a0fc8323c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-cc8de2ccd46953379f7d11a74152019b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -338,6 +338,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#random-effects-error" id="toc-random-effects-error" class="nav-link" data-scroll-target="#random-effects-error">Random effects &amp; error</a></li>
   <li><a href="#covariates" id="toc-covariates" class="nav-link" data-scroll-target="#covariates">Covariates</a></li>
   <li><a href="#data-dosing" id="toc-data-dosing" class="nav-link" data-scroll-target="#data-dosing">Data &amp; dosing</a></li>
+  <li><a href="#model-search-automatic-model-development" id="toc-model-search-automatic-model-development" class="nav-link" data-scroll-target="#model-search-automatic-model-development">Model search &amp; automatic model development</a></li>
   <li><a href="#initialization-diagnostics" id="toc-initialization-diagnostics" class="nav-link" data-scroll-target="#initialization-diagnostics">Initialization &amp; diagnostics</a></li>
   <li><a href="#performance" id="toc-performance" class="nav-link" data-scroll-target="#performance">Performance</a></li>
   </ul>
@@ -477,6 +478,68 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>BLOQ</strong> — Beal M3 likelihood for below-LLOQ observations</li>
 <li><strong>Data selection</strong> and <strong>derived columns</strong> in the model file</li>
 </ul>
+</section>
+<section id="model-search-automatic-model-development" class="level2">
+<h2 class="anchored" data-anchor-id="model-search-automatic-model-development">Model search &amp; automatic model development</h2>
+<p>Pharmpy’s <code>amd</code> tool chain, in the engine and callable from R.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 28%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Decides</th>
+<th>Maturity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>modelsearch</strong></td>
+<td>structural model — absorption, peripherals, transits, lag time</td>
+<td>beta</td>
+</tr>
+<tr class="even">
+<td><strong>iivsearch</strong></td>
+<td>which parameters carry an eta, and which etas are correlated</td>
+<td>beta</td>
+</tr>
+<tr class="odd">
+<td><strong>iovsearch</strong></td>
+<td>which parameters carry inter-occasion variability</td>
+<td>beta</td>
+</tr>
+<tr class="even">
+<td><strong>ruvsearch</strong></td>
+<td>residual-error model, by likelihood-ratio test</td>
+<td>beta</td>
+</tr>
+<tr class="odd">
+<td><strong>covsearch</strong></td>
+<td>covariate effects, by SCM forward / forward-backward</td>
+<td>beta</td>
+</tr>
+<tr class="even">
+<td><strong>allometry</strong></td>
+<td>allometric scaling on body size</td>
+<td>beta</td>
+</tr>
+<tr class="odd">
+<td><strong>amd</strong></td>
+<td>the whole pipeline, each step starting from what the last one selected</td>
+<td>beta</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Search spaces are written in <strong>MFL</strong> (Pharmpy’s Model Feature Language), so a space is portable between the two tools</li>
+<li>A <strong>strictness gate</strong> applies to every candidate, and the termination status and the gate verdict are columns of every table with one row per fitted model — a model that did not converge or came back ill-conditioned cannot win a step silently</li>
+<li>Runs are resumable, parallel across candidates, and written to disk as CSV, so a run driven from the CLI reads back in R and vice versa</li>
+<li>Ranking on OFV, AIC, the four BIC variants, or pyDarwin-style penalized fitness</li>
+</ul>
+<p>See <a href="./examples/model-search.html">Example: Model search and automatic model development</a>.</p>
 </section>
 <section id="initialization-diagnostics" class="level2">
 <h2 class="anchored" data-anchor-id="initialization-diagnostics">Initialization &amp; diagnostics</h2>

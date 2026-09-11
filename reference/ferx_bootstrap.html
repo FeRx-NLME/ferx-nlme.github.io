@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-12eadd660f3a158994fcf91a0fc8323c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-cc8de2ccd46953379f7d11a74152019b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -373,6 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#what-the-bootstrap-buys-over-the-covariance-step" id="toc-what-the-bootstrap-buys-over-the-covariance-step" class="nav-link" data-scroll-target="#what-the-bootstrap-buys-over-the-covariance-step">What the bootstrap buys over the covariance step</a></li>
   <li><a href="#exclusions" id="toc-exclusions" class="nav-link" data-scroll-target="#exclusions">Exclusions</a></li>
   <li><a href="#cost" id="toc-cost" class="nav-link" data-scroll-target="#cost">Cost</a></li>
+  <li><a href="#resuming-an-interrupted-run" id="toc-resuming-an-interrupted-run" class="nav-link" data-scroll-target="#resuming-an-interrupted-run">Resuming an interrupted run</a></li>
   </ul></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
@@ -428,8 +429,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip_with_covstep_warnings =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="dv">95</span>,</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">directory =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">resume =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">retry_failed =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">progress =</span> <span class="fu">interactive</span>(),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
@@ -450,6 +454,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>skip_covariance_step_terminated, skip_with_covstep_warnings</code>: Exclude replicates on the covariance step’s outcome. Both default <code>FALSE</code>, and both require <code>keep_covariance = TRUE</code> - asking for one without it is an error rather than a silently dropped filter.</li>
 <li><code>ci</code>: Two-sided confidence level, in percent. Default 95.</li>
 <li><code>directory</code>: Where to write the CSV artefacts (<code>raw_results.csv</code>, <code>bootstrap_results.csv</code>, <code>bootstrap_diagnostics.csv</code>, the individual and key files, and <code>delta_ofv.csv</code> when <code>dofv = TRUE</code>). <code>NULL</code>, the default, computes everything in memory and writes nothing - an R user has the data frames in hand and rarely wants eight files appearing in the working directory. The CLI defaults the other way. Set it if you want to be able to call <code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code> later.</li>
+<li><code>resume</code>: Continue an interrupted run in <code>directory</code> instead of starting a fresh one, refitting only the replicates that directory does not already hold. Default <code>FALSE</code>. Needs <code>directory</code>, and needs the arguments that shape the replicates to match the ones the directory was written with - <code>samples</code>, <code>seed</code>, <code>sample_size</code>, <code>stratify_on</code>, <code>run_base_model</code>, <code>update_inits</code>, <code>keep_covariance</code> and <code>dofv</code>, plus the model and the data themselves. A mismatch is an error, not a fresh run: resuming with a larger <code>samples</code> does not extend the earlier run.</li>
+<li><code>retry_failed</code>: Refit the replicates a resumed run finds recorded as <em>failed</em>, instead of carrying the failure forward. Default <code>FALSE</code> (PsN’s default). Needs <code>resume = TRUE</code>.</li>
+<li><code>progress</code>: Show a progress bar while the replicates fit. Default <code>interactive()</code>, so a script or a knitted document prints nothing. Uses the cli package when it is installed and <code>utils::txtProgressBar()</code> otherwise. The bar is drawn by this R session while the fits run in the engine, and reports what the run will actually do: a <code>resume = TRUE</code> run whose <code>directory</code> already holds most of the replicates counts only the ones still to fit.</li>
 <li><code>verbose</code>: Print a one-line run header to stderr. Default <code>FALSE</code>.</li>
 </ul>
 </section>
@@ -466,12 +473,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="cost" class="level3">
 <h3 class="anchored" data-anchor-id="cost">Cost</h3>
-<p>This is <code>samples</code> (+ 1) complete fits. At PsN’s rule-of-thumb 200 samples a model that takes a minute to fit takes over three hours, so <code>threads</code> is the argument that matters most. Note that the run is <strong><em>not</em></strong> interruptible with Ctrl-C once the replicates are underway.</p>
+<p>This is <code>samples</code> (+ 1) complete fits. At PsN’s rule-of-thumb 200 samples a model that takes a minute to fit takes over three hours, so <code>threads</code> is the argument that matters most. <code>progress</code> (on by default in an interactive session) draws a bar as the replicates come in, so a long run says where it is. A run is interruptible: Ctrl-C is checked several times a second, the fits in flight stop at their next iteration, and the call raises <code>ferx_bootstrap: cancelled by user</code> rather than returning. It raises rather than returning the partial run because the replicates the interrupt aborted come back as <em>failed</em> fits, so a returned summary would be a normal-looking table computed over however many replicates happened to finish. The ones that did finish are not lost if <code>directory</code> was set - they are written there as they land - so set it before starting a long run, then either summarise them with <code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code> or carry on with <code>resume = TRUE</code>.</p>
+</section>
+<section id="resuming-an-interrupted-run" class="level3">
+<h3 class="anchored" data-anchor-id="resuming-an-interrupted-run">Resuming an interrupted run</h3>
+<p><code>resume = TRUE</code> continues the run in <code>directory</code>, refitting only the sample indices its <code>raw_results.csv</code> does not already carry. It is sound because a replicate’s draw is a pure function of <code>(seed, index)</code>: a reused replicate is bit-for-bit the one an uninterrupted run would have produced, so a resumed run’s artefacts are identical to that run’s. The base fit is reused too and is deliberately <em>not</em> refitted - a second fit can land on a slightly different optimum, and with <code>update_inits = TRUE</code> that would start the new replicates from a different point than the ones already on disk. The engine refuses to resume from a directory that belongs to a different run: the model and data hashes, the parameter names and the settings that shape the replicates are recorded alongside them and are checked before any is reused. Those settings are <code>samples</code>, <code>seed</code>, <code>sample_size</code>, <code>stratify_on</code>, <code>run_base_model</code>, <code>update_inits</code>, <code>keep_covariance</code> and <code>dofv</code> - all of them pinned, so a resumed run cannot <em>extend</em> an earlier one. Calling again with a larger <code>samples</code> is refused rather than topping the run up; a bigger bootstrap means a fresh <code>directory</code>. A replicate whose fit <em>errored</em> is carried forward as a failure rather than refitted, matching PsN - a fit that failed usually fails again. <code>retry_failed = TRUE</code> (which needs <code>resume = TRUE</code>) refits those instead, and is for a failure that was transient - an out-of-memory kill, a full disk - rather than one of the model.</p>
 </section>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p><code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code> to change the exclusion criteria on a finished run, <code>[ferx_sir](ferx_sir.qmd)</code> and <code>[ferx_covariance](ferx_covariance.qmd)</code> for the parametric uncertainty routes. Other fitting: <code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code>, <code>[ferx_check_init](ferx_check_init.qmd)</code>, <code>[ferx_collect](ferx_collect.qmd)</code>, <code>[ferx_covariance](ferx_covariance.qmd)</code>, <code>[ferx_fit](ferx_fit.qmd)</code>, <code>[ferx_inits_from_nca](ferx_inits_from_nca.qmd)</code>, <code>[ferx_sir](ferx_sir.qmd)</code>, <code>[ferx_stop](ferx_stop.qmd)</code>, <code>[print.ferx_job](ferx_fit_async.qmd)</code></p>
+<p><code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code> to change the exclusion criteria on a finished run, <code>[ferx_sir](ferx_sir.qmd)</code> and <code>[ferx_covariance](ferx_covariance.qmd)</code> for the parametric uncertainty routes. Other fitting: <code>[ferx_bootstrap_summarize](ferx_bootstrap_summarize.qmd)</code>, <code>[ferx_check_init](ferx_check_init.qmd)</code>, <code>[ferx_coef](ferx_coef.qmd)</code>, <code>[ferx_collect](ferx_collect.qmd)</code>, <code>[ferx_covariance](ferx_covariance.qmd)</code>, <code>[ferx_fit](ferx_fit.qmd)</code>, <code>[ferx_inits_from_nca](ferx_inits_from_nca.qmd)</code>, <code>[ferx_sir](ferx_sir.qmd)</code>, <code>[ferx_stop](ferx_stop.qmd)</code>, <code>[print.ferx_job](ferx_fit_async.qmd)</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -502,7 +513,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>bs <span class="ot">&lt;-</span> <span class="fu">ferx_bootstrap</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">samples =</span> <span class="dv">200</span>,</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stratify_on =</span> <span class="st">"SEX"</span>, <span class="at">directory =</span> <span class="st">"warfarin-bootstrap"</span>)</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_bootstrap_summarize</span>(<span class="st">"warfarin-bootstrap"</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">skip_estimate_near_boundary =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">skip_estimate_near_boundary =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Continue that run after it was interrupted: only the replicates missing</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># from the directory are fitted again.</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>bs <span class="ot">&lt;-</span> <span class="fu">ferx_bootstrap</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">samples =</span> <span class="dv">200</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stratify_on =</span> <span class="st">"SEX"</span>, <span class="at">directory =</span> <span class="st">"warfarin-bootstrap"</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                     <span class="at">resume =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

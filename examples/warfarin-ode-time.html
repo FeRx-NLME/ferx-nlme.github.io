@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-12eadd660f3a158994fcf91a0fc8323c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-cc8de2ccd46953379f7d11a74152019b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -492,8 +492,8 @@ Note
  Model: warfarin_ode_time        Dataset: warfarin
  Method: FOCE | Gradient: ANALYTIC | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   69 iterations   8.1s
- OFV: -280.3624    AIC: -266.3624    BIC: -247.4590
+ STATUS: CONVERGED   79 iterations   10.3s
+ OFV: -280.3647    AIC: -266.3647    BIC: -247.4614
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -507,14 +507,14 @@ THETA
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
 TVCL                 0.132968     0.006629        5.0
-TVV                  7.730699     0.234082        3.0
-TVKA                 0.725218     0.124462       17.2
+TVV                  7.730692     0.234079        3.0
+TVKA                 0.725191     0.124549       17.2
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.028595  CV% = 17.0  SE = 0.012793
-  ETA_V                    [log-normal]  = 0.009578  CV% = 9.8  SE = 0.004299
-  ETA_KA                   [log-normal]  = 0.348989  CV% = 64.6  SE = 0.160468
+  ETA_CL                   [log-normal]  = 0.028595  CV% = 17.0  SE = 0.012797
+  ETA_V                    [log-normal]  = 0.009577  CV% = 9.8  SE = 0.004297
+  ETA_KA                   [log-normal]  = 0.348972  CV% = 64.6  SE = 0.160825
 
 SIGMA  (residual error)
 ------------------------------------------------------------
@@ -531,7 +531,7 @@ DIAGNOSTICS
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): auto   (used: analytic)
- ferx v0.3.0 (core v0.3.0)
+ ferx v0.3.0 (core v0.4.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -559,12 +559,12 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">unique</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"KE"</span>, <span class="st">"T_HALF"</span>, <span class="st">"CMAX"</span>, <span class="st">"AUC_72"</span>)]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID         KE   T_HALF     CMAX   AUC_72
-1   1 0.01655818 41.86131 11.38328 511.3444
-12  2 0.01860713 37.25170 12.10571 544.4706
-23  3 0.01532056 45.24294 11.01640 515.0692
-34  4 0.02064343 33.57713 13.56174 594.7006
-45  5 0.01536654 45.10757 13.82102 638.4484
-56  6 0.01586528 43.68958 11.70240 522.1093</code></pre>
+1   1 0.01655817 41.86134 11.38328 511.3443
+12  2 0.01860713 37.25171 12.10571 544.4705
+23  3 0.01532054 45.24299 11.01641 515.0689
+34  4 0.02064344 33.57712 13.56174 594.7006
+45  5 0.01536653 45.10759 13.82101 638.4482
+56  6 0.01586528 43.68957 11.70240 522.1093</code></pre>
 </div>
 </div>
 </section>

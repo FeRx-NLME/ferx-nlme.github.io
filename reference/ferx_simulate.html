@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-12eadd660f3a158994fcf91a0fc8323c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-00d2c4db2b3bb0cea74cc6ad81bc7826.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-cc8de2ccd46953379f7d11a74152019b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -368,6 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#which-predictive-distribution-you-get" id="toc-which-predictive-distribution-you-get" class="nav-link" data-scroll-target="#which-predictive-distribution-you-get">Which predictive distribution you get</a></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -429,6 +430,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>"rank"</code>: Pair by the rank of each eta’s Mahalanobis norm.Requires <code>data</code> to be real observed data (every subject must have observations, so its posthoc eta can be computed). The posthoc etas are computed at the fitted parameters when <code>fit</code> is supplied, otherwise at the model file’s initial values.</li>
 <li><code>horizon</code>: Optional administrative censoring time for time-to-event (TTE) endpoints. A finite, positive <code>horizon</code> is <strong><em>required</em></strong> to simulate a drug-driven (joint PK-TTE) model: the augmented hazard ODE is integrated until the cumulative hazard reaches <code>-log U</code>, censoring at <code>horizon</code> if no event fires (ferx-core #564). Purely-Gaussian models ignore it. <code>NULL</code> (default) leaves it unset.</li>
 </ul>
+</section>
+<section id="which-predictive-distribution-you-get" class="level2">
+<h2 class="anchored" data-anchor-id="which-predictive-distribution-you-get">Which predictive distribution you get</h2>
+<p><code>ferx_simulate()</code> draws a <strong><em>fresh set of random effects for every ID in <code>data</code>, in every replicate</em></strong>, and adds residual error on top. At the default <code>match = FALSE</code> it does not read the observed <code>DV</code> at all (see the <code>data</code> argument), so each subject’s draw is unconditional: the <em>prior</em> predictive under the estimated parameters, not a posterior one. <code>match</code> is the exception, on the assignment rather than on the draw. The pool of etas per replicate is the same unconditional sample with the same marginal distribution, but <em>which</em> member of it lands on a given subject is chosen by matching against that subject’s posthoc eta - computed from that subject’s observed <code>DV</code>, which is why matching requires every subject to carry observations. So under <code>match</code> the eta paired with a particular observed design <strong><em>is</em></strong> informed by that design’s data; that is the point of it (it restores the design-eta association that adaptive dosing puts in real-world data), and it means the per-subject draw is no longer the unconditional one described above. What that distribution is <em>of</em> follows from what one ID means in your data and what level the etas were estimated at. The two are the same thing in individual-level PK, where an ID is a patient - but not in a model-based meta-analysis, where a row is a trial-arm summary, an ID is a study or an arm and the etas are <strong><em>between-study</em></strong> random effects. There, each replicate is a set of <strong><em>new studies</em></strong>, and <code>DV_SIM</code> is the predictive distribution of the <em>next trial’s readout</em> - not of the next patient. A patient-level interval needs a patient-level random effect in the model and rows at patient level in the data; ferx will not manufacture one, and quoting a between-study interval as a between-patient one is the error this note exists to prevent. Within a run, pick the column that matches the question:</p>
+<ul>
+<li><code>IPRED</code>: the mean response of the newly drawn study/subject - random effects, no residual error.</li>
+<li><code>DV_SIM</code>: that study’s/subject’s <em>observed</em> readout - random effects plus residual error. This is the column a VPC and a predictive interval are built from.</li>
+</ul>
+<p>Two neighbouring functions cover the other levels: <code>[ferx_predict](ferx_predict.qmd)</code>gives the typical-value curve (all etas at zero, no residual error), and <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)</code> adds <strong><em>parameter</em></strong>uncertainty (a theta/omega/sigma draw per replicate) on top of the random effects, which is what a decision interval for a future trial usually wants. For the individual etas conditioned on observed data, see <code>fit$ebe_etas</code> and <code>[ferx_conddist](ferx_conddist.qmd)</code>.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
