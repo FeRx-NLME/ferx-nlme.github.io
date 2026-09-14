@@ -1,6 +1,6 @@
 ---
 title: "Example: Model search and automatic model development"
-description-meta: "Search a PK model space from R with ferx: MFL search spaces, modelsearch, iivsearch, iovsearch, ruvsearch, covsearch, allometry, and the ferx_amd() pipeline."
+description-meta: "Search a PK model space from R with ferx: MFL search spaces, modelsearch, iivsearch, iovsearch, ruvsearch, covsearch, allometry, the globalsearch grid, and the ferx_amd() pipeline."
 ---
 
 Model development is a sequence of decisions — one compartment or two, which
@@ -9,7 +9,7 @@ a time-varying term, which covariates earn their place. ferx can make those
 decisions by search rather than by hand, using the same tool chain as Pharmpy's
 `amd`, driven from R.
 
-There are six tools and one pipeline that runs them in order:
+There are seven tools and one pipeline that runs six of them in order:
 
 | Function | Decides | Ranks on |
 |---|---|---|
@@ -19,7 +19,8 @@ There are six tools and one pipeline that runs them in order:
 | [`ferx_ruvsearch()`](../reference/ferx_ruvsearch.qmd) | the residual-error model | likelihood-ratio test |
 | [`ferx_covsearch()`](../reference/ferx_covsearch.qmd) | which covariate effects to include (SCM, forward / forward-backward) | likelihood-ratio test |
 | [`ferx_allometry()`](../reference/ferx_allometry.qmd) | allometric scaling on weight — a transform, not a search | — |
-| [`ferx_amd()`](../reference/ferx_amd.qmd) | all of the above, in order, each step starting from what the last one selected | per step |
+| [`ferx_globalsearch()`](../reference/ferx_globalsearch.qmd) | structure **and** covariates together, as one grid — exhaustively or by genetic algorithm | penalized fitness |
+| [`ferx_amd()`](../reference/ferx_amd.qmd) | the six stepwise tools, in order, each step starting from what the last one selected | per step |
 
 Everything below runs against bundled examples, so it is reproducible without
 your own data.
@@ -294,6 +295,154 @@ Scaling on WT (reference 70):
 Not fitted (`fit = FALSE`); the scaled model is in `$model`.
 ```
 
+## All axes at once: `ferx_globalsearch()`
+
+Every tool above walks one axis of the model space with the others held
+fixed. `ferx_modelsearch()` decides the structure with the covariate model
+fixed; `ferx_covsearch()` decides the covariates with the structure fixed.
+That is cheap, and it is blind to exactly one thing: an effect that only pays
+off once another decision has gone the other way. A clearance covariate that
+earns its place only after the distribution phase has a compartment of its own
+is invisible to a forward step taken on the one-compartment model.
+
+[`ferx_globalsearch()`](../reference/ferx_globalsearch.qmd) lays both kinds of
+decision out as **one grid** and searches it whole. Every structural category
+in the space becomes an axis with its values as alleles; every optional
+`COVARIATE?` pair becomes an axis whose alleles are `none` and each of its
+forms. `algorithm = "exhaustive"` fits every point of the grid;
+`algorithm = "ga"` — the default — runs pyDarwin's genetic algorithm over it
+and fits a fraction of them.
+
+The bundled `two_cpt_oral_global` example is built to have something to find:
+a *one*-compartment, covariate-free model on data that carry `WT` and `CRCL`
+and were simulated from two compartments, so all four axes are live.
+
+```r
+ex  <- ferx_example("two_cpt_oral_global")
+res <- ferx_globalsearch(config = ex$search, directory = "globalsearch-run")
+res
+```
+
+```
+ferx global model search (exhaustive, ranked on penalized)
+  Data:  .../examples/data/two_cpt_oral_cov.csv
+  Wrote: globalsearch-run
+  Grid:  16 points over 4 axes
+    LAGTIME: OFF | ON
+    PERIPHERALS: 0 | 1
+    CL-WT: none | power
+    CL-CRCL: none | power
+  Input: OFV -172.2, penalized -102.2
+  Fitness: -102.2 (input) -> -796 (run6)
+  17 models fitted of 17 evaluated
+
+Ranked models (best first):
+ rank    id                                              genome    ofv criterion fitness converged passed
+    1  run6  LAGTIME=OFF;PERIPHERALS=1;CL-WT=none;CL-CRCL=power -896.0   -796.00 -796.00      TRUE   TRUE
+    2  run8 LAGTIME=OFF;PERIPHERALS=1;CL-WT=power;CL-CRCL=power -901.3   -791.30 -791.30      TRUE   TRUE
+    3 run13    LAGTIME=ON;PERIPHERALS=1;CL-WT=none;CL-CRCL=none -887.5   -777.50 -777.50      TRUE   TRUE
+    4 run14   LAGTIME=ON;PERIPHERALS=1;CL-WT=none;CL-CRCL=power -895.4   -775.40 -775.40      TRUE   TRUE
+    5 run15   LAGTIME=ON;PERIPHERALS=1;CL-WT=power;CL-CRCL=none -893.4   -773.40 -773.40      TRUE   TRUE
+    6 run16  LAGTIME=ON;PERIPHERALS=1;CL-WT=power;CL-CRCL=power -896.4   -766.40 -766.40      TRUE   TRUE
+    7  run1   LAGTIME=OFF;PERIPHERALS=0;CL-WT=none;CL-CRCL=none -172.2   -102.20 -102.20      TRUE   TRUE
+    8 input                                                <NA> -172.2   -102.20 -102.20      TRUE   TRUE
+    9  run2  LAGTIME=OFF;PERIPHERALS=0;CL-WT=none;CL-CRCL=power -179.4    -99.36  -99.36      TRUE   TRUE
+   10  run3  LAGTIME=OFF;PERIPHERALS=0;CL-WT=power;CL-CRCL=none -179.3    -99.27  -99.27      TRUE   TRUE
+   11  run4 LAGTIME=OFF;PERIPHERALS=0;CL-WT=power;CL-CRCL=power -185.5    -95.49  -95.49      TRUE   TRUE
+```
+
+**Read the first two rows before anything else.** `run8` has the better OFV
+(-901.3 against -896.0) and ranks *second*. It carries one more covariate
+relation than `run6`, and the penalized criterion charges it for the extra
+parameter. A table that showed only the OFV would name the wrong winner —
+which is the reason the criterion and the OFV are separate columns.
+
+### The criterion is not the whole of the ranking
+
+`[rank] type` defaults to `"penalized"` here, where every other tool defaults
+to a BIC: pyDarwin's fitness, the objective function plus a charge per
+estimated parameter and per unhealthy fit. Whatever criterion you name, the
+global search then charges three further things the criterion cannot see, and
+ranks on the sum — the `fitness` column, always finite:
+
+| charge | paid by |
+|---|---|
+| `charge_non_influential` | a gene that changed nothing in the rendered model — a covariate on a parameter the structural choice removed. A tie-break towards the simpler genotype among models that are otherwise identical. |
+| `charge_gate` | a fit the `[strictness]` gate refused. It can never be selected, but it still steers the genetic algorithm away from the region that produced it. |
+| `charge_crash` | a candidate that produced no fit at all — it does not compile, or the fit errored. Large, and finite, so the algorithm can still rank it. |
+
+They are columns of `$models`, beside the `criterion` and the `fitness` they
+add up to. `print()` lists the models that paid one:
+
+```
+Models the search charged beyond the criterion:
+    id                                             genome criterion charge_non_influential charge_gate charge_crash fitness
+  run5  LAGTIME=OFF;PERIPHERALS=1;CL-WT=none;CL-CRCL=none   -411.00                      0         100            0  -311.0
+  run7 LAGTIME=OFF;PERIPHERALS=1;CL-WT=power;CL-CRCL=none   -404.20                      0         100            0  -304.2
+  run9   LAGTIME=ON;PERIPHERALS=0;CL-WT=none;CL-CRCL=none     16.52                      0         100            0   116.5
+ run10  LAGTIME=ON;PERIPHERALS=0;CL-WT=none;CL-CRCL=power     19.34                      0         100            0   119.3
+ run11  LAGTIME=ON;PERIPHERALS=0;CL-WT=power;CL-CRCL=none     19.46                      0         100            0   119.5
+ run12  LAGTIME=ON;PERIPHERALS=0;CL-WT=power;CL-CRCL=power     23.34                      0         100            0   123.3
+```
+
+This is the same "never a silent drop" rule the stepwise tools follow, one
+level further: a gated genome is not merely present in the table, it says what
+the gate cost it. Without that column, `run5` at fitness -311.0 would look
+like a model that simply fitted worse than `run6` — rather than one the gate
+refused, which happens to sit 100 units away because of it.
+
+`$penalties` is the effective schedule the run charged, so the fitness column
+can be read against the numbers that built it.
+
+### The genetic algorithm
+
+Sixteen points is small enough to enumerate, which is what makes the bundled
+file a reference: on a grid this size the GA has to find the same winner. On a
+grid of thousands — six covariate pairs already give 64 covariate axes' worth
+of combinations — enumerating is not an option and finding it at all is the
+point.
+
+```r
+res_ga <- ferx_globalsearch(
+  model        = ex$model,
+  data         = ex$data,
+  search_space = c("PERIPHERALS(0..1); LAGTIME([OFF,ON])",
+                   "COVARIATE?(CL, WT, pow); COVARIATE?(CL, CRCL, pow)"),
+  algorithm    = "ga",
+  ga           = list(population_size = 8, generations = 3, seed = 20250914),
+  directory    = "globalsearch-ga"
+)
+res_ga$generations
+```
+
+```
+  index best best_fitness mean_fitness polished
+1     0 run1    -779.4346    -323.4043        0
+2     1 run9    -796.0057    -438.3091        0
+3     2 run9    -796.0057    -441.3968        0
+4     3 run9    -796.0057    -497.5284        1
+```
+
+`ga` takes a named list validated against the engine's own key list, so a
+mistyped knob is refused by name before anything is fitted. The `seed` is what
+makes `resume = TRUE` reuse a journal: the same seed on the same grid proposes
+the same genomes.
+
+`algorithm` is matched exactly rather than by prefix — `algorithm = "e"` is an
+error naming the value, not a silent choice to enumerate a grid nobody has
+sized. For the same reason an exhaustive grid above `[globalsearch] max_models`
+(500 by default) is an error naming the size, never a truncated search.
+
+::: {.callout-note}
+## Not the same as `ferx_fit(settings = list(global_search = TRUE))`
+
+That setting is a global *optimizer* phase inside the estimation of **one**
+model — a wider search for the parameter values of a fixed model.
+`ferx_globalsearch()` is a global search over **models**. The name here is the
+engine's, the `.ferxsearch` file's (`[globalsearch]`), the `ferx globalsearch`
+command's and Pharmpy/pyDarwin's, so a search stays portable between them.
+:::
+
 ## The whole pipeline: `ferx_amd()`
 
 `ferx_amd()` runs the tools in order, each step starting from the model the
@@ -440,13 +589,15 @@ tool.
 
 - **Some `.ferxsearch` sections have no R tool.** The engine accepts a section
   for every tool *it* knows, which is more than this package binds —
-  `[globalsearch]` and `[structsearch]` today. Such a file loads, and ferx
-  warns that no R tool consumes the section, because the stepwise tools would
-  otherwise run a stepwise search without saying so. Where the section can be
-  run elsewhere the warning says where: `[globalsearch]` is the engine's own
-  tool, behind `ferx globalsearch`. `[structsearch]` is accepted vocabulary
-  with no engine module behind it yet, so it is reported without a
-  remediation rather than with one that names a command that does not exist.
+  `[structsearch]` today. Such a file loads, and ferx warns that no R tool
+  consumes the section, because the tool it *is* handed would otherwise run a
+  different search without saying so. `[structsearch]` is accepted vocabulary
+  with no engine module behind it yet, so it is reported without a remediation
+  rather than with one that names a command that does not exist. What the
+  warning reports is the complement of the sections this package has a tool
+  for, so a section a later ferx-core adds is named from the day a file can
+  carry it — and stops being named on the day a binding lands, as
+  `[globalsearch]` did when `ferx_globalsearch()` shipped.
 - **Cancelling** a search from R interrupts it at the next candidate boundary;
   the run still writes its partial tables.
 - **The strictness gate is shared.** `[strictness]` in the configuration
@@ -463,6 +614,8 @@ tool.
 
 - [`ferx_amd()`](../reference/ferx_amd.qmd),
   [`ferx_amd_plan()`](../reference/ferx_amd_plan.qmd)
+- [`ferx_globalsearch()`](../reference/ferx_globalsearch.qmd) — the grid over
+  structure and covariates together
 - [`ferx_search_config()`](../reference/ferx_search_config.qmd),
   [`ferx_search_space()`](../reference/ferx_search_space.qmd),
   [`ferx_search_coverage()`](../reference/ferx_search_coverage.qmd),

@@ -94,7 +94,8 @@ Pharmpy's `amd` tool chain, in the engine and callable from R.
 | **ruvsearch** | residual-error model, by likelihood-ratio test | beta |
 | **covsearch** | covariate effects, by SCM forward / forward-backward | beta |
 | **allometry** | allometric scaling on body size | beta |
-| **amd** | the whole pipeline, each step starting from what the last one selected | beta |
+| **globalsearch** | structure **and** covariates together, as one grid — exhaustive or genetic algorithm | beta |
+| **amd** | the stepwise pipeline, each step starting from what the last one selected | beta |
 
 - Search spaces are written in **MFL** (Pharmpy's Model Feature Language), so a
   space is portable between the two tools
