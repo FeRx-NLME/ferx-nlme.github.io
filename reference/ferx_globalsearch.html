@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Coverage of a search space against what the engine can express – ferx</title>
+<title>Global model search – ferx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,14 +116,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Coverage of a search space against what the engine can express – ferx">
+<meta property="og:title" content="Global model search – ferx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta property="og:site_name" content="ferx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Coverage of a search space against what the engine can express – ferx">
+<meta name="twitter:title" content="Global model search – ferx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
-<link rel="canonical" href="https://ferx-nlme.github.io/reference/ferx_search_coverage.html">
+<link rel="canonical" href="https://ferx-nlme.github.io/reference/ferx_globalsearch.html">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -369,6 +369,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
   <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
+  <li><a href="#a-different-name-from-ferx_fits-global_search" id="toc-a-different-name-from-ferx_fits-global_search" class="nav-link" data-scroll-target="#a-different-name-from-ferx_fits-global_search">A different name from ferx_fit()’s global_search</a></li>
+  <li><a href="#ranking-and-the-charges-the-criterion-cannot-see" id="toc-ranking-and-the-charges-the-criterion-cannot-see" class="nav-link" data-scroll-target="#ranking-and-the-charges-the-criterion-cannot-see">Ranking, and the charges the criterion cannot see</a></li>
+  <li><a href="#two-entry-forms" id="toc-two-entry-forms" class="nav-link" data-scroll-target="#two-entry-forms">Two entry forms</a></li>
+  <li><a href="#what-the-space-may-say" id="toc-what-the-space-may-say" class="nav-link" data-scroll-target="#what-the-space-may-say">What the space may say</a></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -382,7 +386,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Coverage of a search space against what the engine can express</h1>
+<h1 class="title">Global model search</h1>
 </div>
 
 
@@ -401,25 +405,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>The engine refuses to narrow a search space silently: a feature it cannot build a candidate for is an error at load (<code>[ferx_search_config](ferx_search_config.qmd)</code>). This function reports the same information non-fatally, as a table, so an unsupported feature is a row to read rather than a run that aborts - the way to find out that <code>ELIMINATION(MM)</code> has no candidate before writing the file.</p>
+<p>Searches a model space <em>globally</em> rather than one axis at a time. Every structural category the space names becomes an axis of a grid with that category’s values as its alleles, every optional <code>COVARIATE?</code> pair becomes an axis whose alleles are <code>none</code> and each of its forms, and the search walks the grid: <code>"exhaustive"</code> fits every point, <code>"ga"</code> - the default - runs pyDarwin’s genetic algorithm over it and fits a fraction of them.</p>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_search_coverage</span>(space)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_globalsearch</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">search_space =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">config =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">algorithm =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iiv_strategy =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_models =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">ga =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">penalties =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">rank =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cutoff =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">threads =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">retries =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">directory =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">resume =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">progress =</span> <span class="fu">interactive</span>()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># S3 method for ferx_globalsearch</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x, <span class="at">digits =</span> <span class="dv">4</span>, ...)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># S3 method for ferx_globalsearch</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(object, <span class="at">digits =</span> <span class="dv">4</span>, ...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
-<li><code>space</code>: A <code>ferx_search_space</code>, a <code>ferx_search_config</code>, or MFL source text.</li>
+<li><code>model</code>: Path to a <code>.ferx</code> model, or a <code>ferx_model</code> object. Omit when <code>config</code> is given.</li>
+<li><code>data</code>: Path to the dataset. Defaults to the model’s <code>[data]</code> block. Names the dataset the search runs on, so like <code>model</code> it cannot be given beside <code>config</code>.</li>
+<li><code>search_space</code>: MFL text naming the grid, e.g. <code>"PERIPHERALS(0..1); LAGTIME([OFF,ON]); COVARIATE?(CL, WT, pow)"</code>.</li>
+<li><code>config</code>: Path to a <code>.ferxsearch</code> file. Mutually exclusive with the arguments that state the search.</li>
+<li><code>algorithm</code>: <code>"ga"</code> (the default) or <code>"exhaustive"</code>. <code>NULL</code> keeps the engine default. An unrecognised value is an error naming it - there is no partial matching here, because <code>algorithm = "e"</code> choosing an exhaustive grid over a four-axis space is not a typo worth guessing at.</li>
+<li><code>iiv_strategy</code>: How a candidate’s new structural parameters are given a random effect: <code>"absorption_delay"</code> (the default), <code>"add_diagonal"</code> or <code>"no_add"</code>. <code>NULL</code> keeps the engine default.</li>
+<li><code>max_models</code>: The largest grid <code>"exhaustive"</code> will enumerate (500 unless the file says otherwise). A bigger grid is an error naming the size, not a truncated search; the genetic algorithm has no such cap.</li>
+<li><code>ga</code>: A named list of <code>[globalsearch.ga]</code> knobs - <code>population_size</code>, <code>generations</code>, <code>crossover_rate</code>, <code>mutation_rate</code>, <code>gene_mutation_probability</code>, <code>elites</code>, <code>tournament_size</code>, <code>downhill_period</code>, <code>niches</code>, <code>niche_radius</code>, <code>niche_penalty</code>, <code>sharing_alpha</code>, <code>final_downhill</code>, <code>seed</code>. The key list and its defaults come from the engine, so an unknown knob is refused by name. Only meaningful for <code>algorithm = "ga"</code>.</li>
+<li><code>penalties</code>: A named list of <code>[rank.penalties]</code> charges to override - <code>theta</code>, <code>omega</code>, <code>sigma</code>, <code>convergence</code>, <code>covariance</code>, <code>correlation</code>, <code>max_correlation</code>, <code>condition_number</code>, <code>max_condition_number</code>, <code>non_influential</code>, <code>crash</code>, <code>gate</code>. The first nine are the <code>"penalized"</code> criterion’s own schedule; the last three are the search-level charges, which apply under any criterion.</li>
+<li><code>rank</code>: <code>[rank] type</code> - the criterion the fitness is built on, e.g.&nbsp;<code>"penalized"</code>, <code>"bic"</code>, <code>"aic"</code>, <code>"ofv"</code>. <code>NULL</code> keeps the tool default (<code>"penalized"</code>).</li>
+<li><code>cutoff</code>: <code>[rank] cutoff</code>: the margin, on the fitness scale, by which a candidate must beat the <em>input</em> model to be selected - not the base model, as in the stepwise tools, because a global search has no base beyond where it started. <code>NULL</code> selects the best eligible candidate outright.</li>
+<li><code>threads</code>: Total worker threads. <code>NULL</code> lets the runner choose.</li>
+<li><code>retries</code>: Perturbed restarts per candidate on top of the exact one. <code>NULL</code> keeps the engine default.</li>
+<li><code>directory</code>: Where the per-batch journals, <code>models.csv</code>, <code>generations.csv</code>, <code>models/&lt;id&gt;.ferx</code> and <code>final.ferx</code> are written. <code>NULL</code> keeps the run in memory, which also means it cannot be resumed.</li>
+<li><code>resume</code>: Reuse the fits already journalled in <code>directory</code>. The genetic algorithm proposes the same genomes for the same <code>seed</code> on the same grid, which is what makes a resume reuse its journal. Refused before the first fit when there is nothing to resume from - no <code>directory</code>, or a <code>directory</code> no earlier run wrote - rather than quietly searching from scratch.</li>
+<li><code>progress</code>: Print the engine’s batch progress to the console.</li>
+<li><code>x</code>: A <code>ferx_globalsearch</code> object.</li>
+<li><code>digits</code>: Significant digits for the printed tables.</li>
+<li><code>...</code>: Ignored.</li>
+<li><code>object</code>: A <code>ferx_globalsearch</code> object.</li>
 </ul>
 </section>
 <section id="details" class="level2">
 <h2 class="anchored" data-anchor-id="details">Details</h2>
-<p>Covered features are listed as written. An uncovered feature is listed once per gap, under the name the engine reports - the offending mode (<code>ELIMINATION(MM)</code>), which for a wildcard such as <code>ELIMINATION(*)</code> is the more useful identity than the source statement.</p>
+<p>Where <code>[ferx_modelsearch](ferx_modelsearch.qmd)</code> decides the structure and <code>[ferx_covsearch](ferx_covsearch.qmd)</code> the covariate relations, each conditional on the other being fixed, a global search decides them together. That is the case for using it - a covariate that only pays off once a second compartment is in the model is invisible to a stepwise search - and the cost is the fit count: an exhaustive grid is the product of its axes, and is refused outright above <code>max_models</code> rather than silently truncated.</p>
+</section>
+<section id="a-different-name-from-ferx_fits-global_search" class="level2">
+<h2 class="anchored" data-anchor-id="a-different-name-from-ferx_fits-global_search">A different name from ferx_fit()’s global_search</h2>
+<p><code>ferx_fit(settings = list(global_search = TRUE))</code> is a global <em>optimizer</em> phase inside the estimation of one model - a wider search for the parameter values of a fixed model. <code>ferx_globalsearch()</code> is a global search over <em>models</em>. The two are unrelated; the name here is the engine’s, the <code>.ferxsearch</code> file’s (<code>[globalsearch]</code>), the <code>ferx globalsearch</code> command’s and Pharmpy/pyDarwin’s, so a search is portable between them.</p>
+</section>
+<section id="ranking-and-the-charges-the-criterion-cannot-see" class="level2">
+<h2 class="anchored" data-anchor-id="ranking-and-the-charges-the-criterion-cannot-see">Ranking, and the charges the criterion cannot see</h2>
+<p><code>[rank] type</code> defaults to <code>"penalized"</code> here - pyDarwin’s fitness, the objective function plus a charge per estimated parameter and per unhealthy fit - where every other tool defaults to a BIC. Any criterion may be named instead. Whatever the criterion, the search charges three things on top of it, and ranks on the sum (<code>fitness</code>, always finite):</p>
+<ul>
+<li><code>charge_non_influential</code>: Per gene of a genome that changed nothing in the rendered model - a covariate on a parameter the structural choice removed. A tie-break towards the simpler genotype among models that are identical in every other way.</li>
+<li><code>charge_gate</code>: A fit the <code>[strictness]</code> gate refused. It cannot be selected, but it still steers a genetic algorithm.</li>
+<li><code>charge_crash</code>: A candidate that produced no fit at all - it does not compile, or the fit errored. Large, and finite, so the algorithm can still rank it.</li>
+</ul>
+<p>The three are columns of <code>$models</code> beside <code>criterion</code> and <code>fitness</code>, so a genome that lost to a tie-break penalty does not read as though it lost on OFV. <code>$penalties</code> is the effective schedule the run charged.</p>
+</section>
+<section id="two-entry-forms" class="level2">
+<h2 class="anchored" data-anchor-id="two-entry-forms">Two entry forms</h2>
+<p>Pass either <code>config</code> - a <code>.ferxsearch</code> file, which is the reproducible artifact - or the inline arguments. The inline form is rendered into the same configuration and handed to the engine’s own loader, so the two cannot disagree; <code>search_space</code> is MFL text, quoted verbatim. The run arguments (<code>threads</code>, <code>retries</code>, <code>resume</code>, <code>directory</code>, <code>progress</code>) say how to run a search rather than what to search, and are available to both forms.</p>
+</section>
+<section id="what-the-space-may-say" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-space-may-say">What the space may say</h2>
+<p><code>ABSORPTION</code>, <code>ELIMINATION</code>, <code>PERIPHERALS</code>, <code>TRANSITS</code>, <code>LAGTIME</code> and <code>COVARIATE?</code>. A variability statement (<code>IIV?</code> / <code>IOV?</code>) or <code>ALLOMETRY</code> is another tool’s axis and is refused by name before any fit starts, as is a feature the engine cannot build. Check a space with <code>[ferx_search_space](ferx_search_space.qmd)</code> / <code>[ferx_search_coverage](ferx_search_coverage.qmd)</code> first: both answer without fitting anything.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p><code>[ferx_search_space](ferx_search_space.qmd)</code>, <code>[ferx_search_config](ferx_search_config.qmd)</code>Other search: <code>[ferx_allometry](ferx_allometry.qmd)</code>, <code>[ferx_amd](ferx_amd.qmd)</code>, <code>[ferx_amd_plan](ferx_amd_plan.qmd)</code>, <code>[ferx_covsearch](ferx_covsearch.qmd)</code>, <code>[ferx_globalsearch](ferx_globalsearch.qmd)</code>, <code>[ferx_iivsearch](ferx_iivsearch.qmd)</code>, <code>[ferx_iovsearch](ferx_iovsearch.qmd)</code>, <code>[ferx_modelsearch](ferx_modelsearch.qmd)</code>, <code>[ferx_ruvsearch](ferx_ruvsearch.qmd)</code>, <code>[ferx_search_config](ferx_search_config.qmd)</code>, <code>[ferx_search_results](ferx_search_results.qmd)</code>, <code>[ferx_search_space](ferx_search_space.qmd)</code></p>
+<p><code>[ferx_modelsearch](ferx_modelsearch.qmd)</code> and <code>[ferx_covsearch](ferx_covsearch.qmd)</code>for the stepwise searches of the same two axes, <code>[ferx_search_space](ferx_search_space.qmd)</code>, <code>[ferx_search_coverage](ferx_search_coverage.qmd)</code>, <code>[ferx_search_results](ferx_search_results.qmd)</code>Other search: <code>[ferx_allometry](ferx_allometry.qmd)</code>, <code>[ferx_amd](ferx_amd.qmd)</code>, <code>[ferx_amd_plan](ferx_amd_plan.qmd)</code>, <code>[ferx_covsearch](ferx_covsearch.qmd)</code>, <code>[ferx_iivsearch](ferx_iivsearch.qmd)</code>, <code>[ferx_iovsearch](ferx_iovsearch.qmd)</code>, <code>[ferx_modelsearch](ferx_modelsearch.qmd)</code>, <code>[ferx_ruvsearch](ferx_ruvsearch.qmd)</code>, <code>[ferx_search_config](ferx_search_config.qmd)</code>, <code>[ferx_search_coverage](ferx_search_coverage.qmd)</code>, <code>[ferx_search_results](ferx_search_results.qmd)</code>, <code>[ferx_search_space](ferx_search_space.qmd)</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -427,14 +495,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A data frame with columns <code>feature</code>, <code>covered</code> (logical) and <code>reason</code> (<code>NA</code> for a covered feature, otherwise the engine’s explanation).</p>
+<p>An object of class <code>ferx_globalsearch</code>:</p>
+<ul>
+<li>models: The model table, one row per grid point evaluated (and the input), in the engine’s own column order: <code>id</code>, <code>parent</code>, <code>step</code>, <code>genome</code>, <code>absorption</code>, <code>elimination</code>, <code>peripherals</code>, <code>transits</code>, <code>lagtime</code>, <code>covariates</code>, <code>n_parameters</code>, <code>ofv</code>, <code>criterion</code>, <code>fitness</code>, <code>rank</code>, <code>converged</code>, <code>passed</code>, <code>failures</code>, <code>error</code>, <code>seconds</code>, <code>selected</code>, <code>non_influential</code>, <code>duplicate_of</code>, <code>reused</code> - followed by <code>charge_non_influential</code>, <code>charge_gate</code> and <code>charge_crash</code>, the decomposition of what the search added to the criterion to reach the fitness.</li>
+<li>fit: The winning model’s fit as a <code>ferx_fit</code>, or <code>NULL</code> when a degraded resume could not recover it.</li>
+<li>model_text: Every evaluated model’s text, named by model id.</li>
+<li>axes, space_size: The grid: a named list of each axis’s allele labels, and the number of points they multiply out to. A double rather than an integer, because the product of enough axes exceeds R’s integer range while remaining a grid the genetic algorithm can search.</li>
+<li>generations: The genetic algorithm’s trajectory - <code>index</code>, <code>best</code> (the model id), <code>best_fitness</code>, <code>mean_fitness</code>, <code>polished</code> - or <code>NULL</code> for an exhaustive search.</li>
+<li>input_model, input_ofv, input_criterion, input_fitness: The model the search started from, and what it scored.</li>
+<li>final_model, final_model_path, final_model_id, final_criterion, final_fitness: The winning model’s text, the <code>final.ferx</code> written beside the run, its id, and the two values it won on.</li>
+<li>criterion, algorithm, iiv_strategy, max_models, cutoff: What the search ranked on and how it searched.</li>
+<li>penalties, ga: The effective <code>[rank.penalties]</code> schedule and <code>[globalsearch.ga]</code> settings, as named numeric vectors.</li>
+<li>n_fitted: Models actually fitted, as against grid points evaluated: a duplicate genome and a cached one cost no fit.</li>
+<li>candidates: The runner’s candidate table for every batch the run wrote one - see <code>[ferx_search_results](ferx_search_results.qmd)</code>.</li>
+<li>notes, cancelled: What the search wants said once, and whether it was stopped early.</li>
+</ul>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_search_coverage</span>(<span class="st">"ABSORPTION([INST, FO]); ELIMINATION(FO)"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_global"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># A gap is a row, not an error</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_search_coverage</span>(<span class="st">"ELIMINATION([FO, MM])"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Inline: a small grid, enumerated exhaustively</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">ferx_globalsearch</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">model        =</span> ex<span class="sc">$</span>model,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data         =</span> ex<span class="sc">$</span>data,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">search_space =</span> <span class="st">"PERIPHERALS(0..1); COVARIATE?(CL, WT, pow)"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">algorithm    =</span> <span class="st">"exhaustive"</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">directory    =</span> <span class="st">"globalsearch-run-1"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>res</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>models[, <span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"genome"</span>, <span class="st">"criterion"</span>, <span class="st">"charge_gate"</span>, <span class="st">"fitness"</span>, <span class="st">"rank"</span>)]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># The genetic algorithm over the same grid, seeded so a resume can reuse</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># the journal it writes</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>res2 <span class="ot">&lt;-</span> <span class="fu">ferx_globalsearch</span>(</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">model        =</span> ex<span class="sc">$</span>model,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data         =</span> ex<span class="sc">$</span>data,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">search_space =</span> <span class="st">"PERIPHERALS(0..1); COVARIATE?(CL, WT, pow)"</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">algorithm    =</span> <span class="st">"ga"</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">ga           =</span> <span class="fu">list</span>(<span class="at">population_size =</span> <span class="dv">8</span>, <span class="at">generations =</span> <span class="dv">3</span>, <span class="at">seed =</span> <span class="dv">1</span>),</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">directory    =</span> <span class="st">"globalsearch-run-2"</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>res2<span class="sc">$</span>generations</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproducible: the bundled .ferxsearch is the artifact, and states the</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># whole search - a four-axis grid, enumerated, ranked on penalized fitness</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>res3 <span class="ot">&lt;-</span> <span class="fu">ferx_globalsearch</span>(<span class="at">config =</span> ex<span class="sc">$</span>search, <span class="at">directory =</span> <span class="st">"globalsearch-run-3"</span>)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(res3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Search a PK model space from R with ferx: MFL search spaces, modelsearch, iivsearch, iovsearch, ruvsearch, covsearch, allometry, and the ferx_amd() pipeline.">
+<meta name="description" content="Search a PK model space from R with ferx: MFL search spaces, modelsearch, iivsearch, iovsearch, ruvsearch, covsearch, allometry, the globalsearch grid, and the ferx_amd() pipeline.">
 
 <title>Example: Model search and automatic model development – ferx</title>
 <style>
@@ -369,6 +369,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-search-space-is-mfl" id="toc-the-search-space-is-mfl" class="nav-link active" data-scroll-target="#the-search-space-is-mfl">The search space is MFL</a></li>
   <li><a href="#check-the-space-before-paying-for-it" id="toc-check-the-space-before-paying-for-it" class="nav-link" data-scroll-target="#check-the-space-before-paying-for-it">Check the space before paying for it</a></li>
   <li><a href="#one-tool-at-a-time" id="toc-one-tool-at-a-time" class="nav-link" data-scroll-target="#one-tool-at-a-time">One tool at a time</a></li>
+  <li><a href="#all-axes-at-once-ferx_globalsearch" id="toc-all-axes-at-once-ferx_globalsearch" class="nav-link" data-scroll-target="#all-axes-at-once-ferx_globalsearch">All axes at once: <code>ferx_globalsearch()</code></a>
+  <ul class="collapse">
+  <li><a href="#the-criterion-is-not-the-whole-of-the-ranking" id="toc-the-criterion-is-not-the-whole-of-the-ranking" class="nav-link" data-scroll-target="#the-criterion-is-not-the-whole-of-the-ranking">The criterion is not the whole of the ranking</a></li>
+  <li><a href="#the-genetic-algorithm" id="toc-the-genetic-algorithm" class="nav-link" data-scroll-target="#the-genetic-algorithm">The genetic algorithm</a></li>
+  </ul></li>
   <li><a href="#the-whole-pipeline-ferx_amd" id="toc-the-whole-pipeline-ferx_amd" class="nav-link" data-scroll-target="#the-whole-pipeline-ferx_amd">The whole pipeline: <code>ferx_amd()</code></a>
   <ul class="collapse">
   <li><a href="#plan-first" id="toc-plan-first" class="nav-link" data-scroll-target="#plan-first">Plan first</a></li>
@@ -405,7 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Model development is a sequence of decisions — one compartment or two, which parameters carry between-subject variability, whether the residual error needs a time-varying term, which covariates earn their place. ferx can make those decisions by search rather than by hand, using the same tool chain as Pharmpy’s <code>amd</code>, driven from R.</p>
-<p>There are six tools and one pipeline that runs them in order:</p>
+<p>There are seven tools and one pipeline that runs six of them in order:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -446,8 +451,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>—</td>
 </tr>
 <tr class="odd">
+<td><a href="../reference/ferx_globalsearch.html"><code>ferx_globalsearch()</code></a></td>
+<td>structure <strong>and</strong> covariates together, as one grid — exhaustively or by genetic algorithm</td>
+<td>penalized fitness</td>
+</tr>
+<tr class="even">
 <td><a href="../reference/ferx_amd.html"><code>ferx_amd()</code></a></td>
-<td>all of the above, in order, each step starting from what the last one selected</td>
+<td>the six stepwise tools, in order, each step starting from what the last one selected</td>
 <td>per step</td>
 </tr>
 </tbody>
@@ -635,14 +645,124 @@ Scaling on WT (reference 70):
 
 Not fitted (`fit = FALSE`); the scaled model is in `$model`.</code></pre>
 </section>
+<section id="all-axes-at-once-ferx_globalsearch" class="level2">
+<h2 class="anchored" data-anchor-id="all-axes-at-once-ferx_globalsearch">All axes at once: <code>ferx_globalsearch()</code></h2>
+<p>Every stepwise search tool above keeps the other decision classes fixed. <code>ferx_modelsearch()</code> decides the structure with the covariate model fixed; <code>ferx_covsearch()</code> decides the covariates with the structure fixed. That is cheap, and it is blind to exactly one thing: an effect that only pays off once another decision has gone the other way. A clearance covariate that earns its place only after the distribution phase has a compartment of its own is invisible to a forward step taken on the one-compartment model.</p>
+<p><a href="../reference/ferx_globalsearch.html"><code>ferx_globalsearch()</code></a> lays both kinds of decision out as <strong>one grid</strong> and searches it whole. Every structural category in the space becomes an axis with its values as alleles; every optional <code>COVARIATE?</code> pair becomes an axis whose alleles are <code>none</code> and each of its forms. <code>algorithm = "exhaustive"</code> fits every point of the grid; <code>algorithm = "ga"</code> — the default — runs pyDarwin’s genetic algorithm over it and fits a fraction of them.</p>
+<p>The bundled <code>two_cpt_oral_global</code> example is built to have something to find: a <em>one</em>-compartment, covariate-free model on data that carry <code>WT</code> and <code>CRCL</code> and were simulated from two compartments, so all four axes are live.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"two_cpt_oral_global"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">ferx_globalsearch</span>(<span class="at">config =</span> ex<span class="sc">$</span>search, <span class="at">directory =</span> <span class="st">"globalsearch-run"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>ferx global model search (exhaustive, ranked on penalized)
+  Data:  .../examples/data/two_cpt_oral_cov.csv
+  Wrote: globalsearch-run
+  Grid:  16 points over 4 axes
+    LAGTIME: OFF | ON
+    PERIPHERALS: 0 | 1
+    CL-WT: none | power
+    CL-CRCL: none | power
+  Input: OFV -172.2, penalized -102.2
+  Fitness: -102.2 (input) -&gt; -796 (run6)
+  17 models fitted of 17 evaluated
+
+Ranked models (best first):
+ rank    id                                              genome    ofv criterion fitness converged passed
+    1  run6  LAGTIME=OFF;PERIPHERALS=1;CL-WT=none;CL-CRCL=power -896.0   -796.00 -796.00      TRUE   TRUE
+    2  run8 LAGTIME=OFF;PERIPHERALS=1;CL-WT=power;CL-CRCL=power -901.3   -791.30 -791.30      TRUE   TRUE
+    3 run13    LAGTIME=ON;PERIPHERALS=1;CL-WT=none;CL-CRCL=none -887.5   -777.50 -777.50      TRUE   TRUE
+    4 run14   LAGTIME=ON;PERIPHERALS=1;CL-WT=none;CL-CRCL=power -895.4   -775.40 -775.40      TRUE   TRUE
+    5 run15   LAGTIME=ON;PERIPHERALS=1;CL-WT=power;CL-CRCL=none -893.4   -773.40 -773.40      TRUE   TRUE
+    6 run16  LAGTIME=ON;PERIPHERALS=1;CL-WT=power;CL-CRCL=power -896.4   -766.40 -766.40      TRUE   TRUE
+    7  run1   LAGTIME=OFF;PERIPHERALS=0;CL-WT=none;CL-CRCL=none -172.2   -102.20 -102.20      TRUE   TRUE
+    8 input                                                &lt;NA&gt; -172.2   -102.20 -102.20      TRUE   TRUE
+    9  run2  LAGTIME=OFF;PERIPHERALS=0;CL-WT=none;CL-CRCL=power -179.4    -99.36  -99.36      TRUE   TRUE
+   10  run3  LAGTIME=OFF;PERIPHERALS=0;CL-WT=power;CL-CRCL=none -179.3    -99.27  -99.27      TRUE   TRUE
+   11  run4 LAGTIME=OFF;PERIPHERALS=0;CL-WT=power;CL-CRCL=power -185.5    -95.49  -95.49      TRUE   TRUE</code></pre>
+<p><strong>Read the first two rows before anything else.</strong> <code>run8</code> has the better OFV (-901.3 against -896.0) and ranks <em>second</em>. It carries one more covariate relation than <code>run6</code>, and the penalized criterion charges it for the extra parameter. A table that showed only the OFV would name the wrong winner — which is the reason the criterion and the OFV are separate columns.</p>
+<section id="the-criterion-is-not-the-whole-of-the-ranking" class="level3">
+<h3 class="anchored" data-anchor-id="the-criterion-is-not-the-whole-of-the-ranking">The criterion is not the whole of the ranking</h3>
+<p><code>[rank] type</code> defaults to <code>"penalized"</code> here, where every other tool defaults to a BIC: pyDarwin’s fitness, the objective function plus a charge per estimated parameter and per unhealthy fit. Whatever criterion you name, the global search then charges three further things the criterion cannot see, and ranks on the sum — the <code>fitness</code> column, always finite:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>charge</th>
+<th>paid by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>charge_non_influential</code></td>
+<td>a gene that changed nothing in the rendered model — a covariate on a parameter the structural choice removed. A tie-break towards the simpler genotype among models that are otherwise identical.</td>
+</tr>
+<tr class="even">
+<td><code>charge_gate</code></td>
+<td>a fit the <code>[strictness]</code> gate refused. It can never be selected, but it still steers the genetic algorithm away from the region that produced it.</td>
+</tr>
+<tr class="odd">
+<td><code>charge_crash</code></td>
+<td>a candidate that produced no fit at all — it does not compile, or the fit errored. Large, and finite, so the algorithm can still rank it.</td>
+</tr>
+</tbody>
+</table>
+<p>They are columns of <code>$models</code>, beside the <code>criterion</code> and the <code>fitness</code> they add up to. <code>print()</code> lists the models that paid one:</p>
+<pre><code>Models the search charged beyond the criterion:
+    id                                             genome criterion charge_non_influential charge_gate charge_crash fitness
+  run5  LAGTIME=OFF;PERIPHERALS=1;CL-WT=none;CL-CRCL=none   -411.00                      0         100            0  -311.0
+  run7 LAGTIME=OFF;PERIPHERALS=1;CL-WT=power;CL-CRCL=none   -404.20                      0         100            0  -304.2
+  run9   LAGTIME=ON;PERIPHERALS=0;CL-WT=none;CL-CRCL=none     16.52                      0         100            0   116.5
+ run10  LAGTIME=ON;PERIPHERALS=0;CL-WT=none;CL-CRCL=power     19.34                      0         100            0   119.3
+ run11  LAGTIME=ON;PERIPHERALS=0;CL-WT=power;CL-CRCL=none     19.46                      0         100            0   119.5
+ run12  LAGTIME=ON;PERIPHERALS=0;CL-WT=power;CL-CRCL=power     23.34                      0         100            0   123.3</code></pre>
+<p>This is the same “never a silent drop” rule the stepwise tools follow, one level further: a gated genome is not merely present in the table, it says what the gate cost it. Without that column, <code>run5</code> at fitness -311.0 would look like a model that simply fitted worse than <code>run6</code> — rather than one the gate refused, which happens to sit 100 units away because of it.</p>
+<p><code>$penalties</code> is the effective schedule the run charged, so the fitness column can be read against the numbers that built it.</p>
+</section>
+<section id="the-genetic-algorithm" class="level3">
+<h3 class="anchored" data-anchor-id="the-genetic-algorithm">The genetic algorithm</h3>
+<p>Sixteen points is small enough to enumerate, which makes the exhaustive result a reference for the GA. With the settings and seed below, the GA finds the same winner. On a grid of thousands — six binary optional covariate pairs alone already give 64 covariate combinations — enumerating is not an option and finding a strong candidate at all is the point.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>res_ga <span class="ot">&lt;-</span> <span class="fu">ferx_globalsearch</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">model        =</span> ex<span class="sc">$</span>model,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data         =</span> ex<span class="sc">$</span>data,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">search_space =</span> <span class="fu">c</span>(<span class="st">"PERIPHERALS(0..1); LAGTIME([OFF,ON])"</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"COVARIATE?(CL, WT, pow); COVARIATE?(CL, CRCL, pow)"</span>),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">algorithm    =</span> <span class="st">"ga"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ga           =</span> <span class="fu">list</span>(<span class="at">population_size =</span> <span class="dv">8</span>, <span class="at">generations =</span> <span class="dv">3</span>, <span class="at">seed =</span> <span class="dv">20250914</span>),</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">directory    =</span> <span class="st">"globalsearch-ga"</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>res_ga<span class="sc">$</span>generations</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>  index best best_fitness mean_fitness polished
+1     0 run1    -779.4346    -323.4043        0
+2     1 run9    -796.0057    -438.3091        0
+3     2 run9    -796.0057    -441.3968        0
+4     3 run9    -796.0057    -497.5284        1</code></pre>
+<p><code>ga</code> takes a named list validated against the engine’s own key list, so a mistyped knob is refused by name before anything is fitted. The <code>seed</code> is what makes <code>resume = TRUE</code> reuse a journal: the same seed on the same grid proposes the same genomes.</p>
+<p><code>algorithm</code> is matched exactly rather than by prefix — <code>algorithm = "e"</code> is an error naming the value, not a silent choice to enumerate a grid nobody has sized. For the same reason an exhaustive grid above <code>[globalsearch] max_models</code> (500 by default) is an error naming the size, never a truncated search.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Not the same as <code>ferx_fit(settings = list(global_search = TRUE))</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>That setting is a global <em>optimizer</em> phase inside the estimation of <strong>one</strong> model — a wider search for the parameter values of a fixed model. <code>ferx_globalsearch()</code> is a global search over <strong>models</strong>. The name here is the engine’s, the <code>.ferxsearch</code> file’s (<code>[globalsearch]</code>), the <code>ferx globalsearch</code> command’s and Pharmpy/pyDarwin’s, so a search stays portable between them.</p>
+</div>
+</div>
+</section>
+</section>
 <section id="the-whole-pipeline-ferx_amd" class="level2">
 <h2 class="anchored" data-anchor-id="the-whole-pipeline-ferx_amd">The whole pipeline: <code>ferx_amd()</code></h2>
 <p><code>ferx_amd()</code> runs the tools in order, each step starting from the model the previous step selected. One space describes the whole pipeline; the engine partitions it by statement kind and hands each step only the statements its tool can read.</p>
 <section id="plan-first" class="level3">
 <h3 class="anchored" data-anchor-id="plan-first">Plan first</h3>
 <p><code>ferx_amd_plan()</code> answers “what would run, and what would not” without fitting anything:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_amd"</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_amd_plan</span>(<span class="at">config =</span> ex<span class="sc">$</span>search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_amd"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_amd_plan</span>(<span class="at">config =</span> ex<span class="sc">$</span>search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>  index       step        tool rerun      directory
 1     1 structural modelsearch FALSE 01-modelsearch
 2     2  iivsearch   iivsearch FALSE   02-iivsearch
@@ -662,9 +782,9 @@ Not fitted (`fit = FALSE`); the scaled model is in `$model`.</code></pre>
 </section>
 <section id="then-run-it" class="level3">
 <h3 class="anchored" data-anchor-id="then-run-it">Then run it</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">ferx_amd</span>(<span class="at">config =</span> ex<span class="sc">$</span>search, <span class="at">directory =</span> <span class="st">"amd-run"</span>,</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">progress =</span> <span class="fu">interactive</span>())</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">ferx_amd</span>(<span class="at">config =</span> ex<span class="sc">$</span>search, <span class="at">directory =</span> <span class="st">"amd-run"</span>,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">progress =</span> <span class="fu">interactive</span>())</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>ferx AMD pipeline (default strategy, retries all_final)
   Model: .../examples/models/warfarin_amd.ferx
   Data:  .../examples/data/warfarin.csv
@@ -703,44 +823,44 @@ Selected:
 </section>
 <section id="what-the-result-carries" class="level3">
 <h3 class="anchored" data-anchor-id="what-the-result-carries">What the result carries</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One row per planned step, skipped ones included</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>steps[, <span class="fu">c</span>(<span class="st">"index"</span>, <span class="st">"step"</span>, <span class="st">"status"</span>, <span class="st">"criterion"</span>, <span class="st">"d_value"</span>,</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>              <span class="st">"converged"</span>, <span class="st">"passed"</span>, <span class="st">"selected"</span>)]</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Every candidate of every step, with the tool that produced it</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res<span class="sc">$</span>candidates[, <span class="fu">c</span>(<span class="st">"step"</span>, <span class="st">"tool"</span>, <span class="st">"id"</span>, <span class="st">"description"</span>, <span class="st">"criterion"</span>,</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"value"</span>, <span class="st">"rank"</span>, <span class="st">"passed"</span>, <span class="st">"selected"</span>)])</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Candidates the gate excluded, in the gate's own words</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>candidates[<span class="sc">!</span>res<span class="sc">$</span>candidates<span class="sc">$</span>passed, <span class="fu">c</span>(<span class="st">"step"</span>, <span class="st">"tool"</span>, <span class="st">"id"</span>, <span class="st">"failures"</span>)]</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Each step's own result object, keyed by its directory</span></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(res<span class="sc">$</span>tools)</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "01-structural" "02-iivsearch"  "03-residual"</span></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co"># The model the pipeline ended on: a fitted model, seeded with its own estimates</span></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>fit</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>final_model_path</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>d_ofv                  <span class="co"># final - start; negative is an improvement</span></span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co"># The engine's own report, as `ferx amd` prints it</span></span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(res<span class="sc">$</span>summary_text)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One row per planned step, skipped ones included</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>steps[, <span class="fu">c</span>(<span class="st">"index"</span>, <span class="st">"step"</span>, <span class="st">"status"</span>, <span class="st">"criterion"</span>, <span class="st">"d_value"</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>              <span class="st">"converged"</span>, <span class="st">"passed"</span>, <span class="st">"selected"</span>)]</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Every candidate of every step, with the tool that produced it</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res<span class="sc">$</span>candidates[, <span class="fu">c</span>(<span class="st">"step"</span>, <span class="st">"tool"</span>, <span class="st">"id"</span>, <span class="st">"description"</span>, <span class="st">"criterion"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"value"</span>, <span class="st">"rank"</span>, <span class="st">"passed"</span>, <span class="st">"selected"</span>)])</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Candidates the gate excluded, in the gate's own words</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>candidates[<span class="sc">!</span>res<span class="sc">$</span>candidates<span class="sc">$</span>passed, <span class="fu">c</span>(<span class="st">"step"</span>, <span class="st">"tool"</span>, <span class="st">"id"</span>, <span class="st">"failures"</span>)]</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Each step's own result object, keyed by its directory</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(res<span class="sc">$</span>tools)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "01-structural" "02-iivsearch"  "03-residual"</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="co"># The model the pipeline ended on: a fitted model, seeded with its own estimates</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>fit</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>final_model_path</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>d_ofv                  <span class="co"># final - start; negative is an improvement</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="co"># The engine's own report, as `ferx amd` prints it</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(res<span class="sc">$</span>summary_text)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>One trap worth naming: <code>criterion</code> says what <code>value</code> is on, and it is not always the step’s own scale. A ruvsearch candidate is fitted to its parent’s CWRES, so its number must not be compared with a data OFV. The column is there so you do not have to remember that.</p>
 </section>
 </section>
 <section id="reading-a-run-back" class="level2">
 <h2 class="anchored" data-anchor-id="reading-a-run-back">Reading a run back</h2>
 <p>Every tool writes its run to <code>directory</code>, and the tables are the same ones the R object carries — so an interrupted run, or one driven from the <code>ferx</code> command-line tool, reads back the same way:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_search_results</span>(<span class="st">"modelsearch-run"</span>, <span class="at">type =</span> <span class="st">"models"</span>)     <span class="co"># models.csv</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_search_results</span>(<span class="st">"covsearch-run"</span>,   <span class="at">type =</span> <span class="st">"steps"</span>)      <span class="co"># steps.csv</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_search_results</span>(<span class="st">"modelsearch-run"</span>)                      <span class="co"># candidates.csv</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_search_results</span>(<span class="st">"modelsearch-run"</span>, <span class="at">type =</span> <span class="st">"models"</span>)     <span class="co"># models.csv</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_search_results</span>(<span class="st">"covsearch-run"</span>,   <span class="at">type =</span> <span class="st">"steps"</span>)      <span class="co"># steps.csv</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_search_results</span>(<span class="st">"modelsearch-run"</span>)                      <span class="co"># candidates.csv</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Columns come from the engine’s own column list, typed on the way in: logicals are logical, an empty cell is <code>NA</code> rather than <code>NaN</code>. A partial run (<code>*.partial.csv</code>, written when a search is cancelled) reads back too.</p>
 <p><code>resume = TRUE</code> picks a run up where it stopped, using the journal in <code>directory</code>; <code>threads</code> and <code>retries</code> mirror <a href="../reference/ferx_bootstrap.html"><code>ferx_bootstrap()</code></a>, the closest existing tool.</p>
 </section>
 <section id="notes" class="level2">
 <h2 class="anchored" data-anchor-id="notes">Notes</h2>
 <ul>
-<li><strong>Some <code>.ferxsearch</code> sections have no R tool.</strong> The engine accepts a section for every tool <em>it</em> knows, which is more than this package binds — <code>[globalsearch]</code> and <code>[structsearch]</code> today. Such a file loads, and ferx warns that no R tool consumes the section, because the stepwise tools would otherwise run a stepwise search without saying so. Where the section can be run elsewhere the warning says where: <code>[globalsearch]</code> is the engine’s own tool, behind <code>ferx globalsearch</code>. <code>[structsearch]</code> is accepted vocabulary with no engine module behind it yet, so it is reported without a remediation rather than with one that names a command that does not exist.</li>
+<li><strong>Some <code>.ferxsearch</code> sections have no R tool.</strong> The engine accepts a section for every tool <em>it</em> knows, which is more than this package binds — <code>[structsearch]</code> today. Such a file loads, and ferx warns that no R tool consumes the section, because the tool it <em>is</em> handed would otherwise run a different search without saying so. <code>[structsearch]</code> is accepted vocabulary with no engine module behind it yet, so it is reported without a remediation rather than with one that names a command that does not exist. What the warning reports is the complement of the sections this package has a tool for, so a section a later ferx-core adds is named from the day a file can carry it — and stops being named on the day a binding lands, as <code>[globalsearch]</code> did when <code>ferx_globalsearch()</code> shipped.</li>
 <li><strong>Cancelling</strong> a search from R interrupts it at the next candidate boundary; the run still writes its partial tables.</li>
 <li><strong>The strictness gate is shared.</strong> <code>[strictness]</code> in the configuration applies to every tool, and every table with one row per fitted model carries <code>converged</code> and <code>passed</code> columns — <code>$models</code> for modelsearch, iivsearch and iovsearch, <code>$steps</code> for covsearch and ruvsearch, <code>$comparison</code> for allometry. (The per-stage ranking <code>$steps</code> of iivsearch and iovsearch, and allometry’s <code>$scalings</code>, are not model tables and carry no gate columns; the models they rank are in <code>$models</code>.) Inside an AMD step the init-stall gate is turned off by design: each step starts from a model already at its own optimum, where “did not move from the initial estimates” is the expected outcome.</li>
 </ul>
@@ -749,6 +869,7 @@ Selected:
 <h2 class="anchored" data-anchor-id="see-also">See also</h2>
 <ul>
 <li><a href="../reference/ferx_amd.html"><code>ferx_amd()</code></a>, <a href="../reference/ferx_amd_plan.html"><code>ferx_amd_plan()</code></a></li>
+<li><a href="../reference/ferx_globalsearch.html"><code>ferx_globalsearch()</code></a> — the grid over structure and covariates together</li>
 <li><a href="../reference/ferx_search_config.html"><code>ferx_search_config()</code></a>, <a href="../reference/ferx_search_space.html"><code>ferx_search_space()</code></a>, <a href="../reference/ferx_search_coverage.html"><code>ferx_search_coverage()</code></a>, <a href="../reference/ferx_search_results.html"><code>ferx_search_results()</code></a></li>
 <li><a href="../reference/ferx_bic.html"><code>ferx_bic()</code></a> — the BIC variants the searches rank on</li>
 <li><a href="../examples/covariates.html">Example: Covariate models</a> — writing a covariate effect by hand</li>
