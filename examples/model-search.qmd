@@ -297,9 +297,9 @@ Not fitted (`fit = FALSE`); the scaled model is in `$model`.
 
 ## All axes at once: `ferx_globalsearch()`
 
-Every tool above walks one axis of the model space with the others held
-fixed. `ferx_modelsearch()` decides the structure with the covariate model
-fixed; `ferx_covsearch()` decides the covariates with the structure fixed.
+Every stepwise search tool above keeps the other decision classes fixed.
+`ferx_modelsearch()` decides the structure with the covariate model fixed;
+`ferx_covsearch()` decides the covariates with the structure fixed.
 That is cheap, and it is blind to exactly one thing: an effect that only pays
 off once another decision has gone the other way. A clearance covariate that
 earns its place only after the distribution phase has a compartment of its own
@@ -396,11 +396,11 @@ can be read against the numbers that built it.
 
 ### The genetic algorithm
 
-Sixteen points is small enough to enumerate, which is what makes the bundled
-file a reference: on a grid this size the GA has to find the same winner. On a
-grid of thousands — six covariate pairs already give 64 covariate axes' worth
-of combinations — enumerating is not an option and finding it at all is the
-point.
+Sixteen points is small enough to enumerate, which makes the exhaustive result
+a reference for the GA. With the settings and seed below, the GA finds the same
+winner. On a grid of thousands — six binary optional covariate pairs alone
+already give 64 covariate combinations — enumerating is not an option and
+finding a strong candidate at all is the point.
 
 ```r
 res_ga <- ferx_globalsearch(
