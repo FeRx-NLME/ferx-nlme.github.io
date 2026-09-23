@@ -1,495 +1,495 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ferx-nlme.github.io/changelog.html</loc>
-    <lastmod>2026-09-23T19:13:13.721Z</lastmod>
+    <loc>https://ferx-nlme.org/changelog.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/learn/diagnostics.html</loc>
-    <lastmod>2026-09-23T19:13:13.723Z</lastmod>
+    <loc>https://ferx-nlme.org/learn/diagnostics.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/learn/uncertainty-sir.html</loc>
-    <lastmod>2026-09-23T19:13:13.724Z</lastmod>
+    <loc>https://ferx-nlme.org/learn/uncertainty-sir.html</loc>
+    <lastmod>2026-09-23T21:09:02.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/learn/special-features.html</loc>
-    <lastmod>2026-09-23T19:13:13.724Z</lastmod>
+    <loc>https://ferx-nlme.org/learn/special-features.html</loc>
+    <lastmod>2026-09-23T21:09:02.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/learn/model-workflow.html</loc>
-    <lastmod>2026-09-23T19:13:13.724Z</lastmod>
+    <loc>https://ferx-nlme.org/learn/model-workflow.html</loc>
+    <lastmod>2026-09-23T21:09:02.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/learn/model-editing.html</loc>
-    <lastmod>2026-09-23T19:13:13.724Z</lastmod>
+    <loc>https://ferx-nlme.org/learn/model-editing.html</loc>
+    <lastmod>2026-09-23T21:09:02.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/model-search.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/model-search.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-derived-pkpd.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-derived-pkpd.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/two-cpt-iv.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/two-cpt-iv.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/ode-model.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/ode-model.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/block-omega.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/block-omega.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/sde.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/sde.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/bloq.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/bloq.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-ss.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-ss.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/multistart.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/multistart.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/transit-2cpt.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/transit-2cpt.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-iov-saem.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-iov-saem.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-addl.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-addl.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-derived.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-derived.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/roadmap.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/roadmap.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_model_inspect.html</loc>
-    <lastmod>2026-09-23T19:23:05.685Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_model_inspect.html</loc>
+    <lastmod>2026-09-23T21:19:03.437Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_coef.html</loc>
-    <lastmod>2026-09-23T19:23:04.855Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_coef.html</loc>
+    <lastmod>2026-09-23T21:19:02.587Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_apply_selection.html</loc>
-    <lastmod>2026-09-23T19:23:04.701Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_apply_selection.html</loc>
+    <lastmod>2026-09-23T21:19:02.429Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/check_diagnostics.html</loc>
-    <lastmod>2026-09-23T19:23:04.522Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/check_diagnostics.html</loc>
+    <lastmod>2026-09-23T21:19:02.258Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_covariance.html</loc>
-    <lastmod>2026-09-23T19:23:04.937Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_covariance.html</loc>
+    <lastmod>2026-09-23T21:19:02.671Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_load_fit.html</loc>
-    <lastmod>2026-09-23T19:23:05.624Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_load_fit.html</loc>
+    <lastmod>2026-09-23T21:19:03.376Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_stop.html</loc>
-    <lastmod>2026-09-23T19:23:06.255Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_stop.html</loc>
+    <lastmod>2026-09-23T21:19:04.032Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_allometry.html</loc>
-    <lastmod>2026-09-23T19:23:04.593Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_allometry.html</loc>
+    <lastmod>2026-09-23T21:19:02.326Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_model_set_section.html</loc>
-    <lastmod>2026-09-23T19:23:05.704Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_model_set_section.html</loc>
+    <lastmod>2026-09-23T21:19:03.458Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_runlog.html</loc>
-    <lastmod>2026-09-23T19:23:05.903Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_runlog.html</loc>
+    <lastmod>2026-09-23T21:19:03.670Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_covsearch.html</loc>
-    <lastmod>2026-09-23T19:23:04.974Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_covsearch.html</loc>
+    <lastmod>2026-09-23T21:19:02.708Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_bic.html</loc>
-    <lastmod>2026-09-23T19:23:04.724Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_bic.html</loc>
+    <lastmod>2026-09-23T21:19:02.451Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/plot.ferx_fit.html</loc>
-    <lastmod>2026-09-23T19:23:06.349Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/plot.ferx_fit.html</loc>
+    <lastmod>2026-09-23T21:19:04.122Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_amd.html</loc>
-    <lastmod>2026-09-23T19:23:04.680Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_amd.html</loc>
+    <lastmod>2026-09-23T21:19:02.409Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_search_coverage.html</loc>
-    <lastmod>2026-09-23T19:23:06.023Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_search_coverage.html</loc>
+    <lastmod>2026-09-23T21:19:03.798Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_model_show.html</loc>
-    <lastmod>2026-09-23T19:23:05.717Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_model_show.html</loc>
+    <lastmod>2026-09-23T21:19:03.471Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_simulate_adaptive.html</loc>
-    <lastmod>2026-09-23T19:23:06.122Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_simulate_adaptive.html</loc>
+    <lastmod>2026-09-23T21:19:03.907Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_check_init.html</loc>
-    <lastmod>2026-09-23T19:23:04.835Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_check_init.html</loc>
+    <lastmod>2026-09-23T21:19:02.567Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_get_warnings.html</loc>
-    <lastmod>2026-09-23T19:23:05.406Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_get_warnings.html</loc>
+    <lastmod>2026-09-23T21:19:03.147Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_sir.html</loc>
-    <lastmod>2026-09-23T19:23:06.235Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_sir.html</loc>
+    <lastmod>2026-09-23T21:19:04.014Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_modelsearch.html</loc>
-    <lastmod>2026-09-23T19:23:05.832Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_modelsearch.html</loc>
+    <lastmod>2026-09-23T21:19:03.594Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_model_edit.html</loc>
-    <lastmod>2026-09-23T19:23:05.645Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_model_edit.html</loc>
+    <lastmod>2026-09-23T21:19:03.397Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_model.html</loc>
-    <lastmod>2026-09-23T19:23:05.787Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_model.html</loc>
+    <lastmod>2026-09-23T21:19:03.549Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_iivsearch.html</loc>
-    <lastmod>2026-09-23T19:23:05.526Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_iivsearch.html</loc>
+    <lastmod>2026-09-23T21:19:03.274Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_search_results.html</loc>
-    <lastmod>2026-09-23T19:23:06.060Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_search_results.html</loc>
+    <lastmod>2026-09-23T21:19:03.838Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_collect.html</loc>
-    <lastmod>2026-09-23T19:23:04.870Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_collect.html</loc>
+    <lastmod>2026-09-23T21:19:02.601Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_simulate_with_uncertainty.html</loc>
-    <lastmod>2026-09-23T19:23:06.151Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_simulate_with_uncertainty.html</loc>
+    <lastmod>2026-09-23T21:19:03.936Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_predict.html</loc>
-    <lastmod>2026-09-23T19:23:05.873Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_predict.html</loc>
+    <lastmod>2026-09-23T21:19:03.637Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_gam_screen.html</loc>
-    <lastmod>2026-09-23T19:23:05.380Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_gam_screen.html</loc>
+    <lastmod>2026-09-23T21:19:03.119Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_fit.html</loc>
-    <lastmod>2026-09-23T19:23:05.351Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_fit.html</loc>
+    <lastmod>2026-09-23T21:19:03.091Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/steady-state.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/steady-state.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/parameters.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/parameters.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/scaling.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/scaling.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/odes.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/odes.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/lag-time.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/lag-time.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/derived.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/derived.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/fit-options.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/fit-options.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/individual-parameters.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/individual-parameters.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/neural-networks.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/neural-networks.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/get-started.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/get-started.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/index.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/index.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/features.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/features.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/error-model.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/error-model.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/covariate-nn.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/covariate-nn.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/overview.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/overview.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/covariates.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/covariates.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/bloq.html</loc>
-    <lastmod>2026-09-23T19:13:13.724Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/bloq.html</loc>
+    <lastmod>2026-09-23T21:09:02.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/iov.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/iov.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/diffusion.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/diffusion.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/simulation.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/simulation.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/structural-model.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/structural-model.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/model-dsl/data-selection.html</loc>
-    <lastmod>2026-09-23T19:13:13.725Z</lastmod>
+    <loc>https://ferx-nlme.org/model-dsl/data-selection.html</loc>
+    <lastmod>2026-09-23T21:09:02.165Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/index.html</loc>
-    <lastmod>2026-09-23T19:23:06.415Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/index.html</loc>
+    <lastmod>2026-09-23T21:19:04.190Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_inits_from_nca.html</loc>
-    <lastmod>2026-09-23T19:23:05.561Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_inits_from_nca.html</loc>
+    <lastmod>2026-09-23T21:19:03.310Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/print.ferx_data.html</loc>
-    <lastmod>2026-09-23T19:23:06.364Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/print.ferx_data.html</loc>
+    <lastmod>2026-09-23T21:19:04.137Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_simulate.html</loc>
-    <lastmod>2026-09-23T19:23:06.200Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_simulate.html</loc>
+    <lastmod>2026-09-23T21:19:03.982Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_example.html</loc>
-    <lastmod>2026-09-23T19:23:05.067Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_example.html</loc>
+    <lastmod>2026-09-23T21:19:02.803Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_runlog_iters.html</loc>
-    <lastmod>2026-09-23T19:23:05.888Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_runlog_iters.html</loc>
+    <lastmod>2026-09-23T21:19:03.653Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_search_config.html</loc>
-    <lastmod>2026-09-23T19:23:06.006Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_search_config.html</loc>
+    <lastmod>2026-09-23T21:19:03.782Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/check_strictness.html</loc>
-    <lastmod>2026-09-23T19:23:04.559Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/check_strictness.html</loc>
+    <lastmod>2026-09-23T21:19:02.293Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_model_to_frem.html</loc>
-    <lastmod>2026-09-23T19:23:05.737Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_model_to_frem.html</loc>
+    <lastmod>2026-09-23T21:19:03.494Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/plot.ferx_bootstrap.html</loc>
-    <lastmod>2026-09-23T19:23:06.327Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/plot.ferx_bootstrap.html</loc>
+    <lastmod>2026-09-23T21:19:04.101Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_model_get_section.html</loc>
-    <lastmod>2026-09-23T19:23:05.659Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_model_get_section.html</loc>
+    <lastmod>2026-09-23T21:19:03.410Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_get_columns.html</loc>
-    <lastmod>2026-09-23T19:23:05.392Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_get_columns.html</loc>
+    <lastmod>2026-09-23T21:19:03.133Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/summary.ferx_fit.html</loc>
-    <lastmod>2026-09-23T19:23:06.389Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/summary.ferx_fit.html</loc>
+    <lastmod>2026-09-23T21:19:04.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_bootstrap.html</loc>
-    <lastmod>2026-09-23T19:23:04.799Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_bootstrap.html</loc>
+    <lastmod>2026-09-23T21:19:02.531Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_calc_npde.html</loc>
-    <lastmod>2026-09-23T19:23:04.818Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_calc_npde.html</loc>
+    <lastmod>2026-09-23T21:19:02.551Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_fit_async.html</loc>
-    <lastmod>2026-09-23T19:23:05.091Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_fit_async.html</loc>
+    <lastmod>2026-09-23T21:19:02.826Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_predict_survival.html</loc>
-    <lastmod>2026-09-23T19:23:05.855Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_predict_survival.html</loc>
+    <lastmod>2026-09-23T21:19:03.618Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_trace.html</loc>
-    <lastmod>2026-09-23T19:23:06.275Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_trace.html</loc>
+    <lastmod>2026-09-23T21:19:04.050Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_bootstrap_summarize.html</loc>
-    <lastmod>2026-09-23T19:23:04.747Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_bootstrap_summarize.html</loc>
+    <lastmod>2026-09-23T21:19:02.476Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_globalsearch.html</loc>
-    <lastmod>2026-09-23T19:23:05.470Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_globalsearch.html</loc>
+    <lastmod>2026-09-23T21:19:03.213Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_model_validate.html</loc>
-    <lastmod>2026-09-23T19:23:05.755Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_model_validate.html</loc>
+    <lastmod>2026-09-23T21:19:03.514Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_amd_plan.html</loc>
-    <lastmod>2026-09-23T19:23:04.615Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_amd_plan.html</loc>
+    <lastmod>2026-09-23T21:19:02.347Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_xpose.html</loc>
-    <lastmod>2026-09-23T19:23:06.306Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_xpose.html</loc>
+    <lastmod>2026-09-23T21:19:04.079Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_conddist.html</loc>
-    <lastmod>2026-09-23T19:23:04.889Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_conddist.html</loc>
+    <lastmod>2026-09-23T21:19:02.621Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_cov_screen.html</loc>
-    <lastmod>2026-09-23T19:23:04.907Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_cov_screen.html</loc>
+    <lastmod>2026-09-23T21:19:02.640Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_iovsearch.html</loc>
-    <lastmod>2026-09-23T19:23:05.611Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_iovsearch.html</loc>
+    <lastmod>2026-09-23T21:19:03.362Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_save_fit.html</loc>
-    <lastmod>2026-09-23T19:23:05.974Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_save_fit.html</loc>
+    <lastmod>2026-09-23T21:19:03.746Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_search_space.html</loc>
-    <lastmod>2026-09-23T19:23:06.087Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_search_space.html</loc>
+    <lastmod>2026-09-23T21:19:03.867Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/print.ferx_bootstrap.html</loc>
-    <lastmod>2026-09-23T19:23:06.357Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/print.ferx_bootstrap.html</loc>
+    <lastmod>2026-09-23T21:19:04.130Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/reference/ferx_ruvsearch.html</loc>
-    <lastmod>2026-09-23T19:23:05.960Z</lastmod>
+    <loc>https://ferx-nlme.org/reference/ferx_ruvsearch.html</loc>
+    <lastmod>2026-09-23T21:19:03.731Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/three-cpt-iv.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/three-cpt-iv.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-ltbs.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-ltbs.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/conditional-covariate.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/conditional-covariate.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-additive-eta.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-additive-eta.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/two-cpt-oral-derived.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/two-cpt-oral-derived.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/covariates.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/covariates.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-data-selection.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-data-selection.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-scaled.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-scaled.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/lag-time.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/lag-time.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/bioavailability.html</loc>
-    <lastmod>2026-09-23T19:13:13.721Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/bioavailability.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/iov.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/iov.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/emax-pkpd.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/emax-pkpd.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/warfarin-ode-time.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/warfarin-ode-time.html</loc>
+    <lastmod>2026-09-23T21:09:02.163Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/saem.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/saem.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/examples/dcm.html</loc>
-    <lastmod>2026-09-23T19:13:13.722Z</lastmod>
+    <loc>https://ferx-nlme.org/examples/dcm.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/learn/method-chaining.html</loc>
-    <lastmod>2026-09-23T19:13:13.724Z</lastmod>
+    <loc>https://ferx-nlme.org/learn/method-chaining.html</loc>
+    <lastmod>2026-09-23T21:09:02.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/learn/parameter-transforms.html</loc>
-    <lastmod>2026-09-23T19:13:13.724Z</lastmod>
+    <loc>https://ferx-nlme.org/learn/parameter-transforms.html</loc>
+    <lastmod>2026-09-23T21:09:02.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/learn/robust-fitting.html</loc>
-    <lastmod>2026-09-23T19:13:13.724Z</lastmod>
+    <loc>https://ferx-nlme.org/learn/robust-fitting.html</loc>
+    <lastmod>2026-09-23T21:09:02.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/learn/simulation.html</loc>
-    <lastmod>2026-09-23T19:13:13.724Z</lastmod>
+    <loc>https://ferx-nlme.org/learn/simulation.html</loc>
+    <lastmod>2026-09-23T21:09:02.164Z</lastmod>
   </url>
   <url>
-    <loc>https://ferx-nlme.github.io/design.html</loc>
-    <lastmod>2026-09-23T19:13:13.721Z</lastmod>
+    <loc>https://ferx-nlme.org/design.html</loc>
+    <lastmod>2026-09-23T21:09:02.162Z</lastmod>
   </url>
 </urlset>

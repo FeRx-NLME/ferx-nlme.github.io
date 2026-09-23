@@ -1,1 +1,1 @@
-Sitemap: https://ferx-nlme.github.io/sitemap.xml
+Sitemap: https://ferx-nlme.org/sitemap.xml
