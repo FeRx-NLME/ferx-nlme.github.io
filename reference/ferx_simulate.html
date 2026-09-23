@@ -369,6 +369,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
   <li><a href="#which-predictive-distribution-you-get" id="toc-which-predictive-distribution-you-get" class="nav-link" data-scroll-target="#which-predictive-distribution-you-get">Which predictive distribution you get</a></li>
+  <li><a href="#errors-raised-by-the-engine" id="toc-errors-raised-by-the-engine" class="nav-link" data-scroll-target="#errors-raised-by-the-engine">Errors raised by the engine</a></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -419,7 +420,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
 <li><code>model</code>: Path to a .ferx model file</li>
-<li><code>data</code>: Path to a NONMEM-format CSV (provides population structure: doses, obs times). When omitted, the model file’s <code>[data]</code> block (<code>path = ...</code>) is used. The <code>DV</code> column may be left empty (<code>.</code> / <code>NA</code>) on the sampling rows - the DV is what the simulation produces, so an empty cell means “simulate here” (a placeholder value is not needed). Rows marked <code>MDV = 1</code> are excluded, as always. Kept empty-DV records are counted in the <code>simulation_warnings</code> attribute and re-emitted as an R warning: <code>ferx_fit()</code> skips those same records, so simulated rows at those times have no counterpart in a fit’s <code>sdtab</code> (do not overlay the two, e.g.&nbsp;in a VPC).</li>
+<li><code>data</code>: Path to a NONMEM-format CSV (provides population structure: doses, obs times). When omitted, the model file’s <code>[data]</code> block (<code>path = ...</code>) is used. The <code>DV</code> column may be left empty (<code>.</code> / <code>NA</code>) on the sampling rows - the DV is what the simulation produces, so an empty cell means “simulate here” (a placeholder value is not needed). Rows marked <code>MDV = 1</code> are excluded, as always. Kept empty-DV records are reported in the <code>simulation_warnings</code> attribute and re-emitted as an R warning: <code>ferx_fit()</code> skips those same records, so simulated rows at those times have no counterpart in a fit’s <code>sdtab</code> (do not overlay the two, e.g.&nbsp;in a VPC). Every other data-reader diagnostic the engine raises for <code>data</code> - a dose that never landed, a covariate with no value for some subjects, and so on - travels the same channel.</li>
 <li><code>n_sim</code>: Number of simulation replicates</li>
 <li><code>seed</code>: Random seed for reproducibility</li>
 <li><code>fit</code>: Optional <code>ferx_fit</code> result. When provided, simulation uses <code>fit$theta</code>, <code>fit$omega</code>, and <code>fit$sigma</code> instead of the model file’s initial values.</li>
@@ -440,6 +441,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>Two neighbouring functions cover the other levels: <code>[ferx_predict](ferx_predict.qmd)</code>gives the typical-value curve (all etas at zero, no residual error), and <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)</code> adds <strong><em>parameter</em></strong>uncertainty (a theta/omega/sigma draw per replicate) on top of the random effects, which is what a decision interval for a future trial usually wants. For the individual etas conditioned on observed data, see <code>fit$ebe_etas</code> and <code>[ferx_conddist](ferx_conddist.qmd)</code>.</p>
 </section>
+<section id="errors-raised-by-the-engine" class="level2">
+<h2 class="anchored" data-anchor-id="errors-raised-by-the-engine">Errors raised by the engine</h2>
+<p>A model or dataset the engine refuses is an R error, never a <code>NULL</code>result. Where the engine’s validation pass names the finding, the error has class <code>ferx_engine_error</code> and carries <code>code</code>, <code>block</code>, <code>line</code> and <code>suggestion</code> - the same condition a refused <code>[ferx_fit](ferx_fit.qmd)</code> raises, so one <code>tryCatch(..., ferx_engine_error = )</code> handler covers every entry point. A failure the validation pass cannot attribute to one diagnostic is raised as an ordinary error carrying the engine’s message.</p>
+</section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
 <p>Other simulation: <code>[ferx_calc_npde](ferx_calc_npde.qmd)</code>, <code>[ferx_predict](ferx_predict.qmd)</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)</code>, <code>[ferx_simulate_adaptive](ferx_simulate_adaptive.qmd)</code>, <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)</code></p>
@@ -450,7 +455,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A data.frame. Gaussian rows carry DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM (with <code>OBSERVED = NA</code>). For a joint PK-TTE model each subject also yields a TTE row on the event CMT, where TIME is the sampled event/censor time and <code>OBSERVED</code> is 1 (event before <code>horizon</code>) or 0 (right-censored at it); its IPRED and DV_SIM are <code>NA</code>. Use <code>is.na(OBSERVED)</code> to separate continuous rows from event rows. For a <code>[binary_model]</code> endpoint the categorical row on the binary CMT carries the simulated 0/1 outcome in <code>DV_SIM</code> (coded as the input CSV codes DV), with <code>IPRED</code> and <code>OBSERVED</code> both <code>NA</code>; select it by its CMT. The returned frame carries a <code>simulation_warnings</code> attribute (a character vector, empty for a clean run) listing any per-subject simulation diagnostics from ferx-core (e.g.&nbsp;a degenerate or pathological hazard that censored a subject with no event); these are also raised as an R warning.</p>
+<p>A data.frame, one row per simulated record, with these columns:</p>
+<ul>
+<li><code>DRAW</code>: Parameter draw. Always 1 here; it is the grouping variable in <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)</code>.</li>
+<li><code>SIM</code>: Replicate index, 1 to <code>n_sim</code>.</li>
+<li><code>ID</code>: Subject identifier, as a character string, exactly as the <code>ID</code> column of <code>data</code> spelled it.</li>
+<li><code>TIME</code>: Sampling time from <code>data</code> - or, on a TTE row, the <em>sampled</em> event or censoring time (see <code>OBSERVED</code>).</li>
+<li><code>CMT</code>: Observation compartment: the data file’s <code>CMT</code> for a continuous row, the <code>[event_model]</code> / <code>[binary_model]</code> compartment for an event or categorical row.</li>
+<li><code>IPRED</code>: Individual prediction - the drawn subject’s mean response, random effects but no residual error.</li>
+<li><code>DV_SIM</code>: The simulated observation: <code>IPRED</code> plus residual error, and the column a VPC or a predictive interval is built from.</li>
+<li><code>OBSERVED</code>: Event indicator for a time-to-event row only - 1 = the event fired before <code>horizon</code>, 0 = administratively right-censored at it - and <code>NA</code> on every other row. It is <strong><em>not</em></strong> the input <code>DV</code>: nothing in this frame echoes the data file’s observations, since simulation is what produces that column. Compare against the observed data by joining <code>data</code> on ID/TIME yourself.</li>
+</ul>
+<p>Gaussian rows carry DRAW, SIM, ID, TIME, CMT, IPRED and DV_SIM, with <code>OBSERVED = NA</code>. For a joint PK-TTE model each subject also yields a TTE row on the event CMT, whose IPRED and DV_SIM are <code>NA</code>; use <code>is.na(OBSERVED)</code> to separate continuous rows from event rows. For a <code>[binary_model]</code> endpoint the categorical row on the binary CMT carries the simulated 0/1 outcome in <code>DV_SIM</code> (coded as the input CSV codes DV), with <code>IPRED</code> and <code>OBSERVED</code> both <code>NA</code>; select it by its CMT. The returned frame carries a <code>simulation_warnings</code> attribute (a character vector, empty for a clean run) listing any per-subject simulation diagnostics from ferx-core (e.g.&nbsp;a degenerate or pathological hazard that censored a subject with no event) together with the engine’s data-reader diagnostics for <code>data</code> - the same ones <code>ferx_fit()</code> returns in <code>fit$warnings</code>; these are also raised as an R warning.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>

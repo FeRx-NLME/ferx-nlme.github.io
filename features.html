@@ -432,7 +432,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="outer-optimizers" class="level2">
 <h2 class="anchored" data-anchor-id="outer-optimizers">Outer optimizers</h2>
-<p><code>bobyqa</code> (default, derivative-free trust-region) · <code>slsqp</code> · built-in <code>bfgs</code> · <code>lbfgs</code> / <code>nlopt_lbfgs</code> · <code>mma</code> · Newton <code>trust_region</code> · Gauss-Newton (BHHH). Optional CRS2-LM gradient-free <strong>global pre-search</strong> (<code>global_search</code>) for poorly-identified models.</p>
+<p><code>auto</code> (default: <code>nlopt_lbfgs</code> when the analytic gradient is available or the model has more than 64 free parameters, <code>bobyqa</code> otherwise and for mixture models) · <code>bobyqa</code> (derivative-free trust-region) · <code>slsqp</code> · <code>nlopt_lbfgs</code> (<code>lbfgs</code> / <code>bfgs</code> are deprecated aliases) · <code>mma</code> · Newton <code>trust_region</code> · Gauss-Newton (BHHH). Optional CRS2-LM gradient-free <strong>global pre-search</strong> (<code>global_search</code>) for poorly-identified models.</p>
 </section>
 <section id="gradients" class="level2">
 <h2 class="anchored" data-anchor-id="gradients">Gradients</h2>

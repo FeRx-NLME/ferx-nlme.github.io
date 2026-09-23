@@ -369,6 +369,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
   <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a></li>
+  <li><a href="#errors-raised-by-the-engine" id="toc-errors-raised-by-the-engine" class="nav-link" data-scroll-target="#errors-raised-by-the-engine">Errors raised by the engine</a></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -419,7 +420,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
 <li><code>model</code>: Path to a .ferx model file</li>
-<li><code>data</code>: Path to a NONMEM-format CSV (provides population structure). The <code>DV</code> column may be left empty (<code>.</code> / <code>NA</code>) on the sampling rows - the DV is what the simulation produces, so an empty cell means “simulate here” (a placeholder value is not needed). Rows marked <code>MDV = 1</code> are excluded, as always. Kept empty-DV records are counted in the <code>simulation_warnings</code> attribute and re-emitted as an R warning: <code>ferx_fit()</code> skips those same records, so simulated rows at those times have no counterpart in a fit’s <code>sdtab</code> (do not overlay the two, e.g.&nbsp;in a VPC).</li>
+<li><code>data</code>: Path to a NONMEM-format CSV (provides population structure). The <code>DV</code> column may be left empty (<code>.</code> / <code>NA</code>) on the sampling rows - the DV is what the simulation produces, so an empty cell means “simulate here” (a placeholder value is not needed). Rows marked <code>MDV = 1</code> are excluded, as always. Kept empty-DV records are reported in the <code>simulation_warnings</code> attribute and re-emitted as an R warning: <code>ferx_fit()</code> skips those same records, so simulated rows at those times have no counterpart in a fit’s <code>sdtab</code> (do not overlay the two, e.g.&nbsp;in a VPC). Every other data-reader diagnostic the engine raises for <code>data</code> - a dose that never landed, a covariate with no value for some subjects, and so on - travels the same channel.</li>
 <li><code>fit</code>: A <code>ferx_fit</code> result. Must carry either <code>cov_matrix</code> (asymptotic) or <code>sir_resamples</code> (SIR) depending on <code>method</code>.</li>
 <li><code>n_uncertainty_draws</code>: Number of parameter sets to draw from the uncertainty distribution</li>
 <li><code>n_sim_per_draw</code>: Number of eta/eps replicates per parameter draw</li>
@@ -435,6 +436,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>method = "sir"</code>: Sample with replacement from <code>fit$sir_resamples</code>. Requires the fit to have been run with <code>sir = TRUE</code> and <code>sir_keep_samples = TRUE</code> (passed via <code>settings</code>).</li>
 </ul>
 </section>
+<section id="errors-raised-by-the-engine" class="level2">
+<h2 class="anchored" data-anchor-id="errors-raised-by-the-engine">Errors raised by the engine</h2>
+<p>A model or dataset the engine refuses is an R error, never a <code>NULL</code>result. Where the engine’s validation pass names the finding, the error has class <code>ferx_engine_error</code> and carries <code>code</code>, <code>block</code>, <code>line</code> and <code>suggestion</code> - the same condition a refused <code>[ferx_fit](ferx_fit.qmd)</code> raises, so one <code>tryCatch(..., ferx_engine_error = )</code> handler covers every entry point. A failure the validation pass cannot attribute to one diagnostic is raised as an ordinary error carrying the engine’s message.</p>
+</section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
 <p>Other simulation: <code>[ferx_calc_npde](ferx_calc_npde.qmd)</code>, <code>[ferx_predict](ferx_predict.qmd)</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)</code>, <code>[ferx_simulate](ferx_simulate.qmd)</code>, <code>[ferx_simulate_adaptive](ferx_simulate_adaptive.qmd)</code></p>
@@ -445,7 +450,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>A data.frame with columns: DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM, OBSERVED. <code>CMT</code> is the observation compartment; <code>OBSERVED</code> is <code>NA</code> throughout (this path is Gaussian-only - a drug-driven ODE-TTE endpoint is not supported here). Row count: <code>n_uncertainty_draws * n_sim_per_draw * n_obs</code>.</p>
+<p>A data.frame with columns: DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM, OBSERVED. <code>CMT</code> is the observation compartment; <code>OBSERVED</code> is <code>NA</code> throughout (this path is Gaussian-only - a drug-driven ODE-TTE endpoint is not supported here, and <code>OBSERVED</code> never echoes the input <code>DV</code>; see <code>[ferx_simulate](ferx_simulate.qmd)</code> for what each column holds). Row count: <code>n_uncertainty_draws * n_sim_per_draw * n_obs</code>.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>

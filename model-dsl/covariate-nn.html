@@ -370,7 +370,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#composing-with-etas" id="toc-composing-with-etas" class="nav-link" data-scroll-target="#composing-with-etas">Composing with etas</a></li>
   <li><a href="#auto-generated-parameters" id="toc-auto-generated-parameters" class="nav-link" data-scroll-target="#auto-generated-parameters">Auto-generated parameters</a></li>
   <li><a href="#activations" id="toc-activations" class="nav-link" data-scroll-target="#activations">Activations</a></li>
-  <li><a href="#optimizer-caveat" id="toc-optimizer-caveat" class="nav-link" data-scroll-target="#optimizer-caveat">Optimizer caveat</a></li>
   <li><a href="#runnable-example" id="toc-runnable-example" class="nav-link" data-scroll-target="#runnable-example">Runnable example</a></li>
   <li><a href="#fit-output" id="toc-fit-output" class="nav-link" data-scroll-target="#fit-output">Fit output</a></li>
   <li><a href="#whats-not-yet-wired" id="toc-whats-not-yet-wired" class="nav-link" data-scroll-target="#whats-not-yet-wired">What’s not yet wired</a></li>
@@ -537,10 +536,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>The bundled DCM example uses <code>activation = tanh</code>, <code>output = exp</code>.</p>
-</section>
-<section id="optimizer-caveat" class="level2">
-<h2 class="anchored" data-anchor-id="optimizer-caveat">Optimizer caveat</h2>
-<p>The default outer optimizer (SLSQP) currently silently no-ops on mu-ref-active NN models (see ferx-core#55). Use <code>optimizer = lbfgs</code>, either in <code>[fit_options]</code> or via <code>ferx_fit(..., settings = list(optimizer = "lbfgs"))</code>. The bundled example sets it in the model file.</p>
 </section>
 <section id="runnable-example" class="level2">
 <h2 class="anchored" data-anchor-id="runnable-example">Runnable example</h2>

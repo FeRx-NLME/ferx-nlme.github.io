@@ -476,15 +476,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="outer-optimizers" class="level2">
 <h2 class="anchored" data-anchor-id="outer-optimizers">Outer optimizers</h2>
-<p>ferx supports several outer optimizers for the population parameter loop. The default since ferx-core v0.1+ is <strong>BOBYQA</strong> (derivative-free).</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BOBYQA (default, derivative-free)</span></span>
+<p>ferx supports several outer optimizers for the population parameter loop. The default is <strong><code>auto</code></strong>: it picks NLopt L-BFGS when the exact analytic gradient is available and BOBYQA (derivative-free) when only finite differences are, with two overrides — more than 64 free parameters always takes L-BFGS, mixture models always take BOBYQA. Name an optimizer to pin it.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BOBYQA (derivative-free)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fit_bobyqa <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">settings =</span> <span class="fu">list</span>(<span class="at">optimizer =</span> <span class="st">"bobyqa"</span>))</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># SLSQP (gradient-based NLopt)</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>fit_slsqp  <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">settings =</span> <span class="fu">list</span>(<span class="at">optimizer =</span> <span class="st">"slsqp"</span>))</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># L-BFGS</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>fit_lbfgs  <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">settings =</span> <span class="fu">list</span>(<span class="at">optimizer =</span> <span class="st">"lbfgs"</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>fit_lbfgs  <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">settings =</span> <span class="fu">list</span>(<span class="at">optimizer =</span> <span class="st">"nlopt_lbfgs"</span>))</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># MMA (NLopt Method of Moving Asymptotes)</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>fit_mma    <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">settings =</span> <span class="fu">list</span>(<span class="at">optimizer =</span> <span class="st">"mma"</span>))</span>
@@ -516,26 +516,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>bobyqa</code></td>
-<td>General use; robust on rough surfaces; default</td>
+<td><code>auto</code></td>
+<td>Default; picks <code>nlopt_lbfgs</code> or <code>bobyqa</code> per model</td>
 </tr>
 <tr class="even">
+<td><code>bobyqa</code></td>
+<td>Robust on rough surfaces and FD-only models</td>
+</tr>
+<tr class="odd">
 <td><code>slsqp</code></td>
 <td>Well-conditioned analytical PK; fastest when gradients are accurate</td>
 </tr>
-<tr class="odd">
-<td><code>lbfgs</code> / <code>nlopt_lbfgs</code></td>
-<td>Moderate-sized parameter spaces</td>
-</tr>
 <tr class="even">
+<td><code>nlopt_lbfgs</code></td>
+<td>Analytic-gradient models; moderate-sized parameter spaces (<code>lbfgs</code> is a deprecated alias)</td>
+</tr>
+<tr class="odd">
 <td><code>mma</code></td>
 <td>Problems where SLSQP stalls</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>trust_region</code></td>
 <td>Ill-conditioned problems; guarantees descent each step</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>bfgs</code></td>
 <td>Small parameter spaces</td>
 </tr>

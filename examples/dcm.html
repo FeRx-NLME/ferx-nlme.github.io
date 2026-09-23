@@ -500,19 +500,6 @@ Note
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">settings =</span> <span class="fu">list</span>(<span class="at">optimizer =</span> <span class="st">"lbfgs"</span>))</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Use <code>optimizer = "lbfgs"</code> (or <code>"bobyqa"</code>) for NN-bearing models. The default SLSQP optimizer has a known issue with mu-referenced NN models — it silently no-ops at iteration 1. This is tracked in ferx-core.</p>
-</div>
-</div>
 </section>
 <section id="inspecting-the-neural-network" class="level2">
 <h2 class="anchored" data-anchor-id="inspecting-the-neural-network">Inspecting the neural network</h2>

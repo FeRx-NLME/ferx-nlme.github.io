@@ -368,6 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#errors-raised-by-the-engine" id="toc-errors-raised-by-the-engine" class="nav-link" data-scroll-target="#errors-raised-by-the-engine">Errors raised by the engine</a></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
   <li><a href="#concept" id="toc-concept" class="nav-link" data-scroll-target="#concept">Concept</a></li>
   <li><a href="#value" id="toc-value" class="nav-link" data-scroll-target="#value">Value</a></li>
@@ -415,6 +416,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>model</code>: Path to the <code>.ferx</code> model file. Defaults to <code>fit$model_path</code>.</li>
 <li><code>data</code>: Path to the NONMEM-format CSV. Defaults to <code>fit$data_path</code>.</li>
 </ul>
+</section>
+<section id="errors-raised-by-the-engine" class="level2">
+<h2 class="anchored" data-anchor-id="errors-raised-by-the-engine">Errors raised by the engine</h2>
+<p>A model or dataset the engine refuses is an R error, never a <code>NULL</code>result. Where the engine’s validation pass names the finding, the error has class <code>ferx_engine_error</code> and carries <code>code</code>, <code>block</code>, <code>line</code> and <code>suggestion</code> - the same condition a refused <code>[ferx_fit](ferx_fit.qmd)</code> raises, so one <code>tryCatch(..., ferx_engine_error = )</code> handler covers every entry point. A failure the validation pass cannot attribute to one diagnostic is raised as an ordinary error carrying the engine’s message.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>

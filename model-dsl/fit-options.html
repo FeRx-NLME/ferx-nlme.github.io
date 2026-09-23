@@ -397,7 +397,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p><strong>2. OFV converged but optimizer stalled above expected minimum</strong></p>
 <ul>
-<li>Switch from gradient-based (<code>slsqp</code>) to derivative-free (<code>bobyqa</code>) — the FOCE surface has small discontinuities from EBE re-estimation that trip gradient-based methods.</li>
+<li>Switch from a gradient-based optimizer (<code>slsqp</code>, <code>nlopt_lbfgs</code> — which is what <code>auto</code> picks when an analytic gradient exists) to derivative-free (<code>bobyqa</code>) — the FOCE surface has small discontinuities from EBE re-estimation that trip gradient-based methods.</li>
 <li>If using <code>slsqp</code> or <code>lbfgs</code>, try <code>reconverge_gradient_interval = 1</code> to recover the full gradient surface (costs ~5–6× per outer iteration).</li>
 <li>Try <code>global_search = TRUE</code> to escape a local basin.</li>
 <li>Try <code>n_starts = 8</code> for multi-start (≈ same wall time as one run on 8 cores).</li>
@@ -679,7 +679,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="outer-optimizer">Outer optimizer</h2>
 <p>Applies to <strong>FOCE / FOCEI / GN-hybrid</strong> (not pure GN, not SAEM).</p>
 <pre><code>[fit_options]
-  optimizer = bobyqa    # default</code></pre>
+  optimizer = auto    # default</code></pre>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -695,34 +695,34 @@ ul.task-list li input[type="checkbox"] {
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>bobyqa</code></td>
-<td>NLopt BOBYQA — derivative-free <strong>(default)</strong></td>
-<td>General use. Robust to small surface discontinuities.</td>
+<td><code>auto</code></td>
+<td>Per-model selection <strong>(default)</strong></td>
+<td>Resolves to <code>nlopt_lbfgs</code> when the exact analytic FOCE/FOCEI gradient is available, and to <code>bobyqa</code> when the outer loop must use finite differences (a model outside the analytic scope, or <code>gradient = fd</code>). Two overrides: more than 64 free parameters → <code>nlopt_lbfgs</code> even on an FD gradient; mixture models → <code>bobyqa</code> regardless. A FOCE/FOCEI fit records the pick as <code>auto (&lt;resolved&gt;)</code> (<code>gn_hybrid</code> reports <code>gn</code>; mixture labels are currently wrong, ferx-core#1540).</td>
 </tr>
 <tr class="even">
+<td><code>bobyqa</code></td>
+<td>NLopt BOBYQA — derivative-free</td>
+<td>Robust to small surface discontinuities; what <code>auto</code> picks without an analytic gradient.</td>
+</tr>
+<tr class="odd">
 <td><code>slsqp</code></td>
 <td>NLopt SLSQP — gradient-based</td>
 <td>Smooth, well-conditioned problems. Faster per iteration. Pair with <code>reconverge_gradient_interval = 1</code> on IOV or difficult models.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>trust_region</code></td>
 <td>Newton trust-region with Steihaug CG</td>
 <td>Ill-conditioned problems; guaranteed descent each step.</td>
 </tr>
-<tr class="even">
-<td><code>lbfgs</code> / <code>nlopt_lbfgs</code></td>
-<td>L-BFGS</td>
-<td>Moderate-sized parameter spaces.</td>
-</tr>
 <tr class="odd">
+<td><code>nlopt_lbfgs</code></td>
+<td>NLopt L-BFGS (<code>lbfgs</code> / <code>bfgs</code> are deprecated aliases)</td>
+<td>Moderate-sized parameter spaces; what <code>auto</code> picks with an analytic gradient.</td>
+</tr>
+<tr class="even">
 <td><code>mma</code></td>
 <td>NLopt Method of Moving Asymptotes</td>
 <td>When SLSQP stalls.</td>
-</tr>
-<tr class="even">
-<td><code>bfgs</code></td>
-<td>Hand-rolled BFGS</td>
-<td>Small parameter spaces.</td>
 </tr>
 </tbody>
 </table>
