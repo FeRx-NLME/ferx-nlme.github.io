@@ -10,7 +10,7 @@ website:
   title: "ferx"
   description: "Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine"
   favicon: assets/ferx-favicon.svg
-  site-url: https://ferx-nlme.github.io
+  site-url: https://ferx-nlme.org
   open-graph:
     locale: en_US
   twitter-card: true
