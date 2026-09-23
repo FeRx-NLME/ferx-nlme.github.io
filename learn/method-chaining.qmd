@@ -72,17 +72,20 @@ nesting family and does not depend on the Laplace approximation used by FOCE/FOC
 ## Outer optimizers
 
 ferx supports several outer optimizers for the population parameter loop.
-The default since ferx-core v0.1+ is **BOBYQA** (derivative-free).
+The default is **`auto`**: it picks NLopt L-BFGS when the exact analytic
+gradient is available and BOBYQA (derivative-free) when only finite
+differences are, with two overrides — more than 64 free parameters always
+takes L-BFGS, mixture models always take BOBYQA. Name an optimizer to pin it.
 
 ```r
-# BOBYQA (default, derivative-free)
+# BOBYQA (derivative-free)
 fit_bobyqa <- ferx_fit(ex$model, ex$data, settings = list(optimizer = "bobyqa"))
 
 # SLSQP (gradient-based NLopt)
 fit_slsqp  <- ferx_fit(ex$model, ex$data, settings = list(optimizer = "slsqp"))
 
 # L-BFGS
-fit_lbfgs  <- ferx_fit(ex$model, ex$data, settings = list(optimizer = "lbfgs"))
+fit_lbfgs  <- ferx_fit(ex$model, ex$data, settings = list(optimizer = "nlopt_lbfgs"))
 
 # MMA (NLopt Method of Moving Asymptotes)
 fit_mma    <- ferx_fit(ex$model, ex$data, settings = list(optimizer = "mma"))
@@ -105,9 +108,10 @@ sapply(
 
 | Optimizer | Best for |
 |---|---|
-| `bobyqa` | General use; robust on rough surfaces; default |
+| `auto` | Default; picks `nlopt_lbfgs` or `bobyqa` per model |
+| `bobyqa` | Robust on rough surfaces and FD-only models |
 | `slsqp` | Well-conditioned analytical PK; fastest when gradients are accurate |
-| `lbfgs` / `nlopt_lbfgs` | Moderate-sized parameter spaces |
+| `nlopt_lbfgs` | Analytic-gradient models; moderate-sized parameter spaces (`lbfgs` is a deprecated alias) |
 | `mma` | Problems where SLSQP stalls |
 | `trust_region` | Ill-conditioned problems; guarantees descent each step |
 | `bfgs` | Small parameter spaces |

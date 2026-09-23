@@ -104,13 +104,6 @@ to `0`.
 
 The bundled DCM example uses `activation = tanh`, `output = exp`.
 
-## Optimizer caveat
-
-The default outer optimizer (SLSQP) currently silently no-ops on
-mu-ref-active NN models (see ferx-core#55). Use `optimizer = lbfgs`,
-either in `[fit_options]` or via `ferx_fit(..., settings = list(optimizer = "lbfgs"))`.
-The bundled example sets it in the model file.
-
 ## Runnable example
 
 ```r
