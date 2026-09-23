@@ -253,13 +253,12 @@ Applies to **FOCE / FOCEI / GN-hybrid** (not pure GN, not SAEM).
 
 | Optimizer | Algorithm | When to use |
 |---|---|---|
-| `auto` | Per-model selection **(default)** | Resolves to `nlopt_lbfgs` when the exact analytic FOCE/FOCEI gradient is available, and to `bobyqa` when the outer loop must use finite differences (ODE/PD models, LTBS, SDE, `gradient_method = fd`, mixture models). The fit output records the pick as `auto (<resolved>)`. |
+| `auto` | Per-model selection **(default)** | Resolves to `nlopt_lbfgs` when the exact analytic FOCE/FOCEI gradient is available, and to `bobyqa` when the outer loop must use finite differences (a model outside the analytic scope, or `gradient = fd`). Two overrides: more than 64 free parameters → `nlopt_lbfgs` even on an FD gradient; mixture models → `bobyqa` regardless. A FOCE/FOCEI fit records the pick as `auto (<resolved>)` (`gn_hybrid` reports `gn`; mixture labels are currently wrong, ferx-core#1540). |
 | `bobyqa` | NLopt BOBYQA — derivative-free | Robust to small surface discontinuities; what `auto` picks without an analytic gradient. |
 | `slsqp` | NLopt SLSQP — gradient-based | Smooth, well-conditioned problems. Faster per iteration. Pair with `reconverge_gradient_interval = 1` on IOV or difficult models. |
 | `trust_region` | Newton trust-region with Steihaug CG | Ill-conditioned problems; guaranteed descent each step. |
-| `lbfgs` / `nlopt_lbfgs` | L-BFGS | Moderate-sized parameter spaces. |
+| `nlopt_lbfgs` | NLopt L-BFGS (`lbfgs` / `bfgs` are deprecated aliases) | Moderate-sized parameter spaces; what `auto` picks with an analytic gradient. |
 | `mma` | NLopt Method of Moving Asymptotes | When SLSQP stalls. |
-| `bfgs` | Hand-rolled BFGS | Small parameter spaces. |
 
 **Trust-region tuning:**
 
