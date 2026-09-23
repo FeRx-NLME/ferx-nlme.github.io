@@ -86,12 +86,6 @@ fit <- ferx_fit(ex$model, ex$data,
 print(fit)
 ```
 
-::: {.callout-tip}
-Use `optimizer = "lbfgs"` (or `"bobyqa"`) for NN-bearing models. The default
-SLSQP optimizer has a known issue with mu-referenced NN models — it silently
-no-ops at iteration 1. This is tracked in ferx-core.
-:::
-
 ## Inspecting the neural network
 
 `fit$neural_networks` is a list of one element per `[covariate_nn]` block:

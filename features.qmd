@@ -38,7 +38,8 @@ followed by a FOCEI polish.
 
 ## Outer optimizers
 
-`bobyqa` (default, derivative-free trust-region) · `slsqp` · built-in `bfgs` ·
+`auto` (default: `nlopt_lbfgs` when the analytic gradient is available, `bobyqa`
+otherwise) · `bobyqa` (derivative-free trust-region) · `slsqp` · built-in `bfgs` ·
 `lbfgs` / `nlopt_lbfgs` · `mma` · Newton `trust_region` · Gauss-Newton (BHHH).
 Optional CRS2-LM gradient-free **global pre-search** (`global_search`) for
 poorly-identified models.

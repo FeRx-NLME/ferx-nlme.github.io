@@ -31,7 +31,9 @@ gave surprising results. Work through this list in order:
 
 **2. OFV converged but optimizer stalled above expected minimum**
 
-- Switch from gradient-based (`slsqp`) to derivative-free (`bobyqa`) — the
+- Switch from a gradient-based optimizer (`slsqp`, `nlopt_lbfgs` — which is
+  what `auto` picks when an analytic gradient exists) to derivative-free
+  (`bobyqa`) — the
   FOCE surface has small discontinuities from EBE re-estimation that trip
   gradient-based methods.
 - If using `slsqp` or `lbfgs`, try `reconverge_gradient_interval = 1`
@@ -246,12 +248,13 @@ Applies to **FOCE / FOCEI / GN-hybrid** (not pure GN, not SAEM).
 
 ```
 [fit_options]
-  optimizer = bobyqa    # default
+  optimizer = auto    # default
 ```
 
 | Optimizer | Algorithm | When to use |
 |---|---|---|
-| `bobyqa` | NLopt BOBYQA — derivative-free **(default)** | General use. Robust to small surface discontinuities. |
+| `auto` | Per-model selection **(default)** | Resolves to `nlopt_lbfgs` when the exact analytic FOCE/FOCEI gradient is available, and to `bobyqa` when the outer loop must use finite differences (ODE/PD models, LTBS, SDE, `gradient_method = fd`, mixture models). The fit output records the pick as `auto (<resolved>)`. |
+| `bobyqa` | NLopt BOBYQA — derivative-free | Robust to small surface discontinuities; what `auto` picks without an analytic gradient. |
 | `slsqp` | NLopt SLSQP — gradient-based | Smooth, well-conditioned problems. Faster per iteration. Pair with `reconverge_gradient_interval = 1` on IOV or difficult models. |
 | `trust_region` | Newton trust-region with Steihaug CG | Ill-conditioned problems; guaranteed descent each step. |
 | `lbfgs` / `nlopt_lbfgs` | L-BFGS | Moderate-sized parameter spaces. |
