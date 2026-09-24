@@ -1,0 +1,5 @@
+# Defaults applied to every post under blog/posts/
+author: "ferx team"
+toc: true
+title-block-banner: false
+freeze: auto

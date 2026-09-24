@@ -1,0 +1,19 @@
+---
+title: "Blog"
+description: "News, release notes, and technical deep-dives from the ferx project."
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+  feed: true
+page-layout: full
+title-block-banner: false
+---
+
+::: {.callout-note appearance="simple"}
+**Coming soon.** Posts on ferx development, releases, and pharmacometric
+methods will appear here.
+:::
