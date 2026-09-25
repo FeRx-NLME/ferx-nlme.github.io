@@ -1,0 +1,14 @@
+---
+# Template for new blog posts (ignored by Quarto render: leading underscore).
+# To publish: copy to blog/posts/YYYY-MM-DD-slug/index.qmd and edit.
+# Posts with `draft: true` are excluded from the listing and the site build.
+title: "Post title"
+description: "One-sentence summary shown in the listing and RSS feed."
+date: 2026-01-01
+author: "ferx team"
+categories: [release]
+image: ""
+draft: true
+---
+
+Post body goes here.
