@@ -83,9 +83,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-cc8de2ccd46953379f7d11a74152019b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-0f4f461647e6df0063ba7afc6dffd75e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bce9ac5131b28a06f2bac66cf12fad62.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -329,6 +329,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../roadmap.html"> 
 <span class="menu-text">Roadmap</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
@@ -408,8 +412,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">ignore =</span> <span class="cn">NULL</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">accept =</span> <span class="cn">NULL</span>,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ignore_ids =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">excluded =</span> <span class="cn">FALSE</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">excluded =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="cn">NULL</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
@@ -423,6 +428,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>accept</code>: Character vector of filter expressions. A record is <strong><em>kept</em></strong> only when all conditions pass; excluded if any fail.</li>
 <li><code>ignore_ids</code>: Numeric or character vector of subject IDs to exclude entirely.</li>
 <li><code>excluded</code>: Logical. When <code>FALSE</code> (default) the retained records are returned as a <code>ferx_data</code> object. When <code>TRUE</code> the function returns a plain data.frame of the <strong><em>excluded</em></strong> records instead, with an extra <code>.exclude_reason</code> column naming the first rule that dropped each record (this replaces the former <code>ferx_selection_excluded()</code> accessor).</li>
+<li><code>model</code>: Optional path to the <code>.ferx</code> model file (or a <code>ferx_model</code> object) the data will be fitted with. When the model declares a <code>[data]</code> column map (e.g.&nbsp;<code>time = TAFD</code>), the expressions and <code>ignore_ids</code> are evaluated against the columns under the names the engine gives them, so <code>"TIME &gt; 24"</code> matches the <code>TAFD</code> column as it does at fit time. The returned records keep the dataset’s own headers. Ignored when <code>data</code> is a <code>ferx_data</code> object; for a <code>ferx_fit</code> the fit’s recorded model is used.</li>
 </ul>
 </section>
 <section id="seealso" class="level2">

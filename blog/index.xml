@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>ferx</title>
+<link>https://ferx-nlme.org/blog/</link>
+<atom:link href="https://ferx-nlme.org/blog/index.xml" rel="self" type="application/rss+xml"/>
+<description>News, release notes, and technical deep-dives from the ferx project.</description>
+<generator>quarto-1.10.18</generator>
+<lastBuildDate>Fri, 25 Sep 2026 16:18:05 GMT</lastBuildDate>
+</channel>
+</rss>
