@@ -521,7 +521,7 @@ elements are non-positive; correlation matrix may not be meaningful.</code></pre
  Model: warfarin_derived_pkpd    Dataset: warfarin
  Method: FOCE | Gradient: ANALYTIC | Subjects: 10 | Obs: 110
 
- STATUS: CONVERGED   67 iterations   2.5s
+ STATUS: CONVERGED   50 iterations   1.7s
  OFV: -280.3640    AIC: -266.3640    BIC: -247.4606
 
 MODEL STRUCTURE (auto-derived)
@@ -537,7 +537,7 @@ Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
 TVCL                 0.132969     0.006627        5.0
 TVV                  7.730700     0.234055        3.0
-TVKA                 0.725207     0.124530       17.2
+TVKA                 0.725208     0.124530       17.2
 MEC                  0.500000     0.000000        0.0
 EMAX                80.000000     0.000000        0.0
 EC50                 3.000000     0.000000        0.0
@@ -580,27 +580,27 @@ SETTINGS  (model file / call-time override)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>estimates</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            param    transform     estimate           se   rse_pct     lower_95
-TVCL         TVCL     identity  0.132969032 0.0066273862  4.984158  0.119979355
-TVV           TVV     identity  7.730699911 0.2340548168  3.027602  7.271952470
-TVKA         TVKA     identity  0.725207008 0.1245295553 17.171587  0.481129080
+TVCL         TVCL     identity  0.132968906 0.0066273938  4.984168  0.119979214
+TVV           TVV     identity  7.730700296 0.2340547114  3.027600  7.271953062
+TVKA         TVKA     identity  0.725208169 0.1245296620 17.171575  0.481130031
 MEC           MEC     identity  0.500000000 0.0000000000  0.000000  0.500000000
 EMAX         EMAX     identity 80.000000000 0.0000000000  0.000000 80.000000000
 EC50         EC50     identity  3.000000000 0.0000000000  0.000000  3.000000000
-ETA_CL     ETA_CL     variance  0.028594955 0.0127980762 44.756414  0.003510725
-ETA_V       ETA_V     variance  0.009576924 0.0042973116 44.871523  0.001154193
-ETA_KA     ETA_KA     variance  0.348964242 0.1608188259 46.084615  0.033759343
-PROP_ERR PROP_ERR proportional  0.010748528 0.0009417291  8.761470  0.008902739
+ETA_CL     ETA_CL     variance  0.028595087 0.0127981641 44.756515  0.003510685
+ETA_V       ETA_V     variance  0.009576913 0.0042973039 44.871496  0.001154197
+ETA_KA     ETA_KA     variance  0.348964082 0.1608186671 46.084590  0.033759494
+PROP_ERR PROP_ERR proportional  0.010748522 0.0009417285  8.761470  0.008902734
             upper_95 estimate_natural lower_95_natural upper_95_natural
-TVCL      0.14595871               NA               NA               NA
-TVV       8.18944735               NA               NA               NA
-TVKA      0.96928494               NA               NA               NA
+TVCL      0.14595860               NA               NA               NA
+TVV       8.18944753               NA               NA               NA
+TVKA      0.96928631               NA               NA               NA
 MEC       0.50000000               NA               NA               NA
 EMAX     80.00000000               NA               NA               NA
 EC50      3.00000000               NA               NA               NA
-ETA_CL    0.05367918               NA               NA               NA
-ETA_V     0.01799965               NA               NA               NA
-ETA_KA    0.66416914               NA               NA               NA
-PROP_ERR  0.01259432               NA               NA               NA
+ETA_CL    0.05367949               NA               NA               NA
+ETA_V     0.01799963               NA               NA               NA
+ETA_KA    0.66416867               NA               NA               NA
+PROP_ERR  0.01259431               NA               NA               NA
          init_as_sd weight
 TVCL          FALSE   &lt;NA&gt;
 TVV           FALSE   &lt;NA&gt;
