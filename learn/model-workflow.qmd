@@ -17,7 +17,7 @@ This article covers two complementary workflows for running a ferx model:
 Both produce the same `ferx_fit` result.
 
 ::: {.callout-tip}
-This article gives a concise overview. For a complete walkthrough with runnable output, see [Chapter 2 (Quickstart)](https://ferx-nlme.org/ferx-book/chapters/02-quickstart.html) and [Chapter 4 (Fitting)](https://ferx-nlme.org/ferx-book/chapters/04-fitting.html) in the ferx book.
+This article gives a concise overview. For a complete walkthrough with runnable output, see [Chapter 2 (A complete analysis)](https://ferx-nlme.org/ferx-book/chapters/02-complete-analysis.html) and [Chapter 5 (A first fit)](https://ferx-nlme.org/ferx-book/chapters/05-first-fit.html) in the ferx book.
 :::
 
 **Entry point:** `ferx_model(data, model)` takes the data file first, which lets a data object flow naturally into a pipeline:

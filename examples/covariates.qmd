@@ -6,7 +6,7 @@ A two-compartment oral model with body weight (WT) and creatinine clearance
 (CRCL) as covariates on clearance.
 
 ::: {.callout-tip}
-For background on covariate parameterisation, see [Chapter 3 (Model DSL)](https://ferx-nlme.org/ferx-book/chapters/03-model-dsl.html) in the ferx book.
+For background on covariate parameterisation, see [Chapter 17 (Covariate modeling)](https://ferx-nlme.org/ferx-book/chapters/17-covariates.html) in the ferx book.
 :::
 
 ## Model file

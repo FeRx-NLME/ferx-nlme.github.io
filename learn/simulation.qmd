@@ -25,7 +25,7 @@ the `.ferx` file are used - which is occasionally useful for sanity-checking a
 model before fitting, but the post-fit case is the common one.
 
 ::: {.callout-tip}
-For a full VPC walkthrough, see [Chapter 6 (Simulation & VPC)](https://ferx-nlme.org/ferx-book/chapters/06-simulation-vpc.html) in the ferx book.
+For a full VPC walkthrough, see [Chapter 8 (VPC)](https://ferx-nlme.org/ferx-book/chapters/08-vpc.html) in the ferx book.
 :::
 
 ---

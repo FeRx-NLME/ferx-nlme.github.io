@@ -6,7 +6,7 @@ This example extends the one-compartment oral warfarin model to account for
 occasion-to-occasion variability in clearance.
 
 ::: {.callout-tip}
-For a full IOV walkthrough, see [Chapter 10 (IOV)](https://ferx-nlme.org/ferx-book/chapters/10-iov.html) in the ferx book.
+For a full IOV walkthrough, see [Chapter 16 (Variability and IOV)](https://ferx-nlme.org/ferx-book/chapters/16-variability.html#inter-occasion-variability) in the ferx book.
 :::
 
 ## When to use IOV

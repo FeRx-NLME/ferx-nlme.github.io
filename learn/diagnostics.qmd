@@ -14,7 +14,7 @@ needed for model evaluation. This article covers the key diagnostic functions
 and fields.
 
 ::: {.callout-tip}
-For a complete diagnostics walkthrough with plots, see [Chapter 5 (Diagnostics)](https://ferx-nlme.org/ferx-book/chapters/05-diagnostics.html) in the ferx book.
+For a complete diagnostics walkthrough with plots, see [Chapter 7 (Diagnostics)](https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html) in the ferx book.
 :::
 
 ---
@@ -135,7 +135,7 @@ A `message()` with ordered remedies is emitted automatically when DW < 1.5
 | 1.5 – 2.5 | No concern | — |
 | > 2.5 | Negative autocorrelation | Over-parameterisation or misspecified error model |
 
-For a full walkthrough with plots see [Chapter 5 (Diagnostics)](https://ferx-nlme.org/ferx-book/chapters/05-diagnostics.html#iwres-autocorrelation-check_diagnostics) in the ferx book.
+For a full walkthrough with plots see [Chapter 7 (Diagnostics)](https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html#residuals) in the ferx book.
 
 ---
 

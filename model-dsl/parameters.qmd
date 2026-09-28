@@ -154,7 +154,7 @@ IOV is declared with `kappa` (independent per-parameter) or `block_kappa`
 (correlated across parameters). Kappa parameters must be paired with
 `iov_column` in `[fit_options]` and an occasion column in the dataset.
 
-See also: [Estimation — IOV (ferx-core book)](https://ferx-nlme.org/ferx-core/estimation/iov.html).
+See also: [Estimation — IOV (ferx-core book)](https://ferx-nlme.org/ferx-core/model-file/iov.html).
 
 ### Diagonal kappa — Option A
 
