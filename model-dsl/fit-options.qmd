@@ -545,4 +545,4 @@ Inspect `fit$model_file_settings` and `fit$call_settings` to audit.
 - [Example: IOV](../examples/iov.qmd)
 - [BLOQ DSL reference](bloq.qmd)
 - [IOV DSL reference](iov.qmd)
-- [ferx-core fit options (full engine reference)](https://ferx-nlme.github.io/ferx-core/model-file/fit-options.html)
+- [ferx-core fit options (full engine reference)](https://ferx-nlme.org/ferx-core/model-file/fit-options.html)

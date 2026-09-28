@@ -12,11 +12,11 @@ twitter-card:
 ferx implements the same statistical methodology as NONMEM, Monolix, and Pumas,
 in an open-source Rust engine with exact analytic gradients. This page summarizes
 what the engine can do. For full
-detail see the **[ferx-core book](https://ferx-nlme.github.io/ferx-core/)** (engine,
-CLI, DSL) and the **[ferx-r book](https://ferx-nlme.github.io/ferx-book/)** (R workflow).
+detail see the **[ferx-core book](https://ferx-nlme.org/ferx-core/)** (engine,
+CLI, DSL) and the **[ferx-r book](https://ferx-nlme.org/ferx-book/)** (R workflow).
 
 Maturity labels — **stable**, **beta**, **experimental** — follow the
-[ferx-core feature maturity](https://ferx-nlme.github.io/ferx-core/maturity.html) page.
+[ferx-core feature maturity](https://ferx-nlme.org/ferx-core/maturity.html) page.
 
 ---
 

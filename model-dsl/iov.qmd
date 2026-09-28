@@ -186,4 +186,4 @@ columns `ID`, `OCC`, and one column per kappa parameter).
 
 - [Example: IOV](../examples/iov.qmd) — worked example with R code
 - [Parameters — Kappa](parameters.qmd#kappa-inter-occasion-variability)
-- [IOV (ferx-core book)](https://ferx-nlme.github.io/ferx-core/model-file/iov.html)
+- [IOV (ferx-core book)](https://ferx-nlme.org/ferx-core/model-file/iov.html)

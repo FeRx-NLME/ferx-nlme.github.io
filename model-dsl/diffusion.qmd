@@ -146,7 +146,7 @@ model misspecification.
 
 ## See also
 
-- [Stochastic Differential Equations — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/diffusion.html)
+- [Stochastic Differential Equations — ferx-core book](https://ferx-nlme.org/ferx-core/model-file/diffusion.html)
   — full EKF derivation, unit-convention discussion, and constraint
   list
 - [SDE example](../examples/sde.qmd) — full walkthrough

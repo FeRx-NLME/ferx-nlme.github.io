@@ -111,4 +111,4 @@ a prior non-SS period.
 
 - [Steady-state doses (SS=1) — DSL reference](../model-dsl/steady-state.qmd)
 - [Example: One-compartment oral (warfarin)](warfarin.qmd)
-- [Data format](https://ferx-nlme.github.io/ferx-core/data-format.html)
+- [Data format](https://ferx-nlme.org/ferx-core/data-format.html)

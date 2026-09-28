@@ -76,7 +76,7 @@ covariates are not randomised by the simulation block itself.
 
 ## See also
 
-- [Simulation — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/simulation.html)
+- [Simulation — ferx-core book](https://ferx-nlme.org/ferx-core/model-file/simulation.html)
   — full reference
 - [Simulation (R-side workflow)](../learn/simulation.qmd) — running
   simulations from a fitted model via ferx-r
