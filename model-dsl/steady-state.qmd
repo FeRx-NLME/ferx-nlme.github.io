@@ -174,9 +174,9 @@ worked fit with sdtab output.
 
 ## See also
 
-- [Steady-State Doses — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/steady-state.html)
+- [Steady-State Doses — ferx-core book](https://ferx-nlme.org/ferx-core/model-file/steady-state.html)
   — full algorithm details, NONMEM equivalence, and validation notes
-- [Data Format (ferx-core book)](https://ferx-nlme.github.io/ferx-core/data-format.html)
+- [Data Format (ferx-core book)](https://ferx-nlme.org/ferx-core/data-format.html)
   — `SS`, `II`, and `ADDL` column reference
 - [Lag time](lag-time.qmd) — interaction with `lagtime`
 - [Derived columns](derived.qmd) — `TAD`-based trough detection in `[derived]`

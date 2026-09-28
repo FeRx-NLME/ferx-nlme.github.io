@@ -6,7 +6,7 @@ This example extends the one-compartment oral warfarin model to account for
 occasion-to-occasion variability in clearance.
 
 ::: {.callout-tip}
-For a full IOV walkthrough, see [Chapter 10 (IOV)](https://ferx-nlme.github.io/ferx-book/chapters/10-iov.html) in the ferx book.
+For a full IOV walkthrough, see [Chapter 16 (Variability and IOV)](https://ferx-nlme.org/ferx-book/chapters/16-variability.html#inter-occasion-variability) in the ferx book.
 :::
 
 ## When to use IOV
@@ -132,4 +132,4 @@ columns in the sdtab CSV. Per-kappa shrinkage is computed and reported in the
 
 - [Parameters — Kappa](../model-dsl/parameters.qmd#kappa-inter-occasion-variability)
 - [Fit Options — iov_column](../model-dsl/fit-options.qmd)
-- [Data Format — Occasion column (ferx-core book)](https://ferx-nlme.github.io/ferx-core/data-format.html#occasion-column-iov)
+- [Data Format — Occasion column (ferx-core book)](https://ferx-nlme.org/ferx-core/data-format.html#occasion-column-iov)

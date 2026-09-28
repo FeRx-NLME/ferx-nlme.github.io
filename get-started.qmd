@@ -75,7 +75,7 @@ and are much faster.
 
 Platform gotchas — notably RStudio on macOS starting with a PATH that hides
 `cargo` — are covered in the
-**[installation chapter](https://ferx-nlme.github.io/ferx-book/chapters/01-installation.html)**
+**[installation chapter](https://ferx-nlme.org/ferx-book/chapters/01-installation.html)**
 of the ferx-r book.
 
 ### Install
@@ -97,7 +97,7 @@ print(fit)
 
 For installation options (Docker, platform notes) and the full R workflow —
 diagnostics, simulation, covariates, IOV —
-see the **[ferx-r book](https://ferx-nlme.github.io/ferx-book/)**.
+see the **[ferx-r book](https://ferx-nlme.org/ferx-book/)**.
 
 ---
 
@@ -114,4 +114,4 @@ ferx warfarin.ferx --data warfarin.csv
 It writes the fit results (estimates, predictions) to disk next to the inputs.
 
 For building the CLI, estimation settings, the `.ferx` DSL spec, and using the
-engine as a Rust library, see the **[ferx-core book](https://ferx-nlme.github.io/ferx-core/)**.
+engine as a Rust library, see the **[ferx-core book](https://ferx-nlme.org/ferx-core/)**.

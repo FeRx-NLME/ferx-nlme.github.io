@@ -165,6 +165,6 @@ estimates as the standard `warfarin` example.
 
 ## See also
 
-- [Scaling — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/scaling.html)
+- [Scaling — ferx-core book](https://ferx-nlme.org/ferx-core/model-file/scaling.html)
   — full reference including the subject-static caveat derivation
 - [Structural model](structural-model.qmd) — `pk` line, ODE `states=`

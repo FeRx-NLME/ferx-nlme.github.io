@@ -116,7 +116,7 @@ fit
 ## See also
 
 - [Example: BLOQ (M3 method)](../examples/bloq.qmd) — worked example
-- [Data format (ferx-core book)](https://ferx-nlme.github.io/ferx-core/data-format.html)
+- [Data format (ferx-core book)](https://ferx-nlme.org/ferx-core/data-format.html)
 
 ## Reference
 

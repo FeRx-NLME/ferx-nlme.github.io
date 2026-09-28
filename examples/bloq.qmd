@@ -6,7 +6,7 @@ This example shows how to fit a model to data containing observations below the
 lower limit of quantification (BLOQ) using Beal's **M3 method**.
 
 ::: {.callout-tip}
-For background on the M3 likelihood, see [Chapter 9 (BLOQ & M3)](https://ferx-nlme.github.io/ferx-book/chapters/09-bloq-m3.html) in the ferx book.
+For background on the M3 likelihood, see [Chapter 19 (Censored observations)](https://ferx-nlme.org/ferx-book/chapters/19-censoring.html) in the ferx book.
 :::
 
 Instead of dropping BLOQ rows — which biases terminal-phase parameter estimates
@@ -99,4 +99,4 @@ are empty (a weighted Gaussian residual is undefined when the value is censored)
 ## See also
 
 - [Fit Options — bloq_method](../model-dsl/fit-options.qmd)
-- [Data Format (ferx-core book)](https://ferx-nlme.github.io/ferx-core/data-format.html) — see the `CENS` column row
+- [Data Format (ferx-core book)](https://ferx-nlme.org/ferx-core/data-format.html) — see the `CENS` column row

@@ -138,7 +138,7 @@ than dumping one row per weight.
 
 ## See also
 
-- [Covariate NN (DCM) — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/covariate-nn.html)
+- [Covariate NN (DCM) — ferx-core book](https://ferx-nlme.org/ferx-core/model-file/covariate-nn.html)
   — full reference including fit-output YAML schema
-- [Neural Networks — landing page](https://ferx-nlme.github.io/ferx-core/model-file/neural-networks.html)
+- [Neural Networks — landing page](https://ferx-nlme.org/ferx-core/model-file/neural-networks.html)
 - [DCM example](../examples/dcm.qmd) — runnable walkthrough

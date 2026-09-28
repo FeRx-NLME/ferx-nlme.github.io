@@ -36,9 +36,9 @@ website:
         href: blog/index.qmd
     right:
       - text: "ferx-core"
-        href: https://ferx-nlme.github.io/ferx-core/
+        href: https://ferx-nlme.org/ferx-core/
       - text: "ferx-r"
-        href: https://ferx-nlme.github.io/ferx-book/
+        href: https://ferx-nlme.org/ferx-book/
       - text: "Reference"
         href: reference/index.qmd
       - icon: github

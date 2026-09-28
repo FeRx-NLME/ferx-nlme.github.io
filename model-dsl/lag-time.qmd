@@ -85,7 +85,7 @@ A worked walkthrough is on the
 
 ## See also
 
-- [Lagtime — ferx-core book](https://ferx-nlme.github.io/ferx-core/model-file/lagtime.html)
+- [Lagtime — ferx-core book](https://ferx-nlme.org/ferx-core/model-file/lagtime.html)
   — full reference including NONMEM equivalence and the SS+lag
   validation
 - [Steady-State Doses](steady-state.qmd) — interaction of `SS=1` with

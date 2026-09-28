@@ -80,7 +80,7 @@ file. Any column in the CSV not in the standard NONMEM set (ID, TIME, DV, EVID,
 AMT, CMT, RATE, MDV, CENS, II, SS) is automatically treated as a covariate and
 can be referenced by name in `[individual_parameters]`.
 
-See [Data Format](https://ferx-nlme.github.io/ferx-core/data-format.html) for the full column reference.
+See [Data Format](https://ferx-nlme.org/ferx-core/data-format.html) for the full column reference.
 
 ## Further reading
 
