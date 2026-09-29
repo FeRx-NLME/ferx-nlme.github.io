@@ -112,7 +112,7 @@ fit
 |---|---|
 | NONMEM | `IF (WT.GT.70) THEN CL = ... ELSE CL = ... ENDIF` |
 | nlmixr2 | `if (WT > 70) { CL <- ... } else { CL <- ... }` |
-| ferx | `if (WT > 70) { CL = ... } else { CL = ... }` |
+| FeRx | `if (WT > 70) { CL = ... } else { CL = ... }` |
 
 ## See also
 

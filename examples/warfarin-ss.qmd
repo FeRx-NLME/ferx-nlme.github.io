@@ -5,7 +5,7 @@ title: "Example: Steady-state dosing (SS=1)"
 This example demonstrates fitting a model to data collected at steady state.
 When subjects have been dosed repeatedly before the observation window, the
 pharmacokinetic system is at (or near) steady state and the single-dose initial
-conditions are no longer valid. ferx handles this via the `SS` and `II` columns
+conditions are no longer valid. FeRx handles this via the `SS` and `II` columns
 in the dataset — no changes to the model file are needed.
 
 ## Dataset columns
@@ -15,7 +15,7 @@ in the dataset — no changes to the model file are needed.
 | `SS` | 1 = pre-dose steady-state condition; 0 (or absent) = normal |
 | `II` | Dosing interval (h) for the preceding repeated-dose regimen |
 
-A dose row with `SS=1` and `II=24` tells ferx: compute the steady-state
+A dose row with `SS=1` and `II=24` tells FeRx: compute the steady-state
 initial conditions for a 24-hour repeated dosing regimen, then add the
 current dose on top before integrating forward.
 
@@ -81,13 +81,13 @@ At steady state with τ = 24 h and the warfarin half-life of ~42 h
 values are therefore substantially higher than in the single-dose dataset,
 but the underlying PK parameters should be consistent.
 
-## How ferx computes steady-state conditions
+## How FeRx computes steady-state conditions
 
-For **analytical PK models** (one_cpt_oral, two_cpt_iv_bolus, etc.), ferx
+For **analytical PK models** (one_cpt_oral, two_cpt_iv_bolus, etc.), FeRx
 derives the closed-form steady-state concentrations from the current individual
 parameters and dosing interval. No iterative pre-simulation is required.
 
-For **ODE models** with `SS=1`, ferx runs an iterative pre-dose simulation:
+For **ODE models** with `SS=1`, FeRx runs an iterative pre-dose simulation:
 it simulates repeated doses at interval `II` until the state vector converges
 (relative tolerance 1e-6), then uses that state as the initial condition for
 the observation period.
@@ -101,7 +101,7 @@ a prior non-SS period.
 
 ## Tips
 
-- If `II` is absent or zero on an `SS=1` row, ferx will emit a warning and
+- If `II` is absent or zero on an `SS=1` row, FeRx will emit a warning and
   fall back to zero initial conditions.
 - For ODE models, convergence of the iterative SS computation can be slow for
   drugs with very long half-lives. Consider increasing `inner_maxiter` via

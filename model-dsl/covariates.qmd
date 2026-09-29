@@ -7,7 +7,7 @@ and whether each is **continuous** or **categorical**. It is a declaration of
 *availability*, not usage — a covariate can be declared without being referenced
 in `[individual_parameters]`, and vice versa.
 
-When the block is present, ferx validates the declared columns against the data
+When the block is present, FeRx validates the declared columns against the data
 and echoes them into the fit's covariate table (`fit$covtab`), enabling
 downstream covariate-search and summary workflows.
 
@@ -41,7 +41,7 @@ Column names are **case-sensitive** and must match the CSV header exactly.
 |---|---|
 | Block absent | All non-standard CSV columns are auto-detected as covariates (backward-compatible) |
 | Column declared, not used in model | Valid — declares type for the covariate table |
-| Column used in model, not declared | Model still fits; ferx emits a warning recommending declaration |
+| Column used in model, not declared | Model still fits; FeRx emits a warning recommending declaration |
 | Column declared, absent from data | Hard error: `E_MISSING_COVARIATE` |
 
 ## Categorical covariates must be numerically coded

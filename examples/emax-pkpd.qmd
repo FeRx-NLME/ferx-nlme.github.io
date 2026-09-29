@@ -102,7 +102,7 @@ fit <- ferx_fit(ex$model, ex$data)
 fit
 ```
 
-Inspect how ferx classified the residual structure:
+Inspect how FeRx classified the residual structure:
 
 ```r
 fit$sigma           # two residual variance estimates

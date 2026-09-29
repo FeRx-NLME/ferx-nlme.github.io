@@ -1,15 +1,15 @@
 ---
 title: "Method chaining, optimizers, and advanced fit options"
-description-meta: "Chain FOCEI, SAEM, and importance sampling in ferx; compare NLME optimizers; and configure convergence and advanced fitting options."
+description-meta: "Chain FOCEI, SAEM, and importance sampling in FeRx; compare NLME optimizers; and configure convergence and advanced fitting options."
 open-graph:
   title: "Method chaining, optimizers, and advanced fit options"
-  description: "Chain FOCEI, SAEM, and importance sampling in ferx; compare NLME optimizers; and configure convergence and advanced fitting options."
+  description: "Chain FOCEI, SAEM, and importance sampling in FeRx; compare NLME optimizers; and configure convergence and advanced fitting options."
 twitter-card:
   title: "Method chaining, optimizers, and advanced fit options"
-  description: "Chain FOCEI, SAEM, and importance sampling in ferx; compare NLME optimizers; and configure convergence and advanced fitting options."
+  description: "Chain FOCEI, SAEM, and importance sampling in FeRx; compare NLME optimizers; and configure convergence and advanced fitting options."
 ---
 
-ferx supports running multiple estimation methods in sequence (method chains),
+FeRx supports running multiple estimation methods in sequence (method chains),
 switching outer optimizers, and fine-tuning convergence settings via the
 `settings` argument. This page covers these options with working code.
 
@@ -71,7 +71,7 @@ nesting family and does not depend on the Laplace approximation used by FOCE/FOC
 
 ## Outer optimizers
 
-ferx supports several outer optimizers for the population parameter loop.
+FeRx supports several outer optimizers for the population parameter loop.
 The default is **`auto`**: it picks NLopt L-BFGS when the exact analytic
 gradient is available and BOBYQA (derivative-free) when only finite
 differences are, with two overrides — more than 64 free parameters always

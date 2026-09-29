@@ -143,7 +143,7 @@ and the residual variance callback — deferred to a future phase.
 
 ## NONMEM and nlmixr2 mapping
 
-| Need                                          | NONMEM                         | nlmixr2                                  | ferx                                       |
+| Need                                          | NONMEM                         | nlmixr2                                  | FeRx                                       |
 |-----------------------------------------------|--------------------------------|------------------------------------------|--------------------------------------------|
 | Scalar unit conversion                        | `S1 = 1000`                    | (multiplier in `cmt`/`f`)                | `[scaling] obs_scale = 1000`               |
 | Amount-state ODE with concentration DV        | `S2 = V/1000` plus `Y = A(2)/S2` | `cmt(central); f = central/V/1000`    | `[scaling] y = central / (V/1000)`         |

@@ -1,12 +1,12 @@
 ---
 title: "Special features: IOV, BLOQ, steady state, and unit scaling"
-description-meta: "Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in ferx."
+description-meta: "Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in FeRx."
 open-graph:
   title: "Special features: IOV, BLOQ, steady state, and unit scaling"
-  description: "Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in ferx."
+  description: "Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in FeRx."
 twitter-card:
   title: "Special features: IOV, BLOQ, steady state, and unit scaling"
-  description: "Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in ferx."
+  description: "Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in FeRx."
 ---
 
 This article is a tour of four `.ferx` features that go beyond the standard
@@ -86,7 +86,7 @@ declared name; an unnamed declaration would fall back to `KAPPA1`,
 ## Below lower limit of quantification (BLOQ)
 
 When some observations sit below the assay's lower limit, the standard
-Gaussian likelihood is biased. ferx implements Beal's M3 likelihood, which
+Gaussian likelihood is biased. FeRx implements Beal's M3 likelihood, which
 treats each BLOQ observation as a left-censored draw and integrates over the
 unobserved range.
 

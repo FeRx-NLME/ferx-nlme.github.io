@@ -1,12 +1,12 @@
 ---
-pagetitle: "ferx: Open-source NLME for population PK/PD"
-description-meta: "ferx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
+pagetitle: "FeRx: Open-source NLME for population PK/PD"
+description-meta: "FeRx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
 open-graph:
-  title: "ferx: Open-source NLME for population PK/PD"
-  description: "ferx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
+  title: "FeRx: Open-source NLME for population PK/PD"
+  description: "FeRx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
 twitter-card:
-  title: "ferx: Open-source NLME for population PK/PD"
-  description: "ferx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
+  title: "FeRx: Open-source NLME for population PK/PD"
+  description: "FeRx is an open-source nonlinear mixed-effects modeling platform for population PK/PD, with an R package and high-performance Rust engine."
 image: false
 toc: false
 page-layout: full
@@ -26,7 +26,7 @@ Fe[·]{.dot}[R[*x*]{style="font-style:italic"}]{.rx}
 
 ::: {.lede}
 Fit population PK/PD models with FOCEI, SAEM, simulation, and readable model
-syntax using the ferx R package or high-performance Rust CLI.
+syntax using the FeRx R package or high-performance Rust CLI.
 :::
 
 ::: {.meta}
@@ -44,7 +44,7 @@ syntax using the ferx R package or high-performance Rust CLI.
 ::: {.built-grid style="display:grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px); gap: 2rem; align-items: center;"}
 
 ::: {.built-text}
-## How ferx is built
+## How FeRx is built
 
 **ferx-core** is the Rust engine — it parses `.ferx` model files, runs the
 estimators, and produces fits. All numerical work happens here. It ships with a standalone
@@ -69,13 +69,13 @@ same numerical results as the CLI and ferx-r.
 :::
 
 ::: {.container style="padding: 3rem 1rem 2rem;"}
-## Learn ferx
+## Learn FeRx
 
 ::: {.resource-grid style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 1rem;"}
 
 ::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
 **[Get started](get-started.qmd)**\
-Install ferx and run the warfarin quickstart in under five minutes.
+Install FeRx and run the warfarin quickstart in under five minutes.
 :::
 
 ::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
@@ -90,7 +90,7 @@ Guide and reference for working with FeRx using the CLI or Rust library.
 
 ::: {.resource-card style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.25rem;"}
 **[Reference](reference/index.html)**\
-Function-level documentation for every exported function in the ferx R package.
+Function-level documentation for every exported function in the FeRx R package.
 :::
 
 :::

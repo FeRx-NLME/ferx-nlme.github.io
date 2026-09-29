@@ -3,7 +3,7 @@ title: "ODE Models"
 ---
 
 For pharmacokinetic models without closed-form analytical solutions — saturable
-elimination, target-mediated drug disposition, transit compartments — ferx
+elimination, target-mediated drug disposition, transit compartments — FeRx
 provides an adaptive ODE solver (Dormand-Prince RK45).
 
 ## Structural model declaration
@@ -115,7 +115,7 @@ The solver adapts step size based on local error estimates. See also
 
 ## Limitations
 
-- Steady-state (`SS=1`) is supported for ODE models via iterative pre-simulation: ferx repeats the dose at interval `II` until the state converges, then uses that state as the initial condition
+- Steady-state (`SS=1`) is supported for ODE models via iterative pre-simulation: FeRx repeats the dose at interval `II` until the state converges, then uses that state as the initial condition
 - ODE models do not have an analytic sensitivity gradient path — the inner-loop
   gradient always uses finite differences (`Fd`)
 - ODE models are slower than analytical models; use analytical solutions

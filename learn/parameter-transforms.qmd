@@ -1,15 +1,15 @@
 ---
 title: "Parameter transforms: log, logit, and additive ETAs"
-description-meta: "Choose log-normal, logit-normal, or additive random-effect parameterizations for population PK/PD models in ferx."
+description-meta: "Choose log-normal, logit-normal, or additive random-effect parameterizations for population PK/PD models in FeRx."
 open-graph:
   title: "Parameter transforms: log, logit, and additive ETAs"
-  description: "Choose log-normal, logit-normal, or additive random-effect parameterizations for population PK/PD models in ferx."
+  description: "Choose log-normal, logit-normal, or additive random-effect parameterizations for population PK/PD models in FeRx."
 twitter-card:
   title: "Parameter transforms: log, logit, and additive ETAs"
-  description: "Choose log-normal, logit-normal, or additive random-effect parameterizations for population PK/PD models in ferx."
+  description: "Choose log-normal, logit-normal, or additive random-effect parameterizations for population PK/PD models in FeRx."
 ---
 
-ferx supports three parameterisation styles for individual parameters:
+FeRx supports three parameterisation styles for individual parameters:
 
 | Style | DSL pattern | Use case |
 |---|---|---|
@@ -17,11 +17,11 @@ ferx supports three parameterisation styles for individual parameters:
 | **Logit-normal** | `P = inv_logit(logit(THETA_P) + ETA_P)` | Fractions/probabilities (F, bioavailability) — bounded (0, 1) |
 | **Additive** | `P = TVP + ETA_P` | Parameters with natural additive variability (lag time, threshold) |
 
-The optimiser always works on the unbounded or transformed scale; ferx
+The optimiser always works on the unbounded or transformed scale; FeRx
 back-transforms to the natural scale when reporting results.
 
 ::: {.callout-tip}
-For a deeper treatment with CV% formulas and worked examples, see [Chapter 5 (A first fit)](https://ferx-nlme.org/ferx-book/chapters/05-first-fit.html) in the ferx book.
+For a deeper treatment with CV% formulas and worked examples, see [Chapter 5 (A first fit)](https://ferx-nlme.org/ferx-book/chapters/05-first-fit.html) in the FeRx book.
 :::
 
 ---
@@ -104,7 +104,7 @@ When a parameter is a fraction bounded between 0 and 1, use `inv_logit` /
 F = inv_logit(logit(THETA_F) + ETA_F)
 ```
 
-`THETA_F` is specified on the natural (0, 1) scale in `[parameters]`; ferx
+`THETA_F` is specified on the natural (0, 1) scale in `[parameters]`; FeRx
 maps it to the logit scale internally so the optimiser works on an unbounded
 space. The omega for `ETA_F` is the variance on the logit scale.
 

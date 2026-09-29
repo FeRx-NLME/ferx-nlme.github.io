@@ -83,7 +83,7 @@ V2 = TVV2 * (WT / 70)^1.00
 
 The ODE states are listed in `[structural_model]` in the order they receive
 doses (CMT 1 = `transit1` is the dosing compartment). The `obs_cmt=central`
-argument tells ferx which state to predict against `DV`.
+argument tells FeRx which state to predict against `DV`.
 
 ## Running
 

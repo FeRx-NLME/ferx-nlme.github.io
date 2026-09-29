@@ -6,7 +6,7 @@ This example extends the one-compartment oral warfarin model to account for
 occasion-to-occasion variability in clearance.
 
 ::: {.callout-tip}
-For a full IOV walkthrough, see [Chapter 16 (Variability and IOV)](https://ferx-nlme.org/ferx-book/chapters/16-variability.html#inter-occasion-variability) in the ferx book.
+For a full IOV walkthrough, see [Chapter 16 (Variability and IOV)](https://ferx-nlme.org/ferx-book/chapters/16-variability.html#inter-occasion-variability) in the FeRx book.
 :::
 
 ## When to use IOV
@@ -72,7 +72,7 @@ Key additions vs a standard model:
 
 1. `kappa KAPPA_CL ~ 0.01` — declares IOV on CL with starting variance 0.01
 2. `+ KAPPA_CL` in the CL expression — kappa enters just like a BSV eta
-3. `iov_column = OCC` — tells ferx which dataset column carries occasion labels
+3. `iov_column = OCC` — tells FeRx which dataset column carries occasion labels
 
 ## Option B — correlated IOV (`block_kappa`)
 

@@ -3,7 +3,7 @@ title: "Data selection"
 ---
 
 The optional `[data_selection]` block excludes records from the dataset at
-read time without modifying the CSV. It is the ferx equivalent of NONMEM's
+read time without modifying the CSV. It is the FeRx equivalent of NONMEM's
 `$DATA IGNORE=` / `$DATA ACCEPT=`.
 
 ## Syntax
@@ -111,7 +111,7 @@ real `DV` below the threshold are dropped.
 
 ## Exclusion summary
 
-After reading the data, ferx prints and stores exclusion counts:
+After reading the data, FeRx prints and stores exclusion counts:
 
 ```
 DATA SELECTION
@@ -161,7 +161,7 @@ deduplicated automatically.
 
 ## NONMEM equivalents
 
-| NONMEM | ferx |
+| NONMEM | FeRx |
 |---|---|
 | `$DATA IGNORE=C` | `ignore = C == 1` |
 | `$DATA IGNORE=(BW.GT.80)` | `ignore = BW > 80` |

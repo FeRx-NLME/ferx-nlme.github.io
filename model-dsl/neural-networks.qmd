@@ -38,7 +38,7 @@ DOI [10.1002/psp4.12808](https://doi.org/10.1002/psp4.12808).
 
 ::: {.callout-note}
 **Phase B — pending.** The `[dynamics_nn]` block is not yet available in
-released ferx builds. See the
+released FeRx builds. See the
 [ferx-core roadmap](https://ferx-nlme.org/ferx-core/model-file/neural-networks.html)
 for milestone status.
 :::

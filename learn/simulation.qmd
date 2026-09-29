@@ -1,12 +1,12 @@
 ---
 title: "Simulation, prediction, and uncertainty propagation"
-description-meta: "Predict and simulate population PK/PD outcomes with ferx, including parameter uncertainty, between-subject variability, and residual error."
+description-meta: "Predict and simulate population PK/PD outcomes with FeRx, including parameter uncertainty, between-subject variability, and residual error."
 open-graph:
   title: "Simulation, prediction, and uncertainty propagation"
-  description: "Predict and simulate population PK/PD outcomes with ferx, including parameter uncertainty, between-subject variability, and residual error."
+  description: "Predict and simulate population PK/PD outcomes with FeRx, including parameter uncertainty, between-subject variability, and residual error."
 twitter-card:
   title: "Simulation, prediction, and uncertainty propagation"
-  description: "Predict and simulate population PK/PD outcomes with ferx, including parameter uncertainty, between-subject variability, and residual error."
+  description: "Predict and simulate population PK/PD outcomes with FeRx, including parameter uncertainty, between-subject variability, and residual error."
 ---
 
 After a model has been fit, three functions cover the standard
@@ -25,7 +25,7 @@ the `.ferx` file are used - which is occasionally useful for sanity-checking a
 model before fitting, but the post-fit case is the common one.
 
 ::: {.callout-tip}
-For a full VPC walkthrough, see [Chapter 8 (VPC)](https://ferx-nlme.org/ferx-book/chapters/08-vpc.html) in the ferx book.
+For a full VPC walkthrough, see [Chapter 8 (VPC)](https://ferx-nlme.org/ferx-book/chapters/08-vpc.html) in the FeRx book.
 :::
 
 ---
@@ -132,7 +132,7 @@ ggplot() +
 The simple aggregation above stratifies only by `TIME`. For a "real" VPC you
 would also stratify by dose or covariate group, and bin times for sparse
 designs - both are downstream data-frame manipulations and are not built into
-ferx.
+FeRx.
 
 ---
 

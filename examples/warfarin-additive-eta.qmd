@@ -81,7 +81,7 @@ fit$ebe_etas
 
 ## Mu-referencing and additive ETAs
 
-ferx auto-detects mu-referencing for both log-normal (`TV * exp(ETA)`) and
+FeRx auto-detects mu-referencing for both log-normal (`TV * exp(ETA)`) and
 additive (`TV + ETA`) parameterizations. The additive case uses `TV` directly
 as the mu-reference. You can verify detection via `fit$warnings`:
 

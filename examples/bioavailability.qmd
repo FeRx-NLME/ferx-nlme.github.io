@@ -4,7 +4,7 @@ title: "Example: Oral bioavailability (logit-normal F)"
 
 Oral bioavailability F is a fraction bounded in (0, 1). Estimating it with
 a log-normal ETA (the default for most PK parameters) is inappropriate because
-log-normal values are unbounded above. ferx supports a **logit-normal**
+log-normal values are unbounded above. FeRx supports a **logit-normal**
 parameterisation that constrains F to (0, 1) on the natural scale while the
 optimiser works on an unbounded logit scale.
 
@@ -15,7 +15,7 @@ F_i = inv_logit(logit(THETA_F) + ETA_F_i)
 ```
 
 - `THETA_F` is the typical bioavailability, specified directly on the (0, 1)
-  scale (e.g. `0.70` for 70%). ferx applies `logit(THETA_F)` internally so
+  scale (e.g. `0.70` for 70%). FeRx applies `logit(THETA_F)` internally so
   the optimiser works on an unbounded scale.
 - `omega ETA_F` is the BSV **variance on the logit scale** — not the variance
   of F itself. Small `omega_F` still allows large F variability near F = 0.5

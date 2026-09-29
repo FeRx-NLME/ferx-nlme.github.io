@@ -1,15 +1,15 @@
 ---
 title: "Get started"
-description-meta: "Install ferx and fit your first nonlinear mixed-effects population PK model from R or the command line."
+description-meta: "Install FeRx and fit your first nonlinear mixed-effects population PK model from R or the command line."
 open-graph:
   title: "Get started"
-  description: "Install ferx and fit your first nonlinear mixed-effects population PK model from R or the command line."
+  description: "Install FeRx and fit your first nonlinear mixed-effects population PK model from R or the command line."
 twitter-card:
   title: "Get started"
-  description: "Install ferx and fit your first nonlinear mixed-effects population PK model from R or the command line."
+  description: "Install FeRx and fit your first nonlinear mixed-effects population PK model from R or the command line."
 ---
 
-ferx fits nonlinear mixed-effects models defined in a small, readable DSL
+FeRx fits nonlinear mixed-effects models defined in a small, readable DSL
 (`.ferx` files), powered by a Rust engine. There are two ways to run it:
 
 - **From R** — the `ferx-r` package wraps the engine, takes a `data.frame`, and

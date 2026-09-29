@@ -7,7 +7,7 @@ project:
 brand: _brand.yml
 
 website:
-  title: "ferx"
+  title: "FeRx"
   description: "Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine"
   favicon: assets/ferx-favicon.svg
   site-url: https://ferx-nlme.org
@@ -20,7 +20,7 @@ website:
   navbar:
     logo: assets/ferx-dsl-brackets.svg
     logo-dark: assets/ferx-dsl-brackets-dark.svg
-    logo-alt: "ferx"
+    logo-alt: "FeRx"
     left:
       - text: "Get started"
         href: get-started.qmd
