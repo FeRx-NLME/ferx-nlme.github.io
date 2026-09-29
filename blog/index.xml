@@ -5,11 +5,75 @@
       xmlns:dc="http://purl.org/dc/elements/1.1/" 
       version="2.0">
 <channel>
-<title>ferx</title>
+<title>FeRx</title>
 <link>https://ferx-nlme.org/blog/</link>
 <atom:link href="https://ferx-nlme.org/blog/index.xml" rel="self" type="application/rss+xml"/>
-<description>News, release notes, and technical deep-dives from the ferx project.</description>
+<description>News, release notes, and technical deep-dives from the FeRx project.</description>
 <generator>quarto-1.10.18</generator>
-<lastBuildDate>Mon, 28 Sep 2026 18:55:48 GMT</lastBuildDate>
+<lastBuildDate>Tue, 29 Sep 2026 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>FeRx 0.4.0: model-building tools, new model types, and a faster engine</title>
+  <dc:creator>Ron Keizer</dc:creator>
+  <link>https://ferx-nlme.org/blog/posts/2026-09-29-ferx-0-4-0/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>In early June I posted the first announcement of a new open source NLME engine for PK/PD analyses, FeRx. We’ve had a ton of positive reactions on this announcement, which strengthened our intention to continue to develop it into a production-grade, fully-featured software. The release of version 0.4.0 brings significant progress toward that goal. I’ll give a brief rundown, with pointers to the documentation.</p>
+<section id="new-features" class="level2">
+<h2 class="anchored" data-anchor-id="new-features">New features</h2>
+<p>Because of the maturity of FeRx’s core engine, especially FOCEI and SAEM, we’ve recently started focusing on auxiliary modeling tools. For example, in this new release you will find tools for <a href="https://ferx-nlme.org/ferx-core/tools/amd.html">automated model building</a> (using the same <a href="https://ferx-nlme.org/ferx-core/tools/search.html#the-search-space-mfl">model feature language (MFL)</a> as introduced in <a href="https://pharmpy.github.io/latest/mfl.html">Pharmpy</a>), as well as <a href="https://ferx-nlme.org/ferx-core/tools/global-search.html">global search algorithms</a> as for example available in <a href="https://certara.github.io/pyDarwin/html/index.html">pyDarwin</a>. Combined with the increased speed of the engine, model searches are now a breeze. We also added <a href="https://ferx-nlme.org/ferx-core/tools/gam-screening.html">GAM covariate screening</a> and <a href="https://ferx-nlme.org/ferx-core/tools/bootstrap.html">bootstrap</a> tools, as well as improvements to the VPC (e.g.&nbsp;<a href="https://ferx-nlme.org/ferx-core/api/simulation.html#simulate_with_options-propensity-score-matching">propensity-score matching</a>).</p>
+<p>We’ve added support for <a href="https://ferx-nlme.org/ferx-core/model-file/event-model.html">survival (TTE) models</a>, <a href="https://ferx-nlme.org/ferx-core/model-file/ode-models.html#solver-details">stiff ODE solvers</a>, <a href="https://ferx-nlme.org/ferx-core/estimation/mixture.html">mixture models</a>, and <a href="https://ferx-nlme.org/ferx-core/estimation/ctmm.html">Markov models</a>.</p>
+<p>We have also beefed up FeRx’s <a href="https://ferx-nlme.org/ferx-book/chapters/11-simulation.html">simulation</a> capabilities; for example, it can now run adaptive simulations. The goal for our simulation engine is to ensure there is never a need to translate your model to mrgsolve or other simulation-specific software after your modeling is done, which is one of the most common bottlenecks experienced with current NLME engines.</p>
+</section>
+<section id="optimization-speed" class="level2">
+<h2 class="anchored" data-anchor-id="optimization-speed">Optimization / speed</h2>
+<p>We’ve made many updates to the computation of the analytical gradients that power the search algorithms, and made their re-use across the optimization more efficient. We dropped the off-the-shelf Enzyme library in favor of hand-rolled analytical gradients. FOCEI is now even faster than before, and more accurate (often an order of magnitude or more faster than NONMEM, single-threaded).</p>
+<p>SAEM also got a speed boost and is now about 5x faster than NONMEM on average, mainly due to the implementation of <a href="https://www.sciencedirect.com/science/article/abs/pii/S0167947319301483">f-SAEM</a>, but also through refactoring of its implementation.</p>
+<p>The computation of confidence intervals from the covariance matrix has had an upgrade, and is now faster and more accurate. See <a href="https://www.biorxiv.org/content/10.64898/2026.07.09.737434v1">this paper</a> for details.</p>
+<p>Many settings are now optimized automatically depending on the dataset or the model, such as the optimizer, the choice of ODE solver, and tolerances.</p>
+</section>
+<section id="syntax-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="syntax-documentation">Syntax &amp; documentation</h2>
+<p>We implemented a novel and easier <a href="https://ferx-nlme.org/ferx-core/model-file/covariate-model.html">syntax for the covariate model</a>. This serves two purposes. First, it is now easier for a modeler to separate the structural model from the covariate model, which also helps in communicating the model to others. Second, it allows safer and more structured implementation of covariate models and covariate searches. Most existing search tools add or remove covariate effects by regex’ing the model text; FeRx’s new syntax avoids this, so covariate effects can be added and removed programmatically. It is still possible to implement covariate models in the “classic” way, of course.</p>
+<p>We’ve also added syntax that makes it extremely easy to define <a href="https://ferx-nlme.org/ferx-core/estimation/priors.html">priors on model parameters</a>.</p>
+<p>As outlined in our <a href="https://ferx-nlme.org/design.html">design philosophy</a>, we spend a lot of effort ensuring the documentation is up-to-date, complete, and easy to read. Our <a href="https://ferx-nlme.org/ferx-book/">practical book on working with FeRx from R</a> was fully revised.</p>
+<p>Our new URL is live: please update your bookmarks to <a href="https://ferx-nlme.org">ferx-nlme.org</a>!</p>
+</section>
+<section id="benchmarks" class="level2">
+<h2 class="anchored" data-anchor-id="benchmarks">Benchmarks</h2>
+<p>The plot below shows the speed of estimation in FeRx compared to NONMEM (v7.6.0, gfortran on Linux), both softwares single-threaded on an AMD Ryzen 7, using default settings for either software. These runs were all on real (final) PK models and datasets, not simulated scenarios. On average, models run about 10x faster in FeRx under FOCEI (slightly slower for some still, but up to 100x faster for others). SAEM is also generally much faster in FeRx. While being much faster, FeRx maintains accuracy: they reach the same minima as NONMEM. More detailed results will be shown at ACoP in October.</p>
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://ferx-nlme.org/blog/posts/2026-09-29-ferx-0-4-0/benchmark-focei.png" class="img-fluid figure-img" alt="Horizontal bar chart of FOCEI estimation speed, FeRx relative to NONMEM, for 20 real PK models on a log scale from 0.5 to 100. FeRx is faster for 18 models, up to about 110-fold for M15; NONMEM is faster for M1 (about 0.8) and M6 (about 0.45)."></p>
+<figcaption>FOCEI estimation speed of FeRx relative to NONMEM per model (fold change, log scale). Values above 1 mean FeRx is faster.</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://ferx-nlme.org/blog/posts/2026-09-29-ferx-0-4-0/benchmark-focei-dark.png" class="img-fluid figure-img" alt="Horizontal bar chart of FOCEI estimation speed, FeRx relative to NONMEM, for 20 real PK models on a log scale from 0.5 to 100. FeRx is faster for 18 models, up to about 110-fold for M15; NONMEM is faster for M1 (about 0.8) and M6 (about 0.45)."></p>
+<figcaption>FOCEI estimation speed of FeRx relative to NONMEM per model (fold change, log scale). Values above 1 mean FeRx is faster.</figcaption>
+</figure>
+</div>
+</div>
+<!-- TODO: add SAEM benchmark plot:
+![SAEM estimation speed, FeRx relative to NONMEM](benchmark-saem.png){fig-alt="..."}
+-->
+<p>A <a href="https://ferx-nlme.org/changelog.html">full log of changes</a> is always available on ferx-nlme.org. Please give FeRx a spin and let us know what you think!</p>
+
+
+</section>
+
+ ]]></description>
+  <category>release</category>
+  <guid>https://ferx-nlme.org/blog/posts/2026-09-29-ferx-0-4-0/</guid>
+  <pubDate>Tue, 29 Sep 2026 00:00:00 GMT</pubDate>
+  <media:content url="https://ferx-nlme.org/blog/posts/2026-09-29-ferx-0-4-0/benchmark-focei-card.png" medium="image" type="image/png" height="64" width="144"/>
+</item>
 </channel>
 </rss>

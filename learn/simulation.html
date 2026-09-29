@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Predict and simulate population PK/PD outcomes with ferx, including parameter uncertainty, between-subject variability, and residual error.">
+<meta name="description" content="Predict and simulate population PK/PD outcomes with FeRx, including parameter uncertainty, between-subject variability, and residual error.">
 
-<title>Simulation, prediction, and uncertainty propagation – ferx</title>
+<title>Simulation, prediction, and uncertainty propagation – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -118,11 +118,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Simulation, prediction, and uncertainty propagation">
-<meta property="og:description" content="Predict and simulate population PK/PD outcomes with ferx, including parameter uncertainty, between-subject variability, and residual error.">
-<meta property="og:site_name" content="ferx">
+<meta property="og:description" content="Predict and simulate population PK/PD outcomes with FeRx, including parameter uncertainty, between-subject variability, and residual error.">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:title" content="Simulation, prediction, and uncertainty propagation">
-<meta name="twitter:description" content="Predict and simulate population PK/PD outcomes with ferx, including parameter uncertainty, between-subject variability, and residual error.">
+<meta name="twitter:description" content="Predict and simulate population PK/PD outcomes with FeRx, including parameter uncertainty, between-subject variability, and residual error.">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/learn/simulation.html">
 </head>
@@ -297,11 +297,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -447,7 +447,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For a full VPC walkthrough, see <a href="https://ferx-nlme.org/ferx-book/chapters/08-vpc.html">Chapter 8 (VPC)</a> in the ferx book.</p>
+<p>For a full VPC walkthrough, see <a href="https://ferx-nlme.org/ferx-book/chapters/08-vpc.html">Chapter 8 (VPC)</a> in the FeRx book.</p>
 </div>
 </div>
 <hr>
@@ -544,7 +544,7 @@ Tip
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Simulation-based 90% prediction interval"</span>,</span>
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">y     =</span> <span class="st">"DV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The simple aggregation above stratifies only by <code>TIME</code>. For a “real” VPC you would also stratify by dose or covariate group, and bin times for sparse designs - both are downstream data-frame manipulations and are not built into ferx.</p>
+<p>The simple aggregation above stratifies only by <code>TIME</code>. For a “real” VPC you would also stratify by dose or covariate group, and bin times for sparse designs - both are downstream data-frame manipulations and are not built into FeRx.</p>
 <hr>
 </section>
 </section>

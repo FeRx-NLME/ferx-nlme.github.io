@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in ferx models.">
+<meta name="description" content="Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in FeRx models.">
 
-<title>Parameters – ferx</title>
+<title>Parameters – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -112,11 +112,11 @@ window.Quarto = {
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Parameters">
-<meta property="og:description" content="Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in ferx models.">
-<meta property="og:site_name" content="ferx">
+<meta property="og:description" content="Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in FeRx models.">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:title" content="Parameters">
-<meta name="twitter:description" content="Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in ferx models.">
+<meta name="twitter:description" content="Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in FeRx models.">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/model-dsl/parameters.html">
 </head>
@@ -291,11 +291,11 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -552,7 +552,7 @@ sigma PROP_ERR ~ 0.02 (sd)       # same thing, SD coding</code></pre>
 </section>
 <section id="parameter-level-correlation-in-output" class="level2">
 <h2 class="anchored" data-anchor-id="parameter-level-correlation-in-output">Parameter-level correlation in output</h2>
-<p>When a <code>block_omega</code> (or <code>block_kappa</code>) is estimated, ferx reports a parameter-level correlation for each off-diagonal pair:</p>
+<p>When a <code>block_omega</code> (or <code>block_kappa</code>) is estimated, FeRx reports a parameter-level correlation for each off-diagonal pair:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -586,13 +586,13 @@ sigma PROP_ERR ~ 0.02 (sd)       # same thing, SD coding</code></pre>
 <p>When an individual parameter combines IIV with covariate effects, both term orderings are detected correctly:</p>
 <pre><code>CL = TVCL * exp(ETA_CL) * (WT/70)^0.75      # fine
 CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)      # also fine</code></pre>
-<p>Both forms are mathematically identical in log-space. ferx detects the <code>theta * exp(eta)</code> mu-reference pattern regardless of where covariate multipliers appear in the expression. See the <a href="../examples/covariates.html">covariates example</a> for a worked model.</p>
+<p>Both forms are mathematically identical in log-space. FeRx detects the <code>theta * exp(eta)</code> mu-reference pattern regardless of where covariate multipliers appear in the expression. See the <a href="../examples/covariates.html">covariates example</a> for a worked model.</p>
 <section id="log-normal-detection-with-derived-intermediates" class="level3">
 <h3 class="anchored" data-anchor-id="log-normal-detection-with-derived-intermediates">Log-normal detection with derived intermediates</h3>
 <p>The <code>theta * exp(eta)</code> pattern is detected even when the base is a derived intermediate rather than a directly declared theta:</p>
 <pre><code>KTR = 4.0 / TVMTT
 KA  = KTR * exp(ETA_KA)        # detected as log-normal; CV% reported correctly</code></pre>
-<p>ferx traces through the intermediate assignment to identify the underlying log-normal structure.</p>
+<p>FeRx traces through the intermediate assignment to identify the underlying log-normal structure.</p>
 </section>
 </section>
 <section id="fixing-parameters-fix" class="level2">

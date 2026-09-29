@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data selection – ferx</title>
+<title>Data selection – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,11 +116,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Data selection – ferx">
+<meta property="og:title" content="Data selection – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Data selection – ferx">
+<meta name="twitter:title" content="Data selection – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/model-dsl/data-selection.html">
@@ -296,11 +296,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -406,7 +406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The optional <code>[data_selection]</code> block excludes records from the dataset at read time without modifying the CSV. It is the ferx equivalent of NONMEM’s <code>$DATA IGNORE=</code> / <code>$DATA ACCEPT=</code>.</p>
+<p>The optional <code>[data_selection]</code> block excludes records from the dataset at read time without modifying the CSV. It is the FeRx equivalent of NONMEM’s <code>$DATA IGNORE=</code> / <code>$DATA ACCEPT=</code>.</p>
 <section id="syntax" class="level2">
 <h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
 <pre><code>[data_selection]
@@ -504,7 +504,7 @@ Note
 </section>
 <section id="exclusion-summary" class="level2">
 <h2 class="anchored" data-anchor-id="exclusion-summary">Exclusion summary</h2>
-<p>After reading the data, ferx prints and stores exclusion counts:</p>
+<p>After reading the data, FeRx prints and stores exclusion counts:</p>
 <pre><code>DATA SELECTION
   Records read: 120    Obs excl.: 2    Doses excl.: 0    Other excl.: 0
   Fired ignore: DV &lt; 1.0</code></pre>
@@ -542,7 +542,7 @@ Note
 <thead>
 <tr class="header">
 <th>NONMEM</th>
-<th>ferx</th>
+<th>FeRx</th>
 </tr>
 </thead>
 <tbody>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Roadmap – ferx</title>
+<title>Roadmap – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -81,11 +81,11 @@ ul.task-list li input[type="checkbox"] {
 
 
 <link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="Roadmap – ferx">
+<meta property="og:title" content="Roadmap – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Roadmap – ferx">
+<meta name="twitter:title" content="Roadmap – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/roadmap.html">
@@ -261,11 +261,11 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="./assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="./assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="./assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -336,6 +336,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#short-term-q2q3-26" id="toc-short-term-q2q3-26" class="nav-link active" data-scroll-target="#short-term-q2q3-26">Short term (Q2–Q3 ’26)</a></li>
   <li><a href="#medium-term-q4-26" id="toc-medium-term-q4-26" class="nav-link" data-scroll-target="#medium-term-q4-26">Medium term (Q4 ’26)</a></li>
+  <li><a href="#recently-delivered" id="toc-recently-delivered" class="nav-link" data-scroll-target="#recently-delivered">Recently delivered</a></li>
   <li><a href="#ongoing-research-projects" id="toc-ongoing-research-projects" class="nav-link" data-scroll-target="#ongoing-research-projects">Ongoing research projects</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -363,20 +364,13 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This page lists planned and in-progress work for ferx. Timelines are indicative and may shift as priorities evolve. Feel free to reach out with any feature requests, research project proposals, or feedback.</p>
+<p>This page lists planned and in-progress work for FeRx. Timelines are indicative and may shift as priorities evolve. Feel free to reach out with any feature requests, research project proposals, or feedback.</p>
 <section id="short-term-q2q3-26" class="level2">
 <h2 class="anchored" data-anchor-id="short-term-q2q3-26">Short term (Q2–Q3 ’26)</h2>
 <ul>
 <li>Improve testing infrastructure with larger coverage, with more real datasets and models.</li>
-<li>Support for TTE / survival modeling and joint PK/PD–survival modeling.</li>
-<li>Support for stiff ODE solver(s).</li>
 <li>NONMEM and nlmixr2 model import. nlmixr2 models can be supported in a non-lossy way, since they can be read from the R object.</li>
-<li>Increase modularity of ferx, so external users can more easily write extensions with minimal (if any) modifications to ferx core code.</li>
-<li>Support for FREM estimation (including conversion to FFEM models).</li>
-<li>Support for covariate search approaches (GAM, SCM).</li>
-<li>Exact analytic sensitivities through the ODE solver (ODE models currently use finite differences).</li>
-<li>Support for use of priors (like in NONMEM with penalties added to the likelihood, but with easier implementation).</li>
-<li>Support for mixture models.</li>
+<li>Increase modularity of FeRx, so external users can more easily write extensions with minimal (if any) modifications to FeRx core code.</li>
 </ul>
 </section>
 <section id="medium-term-q4-26" class="level2">
@@ -387,6 +381,19 @@ ul.task-list li input[type="checkbox"] {
 <li>Support for count data models (Poisson).</li>
 <li>Support for Item Response Theory models.</li>
 <li>Support for optimal design analyses. At least computation of the FIM, and basic optimal design searches. Potentially in a separate R package.</li>
+</ul>
+</section>
+<section id="recently-delivered" class="level2">
+<h2 class="anchored" data-anchor-id="recently-delivered">Recently delivered</h2>
+<p>Previously on this roadmap, and available as of v0.4.0 (see the <a href="./changelog.html">changelog</a>):</p>
+<ul>
+<li><a href="https://ferx-nlme.org/ferx-core/estimation/tte.html">TTE / survival modeling</a>, including joint PK–survival models.</li>
+<li><a href="https://ferx-nlme.org/ferx-core/model-file/ode-models.html#solver-details">Stiff ODE solvers</a>.</li>
+<li><a href="https://ferx-nlme.org/ferx-core/estimation/frem.html">FREM estimation</a>.</li>
+<li>Covariate search: <a href="https://ferx-nlme.org/ferx-core/tools/gam-screening.html">GAM screening</a> and <a href="https://ferx-nlme.org/ferx-core/tools/covsearch.html">SCM</a>.</li>
+<li>Exact analytic sensitivities through the ODE solver.</li>
+<li><a href="https://ferx-nlme.org/ferx-core/estimation/priors.html">Priors</a> on model parameters.</li>
+<li><a href="https://ferx-nlme.org/ferx-core/estimation/mixture.html">Mixture models</a>.</li>
 </ul>
 </section>
 <section id="ongoing-research-projects" class="level2">

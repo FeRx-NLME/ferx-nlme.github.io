@@ -84,3 +84,14 @@ pre code {
     grid-template-columns: 1fr;
   }
 }
+
+/* Blog post figure captions: small, italic, full-contrast text */
+.blog-post figcaption {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #000;
+}
+
+body.quarto-dark.blog-post figcaption {
+  color: var(--bs-body-color);
+}

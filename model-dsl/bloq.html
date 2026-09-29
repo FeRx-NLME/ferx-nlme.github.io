@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>BLOQ (Below Limit of Quantification) – ferx</title>
+<title>BLOQ (Below Limit of Quantification) – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -145,11 +145,11 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="BLOQ (Below Limit of Quantification) – ferx">
+<meta property="og:title" content="BLOQ (Below Limit of Quantification) – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="BLOQ (Below Limit of Quantification) – ferx">
+<meta name="twitter:title" content="BLOQ (Below Limit of Quantification) – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/model-dsl/bloq.html">
@@ -325,11 +325,11 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -436,7 +436,7 @@ window.Quarto = {
 
 
 <p>Observations below the lower limit of quantification (LLOQ) cannot be treated as ordinary data. They carry only the information that the true concentration is <em>somewhere below</em> the detection threshold. Dropping them biases parameter estimates; using a substituted value (e.g.&nbsp;LLOQ/2) is equally biased. The correct approach is to integrate the likelihood over the censored region.</p>
-<p>ferx supports two strategies via <code>bloq_method</code> in <code>[fit_options]</code>.</p>
+<p>FeRx supports two strategies via <code>bloq_method</code> in <code>[fit_options]</code>.</p>
 <section id="dataset-format" class="level2">
 <h2 class="anchored" data-anchor-id="dataset-format">Dataset format</h2>
 <p>Mark a BLOQ observation with <code>CENS = 1</code>. Set <code>DV</code> to the LLOQ value on <code>CENS = 1</code> rows — the M3 method uses this as the upper integration bound:</p>

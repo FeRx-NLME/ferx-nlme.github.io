@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: ODE model (Michaelis-Menten) – ferx</title>
+<title>Example: ODE model (Michaelis-Menten) – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -145,11 +145,11 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Example: ODE model (Michaelis-Menten) – ferx">
+<meta property="og:title" content="Example: ODE model (Michaelis-Menten) – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Example: ODE model (Michaelis-Menten) – ferx">
+<meta name="twitter:title" content="Example: ODE model (Michaelis-Menten) – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/examples/ode-model.html">
@@ -325,11 +325,11 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -443,7 +443,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For a full ODE model walkthrough, see <a href="https://ferx-nlme.org/ferx-book/chapters/14-structural-models.html">Chapter 14 (Structural models: analytical and ODE)</a> in the ferx book.</p>
+<p>For a full ODE model walkthrough, see <a href="https://ferx-nlme.org/ferx-book/chapters/14-structural-models.html">Chapter 14 (Structural models: analytical and ODE)</a> in the FeRx book.</p>
 </div>
 </div>
 <section id="why-ode" class="level2">
@@ -554,7 +554,7 @@ Tip
 <ul>
 <li>ODE models are slower than analytical models because each prediction requires numerical integration. For standard first-order kinetics, always prefer <code>one_cpt_oral</code> (or other analytical models).</li>
 <li>The ODE solver uses adaptive step-size control — the default tolerances (rtol = 1e-4, atol = 1e-6) work for most PK models; loosen if the fit is very slow or tighten if you observe discontinuities in predictions.</li>
-<li>Steady-state (<code>SS=1</code>) is supported for ODE models via iterative pre-simulation (ferx simulates repeated doses until the state converges). SS doses are slower than for analytical models — roughly 50× the cost of a regular dose due to the RK45 integration segments.</li>
+<li>Steady-state (<code>SS=1</code>) is supported for ODE models via iterative pre-simulation (FeRx simulates repeated doses until the state converges). SS doses are slower than for analytical models — roughly 50× the cost of a regular dose due to the RK45 integration segments.</li>
 <li>There is no analytic sensitivity path for ODE models — <code>gradient_used</code> will always be <code>"finite_differences"</code>.</li>
 </ul>
 </section>

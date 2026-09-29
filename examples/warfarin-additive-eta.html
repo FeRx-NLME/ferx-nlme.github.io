@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Additive ETA parameterization – ferx</title>
+<title>Example: Additive ETA parameterization – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,11 +116,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Example: Additive ETA parameterization – ferx">
+<meta property="og:title" content="Example: Additive ETA parameterization – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Example: Additive ETA parameterization – ferx">
+<meta name="twitter:title" content="Example: Additive ETA parameterization – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/examples/warfarin-additive-eta.html">
@@ -296,11 +296,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -487,7 +487,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="mu-referencing-and-additive-etas" class="level2">
 <h2 class="anchored" data-anchor-id="mu-referencing-and-additive-etas">Mu-referencing and additive ETAs</h2>
-<p>ferx auto-detects mu-referencing for both log-normal (<code>TV * exp(ETA)</code>) and additive (<code>TV + ETA</code>) parameterizations. The additive case uses <code>TV</code> directly as the mu-reference. You can verify detection via <code>fit$warnings</code>:</p>
+<p>FeRx auto-detects mu-referencing for both log-normal (<code>TV * exp(ETA)</code>) and additive (<code>TV + ETA</code>) parameterizations. The additive case uses <code>TV</code> directly as the mu-reference. You can verify detection via <code>fit$warnings</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>warnings</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If mu-referencing was detected for <code>ETA_TLAG</code>, the warning section will report it as mu-referenced with an additive shift structure.</p>
 </section>

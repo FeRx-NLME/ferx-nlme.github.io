@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Covariates ([covariates]) – ferx</title>
+<title>Covariates ([covariates]) – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,11 +116,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Covariates ([covariates]) – ferx">
+<meta property="og:title" content="Covariates ([covariates]) – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Covariates ([covariates]) – ferx">
+<meta name="twitter:title" content="Covariates ([covariates]) – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/model-dsl/covariates.html">
@@ -296,11 +296,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -404,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>The optional <code>[covariates]</code> block declares which dataset columns are covariates and whether each is <strong>continuous</strong> or <strong>categorical</strong>. It is a declaration of <em>availability</em>, not usage — a covariate can be declared without being referenced in <code>[individual_parameters]</code>, and vice versa.</p>
-<p>When the block is present, ferx validates the declared columns against the data and echoes them into the fit’s covariate table (<code>fit$covtab</code>), enabling downstream covariate-search and summary workflows.</p>
+<p>When the block is present, FeRx validates the declared columns against the data and echoes them into the fit’s covariate table (<code>fit$covtab</code>), enabling downstream covariate-search and summary workflows.</p>
 <section id="syntax" class="level2">
 <h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
 <p>Two forms are accepted and may be mixed:</p>
@@ -444,7 +444,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td>Column used in model, not declared</td>
-<td>Model still fits; ferx emits a warning recommending declaration</td>
+<td>Model still fits; FeRx emits a warning recommending declaration</td>
 </tr>
 <tr class="even">
 <td>Column declared, absent from data</td>

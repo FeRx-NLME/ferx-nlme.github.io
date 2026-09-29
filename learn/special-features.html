@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in ferx.">
+<meta name="description" content="Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in FeRx.">
 
-<title>Special features: IOV, BLOQ, steady state, and unit scaling – ferx</title>
+<title>Special features: IOV, BLOQ, steady state, and unit scaling – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -118,11 +118,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Special features: IOV, BLOQ, steady state, and unit scaling">
-<meta property="og:description" content="Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in ferx.">
-<meta property="og:site_name" content="ferx">
+<meta property="og:description" content="Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in FeRx.">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:title" content="Special features: IOV, BLOQ, steady state, and unit scaling">
-<meta name="twitter:description" content="Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in ferx.">
+<meta name="twitter:description" content="Model inter-occasion variability, below-quantification observations, steady-state dosing, and unit scaling in FeRx.">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/learn/special-features.html">
 </head>
@@ -297,11 +297,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -478,7 +478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="below-lower-limit-of-quantification-bloq" class="level2">
 <h2 class="anchored" data-anchor-id="below-lower-limit-of-quantification-bloq">Below lower limit of quantification (BLOQ)</h2>
-<p>When some observations sit below the assay’s lower limit, the standard Gaussian likelihood is biased. ferx implements Beal’s M3 likelihood, which treats each BLOQ observation as a left-censored draw and integrates over the unobserved range.</p>
+<p>When some observations sit below the assay’s lower limit, the standard Gaussian likelihood is biased. FeRx implements Beal’s M3 likelihood, which treats each BLOQ observation as a left-censored draw and integrates over the unobserved range.</p>
 <p>Two pieces are needed:</p>
 <ol type="1">
 <li><strong>A <code>CENS</code> column in the data</strong>: <code>1</code> for BLOQ rows, <code>0</code> otherwise. The <code>DV</code> cell on a BLOQ row should carry the LLOQ value itself.</li>

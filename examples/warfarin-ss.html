@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Steady-state dosing (SS=1) – ferx</title>
+<title>Example: Steady-state dosing (SS=1) – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,11 +116,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Example: Steady-state dosing (SS=1) – ferx">
+<meta property="og:title" content="Example: Steady-state dosing (SS=1) – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Example: Steady-state dosing (SS=1) – ferx">
+<meta name="twitter:title" content="Example: Steady-state dosing (SS=1) – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/examples/warfarin-ss.html">
@@ -296,11 +296,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -372,7 +372,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#dataset-columns" id="toc-dataset-columns" class="nav-link active" data-scroll-target="#dataset-columns">Dataset columns</a></li>
   <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
   <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#how-ferx-computes-steady-state-conditions" id="toc-how-ferx-computes-steady-state-conditions" class="nav-link" data-scroll-target="#how-ferx-computes-steady-state-conditions">How ferx computes steady-state conditions</a></li>
+  <li><a href="#how-ferx-computes-steady-state-conditions" id="toc-how-ferx-computes-steady-state-conditions" class="nav-link" data-scroll-target="#how-ferx-computes-steady-state-conditions">How FeRx computes steady-state conditions</a></li>
   <li><a href="#ss2-additive-steady-state" id="toc-ss2-additive-steady-state" class="nav-link" data-scroll-target="#ss2-additive-steady-state">SS=2 (additive steady-state)</a></li>
   <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
@@ -402,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example demonstrates fitting a model to data collected at steady state. When subjects have been dosed repeatedly before the observation window, the pharmacokinetic system is at (or near) steady state and the single-dose initial conditions are no longer valid. ferx handles this via the <code>SS</code> and <code>II</code> columns in the dataset — no changes to the model file are needed.</p>
+<p>This example demonstrates fitting a model to data collected at steady state. When subjects have been dosed repeatedly before the observation window, the pharmacokinetic system is at (or near) steady state and the single-dose initial conditions are no longer valid. FeRx handles this via the <code>SS</code> and <code>II</code> columns in the dataset — no changes to the model file are needed.</p>
 <section id="dataset-columns" class="level2">
 <h2 class="anchored" data-anchor-id="dataset-columns">Dataset columns</h2>
 <table class="caption-top table">
@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>A dose row with <code>SS=1</code> and <code>II=24</code> tells ferx: compute the steady-state initial conditions for a 24-hour repeated dosing regimen, then add the current dose on top before integrating forward.</p>
+<p>A dose row with <code>SS=1</code> and <code>II=24</code> tells FeRx: compute the steady-state initial conditions for a 24-hour repeated dosing regimen, then add the current dose on top before integrating forward.</p>
 <p>Example CSV layout:</p>
 <pre class="csv"><code>ID,TIME,DV,EVID,AMT,CMT,SS,II,MDV
 1,0,.,1,10,1,1,24,1
@@ -474,9 +474,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>At steady state with τ = 24 h and the warfarin half-life of ~42 h (<code>ke = CL/V ≈ 0.0165 /h</code>) there is roughly 3-fold accumulation. Observed DV values are therefore substantially higher than in the single-dose dataset, but the underlying PK parameters should be consistent.</p>
 </section>
 <section id="how-ferx-computes-steady-state-conditions" class="level2">
-<h2 class="anchored" data-anchor-id="how-ferx-computes-steady-state-conditions">How ferx computes steady-state conditions</h2>
-<p>For <strong>analytical PK models</strong> (one_cpt_oral, two_cpt_iv_bolus, etc.), ferx derives the closed-form steady-state concentrations from the current individual parameters and dosing interval. No iterative pre-simulation is required.</p>
-<p>For <strong>ODE models</strong> with <code>SS=1</code>, ferx runs an iterative pre-dose simulation: it simulates repeated doses at interval <code>II</code> until the state vector converges (relative tolerance 1e-6), then uses that state as the initial condition for the observation period.</p>
+<h2 class="anchored" data-anchor-id="how-ferx-computes-steady-state-conditions">How FeRx computes steady-state conditions</h2>
+<p>For <strong>analytical PK models</strong> (one_cpt_oral, two_cpt_iv_bolus, etc.), FeRx derives the closed-form steady-state concentrations from the current individual parameters and dosing interval. No iterative pre-simulation is required.</p>
+<p>For <strong>ODE models</strong> with <code>SS=1</code>, FeRx runs an iterative pre-dose simulation: it simulates repeated doses at interval <code>II</code> until the state vector converges (relative tolerance 1e-6), then uses that state as the initial condition for the observation period.</p>
 </section>
 <section id="ss2-additive-steady-state" class="level2">
 <h2 class="anchored" data-anchor-id="ss2-additive-steady-state">SS=2 (additive steady-state)</h2>
@@ -485,7 +485,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="tips" class="level2">
 <h2 class="anchored" data-anchor-id="tips">Tips</h2>
 <ul>
-<li>If <code>II</code> is absent or zero on an <code>SS=1</code> row, ferx will emit a warning and fall back to zero initial conditions.</li>
+<li>If <code>II</code> is absent or zero on an <code>SS=1</code> row, FeRx will emit a warning and fall back to zero initial conditions.</li>
 <li>For ODE models, convergence of the iterative SS computation can be slow for drugs with very long half-lives. Consider increasing <code>inner_maxiter</code> via <code>settings</code> if the fit reports unconverged steady-state computations.</li>
 </ul>
 </section>

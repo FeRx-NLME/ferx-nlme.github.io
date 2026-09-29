@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Use Sampling Importance Resampling in ferx to estimate nonlinear mixed-effects parameter uncertainty beyond asymptotic confidence intervals.">
+<meta name="description" content="Use Sampling Importance Resampling in FeRx to estimate nonlinear mixed-effects parameter uncertainty beyond asymptotic confidence intervals.">
 
-<title>SIR uncertainty quantification – ferx</title>
+<title>SIR uncertainty quantification – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -118,11 +118,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="SIR uncertainty quantification">
-<meta property="og:description" content="Use Sampling Importance Resampling in ferx to estimate nonlinear mixed-effects parameter uncertainty beyond asymptotic confidence intervals.">
-<meta property="og:site_name" content="ferx">
+<meta property="og:description" content="Use Sampling Importance Resampling in FeRx to estimate nonlinear mixed-effects parameter uncertainty beyond asymptotic confidence intervals.">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:title" content="SIR uncertainty quantification">
-<meta name="twitter:description" content="Use Sampling Importance Resampling in ferx to estimate nonlinear mixed-effects parameter uncertainty beyond asymptotic confidence intervals.">
+<meta name="twitter:description" content="Use Sampling Importance Resampling in FeRx to estimate nonlinear mixed-effects parameter uncertainty beyond asymptotic confidence intervals.">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/learn/uncertainty-sir.html">
 </head>
@@ -297,11 +297,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -409,7 +409,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Sampling Importance Resampling (SIR) refines the uncertainty estimate from a fitted model without requiring a new optimisation run. It draws candidate parameter vectors from the asymptotic proposal (the fit’s covariance matrix), re-weights each candidate by the likelihood ratio against the proposal, and keeps a resample drawn in proportion to those weights.</p>
-<p>In ferx, SIR is the alternative to the asymptotic (Wald) confidence intervals. Use it when:</p>
+<p>In FeRx, SIR is the alternative to the asymptotic (Wald) confidence intervals. Use it when:</p>
 <ul>
 <li>the asymptotic CI may be a poor approximation (skewed likelihood, parameter near a boundary, small sample size);</li>
 <li>you want to propagate parameter uncertainty into downstream simulation via <code>ferx_simulate_with_uncertainty(method = "sir")</code>.</li>

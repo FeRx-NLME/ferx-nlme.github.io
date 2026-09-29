@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Evaluate ferx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics.">
+<meta name="description" content="Evaluate FeRx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics.">
 
-<title>Post-fit diagnostics – ferx</title>
+<title>Post-fit diagnostics – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -147,11 +147,11 @@ window.Quarto = {
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Post-fit diagnostics">
-<meta property="og:description" content="Evaluate ferx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics.">
-<meta property="og:site_name" content="ferx">
+<meta property="og:description" content="Evaluate FeRx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics.">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:title" content="Post-fit diagnostics">
-<meta name="twitter:description" content="Evaluate ferx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics.">
+<meta name="twitter:description" content="Evaluate FeRx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics.">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/learn/diagnostics.html">
 </head>
@@ -326,11 +326,11 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -435,7 +435,7 @@ window.Quarto = {
 </header>
 
 
-<p>After fitting, ferx returns a rich <code>ferx_fit</code> object with all the diagnostics needed for model evaluation. This article covers the key diagnostic functions and fields.</p>
+<p>After fitting, FeRx returns a rich <code>ferx_fit</code> object with all the diagnostics needed for model evaluation. This article covers the key diagnostic functions and fields.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -446,7 +446,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For a complete diagnostics walkthrough with plots, see <a href="https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html">Chapter 7 (Diagnostics)</a> in the ferx book.</p>
+<p>For a complete diagnostics walkthrough with plots, see <a href="https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html">Chapter 7 (Diagnostics)</a> in the FeRx book.</p>
 </div>
 </div>
 <hr>
@@ -588,7 +588,7 @@ Tip
 </tr>
 </tbody>
 </table>
-<p>For a full walkthrough with plots see <a href="https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html#residuals">Chapter 7 (Diagnostics)</a> in the ferx book.</p>
+<p>For a full walkthrough with plots see <a href="https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html#residuals">Chapter 7 (Diagnostics)</a> in the FeRx book.</p>
 <hr>
 </section>
 <section id="goodness-of-fit-plots-from-fitsdtab" class="level2">
@@ -667,7 +667,7 @@ Tip
 </section>
 <section id="structured-warnings-ferx_get_warnings" class="level2">
 <h2 class="anchored" data-anchor-id="structured-warnings-ferx_get_warnings">Structured warnings — <code>ferx_get_warnings()</code></h2>
-<p>ferx classifies non-fatal issues from a run into severity levels and categories and makes them available via <code>ferx_get_warnings()</code>. Critical issues are also surfaced inline in the <code>STATUS</code> line of <code>print(fit)</code>.</p>
+<p>FeRx classifies non-fatal issues from a run into severity levels and categories and makes them available via <code>ferx_get_warnings()</code>. Critical issues are also surfaced inline in the <code>STATUS</code> line of <code>print(fit)</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_get_warnings</span>(fit)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   severity  category              message</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   warning   shrinkage             ETA_KA shrinkage = 0.58 (&gt; 0.40): EBEs</span></span>
@@ -858,7 +858,7 @@ RUNTIME
 </section>
 <section id="optimizer-trace-ferx_trace-plot" class="level2">
 <h2 class="anchored" data-anchor-id="optimizer-trace-ferx_trace-plot">Optimizer trace — <code>ferx_trace()</code> / <code>plot()</code></h2>
-<p>When <code>optimizer_trace = TRUE</code> is passed to <code>ferx_fit()</code>, ferx writes a per-iteration CSV. Read and plot it:</p>
+<p>When <code>optimizer_trace = TRUE</code> is passed to <code>ferx_fit()</code>, FeRx writes a per-iteration CSV. Read and plot it:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">optimizer_trace =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>tr <span class="ot">&lt;-</span> <span class="fu">ferx_trace</span>(fit)          <span class="co"># data frame with one row per outer iteration</span></span>

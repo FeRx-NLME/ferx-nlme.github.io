@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Transit absorption + two-compartment ODE – ferx</title>
+<title>Example: Transit absorption + two-compartment ODE – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,11 +116,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Example: Transit absorption + two-compartment ODE – ferx">
+<meta property="og:title" content="Example: Transit absorption + two-compartment ODE – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Example: Transit absorption + two-compartment ODE – ferx">
+<meta name="twitter:title" content="Example: Transit absorption + two-compartment ODE – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/examples/transit-2cpt.html">
@@ -296,11 +296,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -492,7 +492,7 @@ V2 = TVV2 * (WT / 70)^1.00</code></pre>
   method     = focei
   maxiter    = 500
   covariance = true</code></pre>
-<p>The ODE states are listed in <code>[structural_model]</code> in the order they receive doses (CMT 1 = <code>transit1</code> is the dosing compartment). The <code>obs_cmt=central</code> argument tells ferx which state to predict against <code>DV</code>.</p>
+<p>The ODE states are listed in <code>[structural_model]</code> in the order they receive doses (CMT 1 = <code>transit1</code> is the dosing compartment). The <code>obs_cmt=central</code> argument tells FeRx which state to predict against <code>DV</code>.</p>
 </section>
 <section id="running" class="level2">
 <h2 class="anchored" data-anchor-id="running">Running</h2>

@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Ron Keizer">
+<meta name="dcterms.date" content="2026-09-29">
+<meta name="description" content="Automated model building, global search, TTE/mixture/Markov models, faster FOCEI and SAEM, a new covariate syntax, and benchmarks against NONMEM.">
 
-<title>Example: Correlated random effects (block omega) – FeRx</title>
+<title>FeRx 0.4.0: model-building tools, new model types, and a faster engine – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,66 +29,31 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-31632d092df9090a2ed68f79c078059d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-bce9ac5131b28a06f2bac66cf12fad62.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-31632d092df9090a2ed68f79c078059d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-bce9ac5131b28a06f2bac66cf12fad62.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -114,48 +82,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Example: Correlated random effects (block omega) – FeRx">
-<meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="FeRx 0.4.0: model-building tools, new model types, and a faster engine – FeRx">
+<meta property="og:description" content="Automated model building, global search, TTE/mixture/Markov models, faster FOCEI and SAEM, a new covariate syntax, and benchmarks against NONMEM.">
+<meta property="og:image" content="https://ferx-nlme.org/blog/posts/2026-09-29-ferx-0-4-0/benchmark-focei-card.png">
 <meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Example: Correlated random effects (block omega) – FeRx">
-<meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta name="twitter:card" content="summary">
-<link rel="canonical" href="https://ferx-nlme.org/examples/block-omega.html">
+<meta property="og:image:height" content="1152">
+<meta property="og:image:width" content="2592">
+<meta property="og:image:alt" content="Bar chart of FOCEI estimation speed, FeRx relative to NONMEM, across 20 real PK models.">
+<meta name="twitter:title" content="FeRx 0.4.0: model-building tools, new model types, and a faster engine – FeRx">
+<meta name="twitter:description" content="Automated model building, global search, TTE/mixture/Markov models, faster FOCEI and SAEM, a new covariate syntax, and benchmarks against NONMEM.">
+<meta name="twitter:image" content="https://ferx-nlme.org/blog/posts/2026-09-29-ferx-0-4-0/benchmark-focei-card.png">
+<meta name="twitter:image-height" content="1152">
+<meta name="twitter:image-width" content="2592">
+<meta name="twitter:image:alt" content="Bar chart of FOCEI estimation speed, FeRx relative to NONMEM, across 20 real PK models.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://ferx-nlme.org/blog/posts/2026-09-29-ferx-0-4-0/">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed blog-post quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -324,11 +271,11 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../../../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">FeRx</span>
     </a>
   </div>
@@ -339,27 +286,27 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../get-started.html"> 
+    <a class="nav-link" href="../../../get-started.html"> 
 <span class="menu-text">Get started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../design.html"> 
+    <a class="nav-link" href="../../../design.html"> 
 <span class="menu-text">Design</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../features.html"> 
+    <a class="nav-link" href="../../../features.html"> 
 <span class="menu-text">Features</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../changelog.html"> 
+    <a class="nav-link" href="../../../changelog.html"> 
 <span class="menu-text">Changelog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../roadmap.html"> 
+    <a class="nav-link" href="../../../roadmap.html"> 
 <span class="menu-text">Roadmap</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../blog/index.html"> 
+    <a class="nav-link" href="../../../blog/index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
 </ul>
@@ -373,7 +320,7 @@ window.Quarto = {
 <span class="menu-text">ferx-r</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../reference/index.html"> 
+    <a class="nav-link" href="../../../reference/index.html"> 
 <span class="menu-text">Reference</span></a>
   </li>  
   <li class="nav-item compact">
@@ -398,12 +345,10 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#when-to-use-block-omega" id="toc-when-to-use-block-omega" class="nav-link active" data-scroll-target="#when-to-use-block-omega">When to use block omega</a></li>
-  <li><a href="#dsl-syntax" id="toc-dsl-syntax" class="nav-link" data-scroll-target="#dsl-syntax">DSL syntax</a></li>
-  <li><a href="#model-file" id="toc-model-file" class="nav-link" data-scroll-target="#model-file">Model file</a></li>
-  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running">Running</a></li>
-  <li><a href="#tips" id="toc-tips" class="nav-link" data-scroll-target="#tips">Tips</a></li>
-  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
+  <li><a href="#new-features" id="toc-new-features" class="nav-link active" data-scroll-target="#new-features">New features</a></li>
+  <li><a href="#optimization-speed" id="toc-optimization-speed" class="nav-link" data-scroll-target="#optimization-speed">Optimization / speed</a></li>
+  <li><a href="#syntax-documentation" id="toc-syntax-documentation" class="nav-link" data-scroll-target="#syntax-documentation">Syntax &amp; documentation</a></li>
+  <li><a href="#benchmarks" id="toc-benchmarks" class="nav-link" data-scroll-target="#benchmarks">Benchmarks</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -413,14 +358,34 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example: Correlated random effects (block omega)</h1>
-</div>
+<h1 class="title">FeRx 0.4.0: model-building tools, new model types, and a faster engine</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">release</div>
+  </div>
+  </div>
 
+<div>
+  <div class="description">
+    Automated model building, global search, TTE/mixture/Markov models, faster FOCEI and SAEM, a new covariate syntax, and benchmarks against NONMEM.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ron Keizer </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 29, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -430,103 +395,50 @@ window.Quarto = {
 </header>
 
 
-<p>This example shows how to fit a model where two random effects are allowed to covary across subjects using <code>block_omega</code>.</p>
-<section id="when-to-use-block-omega" class="level2">
-<h2 class="anchored" data-anchor-id="when-to-use-block-omega">When to use block omega</h2>
-<p>Use a block omega when you expect two (or more) ETAs to be correlated across subjects. A common situation: CL and V are both driven by body size, so a heavy subject tends to have both higher CL <em>and</em> higher V than the population average. A diagonal omega (the default) forces those ETAs to be independent, which can bias both the individual ETAs and the covariate-search step.</p>
-<p>The equivalent NONMEM syntax is <code>$OMEGA BLOCK(2)</code>.</p>
+<p>In early June I posted the first announcement of a new open source NLME engine for PK/PD analyses, FeRx. We’ve had a ton of positive reactions on this announcement, which strengthened our intention to continue to develop it into a production-grade, fully-featured software. The release of version 0.4.0 brings significant progress toward that goal. I’ll give a brief rundown, with pointers to the documentation.</p>
+<section id="new-features" class="level2">
+<h2 class="anchored" data-anchor-id="new-features">New features</h2>
+<p>Because of the maturity of FeRx’s core engine, especially FOCEI and SAEM, we’ve recently started focusing on auxiliary modeling tools. For example, in this new release you will find tools for <a href="https://ferx-nlme.org/ferx-core/tools/amd.html">automated model building</a> (using the same <a href="https://ferx-nlme.org/ferx-core/tools/search.html#the-search-space-mfl">model feature language (MFL)</a> as introduced in <a href="https://pharmpy.github.io/latest/mfl.html">Pharmpy</a>), as well as <a href="https://ferx-nlme.org/ferx-core/tools/global-search.html">global search algorithms</a> as for example available in <a href="https://certara.github.io/pyDarwin/html/index.html">pyDarwin</a>. Combined with the increased speed of the engine, model searches are now a breeze. We also added <a href="https://ferx-nlme.org/ferx-core/tools/gam-screening.html">GAM covariate screening</a> and <a href="https://ferx-nlme.org/ferx-core/tools/bootstrap.html">bootstrap</a> tools, as well as improvements to the VPC (e.g.&nbsp;<a href="https://ferx-nlme.org/ferx-core/api/simulation.html#simulate_with_options-propensity-score-matching">propensity-score matching</a>).</p>
+<p>We’ve added support for <a href="https://ferx-nlme.org/ferx-core/model-file/event-model.html">survival (TTE) models</a>, <a href="https://ferx-nlme.org/ferx-core/model-file/ode-models.html#solver-details">stiff ODE solvers</a>, <a href="https://ferx-nlme.org/ferx-core/estimation/mixture.html">mixture models</a>, and <a href="https://ferx-nlme.org/ferx-core/estimation/ctmm.html">Markov models</a>.</p>
+<p>We have also beefed up FeRx’s <a href="https://ferx-nlme.org/ferx-book/chapters/11-simulation.html">simulation</a> capabilities; for example, it can now run adaptive simulations. The goal for our simulation engine is to ensure there is never a need to translate your model to mrgsolve or other simulation-specific software after your modeling is done, which is one of the most common bottlenecks experienced with current NLME engines.</p>
 </section>
-<section id="dsl-syntax" class="level2">
-<h2 class="anchored" data-anchor-id="dsl-syntax">DSL syntax</h2>
-<pre><code>block_omega (ETA_A, ETA_B) = [var_A, cov_AB, var_B]</code></pre>
-<p>The three values are the <strong>lower triangle of Ω</strong>, row-major:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Position</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>var_A</code></td>
-<td>Variance of ETA_A</td>
-</tr>
-<tr class="even">
-<td><code>cov_AB</code></td>
-<td>Covariance between ETA_A and ETA_B</td>
-</tr>
-<tr class="odd">
-<td><code>var_B</code></td>
-<td>Variance of ETA_B</td>
-</tr>
-</tbody>
-</table>
-<p>The <strong>ETA correlation</strong> (correlation of the random effects) is</p>
-<p><span class="math display">\[\rho_\text{ETA} = \frac{\text{cov}_{AB}}{\sqrt{\text{var}_A \cdot \text{var}_B}}\]</span></p>
-<blockquote class="blockquote">
-<p><strong>Log-normal vs additive ETAs.</strong> The values in <code>block_omega</code> are always the variance–covariance matrix of the <em>ETAs</em> — the random effects on the log scale for log-normal parameters, or directly on the parameter scale for additive ETAs. Therefore <span class="math inline">\(\rho_\text{ETA}\)</span> above is always the correct ETA correlation regardless of distribution type.</p>
-<p>For <strong>log-normal</strong> parameters (e.g.&nbsp;<code>CL = TVCL * exp(ETA_CL)</code>), <span class="math inline">\(\rho_\text{ETA}\)</span> equals the <em>Spearman</em> (rank) correlation between individual parameters, because the log transform is monotone. The Pearson correlation between individual parameters on the <strong>original</strong> scale follows the bivariate log-normal formula:</p>
-<p><span class="math display">\[\rho_\text{param} = \frac{e^{\,\text{cov}_{AB}} - 1}{\sqrt{(e^{\,\text{var}_A} - 1)(e^{\,\text{var}_B} - 1)}}\]</span></p>
-<p><code>fit$cor_matrix</code> returns the ETA correlation matrix (<span class="math inline">\(\rho_\text{ETA}\)</span>), which is the standard quantity reported in NLME output.</p>
-</blockquote>
-<p>For a block of size 3, provide 6 values (lower triangle): <code>[var_A, cov_AB, var_B, cov_AC, cov_BC, var_C]</code>.</p>
+<section id="optimization-speed" class="level2">
+<h2 class="anchored" data-anchor-id="optimization-speed">Optimization / speed</h2>
+<p>We’ve made many updates to the computation of the analytical gradients that power the search algorithms, and made their re-use across the optimization more efficient. We dropped the off-the-shelf Enzyme library in favor of hand-rolled analytical gradients. FOCEI is now even faster than before, and more accurate (often an order of magnitude or more faster than NONMEM, single-threaded).</p>
+<p>SAEM also got a speed boost and is now about 5x faster than NONMEM on average, mainly due to the implementation of <a href="https://www.sciencedirect.com/science/article/abs/pii/S0167947319301483">f-SAEM</a>, but also through refactoring of its implementation.</p>
+<p>The computation of confidence intervals from the covariance matrix has had an upgrade, and is now faster and more accurate. See <a href="https://www.biorxiv.org/content/10.64898/2026.07.09.737434v1">this paper</a> for details.</p>
+<p>Many settings are now optimized automatically depending on the dataset or the model, such as the optimizer, the choice of ODE solver, and tolerances.</p>
 </section>
-<section id="model-file" class="level2">
-<h2 class="anchored" data-anchor-id="model-file">Model file</h2>
-<p>This example uses the warfarin one-compartment oral model with a 2×2 block on CL and V:</p>
-<pre><code>[parameters]
-  theta TVCL(0.134, 0.001, 10.0)
-  theta TVV(8.1, 0.1, 500.0)
-  theta TVKA(1.0, 0.01, 50.0)
-
-  block_omega (ETA_CL, ETA_V) = [0.07, 0.02, 0.02]
-  omega ETA_KA ~ 0.40
-
-  sigma PROP_ERR ~ 0.01
-
-[individual_parameters]
-  CL = TVCL * exp(ETA_CL)
-  V  = TVV  * exp(ETA_V)
-  KA = TVKA * exp(ETA_KA)
-
-[structural_model]
-  pk one_cpt_oral(cl=CL, v=V, ka=KA)
-
-[error_model]
-  DV ~ proportional(PROP_ERR)
-
-[fit_options]
-  method     = foce
-  maxiter    = 300
-  covariance = true</code></pre>
-<p>Starting values: Var(ETA_CL) = 0.07, Cov(ETA_CL, ETA_V) = 0.02, Var(ETA_V) = 0.02 → starting correlation ρ₀ = 0.02 / √(0.07 × 0.02) ≈ 0.53.</p>
-<p><code>ETA_KA</code> is kept diagonal (<code>omega ETA_KA</code>) because absorption rate is not expected to correlate with CL or V.</p>
+<section id="syntax-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="syntax-documentation">Syntax &amp; documentation</h2>
+<p>We implemented a novel and easier <a href="https://ferx-nlme.org/ferx-core/model-file/covariate-model.html">syntax for the covariate model</a>. This serves two purposes. First, it is now easier for a modeler to separate the structural model from the covariate model, which also helps in communicating the model to others. Second, it allows safer and more structured implementation of covariate models and covariate searches. Most existing search tools add or remove covariate effects by regex’ing the model text; FeRx’s new syntax avoids this, so covariate effects can be added and removed programmatically. It is still possible to implement covariate models in the “classic” way, of course.</p>
+<p>We’ve also added syntax that makes it extremely easy to define <a href="https://ferx-nlme.org/ferx-core/estimation/priors.html">priors on model parameters</a>.</p>
+<p>As outlined in our <a href="https://ferx-nlme.org/design.html">design philosophy</a>, we spend a lot of effort ensuring the documentation is up-to-date, complete, and easy to read. Our <a href="https://ferx-nlme.org/ferx-book/">practical book on working with FeRx from R</a> was fully revised.</p>
+<p>Our new URL is live: please update your bookmarks to <a href="https://ferx-nlme.org">ferx-nlme.org</a>!</p>
 </section>
-<section id="running" class="level2">
-<h2 class="anchored" data-anchor-id="running">Running</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ferx)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"warfarin_block_omega"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Off-diagonal correlations — converts estimated Ω to a correlation matrix</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>fit<span class="sc">$</span>cor_matrix</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="tips" class="level2">
-<h2 class="anchored" data-anchor-id="tips">Tips</h2>
-<ul>
-<li><strong>Start with a diagonal model.</strong> If the estimated off-diagonal elements are large relative to their SEs, switch to a block structure.</li>
-<li><strong>Model comparison</strong>: a 2×2 block adds 1 parameter relative to 2 diagonal omegas. Because the covariance is tested at the boundary of the parameter space (H₀: cov = 0 is on the boundary, not the interior), the asymptotic null is a 50:50 mixture of χ²₀ and χ²₁; the 5% critical value is 2.71, not 3.84.</li>
-<li><strong>Correlated IOV</strong>: the analogous <code>block_kappa</code> syntax works the same way for inter-occasion kappas. See the <a href="../examples/iov.html">IOV example</a>.</li>
-</ul>
-</section>
-<section id="see-also" class="level2">
-<h2 class="anchored" data-anchor-id="see-also">See also</h2>
-<ul>
-<li><a href="../model-dsl/parameters.html">Parameters — block_omega</a></li>
-<li><a href="../examples/iov.html">Example: IOV (block_kappa)</a></li>
-</ul>
+<section id="benchmarks" class="level2">
+<h2 class="anchored" data-anchor-id="benchmarks">Benchmarks</h2>
+<p>The plot below shows the speed of estimation in FeRx compared to NONMEM (v7.6.0, gfortran on Linux), both softwares single-threaded on an AMD Ryzen 7, using default settings for either software. These runs were all on real (final) PK models and datasets, not simulated scenarios. On average, models run about 10x faster in FeRx under FOCEI (slightly slower for some still, but up to 100x faster for others). SAEM is also generally much faster in FeRx. While being much faster, FeRx maintains accuracy: they reach the same minima as NONMEM. More detailed results will be shown at ACoP in October.</p>
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="benchmark-focei.png" class="img-fluid figure-img" alt="Horizontal bar chart of FOCEI estimation speed, FeRx relative to NONMEM, for 20 real PK models on a log scale from 0.5 to 100. FeRx is faster for 18 models, up to about 110-fold for M15; NONMEM is faster for M1 (about 0.8) and M6 (about 0.45)."></p>
+<figcaption>FOCEI estimation speed of FeRx relative to NONMEM per model (fold change, log scale). Values above 1 mean FeRx is faster.</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="benchmark-focei-dark.png" class="img-fluid figure-img" alt="Horizontal bar chart of FOCEI estimation speed, FeRx relative to NONMEM, for 20 real PK models on a log scale from 0.5 to 100. FeRx is faster for 18 models, up to about 110-fold for M15; NONMEM is faster for M1 (about 0.8) and M6 (about 0.45)."></p>
+<figcaption>FOCEI estimation speed of FeRx relative to NONMEM per model (fold change, log scale). Values above 1 mean FeRx is faster.</figcaption>
+</figure>
+</div>
+</div>
+<!-- TODO: add SAEM benchmark plot:
+![SAEM estimation speed, FeRx relative to NONMEM](benchmark-saem.png){fig-alt="..."}
+-->
+<p>A <a href="https://ferx-nlme.org/changelog.html">full log of changes</a> is always available on ferx-nlme.org. Please give FeRx a spin and let us know what you think!</p>
 
 
 </section>

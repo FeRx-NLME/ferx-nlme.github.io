@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Search a PK model space from R with ferx: MFL search spaces, modelsearch, iivsearch, iovsearch, ruvsearch, covsearch, allometry, the globalsearch grid, and the ferx_amd() pipeline.">
+<meta name="description" content="Search a PK model space from R with FeRx: MFL search spaces, modelsearch, iivsearch, iovsearch, ruvsearch, covsearch, allometry, the globalsearch grid, and the ferx_amd() pipeline.">
 
-<title>Example: Model search and automatic model development – ferx</title>
+<title>Example: Model search and automatic model development – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -117,11 +117,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Example: Model search and automatic model development – ferx">
+<meta property="og:title" content="Example: Model search and automatic model development – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Example: Model search and automatic model development – ferx">
+<meta name="twitter:title" content="Example: Model search and automatic model development – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/examples/model-search.html">
@@ -297,11 +297,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -413,7 +413,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Model development is a sequence of decisions — one compartment or two, which parameters carry between-subject variability, whether the residual error needs a time-varying term, which covariates earn their place. ferx can make those decisions by search rather than by hand, using the same tool chain as Pharmpy’s <code>amd</code>, driven from R.</p>
+<p>Model development is a sequence of decisions — one compartment or two, which parameters carry between-subject variability, whether the residual error needs a time-varying term, which covariates earn their place. FeRx can make those decisions by search rather than by hand, using the same tool chain as Pharmpy’s <code>amd</code>, driven from R.</p>
 <p>There are seven tools and one pipeline that runs six of them in order:</p>
 <table class="caption-top table">
 <thead>
@@ -469,7 +469,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Everything below runs against bundled examples, so it is reproducible without your own data.</p>
 <section id="the-search-space-is-mfl" class="level2">
 <h2 class="anchored" data-anchor-id="the-search-space-is-mfl">The search space is MFL</h2>
-<p>A space is written in Pharmpy’s <strong>Model Feature Language</strong>, quoted verbatim — ferx never translates R arguments into MFL, which is what makes a space portable between the two tools.</p>
+<p>A space is written in Pharmpy’s <strong>Model Feature Language</strong>, quoted verbatim — FeRx never translates R arguments into MFL, which is what makes a space portable between the two tools.</p>
 <pre><code>ABSORPTION(FO); PERIPHERALS(0..1); LAGTIME([OFF,ON])
 IIV?(@PK, exp); COVARIANCE?(IIV, *)</code></pre>
 <p>A statement without <code>?</code> is <strong>structural</strong>: every candidate has it. A statement with <code>?</code> is <strong>exploratory</strong>: the search decides. <code>@PK</code>, <code>@IIV</code>, <code>@CONTINUOUS</code> and <code>@CATEGORICAL</code> are resolved against your model and your dataset, so one space travels across models.</p>
@@ -864,7 +864,7 @@ Selected:
 <section id="notes" class="level2">
 <h2 class="anchored" data-anchor-id="notes">Notes</h2>
 <ul>
-<li><strong>Some <code>.ferxsearch</code> sections have no R tool.</strong> The engine accepts a section for every tool <em>it</em> knows, which is more than this package binds — <code>[structsearch]</code> today. Such a file loads, and ferx warns that no R tool consumes the section, because the tool it <em>is</em> handed would otherwise run a different search without saying so. <code>[structsearch]</code> is accepted vocabulary with no engine module behind it yet, so it is reported without a remediation rather than with one that names a command that does not exist. What the warning reports is the complement of the sections this package has a tool for, so a section a later ferx-core adds is named from the day a file can carry it — and stops being named on the day a binding lands, as <code>[globalsearch]</code> did when <code>ferx_globalsearch()</code> shipped.</li>
+<li><strong>Some <code>.ferxsearch</code> sections have no R tool.</strong> The engine accepts a section for every tool <em>it</em> knows, which is more than this package binds — <code>[structsearch]</code> today. Such a file loads, and FeRx warns that no R tool consumes the section, because the tool it <em>is</em> handed would otherwise run a different search without saying so. <code>[structsearch]</code> is accepted vocabulary with no engine module behind it yet, so it is reported without a remediation rather than with one that names a command that does not exist. What the warning reports is the complement of the sections this package has a tool for, so a section a later ferx-core adds is named from the day a file can carry it — and stops being named on the day a binding lands, as <code>[globalsearch]</code> did when <code>ferx_globalsearch()</code> shipped.</li>
 <li><strong>Cancelling</strong> a search from R interrupts it at the next candidate boundary; the run still writes its partial tables.</li>
 <li><strong>The strictness gate is shared.</strong> <code>[strictness]</code> in the configuration applies to every tool, and every table with one row per fitted model carries <code>converged</code> and <code>passed</code> columns — <code>$models</code> for modelsearch, iivsearch and iovsearch, <code>$steps</code> for covsearch and ruvsearch, <code>$comparison</code> for allometry. (The per-stage ranking <code>$steps</code> of iivsearch and iovsearch, and allometry’s <code>$scalings</code>, are not model tables and carry no gate columns; the models they rank are in <code>$models</code>.) Inside an AMD step the init-stall gate is turned off by design: each step starts from a model already at its own optimum, where “did not move from the initial estimates” is the expected outcome.</li>
 </ul>

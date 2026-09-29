@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Chain FOCEI, SAEM, and importance sampling in ferx; compare NLME optimizers; and configure convergence and advanced fitting options.">
+<meta name="description" content="Chain FOCEI, SAEM, and importance sampling in FeRx; compare NLME optimizers; and configure convergence and advanced fitting options.">
 
-<title>Method chaining, optimizers, and advanced fit options – ferx</title>
+<title>Method chaining, optimizers, and advanced fit options – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -118,11 +118,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Method chaining, optimizers, and advanced fit options">
-<meta property="og:description" content="Chain FOCEI, SAEM, and importance sampling in ferx; compare NLME optimizers; and configure convergence and advanced fitting options.">
-<meta property="og:site_name" content="ferx">
+<meta property="og:description" content="Chain FOCEI, SAEM, and importance sampling in FeRx; compare NLME optimizers; and configure convergence and advanced fitting options.">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:title" content="Method chaining, optimizers, and advanced fit options">
-<meta name="twitter:description" content="Chain FOCEI, SAEM, and importance sampling in ferx; compare NLME optimizers; and configure convergence and advanced fitting options.">
+<meta name="twitter:description" content="Chain FOCEI, SAEM, and importance sampling in FeRx; compare NLME optimizers; and configure convergence and advanced fitting options.">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/learn/method-chaining.html">
 </head>
@@ -297,11 +297,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -409,7 +409,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>ferx supports running multiple estimation methods in sequence (method chains), switching outer optimizers, and fine-tuning convergence settings via the <code>settings</code> argument. This page covers these options with working code.</p>
+<p>FeRx supports running multiple estimation methods in sequence (method chains), switching outer optimizers, and fine-tuning convergence settings via the <code>settings</code> argument. This page covers these options with working code.</p>
 <section id="method-chains" class="level2">
 <h2 class="anchored" data-anchor-id="method-chains">Method chains</h2>
 <p>Pass a character vector to <code>method</code> to run stages in sequence. Each stage is seeded with the previous stage’s converged parameters; only the final stage produces the reported covariance and diagnostics.</p>
@@ -480,7 +480,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="outer-optimizers" class="level2">
 <h2 class="anchored" data-anchor-id="outer-optimizers">Outer optimizers</h2>
-<p>ferx supports several outer optimizers for the population parameter loop. The default is <strong><code>auto</code></strong>: it picks NLopt L-BFGS when the exact analytic gradient is available and BOBYQA (derivative-free) when only finite differences are, with two overrides — more than 64 free parameters always takes L-BFGS, mixture models always take BOBYQA. Name an optimizer to pin it.</p>
+<p>FeRx supports several outer optimizers for the population parameter loop. The default is <strong><code>auto</code></strong>: it picks NLopt L-BFGS when the exact analytic gradient is available and BOBYQA (derivative-free) when only finite differences are, with two overrides — more than 64 free parameters always takes L-BFGS, mixture models always take BOBYQA. Name an optimizer to pin it.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BOBYQA (derivative-free)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fit_bobyqa <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">settings =</span> <span class="fu">list</span>(<span class="at">optimizer =</span> <span class="st">"bobyqa"</span>))</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>

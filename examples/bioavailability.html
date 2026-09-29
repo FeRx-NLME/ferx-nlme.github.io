@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Example: Oral bioavailability (logit-normal F) – ferx</title>
+<title>Example: Oral bioavailability (logit-normal F) – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,11 +116,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Example: Oral bioavailability (logit-normal F) – ferx">
+<meta property="og:title" content="Example: Oral bioavailability (logit-normal F) – FeRx">
 <meta property="og:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
-<meta property="og:site_name" content="ferx">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:title" content="Example: Oral bioavailability (logit-normal F) – ferx">
+<meta name="twitter:title" content="Example: Oral bioavailability (logit-normal F) – FeRx">
 <meta name="twitter:description" content="Open-source nonlinear mixed-effects modeling for population PK/PD, with an R package and high-performance Rust engine">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/examples/bioavailability.html">
@@ -296,11 +296,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -401,12 +401,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Oral bioavailability F is a fraction bounded in (0, 1). Estimating it with a log-normal ETA (the default for most PK parameters) is inappropriate because log-normal values are unbounded above. ferx supports a <strong>logit-normal</strong> parameterisation that constrains F to (0, 1) on the natural scale while the optimiser works on an unbounded logit scale.</p>
+<p>Oral bioavailability F is a fraction bounded in (0, 1). Estimating it with a log-normal ETA (the default for most PK parameters) is inappropriate because log-normal values are unbounded above. FeRx supports a <strong>logit-normal</strong> parameterisation that constrains F to (0, 1) on the natural scale while the optimiser works on an unbounded logit scale.</p>
 <section id="parameterisation" class="level2">
 <h2 class="anchored" data-anchor-id="parameterisation">Parameterisation</h2>
 <pre><code>F_i = inv_logit(logit(THETA_F) + ETA_F_i)</code></pre>
 <ul>
-<li><code>THETA_F</code> is the typical bioavailability, specified directly on the (0, 1) scale (e.g.&nbsp;<code>0.70</code> for 70%). ferx applies <code>logit(THETA_F)</code> internally so the optimiser works on an unbounded scale.</li>
+<li><code>THETA_F</code> is the typical bioavailability, specified directly on the (0, 1) scale (e.g.&nbsp;<code>0.70</code> for 70%). FeRx applies <code>logit(THETA_F)</code> internally so the optimiser works on an unbounded scale.</li>
 <li><code>omega ETA_F</code> is the BSV <strong>variance on the logit scale</strong> — not the variance of F itself. Small <code>omega_F</code> still allows large F variability near F = 0.5 and smaller variability near F = 0 or 1 (the logit squeeze effect).</li>
 </ul>
 </section>

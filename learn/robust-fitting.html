@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Improve difficult NLME fits in ferx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies.">
+<meta name="description" content="Improve difficult NLME fits in FeRx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies.">
 
-<title>Robust fitting strategies – ferx</title>
+<title>Robust fitting strategies – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -118,11 +118,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Robust fitting strategies">
-<meta property="og:description" content="Improve difficult NLME fits in ferx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies.">
-<meta property="og:site_name" content="ferx">
+<meta property="og:description" content="Improve difficult NLME fits in FeRx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies.">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:title" content="Robust fitting strategies">
-<meta name="twitter:description" content="Improve difficult NLME fits in ferx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies.">
+<meta name="twitter:description" content="Improve difficult NLME fits in FeRx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies.">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/learn/robust-fitting.html">
 </head>
@@ -297,11 +297,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -449,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="tolerating-sparse-or-outlier-subjects" class="level2">
 <h2 class="anchored" data-anchor-id="tolerating-sparse-or-outlier-subjects">Tolerating sparse or outlier subjects</h2>
-<p>By default, ferx stops the outer loop if any subject’s EBE inner solver fails to converge. For large real-world datasets with a handful of sparse or outlier subjects, relax this with:</p>
+<p>By default, FeRx stops the outer loop if any subject’s EBE inner solver fails to converge. For large real-world datasets with a handful of sparse or outlier subjects, relax this with:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  ex<span class="sc">$</span>model, ex<span class="sc">$</span>data,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">settings =</span> <span class="fu">list</span>(</span>

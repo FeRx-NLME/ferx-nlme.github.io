@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based ferx workflows.">
+<meta name="description" content="Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based FeRx workflows.">
 
-<title>Model workflow: inspect, edit, fit – ferx</title>
+<title>Model workflow: inspect, edit, fit – FeRx</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -118,11 +118,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Model workflow: inspect, edit, fit">
-<meta property="og:description" content="Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based ferx workflows.">
-<meta property="og:site_name" content="ferx">
+<meta property="og:description" content="Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based FeRx workflows.">
+<meta property="og:site_name" content="FeRx">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:title" content="Model workflow: inspect, edit, fit">
-<meta name="twitter:description" content="Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based ferx workflows.">
+<meta name="twitter:description" content="Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based FeRx workflows.">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://ferx-nlme.org/learn/model-workflow.html">
 </head>
@@ -297,11 +297,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo light-content">
-    <img src="../assets/ferx-dsl-brackets.svg" alt="ferx" class="navbar-logo dark-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo light-content">
+    <img src="../assets/ferx-dsl-brackets.svg" alt="FeRx" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">ferx</span>
+    <span class="navbar-title">FeRx</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This article covers two complementary workflows for running a ferx model:</p>
+<p>This article covers two complementary workflows for running a FeRx model:</p>
 <ol type="1">
 <li><strong>Path-based</strong> — pass file paths directly to <code>ferx_fit()</code>. Straightforward for one-off fits.</li>
 <li><strong>Pipe-based</strong> — bundle paths into a <code>ferx_model</code> object and chain steps with <code>|&gt;</code>. Cleaner when you need to tweak options before fitting or chain post-fit steps.</li>
@@ -439,7 +439,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This article gives a concise overview. For a complete walkthrough with runnable output, see <a href="https://ferx-nlme.org/ferx-book/chapters/02-complete-analysis.html">Chapter 2 (A complete analysis)</a> and <a href="https://ferx-nlme.org/ferx-book/chapters/05-first-fit.html">Chapter 5 (A first fit)</a> in the ferx book.</p>
+<p>This article gives a concise overview. For a complete walkthrough with runnable output, see <a href="https://ferx-nlme.org/ferx-book/chapters/02-complete-analysis.html">Chapter 2 (A complete analysis)</a> and <a href="https://ferx-nlme.org/ferx-book/chapters/05-first-fit.html">Chapter 5 (A first fit)</a> in the FeRx book.</p>
 </div>
 </div>
 <p><strong>Entry point:</strong> <code>ferx_model(data, model)</code> takes the data file first, which lets a data object flow naturally into a pipeline:</p>
@@ -461,7 +461,7 @@ Tip
 </section>
 <section id="step-2-inspect-before-fitting" class="level3">
 <h3 class="anchored" data-anchor-id="step-2-inspect-before-fitting">Step 2 — Inspect before fitting</h3>
-<p><code>ferx_model_inspect()</code> parses the model file and prints a concise summary of its structure without running the optimizer. Use this to verify that ferx interprets your model the way you expect before committing to a long run.</p>
+<p><code>ferx_model_inspect()</code> parses the model file and prints a concise summary of its structure without running the optimizer. Use this to verify that FeRx interprets your model the way you expect before committing to a long run.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_model_inspect</span>(ex<span class="sc">$</span>model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The printed summary has four lines:</p>
 <table class="caption-top table">
@@ -545,7 +545,7 @@ Tip
 <section id="override-fit-options-before-fitting" class="level3">
 <h3 class="anchored" data-anchor-id="override-fit-options-before-fitting">Override fit options before fitting</h3>
 <p><code>ferx_model_set_section()</code> rewrites a section on disk and returns the <code>ferx_model</code> unchanged so the pipe can continue.</p>
-<p><strong>Copy-on-write for bundled examples:</strong> when the model is inside the installed ferx package directory (i.e.&nbsp;came from <code>ferx_example()</code>), <code>ferx_model_set_section()</code> transparently copies it to <code>tempdir()</code> first and edits the copy; the bundled file is never modified. For user-owned files it edits in place. Copy the file yourself if you want a stable user-controlled path.</p>
+<p><strong>Copy-on-write for bundled examples:</strong> when the model is inside the installed FeRx package directory (i.e.&nbsp;came from <code>ferx_example()</code>), <code>ferx_model_set_section()</code> transparently copies it to <code>tempdir()</code> first and edits the copy; the bundled file is never modified. For user-owned files it edits in place. Copy the file yourself if you want a stable user-controlled path.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_model</span>(ex<span class="sc">$</span>data, ex<span class="sc">$</span>model) <span class="sc">|&gt;</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ferx_model_set_section</span>(<span class="st">"fit_options"</span>, <span class="fu">c</span>(</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"  method     = focei"</span>,</span>
@@ -699,7 +699,7 @@ Tip
 </section>
 <section id="parameter-transforms" class="level2">
 <h2 class="anchored" data-anchor-id="parameter-transforms">Parameter transforms</h2>
-<p>ferx supports log and logit transforms for both thetas and ETAs directly in the model DSL. When a transform is in use, <code>print()</code> and <code>fit$estimates</code> display results on the natural scale alongside the estimation-scale values.</p>
+<p>FeRx supports log and logit transforms for both thetas and ETAs directly in the model DSL. When a transform is in use, <code>print()</code> and <code>fit$estimates</code> display results on the natural scale alongside the estimation-scale values.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-normal CL (typical in PK — ETA_CL is additive on the log scale)</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>CL <span class="ot">=</span> TVCL <span class="sc">*</span> <span class="fu">exp</span>(ETA_CL)  <span class="co"># TVCL is on the natural scale; BSV is log-normal</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
