@@ -3,7 +3,7 @@ title: "Example: Data selection (LLOQ filtering)"
 ---
 
 The `[data_selection]` block excludes records from the dataset at read time
-without modifying the CSV. It is the ferx equivalent of NONMEM's
+without modifying the CSV. It is the FeRx equivalent of NONMEM's
 `$DATA IGNORE=`. This example drops observations below a surrogate LLOQ of
 1.0 mg/L.
 

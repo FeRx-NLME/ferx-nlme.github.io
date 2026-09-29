@@ -11,7 +11,7 @@ unmodelled absorption variability.
 
 ## How it works
 
-Without a `[diffusion]` block, ferx treats the ODE system as deterministic: all
+Without a `[diffusion]` block, FeRx treats the ODE system as deterministic: all
 unexplained variability enters through BSV (omega) and residual error (sigma).
 
 With `[diffusion]`, each listed state becomes a continuous diffusion process:

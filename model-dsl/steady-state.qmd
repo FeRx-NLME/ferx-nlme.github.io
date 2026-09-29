@@ -121,7 +121,7 @@ ID,TIME,DV,EVID,AMT,CMT,RATE,MDV,II,ADDL
 1,168,1.4,0,.,1,0,0,.,.   # observation on day 8
 ```
 
-The expansion happens at read time: ferx converts the single dose record into
+The expansion happens at read time: FeRx converts the single dose record into
 7 explicit `DoseEvent` objects internally. `TAD` resets to zero at each of the
 7 expanded doses.
 
@@ -164,7 +164,7 @@ worked fit with sdtab output.
 
 ### NONMEM equivalent
 
-| NONMEM | ferx |
+| NONMEM | FeRx |
 |---|---|
 | `$DATA ADDL` column | `ADDL` column (same semantics) |
 | `II` column (inter-dose interval) | `II` column (same) |

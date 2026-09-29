@@ -1,21 +1,21 @@
 ---
-title: "Editing ferx model files programmatically"
+title: "Editing FeRx model files programmatically"
 description-meta: "Create, inspect, and modify .ferx nonlinear mixed-effects model files programmatically from R."
 open-graph:
-  title: "Editing ferx model files programmatically"
+  title: "Editing FeRx model files programmatically"
   description: "Create, inspect, and modify .ferx nonlinear mixed-effects model files programmatically from R."
 twitter-card:
-  title: "Editing ferx model files programmatically"
+  title: "Editing FeRx model files programmatically"
   description: "Create, inspect, and modify .ferx nonlinear mixed-effects model files programmatically from R."
 ---
 
-ferx model files (`.ferx`) are plain text, so you can create and modify them
+FeRx model files (`.ferx`) are plain text, so you can create and modify them
 entirely from R without opening an editor. This article covers the three
 functions that support that workflow: `ferx_model()`,
 `ferx_model_get_section()`, and `ferx_model_set_section()`.
 
 ::: {.callout-tip}
-See also [Chapter 4 (Model files)](https://ferx-nlme.org/ferx-book/chapters/04-model-files.html) in the ferx book for a complete reference with examples.
+See also [Chapter 4 (Model files)](https://ferx-nlme.org/ferx-book/chapters/04-model-files.html) in the FeRx book for a complete reference with examples.
 :::
 
 ---

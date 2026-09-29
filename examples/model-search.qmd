@@ -1,11 +1,11 @@
 ---
 title: "Example: Model search and automatic model development"
-description-meta: "Search a PK model space from R with ferx: MFL search spaces, modelsearch, iivsearch, iovsearch, ruvsearch, covsearch, allometry, the globalsearch grid, and the ferx_amd() pipeline."
+description-meta: "Search a PK model space from R with FeRx: MFL search spaces, modelsearch, iivsearch, iovsearch, ruvsearch, covsearch, allometry, the globalsearch grid, and the ferx_amd() pipeline."
 ---
 
 Model development is a sequence of decisions — one compartment or two, which
 parameters carry between-subject variability, whether the residual error needs
-a time-varying term, which covariates earn their place. ferx can make those
+a time-varying term, which covariates earn their place. FeRx can make those
 decisions by search rather than by hand, using the same tool chain as Pharmpy's
 `amd`, driven from R.
 
@@ -28,7 +28,7 @@ your own data.
 ## The search space is MFL
 
 A space is written in Pharmpy's **Model Feature Language**, quoted verbatim —
-ferx never translates R arguments into MFL, which is what makes a space
+FeRx never translates R arguments into MFL, which is what makes a space
 portable between the two tools.
 
 ```
@@ -589,7 +589,7 @@ tool.
 
 - **Some `.ferxsearch` sections have no R tool.** The engine accepts a section
   for every tool *it* knows, which is more than this package binds —
-  `[structsearch]` today. Such a file loads, and ferx warns that no R tool
+  `[structsearch]` today. Such a file loads, and FeRx warns that no R tool
   consumes the section, because the tool it *is* handed would otherwise run a
   different search without saying so. `[structsearch]` is accepted vocabulary
   with no engine module behind it yet, so it is reported without a remediation

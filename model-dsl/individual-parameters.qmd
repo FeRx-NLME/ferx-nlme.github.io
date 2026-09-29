@@ -160,7 +160,7 @@ PARAM = exp(log(THETA) + ETA)                 # canonical MU form
 PARAM = THETA + ETA                           # additive
 ```
 
-ferx records the ETA→THETA mapping and re-centres the inner-loop ETA search at
+FeRx records the ETA→THETA mapping and re-centres the inner-loop ETA search at
 each outer iteration — reproducing NONMEM / nlmixr2 mu-referencing without
 requiring an explicit `MU_i` line.
 

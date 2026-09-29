@@ -1,12 +1,12 @@
 ---
 title: "Parameters"
-description-meta: "Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in ferx models."
+description-meta: "Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in FeRx models."
 open-graph:
   title: "Parameters"
-  description: "Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in ferx models."
+  description: "Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in FeRx models."
 twitter-card:
   title: "Parameters"
-  description: "Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in ferx models."
+  description: "Define theta fixed effects, omega between-subject variability, sigma residual error, and kappa inter-occasion variability in FeRx models."
 ---
 
 The `[parameters]` block defines all model parameters: fixed effects (theta),
@@ -238,7 +238,7 @@ See [Error Model — Sigma scale](error-model.qmd#sigma-scale) for how each sigm
 
 ## Parameter-level correlation in output
 
-When a `block_omega` (or `block_kappa`) is estimated, ferx reports a
+When a `block_omega` (or `block_kappa`) is estimated, FeRx reports a
 parameter-level correlation for each off-diagonal pair:
 
 | ETA pair | Formula |
@@ -260,7 +260,7 @@ CL = TVCL * exp(ETA_CL) * (WT/70)^0.75      # fine
 CL = TVCL * (WT/70)^0.75 * exp(ETA_CL)      # also fine
 ```
 
-Both forms are mathematically identical in log-space. ferx detects the
+Both forms are mathematically identical in log-space. FeRx detects the
 `theta * exp(eta)` mu-reference pattern regardless of where covariate
 multipliers appear in the expression. See the
 [covariates example](../examples/covariates.qmd) for a worked model.
@@ -275,7 +275,7 @@ KTR = 4.0 / TVMTT
 KA  = KTR * exp(ETA_KA)        # detected as log-normal; CV% reported correctly
 ```
 
-ferx traces through the intermediate assignment to identify the underlying
+FeRx traces through the intermediate assignment to identify the underlying
 log-normal structure.
 
 ## Fixing parameters (FIX)

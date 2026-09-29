@@ -8,7 +8,7 @@ is *somewhere below* the detection threshold. Dropping them biases parameter
 estimates; using a substituted value (e.g. LLOQ/2) is equally biased. The
 correct approach is to integrate the likelihood over the censored region.
 
-ferx supports two strategies via `bloq_method` in `[fit_options]`.
+FeRx supports two strategies via `bloq_method` in `[fit_options]`.
 
 ## Dataset format
 

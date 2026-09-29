@@ -1,8 +1,8 @@
-# ferx brand tokens
+# FeRx brand tokens
 # Use with Quarto's brand feature (Quarto >= 1.6)
 
 meta:
-  name: ferx
+  name: FeRx
   link: https://github.com/FeRx-NLME/ferx-r
 
 color:

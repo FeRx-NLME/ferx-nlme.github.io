@@ -2,7 +2,7 @@
 title: "Roadmap"
 ---
 
-This page lists planned and in-progress work for ferx. Timelines are indicative
+This page lists planned and in-progress work for FeRx. Timelines are indicative
 and may shift as priorities evolve. Feel free to reach out with any feature requests,
 research project proposals, or feedback.
 
@@ -13,8 +13,8 @@ research project proposals, or feedback.
 - Support for stiff ODE solver(s).
 - NONMEM and nlmixr2 model import. nlmixr2 models can be supported in a
   non-lossy way, since they can be read from the R object.
-- Increase modularity of ferx, so external users can more easily write
-  extensions with minimal (if any) modifications to ferx core code.
+- Increase modularity of FeRx, so external users can more easily write
+  extensions with minimal (if any) modifications to FeRx core code.
 - Support for FREM estimation (including conversion to FFEM models).
 - Support for covariate search approaches (GAM, SCM).
 - Exact analytic sensitivities through the ODE solver (ODE models currently use finite differences).

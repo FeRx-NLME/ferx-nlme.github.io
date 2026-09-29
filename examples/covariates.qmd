@@ -6,7 +6,7 @@ A two-compartment oral model with body weight (WT) and creatinine clearance
 (CRCL) as covariates on clearance.
 
 ::: {.callout-tip}
-For background on covariate parameterisation, see [Chapter 17 (Covariate modeling)](https://ferx-nlme.org/ferx-book/chapters/17-covariates.html) in the ferx book.
+For background on covariate parameterisation, see [Chapter 17 (Covariate modeling)](https://ferx-nlme.org/ferx-book/chapters/17-covariates.html) in the FeRx book.
 :::
 
 ## Model file
@@ -68,7 +68,7 @@ terms equal 1.0, so TVCL is interpretable as the clearance of a 70 kg patient
 with normal renal function.
 
 ::: {.callout-tip title="Mu-referencing with covariates"}
-Both term orderings are detected correctly — ferx recognises the
+Both term orderings are detected correctly — FeRx recognises the
 `theta * exp(eta)` mu-reference regardless of where covariate multipliers
 appear:
 

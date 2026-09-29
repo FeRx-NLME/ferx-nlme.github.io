@@ -1,12 +1,12 @@
 ---
 title: "Robust fitting strategies"
-description-meta: "Improve difficult NLME fits in ferx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies."
+description-meta: "Improve difficult NLME fits in FeRx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies."
 open-graph:
   title: "Robust fitting strategies"
-  description: "Improve difficult NLME fits in ferx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies."
+  description: "Improve difficult NLME fits in FeRx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies."
 twitter-card:
   title: "Robust fitting strategies"
-  description: "Improve difficult NLME fits in ferx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies."
+  description: "Improve difficult NLME fits in FeRx with NCA starting values, multistart optimization, bounds, diagnostics, and robust estimation strategies."
 ---
 
 This page covers techniques for fitting models that are difficult to converge:
@@ -50,7 +50,7 @@ where the population mean from NCA can be far from the true typical value.
 
 ## Tolerating sparse or outlier subjects
 
-By default, ferx stops the outer loop if any subject's EBE inner solver fails
+By default, FeRx stops the outer loop if any subject's EBE inner solver fails
 to converge. For large real-world datasets with a handful of sparse or
 outlier subjects, relax this with:
 

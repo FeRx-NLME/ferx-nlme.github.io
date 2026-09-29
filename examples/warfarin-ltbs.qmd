@@ -4,7 +4,7 @@ title: "Example: Log-transform-both-sides (LTBS) error"
 
 The log-transform-both-sides (LTBS) error model fits additive (normal) residual
 error on the log scale. Writing `log(DV) ~ additive(SIGMA_LOG)` in the
-`[error_model]` block instructs ferx to log-transform both observations and
+`[error_model]` block instructs FeRx to log-transform both observations and
 model predictions before computing the likelihood.
 
 Under LTBS the estimated `SIGMA_LOG` is the residual standard deviation on the
@@ -69,7 +69,7 @@ fit <- ferx_fit(ex$model, ex$data, method = "focei")
 fit
 ```
 
-Check how ferx labels the residual type:
+Check how FeRx labels the residual type:
 
 ```r
 fit$sigma_types

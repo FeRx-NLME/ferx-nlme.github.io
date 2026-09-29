@@ -1,15 +1,15 @@
 ---
 title: "Model workflow: inspect, edit, fit"
-description-meta: "Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based ferx workflows."
+description-meta: "Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based FeRx workflows."
 open-graph:
   title: "Model workflow: inspect, edit, fit"
-  description: "Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based ferx workflows."
+  description: "Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based FeRx workflows."
 twitter-card:
   title: "Model workflow: inspect, edit, fit"
-  description: "Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based ferx workflows."
+  description: "Inspect, edit, fit, and diagnose population PK/PD models in R using path-based and pipe-based FeRx workflows."
 ---
 
-This article covers two complementary workflows for running a ferx model:
+This article covers two complementary workflows for running a FeRx model:
 
 1. **Path-based** — pass file paths directly to `ferx_fit()`. Straightforward for one-off fits.
 2. **Pipe-based** — bundle paths into a `ferx_model` object and chain steps with `|>`. Cleaner when you need to tweak options before fitting or chain post-fit steps.
@@ -17,7 +17,7 @@ This article covers two complementary workflows for running a ferx model:
 Both produce the same `ferx_fit` result.
 
 ::: {.callout-tip}
-This article gives a concise overview. For a complete walkthrough with runnable output, see [Chapter 2 (A complete analysis)](https://ferx-nlme.org/ferx-book/chapters/02-complete-analysis.html) and [Chapter 5 (A first fit)](https://ferx-nlme.org/ferx-book/chapters/05-first-fit.html) in the ferx book.
+This article gives a concise overview. For a complete walkthrough with runnable output, see [Chapter 2 (A complete analysis)](https://ferx-nlme.org/ferx-book/chapters/02-complete-analysis.html) and [Chapter 5 (A first fit)](https://ferx-nlme.org/ferx-book/chapters/05-first-fit.html) in the FeRx book.
 :::
 
 **Entry point:** `ferx_model(data, model)` takes the data file first, which lets a data object flow naturally into a pipeline:
@@ -54,7 +54,7 @@ In a real workflow you would supply your own `.ferx` file here.
 ### Step 2 — Inspect before fitting
 
 `ferx_model_inspect()` parses the model file and prints a concise summary of
-its structure without running the optimizer. Use this to verify that ferx
+its structure without running the optimizer. Use this to verify that FeRx
 interprets your model the way you expect before committing to a long run.
 
 ```r
@@ -158,7 +158,7 @@ fit <- ferx_model(ex$data, ex$model) |>
 unchanged so the pipe can continue.
 
 **Copy-on-write for bundled examples:** when the model is inside the installed
-ferx package directory (i.e. came from `ferx_example()`), `ferx_model_set_section()`
+FeRx package directory (i.e. came from `ferx_example()`), `ferx_model_set_section()`
 transparently copies it to `tempdir()` first and edits the copy; the bundled
 file is never modified. For user-owned files it edits in place. Copy the file
 yourself if you want a stable user-controlled path.
@@ -366,7 +366,7 @@ See [Diagnostics](diagnostics.qmd) for the full diagnostics reference.
 
 ## Parameter transforms
 
-ferx supports log and logit transforms for both thetas and ETAs directly in the
+FeRx supports log and logit transforms for both thetas and ETAs directly in the
 model DSL. When a transform is in use, `print()` and `fit$estimates` display
 results on the natural scale alongside the estimation-scale values.
 

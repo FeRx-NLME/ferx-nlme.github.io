@@ -1,20 +1,20 @@
 ---
 title: "Post-fit diagnostics"
-description-meta: "Evaluate ferx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics."
+description-meta: "Evaluate FeRx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics."
 open-graph:
   title: "Post-fit diagnostics"
-  description: "Evaluate ferx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics."
+  description: "Evaluate FeRx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics."
 twitter-card:
   title: "Post-fit diagnostics"
-  description: "Evaluate ferx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics."
+  description: "Evaluate FeRx NLME fits with parameter uncertainty, goodness-of-fit plots, residuals, shrinkage, correlations, and convergence diagnostics."
 ---
 
-After fitting, ferx returns a rich `ferx_fit` object with all the diagnostics
+After fitting, FeRx returns a rich `ferx_fit` object with all the diagnostics
 needed for model evaluation. This article covers the key diagnostic functions
 and fields.
 
 ::: {.callout-tip}
-For a complete diagnostics walkthrough with plots, see [Chapter 7 (Diagnostics)](https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html) in the ferx book.
+For a complete diagnostics walkthrough with plots, see [Chapter 7 (Diagnostics)](https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html) in the FeRx book.
 :::
 
 ---
@@ -135,7 +135,7 @@ A `message()` with ordered remedies is emitted automatically when DW < 1.5
 | 1.5 – 2.5 | No concern | — |
 | > 2.5 | Negative autocorrelation | Over-parameterisation or misspecified error model |
 
-For a full walkthrough with plots see [Chapter 7 (Diagnostics)](https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html#residuals) in the ferx book.
+For a full walkthrough with plots see [Chapter 7 (Diagnostics)](https://ferx-nlme.org/ferx-book/chapters/07-diagnostics.html#residuals) in the FeRx book.
 
 ---
 
@@ -200,7 +200,7 @@ ggplot(sdtab, aes(PRED, CWRES)) +
 
 ## Structured warnings — `ferx_get_warnings()`
 
-ferx classifies non-fatal issues from a run into severity levels and categories
+FeRx classifies non-fatal issues from a run into severity levels and categories
 and makes them available via `ferx_get_warnings()`. Critical issues are also surfaced
 inline in the `STATUS` line of `print(fit)`.
 
@@ -389,7 +389,7 @@ chk$summary
 
 ## Optimizer trace — `ferx_trace()` / `plot()`
 
-When `optimizer_trace = TRUE` is passed to `ferx_fit()`, ferx writes a
+When `optimizer_trace = TRUE` is passed to `ferx_fit()`, FeRx writes a
 per-iteration CSV. Read and plot it:
 
 ```r

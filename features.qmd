@@ -1,15 +1,15 @@
 ---
 title: "Features"
-description-meta: "Explore ferx support for FOCEI, SAEM, population PK/PD, ODE and SDE models, simulation, diagnostics, covariates, and NONMEM-compatible data."
+description-meta: "Explore FeRx support for FOCEI, SAEM, population PK/PD, ODE and SDE models, simulation, diagnostics, covariates, and NONMEM-compatible data."
 open-graph:
   title: "Features"
-  description: "Explore ferx support for FOCEI, SAEM, population PK/PD, ODE and SDE models, simulation, diagnostics, covariates, and NONMEM-compatible data."
+  description: "Explore FeRx support for FOCEI, SAEM, population PK/PD, ODE and SDE models, simulation, diagnostics, covariates, and NONMEM-compatible data."
 twitter-card:
   title: "Features"
-  description: "Explore ferx support for FOCEI, SAEM, population PK/PD, ODE and SDE models, simulation, diagnostics, covariates, and NONMEM-compatible data."
+  description: "Explore FeRx support for FOCEI, SAEM, population PK/PD, ODE and SDE models, simulation, diagnostics, covariates, and NONMEM-compatible data."
 ---
 
-ferx implements the same statistical methodology as NONMEM, Monolix, and Pumas,
+FeRx implements the same statistical methodology as NONMEM, Monolix, and Pumas,
 in an open-source Rust engine with exact analytic gradients. This page summarizes
 what the engine can do. For full
 detail see the **[ferx-core book](https://ferx-nlme.org/ferx-core/)** (engine,

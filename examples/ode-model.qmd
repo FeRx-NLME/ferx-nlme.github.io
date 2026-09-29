@@ -6,7 +6,7 @@ A one-compartment oral model with saturable (Michaelis-Menten) elimination,
 solved with the Dormand-Prince RK45 ODE integrator.
 
 ::: {.callout-tip}
-For a full ODE model walkthrough, see [Chapter 14 (Structural models: analytical and ODE)](https://ferx-nlme.org/ferx-book/chapters/14-structural-models.html) in the ferx book.
+For a full ODE model walkthrough, see [Chapter 14 (Structural models: analytical and ODE)](https://ferx-nlme.org/ferx-book/chapters/14-structural-models.html) in the FeRx book.
 :::
 
 ## Why ODE?
@@ -108,7 +108,7 @@ fit$gradient_used
 - The ODE solver uses adaptive step-size control — the default tolerances
   (rtol = 1e-4, atol = 1e-6) work for most PK models; loosen if the fit is very
   slow or tighten if you observe discontinuities in predictions.
-- Steady-state (`SS=1`) is supported for ODE models via iterative pre-simulation (ferx simulates repeated doses until the state converges). SS doses are slower than for analytical models — roughly 50× the cost of a regular dose due to the RK45 integration segments.
+- Steady-state (`SS=1`) is supported for ODE models via iterative pre-simulation (FeRx simulates repeated doses until the state converges). SS doses are slower than for analytical models — roughly 50× the cost of a regular dose due to the RK45 integration segments.
 - There is no analytic sensitivity path for ODE models — `gradient_used` will always
   be `"finite_differences"`.
 

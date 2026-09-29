@@ -2,7 +2,7 @@
 title: "Example: One-compartment oral (warfarin)"
 ---
 
-The warfarin example is the canonical starting point for ferx. It fits a
+The warfarin example is the canonical starting point for FeRx. It fits a
 one-compartment oral PK model to single-dose warfarin plasma concentration data
 using FOCE/FOCEI, Gauss-Newton, or SAEM — all with the same model file.
 
