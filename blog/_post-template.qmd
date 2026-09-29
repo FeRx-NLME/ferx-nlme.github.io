@@ -5,7 +5,7 @@
 title: "Post title"
 description: "One-sentence summary shown in the listing and RSS feed."
 date: 2026-01-01
-author: "ferx team"
+author: "FeRx team"
 categories: [release]
 image: ""
 draft: true
