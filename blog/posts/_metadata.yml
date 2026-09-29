@@ -3,3 +3,4 @@ author: "FeRx team"
 toc: true
 title-block-banner: false
 freeze: auto
+body-classes: blog-post

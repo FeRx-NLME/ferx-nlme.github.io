@@ -40,7 +40,13 @@ Our new URL is live: please update your bookmarks to [ferx-nlme.org](https://fer
 
 The plot below shows the speed of estimation in FeRx compared to NONMEM (v7.6.0, gfortran on Linux), both softwares single-threaded on an AMD Ryzen 7, using default settings for either software. These runs were all on real (final) PK models and datasets, not simulated scenarios. On average, models run about 10x faster in FeRx under FOCEI (slightly slower for some still, but up to 100x faster for others). SAEM is also generally much faster in FeRx. While being much faster, FeRx maintains accuracy: they reach the same minima as NONMEM. More detailed results will be shown at ACoP in October.
 
+::: {.light-content}
 ![FOCEI estimation speed of FeRx relative to NONMEM per model (fold change, log scale). Values above 1 mean FeRx is faster.](benchmark-focei.png){fig-alt="Horizontal bar chart of FOCEI estimation speed, FeRx relative to NONMEM, for 20 real PK models on a log scale from 0.5 to 100. FeRx is faster for 18 models, up to about 110-fold for M15; NONMEM is faster for M1 (about 0.8) and M6 (about 0.45)."}
+:::
+
+::: {.dark-content}
+![FOCEI estimation speed of FeRx relative to NONMEM per model (fold change, log scale). Values above 1 mean FeRx is faster.](benchmark-focei-dark.png){fig-alt="Horizontal bar chart of FOCEI estimation speed, FeRx relative to NONMEM, for 20 real PK models on a log scale from 0.5 to 100. FeRx is faster for 18 models, up to about 110-fold for M15; NONMEM is faster for M1 (about 0.8) and M6 (about 0.45)."}
+:::
 
 <!-- TODO: add SAEM benchmark plot:
 ![SAEM estimation speed, FeRx relative to NONMEM](benchmark-saem.png){fig-alt="..."}
