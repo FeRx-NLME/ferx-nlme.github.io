@@ -4,6 +4,8 @@ description: "Automated model building, global search, TTE/mixture/Markov models
 date: 2026-09-29
 author: "Ron Keizer"
 categories: [release]
+image: benchmark-focei-card.png
+image-alt: "Bar chart of FOCEI estimation speed, FeRx relative to NONMEM, across 20 real PK models."
 ---
 
 In early June I posted the first announcement of a new open source NLME engine for PK/PD analyses, FeRx. We've had a ton of positive reactions on this announcement, which strengthened our intention to continue to develop it into a production-grade, fully-featured software. The release of version 0.4.0 brings significant progress toward that goal. I'll give a brief rundown, with pointers to the documentation.

@@ -9,18 +9,10 @@ research project proposals, or feedback.
 ## Short term (Q2–Q3 '26)
 
 - Improve testing infrastructure with larger coverage, with more real datasets and models.
-- Support for TTE / survival modeling and joint PK/PD–survival modeling.
-- Support for stiff ODE solver(s).
 - NONMEM and nlmixr2 model import. nlmixr2 models can be supported in a
   non-lossy way, since they can be read from the R object.
 - Increase modularity of FeRx, so external users can more easily write
   extensions with minimal (if any) modifications to FeRx core code.
-- Support for FREM estimation (including conversion to FFEM models).
-- Support for covariate search approaches (GAM, SCM).
-- Exact analytic sensitivities through the ODE solver (ODE models currently use finite differences).
-- Support for use of priors (like in NONMEM with penalties added to the
-  likelihood, but with easier implementation).
-- Support for mixture models.
 
 ## Medium term (Q4 '26)
 
@@ -30,6 +22,18 @@ research project proposals, or feedback.
 - Support for Item Response Theory models.
 - Support for optimal design analyses. At least computation of the FIM, and
   basic optimal design searches. Potentially in a separate R package.
+
+## Recently delivered
+
+Previously on this roadmap, and available as of v0.4.0 (see the [changelog](changelog.qmd)):
+
+- [TTE / survival modeling](https://ferx-nlme.org/ferx-core/estimation/tte.html), including joint PK–survival models.
+- [Stiff ODE solvers](https://ferx-nlme.org/ferx-core/model-file/ode-models.html#solver-details).
+- [FREM estimation](https://ferx-nlme.org/ferx-core/estimation/frem.html).
+- Covariate search: [GAM screening](https://ferx-nlme.org/ferx-core/tools/gam-screening.html) and [SCM](https://ferx-nlme.org/ferx-core/tools/covsearch.html).
+- Exact analytic sensitivities through the ODE solver.
+- [Priors](https://ferx-nlme.org/ferx-core/estimation/priors.html) on model parameters.
+- [Mixture models](https://ferx-nlme.org/ferx-core/estimation/mixture.html).
 
 ## Ongoing research projects
 
