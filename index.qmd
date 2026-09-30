@@ -10,9 +10,18 @@ twitter-card:
 image: false
 toc: false
 page-layout: full
+body-classes: home
 ---
 
 ::: {.hero-banner}
+
+```{=html}
+<div class="hero-landscape" aria-hidden="true">
+  <canvas id="opt-landscape"></canvas>
+</div>
+<script src="assets/optimizer-landscape.js" defer></script>
+```
+
 ::: {.container}
 
 ::: {.hero-grid}
