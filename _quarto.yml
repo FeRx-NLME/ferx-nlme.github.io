@@ -3,6 +3,8 @@ project:
   output-dir: _site
   resources:
     - articles/**
+    - assets/optimizer-landscape.js
+    - assets/landscape-contours.svg
 
 brand: _brand.yml
 

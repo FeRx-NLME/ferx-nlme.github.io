@@ -95,3 +95,81 @@ pre code {
 body.quarto-dark.blog-post figcaption {
   color: var(--bs-body-color);
 }
+
+/* ── Landscape palette (hero surface + contour motif) ─ */
+:root {
+  --land-low:   var(--brand-slate-teal, #1F6B7A);
+  --land-mid:   var(--brand-oxide-patina, #4A6B5D);
+  --land-upper: #C4AA80;
+  --land-high:  var(--brand-oxide-cream, #F2EBDD);
+  --land-grid:  rgba(26, 35, 50, 0.10);
+  --land-isoline: rgba(26, 35, 50, 0.38);
+  --land-alpha: 0;
+  --land-trail: var(--brand-oxide-rust, #C9582A);
+  --land-ring:  var(--brand-slate-canvas, #F7F6F3);
+  --land-contour: rgba(31, 107, 122, 0.36);
+}
+body.quarto-dark {
+  --land-low:   #2A7E90;
+  --land-mid:   #42665E;
+  --land-upper: #685E52;
+  --land-high:  #80828A;
+  --land-grid:  rgba(236, 231, 218, 0.08);
+  --land-isoline: rgba(236, 231, 218, 0.38);
+  --land-alpha: 0;
+  --land-trail: #E07B4A;
+  --land-ring:  #13161D;
+  --land-contour: rgba(95, 181, 200, 0.26);
+}
+
+/* ── Hero: optimizer landscape backdrop ───────────── */
+.hero-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.hero-banner > .container { position: relative; z-index: 1; }
+.hero-landscape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-landscape canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+@media (min-width: 992px) {
+  .hero-banner { min-height: 560px; }
+}
+@media (max-width: 991.98px) {
+  .hero-landscape { display: none; }
+}
+
+/* ── Contour motif behind page titles (site-wide) ──── */
+#title-block-header {
+  position: relative;
+  isolation: isolate;
+}
+#title-block-header::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  width: 520px;
+  height: calc(100% + 24px);
+  pointer-events: none;
+  background-color: var(--land-contour);
+  -webkit-mask: url("assets/landscape-contours.svg") right 0 top -150px / 520px 520px no-repeat,
+                radial-gradient(farthest-side at 100% 0%, #000 55%, transparent);
+  -webkit-mask-composite: source-in;
+  mask: url("assets/landscape-contours.svg") right 0 top -150px / 520px 520px no-repeat,
+        radial-gradient(farthest-side at 100% 0%, #000 55%, transparent);
+  mask-composite: intersect;
+}
+body.home #title-block-header::before { display: none; }
+@media (max-width: 600px) {
+  #title-block-header::before { width: 100%; opacity: 0.7; }
+}
