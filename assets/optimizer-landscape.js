@@ -114,7 +114,7 @@
   }
 
   // ── Camera / layout ──
-  var W = 0, H = 0, S = 1, CX = 0, CY = 0, wide = true;
+  var W = 0, H = 0, S = 1, CX = 0, CY = 0;
   var yaw = 0.7, ELEV = 0.62, ce = Math.cos(ELEV), se = Math.sin(ELEV);
   var cy_, sy_;
   var px = new Float32Array(vx.length), py = new Float32Array(vx.length), pd = new Float32Array(vx.length);
@@ -131,20 +131,13 @@
   }
   function resize() {
     var r = canvas.getBoundingClientRect();
-    if (!r.width) return;
+    if (!r.width) { W = 0; return; }   // hidden (narrow screens): skip drawing
     var dpr = Math.min(1.5, window.devicePixelRatio || 1);
     W = r.width; H = r.height;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
-    wide = W >= 992;
-    if (wide) {
-      // Surface sits right of the text column and spills off the right edge.
-      S = Math.min(W * 0.22, H * 0.60);
-      CX = W * 0.76; CY = H * 0.50;
-    } else {
-      // Stacked layout: low behind the text, faded at the top.
-      S = Math.min(W * 0.42, H * 0.36);
-      CX = W * 0.5; CY = H * 0.78;
-    }
+    // Surface sits right of the text column and spills off the right edge.
+    S = Math.min(W * 0.22, H * 0.60);
+    CX = W * 0.76; CY = H * 0.50;
   }
 
   // ── Optimizer (heavy-ball gradient descent) ──
@@ -206,17 +199,13 @@
       ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
     }
     ctx.globalCompositeOperation = 'destination-in';
-    if (wide) {
-      // Clear over the text column, soft at the right edge of the hero.
-      mask(0, 0, W, 0, [0.54, 0, 0.70, 1, 0.93, 1, 1, 0]);
-      mask(0, 0, 0, H, [0.80, 1, 1, 0]);
-    } else {
-      mask(0, 0, W, 0, [0, 0, 0.15, 1, 0.85, 1, 1, 0]);
-      mask(0, 0, 0, H, [0.48, 0, 0.70, 1, 0.88, 1, 1, 0]);
-    }
+    // Clear over the text column, soft at the right edge of the hero.
+    mask(0, 0, W, 0, [0.54, 0, 0.70, 1, 0.93, 1, 1, 0]);
+    mask(0, 0, 0, H, [0.80, 1, 1, 0]);
     ctx.globalCompositeOperation = 'source-over';
   }
   function draw() {
+    if (!W) return;
     var dpr = canvas.width / W;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
