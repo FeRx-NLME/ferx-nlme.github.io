@@ -1,0 +1,109 @@
+---
+title: "Example: Kaplan-Meier VPC for a time-to-event model"
+description-meta: "Check a FeRx time-to-event model with a Kaplan-Meier visual predictive check: ferx_vpc_tte(), censoring like the data, stratification by covariate or dose, and competing risks."
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+`ferx_vpc_tte()` is the visual predictive check for a single-event
+time-to-event (TTE) endpoint. It simulates the observed design `n_sim` times,
+censors each replicate like the data, and returns the observed Kaplan-Meier
+curve beside the pointwise band of the replicate curves. The curve and the
+band are computed in the engine; the function never refits.
+
+::: {.callout-tip}
+For the full walkthrough (dropouts, stratification, competing risks), see the
+[Kaplan-Meier VPC section](https://ferx-nlme.org/ferx-book/chapters/22-time-to-event.html#sec-tte-vpc)
+of Chapter 22 (Time-to-event models) in the FeRx book. All arguments are in the
+[`ferx_vpc_tte()` reference](../reference/ferx_vpc_tte.qmd).
+:::
+
+## Model and data
+
+`tte_exponential` has a constant hazard with between-subject variability, one
+record per subject: `DV = 1` for an event, `DV = 0` for censoring at the end of
+follow-up (30 h).
+
+```{r model}
+library(ferx)
+ex <- ferx_example("tte_exponential")
+ferx_model_get_section(ex$model, "event_model")
+dat <- read.csv(ex$data, na.strings = ".")
+table(DV = dat$DV)
+```
+
+## Fit and check
+
+```{r fit}
+fit <- ferx_fit(ex$model, ex$data, verbose = FALSE)
+vpc <- ferx_vpc_tte(ex$model, ex$data, n_sim = 200, seed = 1, fit = fit)
+vpc
+```
+
+The warning is the simulator's diagnostic that this example computes `LAMBDA`
+in `[individual_parameters]` without using it; the `[event_model]` writes the
+hazard out itself.
+
+`vpc$observed` is the observed Kaplan-Meier curve (it matches
+`survival::survfit()` row for row); `vpc$band` holds the replicate band at each
+grid time: `lo`, `med` and `hi` at `probs` (5%, 50%, 95% by default) and
+`n_used`, the replicates still under follow-up there.
+
+```{r band}
+head(vpc$band)
+```
+
+`plot()` uses the vpc package's `plot_vpc()` when it is installed and base
+graphics otherwise; `engine = "base"` forces base graphics.
+
+```{r plot, fig.width = 6, fig.height = 4}
+plot(vpc, engine = "base")
+```
+
+## Censoring
+
+With the default `censoring = "observed"`, a subject censored in the data keeps
+its censoring time in every replicate, and a subject with an event draws a
+later censoring time from the censorings in the data, so the band is
+comparable with the observed curve. `censoring = "horizon"` censors replicates
+at the horizon only, which gives too narrow a band when subjects drop out
+early. In `tte_exponential` all censoring is at the horizon, so here the two
+are the same:
+
+```{r censoring}
+vpc_horizon <- ferx_vpc_tte(ex$model, ex$data, n_sim = 200, seed = 1, fit = fit,
+                            censoring = "horizon")
+all.equal(vpc$band, vpc_horizon$band)
+```
+
+## Stratification
+
+`strata` names a covariate (at most 10 distinct values); `by_dose = TRUE`
+groups subjects by their first dose instead. `ferx_vpc_tte()` also accepts a
+data frame:
+
+```{r strata, fig.width = 8, fig.height = 4}
+dat$ARM <- ifelse(dat$ID %% 2 == 0, 1, 2)
+vpc_arm <- ferx_vpc_tte(ex$model, dat, n_sim = 200, seed = 1, fit = fit, strata = "ARM")
+vpc_arm$strata
+plot(vpc_arm, engine = "base")
+```
+
+## Competing risks
+
+A model with several TTE endpoints needs `cmt`; without it the call is refused
+with a `ferx_engine_error` whose code is `E_VPC_TTE_INPUT`. With `cmt`, the
+curve is that cause's survival with the other causes as censoring:
+
+```{r competing}
+cr <- ferx_example("tte_competing_risks")
+refusal <- tryCatch(ferx_vpc_tte(cr$model, cr$data, n_sim = 50),
+                    ferx_engine_error = function(e) e)
+refusal$code
+ferx_vpc_tte(cr$model, cr$data, n_sim = 200, seed = 1, cmt = 2)
+```
+
+The same code refuses repeated events, delayed entry (`TENTRY`), interval
+censoring and more than one record per subject on the endpoint.
