@@ -66,13 +66,13 @@ plot(vpc, engine = "base")
 
 With the default `censoring = "observed"`, a subject censored in the data keeps
 its censoring time in every replicate, and a subject with an event draws a
-later censoring time from the censorings in the data, so the band is
-comparable with the observed curve. `censoring = "horizon"` censors replicates
+later censoring time from the censorings observed in its own stratum, so the
+band is comparable with the observed curve. `censoring = "horizon"` censors replicates
 at the horizon only, which gives too narrow a band when subjects drop out
 early. In `tte_exponential` all censoring is at the horizon, so here the two
-are the same:
+are the same (the `LAMBDA` warning is hidden from here on):
 
-```{r censoring}
+```{r censoring, warning = FALSE}
 vpc_horizon <- ferx_vpc_tte(ex$model, ex$data, n_sim = 200, seed = 1, fit = fit,
                             censoring = "horizon")
 all.equal(vpc$band, vpc_horizon$band)
@@ -84,7 +84,7 @@ all.equal(vpc$band, vpc_horizon$band)
 groups subjects by their first dose instead. `ferx_vpc_tte()` also accepts a
 data frame:
 
-```{r strata, fig.width = 8, fig.height = 4}
+```{r strata, fig.width = 8, fig.height = 4, warning = FALSE}
 dat$ARM <- ifelse(dat$ID %% 2 == 0, 1, 2)
 vpc_arm <- ferx_vpc_tte(ex$model, dat, n_sim = 200, seed = 1, fit = fit, strata = "ARM")
 vpc_arm$strata
@@ -95,14 +95,16 @@ plot(vpc_arm, engine = "base")
 
 A model with several TTE endpoints needs `cmt`; without it the call is refused
 with a `ferx_engine_error` whose code is `E_VPC_TTE_INPUT`. With `cmt`, the
-curve is that cause's survival with the other causes as censoring:
+curve is that cause's survival with the other causes as censoring. As in the
+sections above, the replicates are simulated at the fitted parameters:
 
 ```{r competing}
 cr <- ferx_example("tte_competing_risks")
-refusal <- tryCatch(ferx_vpc_tte(cr$model, cr$data, n_sim = 50),
+fit_cr <- ferx_fit(cr$model, cr$data, verbose = FALSE)
+refusal <- tryCatch(ferx_vpc_tte(cr$model, cr$data, n_sim = 50, fit = fit_cr),
                     ferx_engine_error = function(e) e)
 refusal$code
-ferx_vpc_tte(cr$model, cr$data, n_sim = 200, seed = 1, cmt = 2)
+ferx_vpc_tte(cr$model, cr$data, n_sim = 200, seed = 1, fit = fit_cr, cmt = 2)
 ```
 
 The same code refuses repeated events, delayed entry (`TENTRY`), interval
