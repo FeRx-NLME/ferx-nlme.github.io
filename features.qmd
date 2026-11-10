@@ -117,6 +117,9 @@ See [Example: Model search and automatic model development](examples/model-searc
   Wagner–Nelson Ka, biexponential peeling
 - CWRES and NPDE simulation-based diagnostics.
 - Simulations for VPC, with propensity-score matching for adaptive treatments
+- **Kaplan-Meier VPC** for time-to-event endpoints (`ferx_vpc_tte()`), with
+  replicates censored like the data and stratification by covariate or dose —
+  see [Example: Kaplan-Meier VPC](examples/tte-vpc.qmd)
 - Multi-start fitting, optimizer trace output
 
 ---
