@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,18 +74,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-31632d092df9090a2ed68f79c078059d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-62b633921dd11b6f4f90199e75d354ed.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-8e54f3b44ae85a4e33659ff2791ab8dc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-62b633921dd11b6f4f90199e75d354ed.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-bce9ac5131b28a06f2bac66cf12fad62.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-af06e4422519c5c746443d297c09a816.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bda8ad48b1ba5e36b62affdcd0106382.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-af06e4422519c5c746443d297c09a816.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -126,7 +127,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="canonical" href="https://ferx-nlme.org/reference/ferx_covariance.html">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -149,6 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       for (let i=0; i < toggles.length; i++) {
         const toggle = toggles[i];
         if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
           if (alternate) {
             toggle.classList.add("alternate");
           } else {
@@ -178,13 +180,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       manageTransitions('#quarto-margin-sidebar .nav-link', true);
       // Switch the toggles
       setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
       if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
         manageTransitions("body", false);
-        window.scrollTo(0, 1);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
         setTimeout(() => {
-          window.scrollTo(0, 0);
+          window.scrollTo(0, scrollY);
           manageTransitions("body", true);
         }, 40);
       }
@@ -278,6 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       // Read the current dark / light value
       let toAlternate = !hasAlternateSentinel();
       toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
       setStyleSentinel(toAlternate);
       toggleGiscusIfUsed(toAlternate, darkModeDefault);
       window.dispatchEvent(new Event('resize'));
@@ -292,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
@@ -303,8 +312,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">FeRx</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -355,8 +363,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode" aria-label="Toggle dark mode"><i class="bi"></i></button>
 </div>
+            <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -365,7 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
@@ -374,6 +383,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
   <li><a href="#details" id="toc-details" class="nav-link" data-scroll-target="#details">Details</a>
   <ul class="collapse">
+  <li><a href="#settings" id="toc-settings" class="nav-link" data-scroll-target="#settings">Settings</a></li>
+  <li><a href="#data-selection" id="toc-data-selection" class="nav-link" data-scroll-target="#data-selection">Data selection</a></li>
   <li><a href="#integrity-check" id="toc-integrity-check" class="nav-link" data-scroll-target="#integrity-check">Integrity check</a></li>
   </ul></li>
   <li><a href="#seealso" id="toc-seealso" class="nav-link" data-scroll-target="#seealso">Seealso</a></li>
@@ -384,7 +395,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -414,23 +425,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_covariance</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  fit,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">covariance_method =</span> <span class="st">"r"</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu_referencing =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">covariance_method =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu_referencing =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">threads =</span> <span class="cn">NULL</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
 <li><code>fit</code>: A <code>ferx_fit</code> object produced by <code>[ferx_fit](ferx_fit.qmd)</code> or <code>[ferx_load_fit](ferx_load_fit.qmd)</code>.</li>
-<li><code>covariance_method</code>: Covariance estimator: <code>"r"</code> (inverse Hessian, the default, NONMEM <code>MATRIX=R</code>), <code>"s"</code> (inverse cross-product, <code>MATRIX=S</code>), or <code>"rsr"</code> (the Huber-White sandwich, <code>MATRIX=RSR</code>). <code>"hessian"</code> / <code>"cross_product"</code> / <code>"sandwich"</code> are accepted as aliases.</li>
-<li><code>mu_referencing</code>: Use mu-referencing for the inner-loop warm restart. Default <code>TRUE</code> (the engine default). Set to match the setting used for the original fit.</li>
+<li><code>covariance_method</code>: Covariance estimator. <code>NULL</code> (the default) replays the fit’s own: <code>fit$call_settings$covariance_method</code>, else the model file’s <code>[fit_options]</code>, else the engine default <code>"r"</code>, asked for as the fit asked for it. Otherwise <code>"r"</code> (inverse Hessian, NONMEM <code>MATRIX=R</code>), <code>"s"</code> (inverse cross-product, <code>MATRIX=S</code>), or <code>"rsr"</code> (the Huber-White sandwich, <code>MATRIX=RSR</code>), which overrides the fit’s; <code>"hessian"</code> / <code>"cross_product"</code> / <code>"sandwich"</code> are accepted as aliases. Passed explicitly, <code>"r"</code> is held to even above the size at which the engine routes a defaulted <code>"r"</code> on finite differences onto <code>"s"</code>, as <code>ferx_fit(settings = list(covariance_method = "r"))</code> is. Before ferx-r #659 the default was <code>"r"</code>.</li>
+<li><code>mu_referencing</code>: Use mu-referencing for the inner-loop warm restart. <code>NULL</code> (the default) takes the fit’s recorded value (<code>fit$scoring_settings$mu_referencing</code>), else <code>TRUE</code>. <code>TRUE</code> or <code>FALSE</code> overrides the record for this call.</li>
 <li><code>verbose</code>: When <code>TRUE</code>, the engine prints progress to stderr. Default <code>FALSE</code>.</li>
+<li><code>threads</code>: Worker threads the step runs on. <code>NULL</code> (the default) takes the width the fit ran on, <code>fit$n_threads_used</code>; <code>0</code> asks for the engine default; a positive integer pins the width. It does not change the result, only the resources the step uses. The returned fit’s <code>n_threads_used</code> reports the width this step ran on.</li>
 </ul>
 </section>
 <section id="details" class="level2">
 <h2 class="anchored" data-anchor-id="details">Details</h2>
-<p><code>ferx_covariance()</code> reconstructs the fitted parameters from the fit, re-runs the inner loop (seeded from the per-subject empirical Bayes ETAs) to rebuild the covariance-step inputs, and calls the same covariance step <code>[ferx_fit](ferx_fit.qmd)</code> runs inline. The result closely matches fitting with <code>covariance = TRUE</code> (the same engine step; agreement is close but not bit-exact, since the standalone re-reads the data and cold-starts the inner EBE loop). The returned fit is the input with <code>cov_matrix</code>, <code>cor_matrix</code>, <code>se_theta</code> / <code>se_omega</code> / <code>se_sigma</code> / <code>se_kappa</code>, <code>covariance_status</code>, <code>eigenvalues</code>, and <code>condition_number</code>refreshed. A covariance step that runs but cannot produce a usable matrix (a non-positive-definite or structurally-unusable covariance Hessian, from the analytic R-matrix or the FD stencil alike) is <strong><em>not</em></strong> an error: the returned fit reports <code>covariance_status = "failed"</code> with a diagnostic appended to <code>warnings</code>, mirroring <code>[ferx_fit](ferx_fit.qmd)</code>. An error is reserved for input problems (missing / hash-mismatched model or data).</p>
+<p><code>ferx_covariance()</code> runs on the fit’s bundle (<code>fit$bundle</code>), the bytes the engine serialized it to: it reads the fit from them, re-runs the inner loop to rebuild the covariance-step inputs, and calls the same covariance step <code>[ferx_fit](ferx_fit.qmd)</code> runs inline. It returns a new fit with new bytes, in which <code>cov_matrix</code>, <code>cor_matrix</code>, <code>se_theta</code> / <code>se_omega</code> / <code>se_sigma</code> / <code>se_kappa</code>, <code>covariance_status</code>, <code>eigenvalues</code>, and <code>condition_number</code>are refreshed. The input <code>fit</code> is not altered. A change made to the fit’s list by hand does not reach the step, and a fit with no bundle, such as one from an <code>.rds</code> written by an older ferx, is refused with an error of class <code>ferx_no_bundle_error</code>: refit it. The model and data files are the ones at <code>fit$model_path</code> and <code>fit$data_path</code>, checked against the hashes in the bytes. A covariance step that runs but cannot produce a usable matrix (a non-positive-definite or structurally-unusable covariance Hessian, from the analytic R-matrix or the FD stencil alike) is <strong><em>not</em></strong> an error: the returned fit reports <code>covariance_status = "failed"</code> with a diagnostic appended to <code>warnings</code>, mirroring <code>[ferx_fit](ferx_fit.qmd)</code>. An error is reserved for input problems (missing / hash-mismatched model or data, or a fit whose parameters do not match the model, such as a <code>kappa</code> model whose fit carries no <code>omega_iov</code>). A fit with a <code>profile</code> theta level block (<code>fit$profiled_blocks</code>) takes all three methods (ferx-core #2108). <code>"rsr"</code> is the unprofiled sandwich with the profiled R^-1; <code>"s"</code> is S^-1 over every parameter, levels included, and still needs more subjects than free parameters. A profiled level the fit holds on its declared bound (<code>fit$profiled_levels_at_bound</code>, ferx-core #2112) is held by the step too, as a FIX theta is: it gets no standard error, and the others are computed with it held. The step rebuilds that list from the estimates and the bound, so the returned fit carries this step’s.</p>
+<section id="settings" class="level3">
+<h3 class="anchored" data-anchor-id="settings">Settings</h3>
+<p>The step scores the objective under the inner-loop and ODE settings the fit recorded as <code>fit$scoring_settings</code> (the stage that produced the estimates: <code>inner_maxiter</code>, <code>inner_tol</code>, <code>inner_optimizer</code>, <code>mu_referencing</code>, <code>ode_reltol</code>, …), and starts from the optimizer’s exact estimate <code>fit$packed_estimate</code>. With both, <code>ferx_covariance(fit)</code> is <code>identical()</code> to the covariance <code>ferx_fit(..., covariance = TRUE)</code> reports, unless a <code>covariance_method</code> other than the fit’s is passed. That holds on every estimation method with an in-fit step, with or without <code>kappa</code> (IOV): the step is taken for the fit’s own method (<code>fit$method</code>), and Gauss-Newton, SAEM, importance sampling and VI start from the EBEs the fit reports - <code>fit$ebe_etas</code> and, under IOV, <code>fit$ebe_kappas</code> - which their own warm-started solves produced (ferx-core #1847, ferx-r #591). The method matters beyond the objective: at an SAEM, importance-sampling or VI estimate, an R matrix that needs an eigenvalue floor is replaced by S^-1 (warning <code>W_COV_NON_STATIONARY_ESTIMATE</code>), as the in-fit step does. The step’s own settings are the fit’s too: <code>covariance_method</code> (unless passed), <code>fd_hessian_step</code>, <code>analytic_cov_hessian</code> and <code>cov_inner_tol</code>, as the fit was given them - the model file’s <code>[fit_options]</code>, overridden by <code>ferx_fit()</code>’s argument or <code>settings</code> (recorded in <code>fit$call_settings</code>). The engine does not record them, so a fit made with <code>fd_hessian_step = 0.1</code> used to be replayed at the default step, and a profiled fit made with <code>fd_hessian_step = 0.01</code> at the profiled default <code>3e-3</code> (ferx-core #2414). The model file’s values are read from the model file itself, so a bundle written by ferx-core, which carries no <code>fit$call_settings</code>, keeps them; only call-time overrides need the R record. Until ferx-r #659 <code>covariance_method</code> defaulted to <code>"r"</code> whatever the fit ran, so a fit made with <code>settings = list(covariance_method = "rsr")</code>, or with <code>covariance_method = rsr</code> in <code>[fit_options]</code>, was replayed as <code>"r"</code> unless the caller repeated it. The estimator a step ran is recorded as <code>fit$covariance_method</code> (<code>NA</code> when it produced no matrix), and is kept by <code>[ferx_save_fit](ferx_save_fit.qmd)</code> / <code>[ferx_load_fit](ferx_load_fit.qmd)</code>. A replay of the fit’s own method that runs another estimator than the recorded one warns, naming the method to pass. A fit whose step produced a matrix but recorded no estimator, such as a bundle saved before #659, is replayed from its call settings, then the model file’s <code>[fit_options]</code>, then <code>"r"</code>; when it falls back to <code>"r"</code>because neither records a method, a message says so. A fit loaded with <code>[ferx_load_fit](ferx_load_fit.qmd)</code> keeps both, so its result is <code>identical()</code> to the in-fit one too. A fit loaded from a bundle saved before <code>packed_estimate</code> was recorded differs from the in-fit one in the last digits (on warfarin_iov, about 1e-7 relative in the standard errors), and so does a Gauss-Newton / SAEM / importance-sampling / VI fit loaded from a bundle ferx-core wrote with six-decimal EBEs (before ferx-core #1847): the step restarts it from a cold solve. A fit whose estimates were edited after the fit does not use <code>packed_estimate</code>. A fit with no <code>scoring_settings</code> (a bundle saved before they were recorded) is scored with the engine’s defaults, as before. A <code>[mixture]</code> fit with per-class overrides reads them from <code>fit$mixture_overrides</code> (ferx-core #1765), else from <code>packed_estimate</code>; the step refuses one that carries neither, such as an SAEM mixture fit loaded from a bundle saved before either was recorded. The record includes the gradient route the fit took (<code>fit$scoring_settings$gradient_method</code>): a fit made with <code>gradient = "fd"</code>is differentiated by finite differences here too, with default arguments and after a reload.</p>
+</section>
+<section id="data-selection" class="level3">
+<h3 class="anchored" data-anchor-id="data-selection">Data selection</h3>
+<p>The data are re-read with the selection the fit was made with, recorded as <code>fit$reader_settings</code>: a <code>ferx_fit(ignore =, accept =, ignore_ids =)</code>selection applies as well as the model file’s <code>[data_selection]</code>, and the engine checks the rows it reads against <code>fit$population_fingerprint</code>. A fit made before these were recorded is refused when its <code>fit$exclusions</code> show a clause, or its <code>fit$call_settings</code> an <code>iov_column</code>, that the model file does not state, rather than scored on other data.</p>
+</section>
 <section id="integrity-check" class="level3">
 <h3 class="anchored" data-anchor-id="integrity-check">Integrity check</h3>
 <p>Like <code>[ferx_sir](ferx_sir.qmd)</code>, <code>ferx_covariance()</code> re-reads the model and data files recorded on the fit (<code>fit$model_path</code>, <code>fit$data_path</code>) and verifies their SHA-256 hashes (<code>fit$model_hash</code>, <code>fit$data_hash</code>); if either file changed since the fit, the call is a <strong><em>hard error</em></strong>. Running the covariance step against a modified model or dataset would be meaningless. Edge case: if hashing failed at fit time the corresponding <code>fit$*_hash</code> is <code>NA</code> and the integrity check silently passes on that side. Check <code>!is.na(fit$model_hash) &amp;&amp; !is.na(fit$data_hash)</code> before relying on the protection.</p>
@@ -446,7 +467,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="value" class="level2">
 <h2 class="anchored" data-anchor-id="value">Value</h2>
-<p>The input <code>fit</code>, with <code>cov_matrix</code>, <code>cor_matrix</code>, <code>se_theta</code>, <code>se_omega</code>, <code>se_sigma</code>, <code>se_kappa</code>, <code>covariance_status</code>, <code>eigenvalues</code>, <code>condition_number</code>, <code>max_abs_correlation</code> (the largest absolute off-diagonal parameter correlation, <code>NA</code> when the step produced no matrix - the value <code>[check_strictness](check_strictness.qmd)</code> gates on), and the <code>se</code> column of <code>residual_correlations</code> refreshed.</p>
+<p>A new fit with new bytes, the input <code>fit</code> being left as it was, with <code>cov_matrix</code>, <code>cor_matrix</code>, <code>se_theta</code>, <code>se_omega</code>, <code>se_sigma</code>, <code>se_kappa</code>, <code>covariance_status</code>, <code>covariance_method</code> (the estimator this step ran), <code>eigenvalues</code>, <code>condition_number</code>, <code>max_abs_correlation</code> (the largest absolute off-diagonal parameter correlation, <code>NA</code> when the step produced no matrix - the value <code>[check_strictness](check_strictness.qmd)</code> gates on), the <code>se</code> column of <code>residual_correlations</code>, <code>n_threads_used</code> (the width this step ran on) and <code>covariance_wall_time_secs</code> (this step’s wall-clock time) refreshed.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
@@ -470,15 +491,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Toggle dark mode");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
       const i = window.document.createElement("i");
       i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Toggle dark mode");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
     }
     setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
@@ -557,7 +613,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -566,8 +623,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -581,6 +699,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -743,44 +862,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -878,6 +1007,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script>
 </div> <!-- /content -->
 <footer class="footer">

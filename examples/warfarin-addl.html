@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,18 +74,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-31632d092df9090a2ed68f79c078059d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-62b633921dd11b6f4f90199e75d354ed.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-8e54f3b44ae85a4e33659ff2791ab8dc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-62b633921dd11b6f4f90199e75d354ed.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-bce9ac5131b28a06f2bac66cf12fad62.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-af06e4422519c5c746443d297c09a816.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bda8ad48b1ba5e36b62affdcd0106382.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-af06e4422519c5c746443d297c09a816.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -126,7 +127,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="canonical" href="https://ferx-nlme.org/examples/warfarin-addl.html">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -149,6 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       for (let i=0; i < toggles.length; i++) {
         const toggle = toggles[i];
         if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
           if (alternate) {
             toggle.classList.add("alternate");
           } else {
@@ -178,13 +180,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       manageTransitions('#quarto-margin-sidebar .nav-link', true);
       // Switch the toggles
       setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
       if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
         manageTransitions("body", false);
-        window.scrollTo(0, 1);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
         setTimeout(() => {
-          window.scrollTo(0, 0);
+          window.scrollTo(0, scrollY);
           manageTransitions("body", true);
         }, 40);
       }
@@ -278,6 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       // Read the current dark / light value
       let toAlternate = !hasAlternateSentinel();
       toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
       setStyleSentinel(toAlternate);
       toggleGiscusIfUsed(toAlternate, darkModeDefault);
       window.dispatchEvent(new Event('resize'));
@@ -292,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
@@ -303,8 +312,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">FeRx</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -355,8 +363,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode" aria-label="Toggle dark mode"><i class="bi"></i></button>
 </div>
+            <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -365,7 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
@@ -378,7 +387,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -502,8 +511,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  Model: warfarin_addl            Dataset: warfarin_addl
  Method: FOCE | Gradient: ANALYTIC | Subjects: 10 | Obs: 160
 
- STATUS: CONVERGED   41 iterations   1.6s
- OFV: 437.3381    AIC: 451.3381    BIC: 472.8643
+ STATUS: CONVERGED   47 iterations   1.5s
+ OFV: 437.9396    AIC: 451.9396    BIC: 473.4659
 
 MODEL STRUCTURE (auto-derived)
 ------------------------------------------------------------
@@ -516,32 +525,32 @@ THETA
 ------------------------------------------------------------
 Parameter            Estimate           SE       %RSE
 ----------------------------------------------------
-TVCL                 0.220865     0.014594        6.6
-TVV                 10.594505     0.760235        7.2
-TVKA                 1.668519     0.329263       19.7
+TVCL                 0.220216     0.014558        6.6
+TVV                 10.570086     0.745985        7.1
+TVKA                 1.666930     0.329792       19.8
 
 OMEGA  (between-subject variability)
 ------------------------------------------------------------
-  ETA_CL                   [log-normal]  = 0.045071  CV% = 21.5  SE = 0.022694
-  ETA_V                    [log-normal]  = 0.049064  CV% = 22.4  SE = 0.025246
-  ETA_KA                   [log-normal]  = 0.317466  CV% = 61.1  SE = 0.208525
+  ETA_CL               [log-normal] = 0.045331  (CV% = 21.5)  SE = 0.022832
+  ETA_V                [log-normal] = 0.049314  (CV% = 22.5)  SE = 0.025482
+  ETA_KA               [log-normal] = 0.328928  (CV% = 62.4)  SE = 0.217225
 
 SIGMA  (residual error)
 ------------------------------------------------------------
-  PROP_ERR         [proportional] = 0.162628  (var = 0.026448, CV% = 16.3)  SE = 0.013290  [initial specified as SD]
+  PROP_ERR         [proportional] = 0.161349  (var = 0.026034, CV% = 16.1)  SE = 0.013085  [initial specified as SD]
 
 SHRINKAGE
 ------------------------------------------------------------
- ETA_CL: 4.9%   ETA_V: 10.2%   ETA_KA: 13.2%   EPS: 7.6%
+ ETA_CL: 5.2%   ETA_V: 6.9%   ETA_KA: 14.2%   EPS: 7.4%
 
 DIAGNOSTICS
 ------------------------------------------------------------
- Covariance: computed   Cond: 4.8   DW: 2.07 [no autocorrelation]   IWRES lag-1 r: -0.100
+ Covariance: computed   Cond: 4.8   DW: 2.23 [no autocorrelation]   IWRES lag-1 r: -0.122
 
 RUN INFO
 ------------------------------------------------------------
  Gradient (requested): auto   (used: analytic)
- ferx v0.4.0 (core v0.4.0)
+ ferx v0.4.0.9000 (core v0.4.0)
 
 SETTINGS  (model file / call-time override)
 ------------------------------------------------------------
@@ -560,66 +569,66 @@ SETTINGS  (model file / call-time override)
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(subj_summary, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> ID         KE   T_HALF     CMAX CMIN_TAU CMIN_LATE  AUC_TAU
-  1 0.02105308 32.92379 21.80407 5.690902 13.929524 173.9020
-  1 0.02105308 32.92379 21.80407 5.690902 13.929524 296.6108
-  1 0.02105308 32.92379 21.80407 5.690902 13.929524 268.7053
-  1 0.02105308 32.92379 21.80407 5.690902 13.929524 322.2379
-  1 0.02105308 32.92379 21.80407 5.690902 13.929524 430.5146
-  1 0.02105308 32.92379 21.80407 5.690902 13.929524 334.3086
-  2 0.02756601 25.14500 19.41667 5.243886 10.729638 175.5885
-  2 0.02756601 25.14500 19.41667 5.243886 10.729638 287.7194
-  2 0.02756601 25.14500 19.41667 5.243886 10.729638 224.3112
-  2 0.02756601 25.14500 19.41667 5.243886 10.729638 252.8226
-  2 0.02756601 25.14500 19.41667 5.243886 10.729638 361.4935
-  2 0.02756601 25.14500 19.41667 5.243886 10.729638 257.5113
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 215.6498
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 355.0844
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 291.4773
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 334.8580
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 467.9988
-  3 0.02528480 27.41359 24.79557 6.592680 14.284577 342.8299
-  4 0.01330337 52.10313 28.02893 6.611472 21.600641 178.4672
-  4 0.01330337 52.10313 28.02893 6.611472 21.600641 325.9845
-  4 0.01330337 52.10313 28.02893 6.611472 21.600641 357.7689
-  4 0.01330337 52.10313 28.02893 6.611472 21.600641 478.9092
-  4 0.01330337 52.10313 28.02893 6.611472 21.600641 602.0439
-  4 0.01330337 52.10313 28.02893 6.611472 21.600641 518.4154
-  5 0.02662713 26.03161 23.26077 6.534187 13.679676 210.8681
-  5 0.02662713 26.03161 23.26077 6.534187 13.679676 355.1982
-  5 0.02662713 26.03161 23.26077 6.534187 13.679676 283.2740
-  5 0.02662713 26.03161 23.26077 6.534187 13.679676 321.6976
-  5 0.02662713 26.03161 23.26077 6.534187 13.679676 451.2211
-  5 0.02662713 26.03161 23.26077 6.534187 13.679676 328.3122
-  6 0.01399686 49.52164 21.17167 4.918681 15.597345 138.6984
-  6 0.01399686 49.52164 21.17167 4.918681 15.597345 244.1052
-  6 0.01399686 49.52164 21.17167 4.918681 15.597345 262.7096
-  6 0.01399686 49.52164 21.17167 4.918681 15.597345 347.5561
-  6 0.01399686 49.52164 21.17167 4.918681 15.597345 441.9388
-  6 0.01399686 49.52164 21.17167 4.918681 15.597345 374.3363
-  7 0.02154640 32.16997 21.67693 5.774092 13.917676 175.7851
-  7 0.02154640 32.16997 21.67693 5.774092 13.917676 301.9107
-  7 0.02154640 32.16997 21.67693 5.774092 13.917676 270.4686
-  7 0.02154640 32.16997 21.67693 5.774092 13.917676 322.5552
-  7 0.02154640 32.16997 21.67693 5.774092 13.917676 431.5141
-  7 0.02154640 32.16997 21.67693 5.774092 13.917676 334.0242
-  8 0.02637466 26.28080 14.92158 4.327036  9.116283 133.6985
-  8 0.02637466 26.28080 14.92158 4.327036  9.116283 232.3966
-  8 0.02637466 26.28080 14.92158 4.327036  9.116283 188.2741
-  8 0.02637466 26.28080 14.92158 4.327036  9.116283 214.2617
-  8 0.02637466 26.28080 14.92158 4.327036  9.116283 294.8110
-  8 0.02637466 26.28080 14.92158 4.327036  9.116283 218.7908
-  9 0.01976330 35.07244 20.34532 5.089378 12.987921 156.4035
-  9 0.01976330 35.07244 20.34532 5.089378 12.987921 262.7954
-  9 0.01976330 35.07244 20.34532 5.089378 12.987921 245.4599
-  9 0.01976330 35.07244 20.34532 5.089378 12.987921 298.8920
-  9 0.01976330 35.07244 20.34532 5.089378 12.987921 396.7068
-  9 0.01976330 35.07244 20.34532 5.089378 12.987921 311.7101
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 231.5649
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 381.4126
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 299.3396
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 338.1659
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 481.3399
- 10 0.02727360 25.41459 25.69278 6.968952 14.360105 344.6425</code></pre>
+  1 0.02091093 33.14761 21.84428 5.685745 13.979486 173.5974
+  1 0.02091093 33.14761 21.84428 5.685745 13.979486 296.0369
+  1 0.02091093 33.14761 21.84428 5.685745 13.979486 269.0832
+  1 0.02091093 33.14761 21.84428 5.685745 13.979486 323.2175
+  1 0.02091093 33.14761 21.84428 5.685745 13.979486 431.3975
+  1 0.02091093 33.14761 21.84428 5.685745 13.979486 335.5077
+  2 0.02829320 24.49872 19.62157 5.307544 10.675247 179.4840
+  2 0.02829320 24.49872 19.62157 5.307544 10.675247 292.9854
+  2 0.02829320 24.49872 19.62157 5.307544 10.675247 224.7334
+  2 0.02829320 24.49872 19.62157 5.307544 10.675247 251.8950
+  2 0.02829320 24.49872 19.62157 5.307544 10.675247 363.1478
+  2 0.02829320 24.49872 19.62157 5.307544 10.675247 256.2059
+  3 0.02458470 28.19425 25.07667 6.631236 14.639318 215.5423
+  3 0.02458470 28.19425 25.07667 6.631236 14.639318 355.1790
+  3 0.02458470 28.19425 25.07667 6.631236 14.639318 296.2679
+  3 0.02458470 28.19425 25.07667 6.631236 14.639318 342.5455
+  3 0.02458470 28.19425 25.07667 6.631236 14.639318 475.5772
+  3 0.02458470 28.19425 25.07667 6.631236 14.639318 351.3436
+  4 0.01292486 53.62899 28.65652 6.690098 22.224787 180.3081
+  4 0.01292486 53.62899 28.65652 6.690098 22.224787 329.2200
+  4 0.01292486 53.62899 28.65652 6.690098 22.224787 364.6428
+  4 0.01292486 53.62899 28.65652 6.690098 22.224787 491.3355
+  4 0.01292486 53.62899 28.65652 6.690098 22.224787 617.1042
+  4 0.01292486 53.62899 28.65652 6.690098 22.224787 533.3949
+  5 0.02727511 25.41318 23.58933 6.645208 13.692500 216.3079
+  5 0.02727511 25.41318 23.58933 6.645208 13.692500 363.1535
+  5 0.02727511 25.41318 23.58933 6.645208 13.692500 285.4276
+  5 0.02727511 25.41318 23.58933 6.645208 13.692500 322.4454
+  5 0.02727511 25.41318 23.58933 6.645208 13.692500 455.4343
+  5 0.02727511 25.41318 23.58933 6.645208 13.692500 328.6200
+  6 0.01465072 47.31147 21.06407 4.961104 15.307137 140.9130
+  6 0.01465072 47.31147 21.06407 4.961104 15.307137 247.2625
+  6 0.01465072 47.31147 21.06407 4.961104 15.307137 261.7713
+  6 0.01465072 47.31147 21.06407 4.961104 15.307137 342.6269
+  6 0.01465072 47.31147 21.06407 4.961104 15.307137 437.2026
+  6 0.01465072 47.31147 21.06407 4.961104 15.307137 367.3713
+  7 0.02109607 32.85670 21.78741 5.755650 14.068976 174.5829
+  7 0.02109607 32.85670 21.78741 5.755650 14.068976 299.9802
+  7 0.02109607 32.85670 21.78741 5.755650 14.068976 271.5728
+  7 0.02109607 32.85670 21.78741 5.755650 14.068976 325.5170
+  7 0.02109607 32.85670 21.78741 5.755650 14.068976 434.0211
+  7 0.02109607 32.85670 21.78741 5.755650 14.068976 337.6554
+  8 0.02564063 27.03316 15.33002 4.374320  9.390287 135.6634
+  8 0.02564063 27.03316 15.33002 4.374320  9.390287 234.5995
+  8 0.02564063 27.03316 15.33002 4.374320  9.390287 192.3838
+  8 0.02564063 27.03316 15.33002 4.374320  9.390287 220.3210
+  8 0.02564063 27.03316 15.33002 4.374320  9.390287 302.5947
+  8 0.02564063 27.03316 15.33002 4.374320  9.390287 225.3669
+  9 0.01977656 35.04892 20.60588 5.141710 13.115687 158.2810
+  9 0.01977656 35.04892 20.60588 5.141710 13.115687 265.5232
+  9 0.01977656 35.04892 20.60588 5.141710 13.115687 247.9290
+  9 0.01977656 35.04892 20.60588 5.141710 13.115687 301.8495
+  9 0.01977656 35.04892 20.60588 5.141710 13.115687 400.7344
+  9 0.01977656 35.04892 20.60588 5.141710 13.115687 314.7765
+ 10 0.02891420 23.97255 25.80301 7.038014 13.955597 238.8079
+ 10 0.02891420 23.97255 25.80301 7.038014 13.955597 390.4995
+ 10 0.02891420 23.97255 25.80301 7.038014 13.955597 295.4626
+ 10 0.02891420 23.97255 25.80301 7.038014 13.955597 329.6678
+ 10 0.02891420 23.97255 25.80301 7.038014 13.955597 477.8221
+ 10 0.02891420 23.97255 25.80301 7.038014 13.955597 334.9343</code></pre>
 </div>
 </div>
 <p><code>CMIN_TAU</code> uses <code>TAD &lt; 1e-10</code> to locate the observation at the exact start of each dosing interval (where <code>TAD</code> resets to 0 after ADDL expansion). <code>CMIN_LATE</code> uses <code>TAD &gt; 20</code> as an alternative window-based trough — less precise but avoids the floating-point boundary.</p>
@@ -628,26 +637,26 @@ SETTINGS  (model file / call-time override)
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fit<span class="sc">$</span>sdtab[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"TAFD"</span>, <span class="st">"TAD"</span>, <span class="st">"DAY"</span>, <span class="st">"IPRED"</span>)], <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ID  TIME  TAFD  TAD DAY     IPRED
-1   1   0.5   0.5  0.5   1  5.250084
-2   1   1.0   1.0  1.0   1  7.467992
-3   1   2.0   2.0  2.0   1  8.712081
-4   1   4.0   4.0  4.0   1  8.658896
-5   1   8.0   8.0  8.0   1  7.970253
-6   1  24.0  24.0  0.0   2  5.690902
-7   1  28.0  28.0  4.0   2 13.890178
-8   1  32.0  32.0  8.0   2 12.779037
-9   1  72.0  72.0  0.0   4 11.196053
-10  1 120.0 120.0  0.0   6 13.200035
-11  1 144.0 144.0  0.0   7 13.655016
-12  1 145.0 145.0  1.0   7 20.838533
-13  1 146.0 146.0  2.0   7 21.804073
-14  1 148.0 148.0  4.0   7 21.211079
-15  1 152.0 152.0  8.0   7 19.508673
-16  1 168.0 168.0 24.0   8 13.929524
-17  2   0.5   0.5  0.5   1  5.956461
-18  2   1.0   1.0  1.0   1  8.258441
-19  2   2.0   2.0  2.0   1  9.356281
-20  2   4.0   4.0  4.0   1  9.094307</code></pre>
+1   1   0.5   0.5  0.5   1  5.319748
+2   1   1.0   1.0  1.0   1  7.515560
+3   1   2.0   2.0  2.0   1  8.705849
+4   1   4.0   4.0  4.0   1  8.628427
+5   1   8.0   8.0  8.0   1  7.944945
+6   1  24.0  24.0  0.0   2  5.685745
+7   1  28.0  28.0  4.0   2 13.857942
+8   1  32.0  32.0  8.0   2 12.754837
+9   1  72.0  72.0  0.0   4 11.211801
+10  1 120.0 120.0  0.0   6 13.237166
+11  1 144.0 144.0  0.0   7 13.699554
+12  1 145.0 145.0  1.0   7 20.931619
+13  1 146.0 146.0  2.0   7 21.844278
+14  1 148.0 148.0  4.0   7 21.228714
+15  1 152.0 152.0  8.0   7 19.534171
+16  1 168.0 168.0 24.0   8 13.979486
+17  2   0.5   0.5  0.5   1  6.118433
+18  2   1.0   1.0  1.0   1  8.488255
+19  2   2.0   2.0  2.0   1  9.618914
+20  2   4.0   4.0  4.0   1  9.339368</code></pre>
 </div>
 </div>
 </section>
@@ -667,15 +676,50 @@ SETTINGS  (model file / call-time override)
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Toggle dark mode");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
       const i = window.document.createElement("i");
       i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Toggle dark mode");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
     }
     setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
@@ -754,7 +798,8 @@ SETTINGS  (model file / call-time override)
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -763,8 +808,69 @@ SETTINGS  (model file / call-time override)
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -778,6 +884,7 @@ SETTINGS  (model file / call-time override)
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -940,44 +1047,54 @@ SETTINGS  (model file / call-time override)
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -1075,6 +1192,9 @@ SETTINGS  (model file / call-time override)
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script>
 </div> <!-- /content -->
 <footer class="footer">

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,18 +74,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-31632d092df9090a2ed68f79c078059d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-62b633921dd11b6f4f90199e75d354ed.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-8e54f3b44ae85a4e33659ff2791ab8dc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-62b633921dd11b6f4f90199e75d354ed.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-bce9ac5131b28a06f2bac66cf12fad62.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-af06e4422519c5c746443d297c09a816.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bda8ad48b1ba5e36b62affdcd0106382.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-af06e4422519c5c746443d297c09a816.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -126,7 +127,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="canonical" href="https://ferx-nlme.org/reference/ferx_simulate_adaptive.html">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -149,6 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       for (let i=0; i < toggles.length; i++) {
         const toggle = toggles[i];
         if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
           if (alternate) {
             toggle.classList.add("alternate");
           } else {
@@ -178,13 +180,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       manageTransitions('#quarto-margin-sidebar .nav-link', true);
       // Switch the toggles
       setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
       if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
         manageTransitions("body", false);
-        window.scrollTo(0, 1);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
         setTimeout(() => {
-          window.scrollTo(0, 0);
+          window.scrollTo(0, scrollY);
           manageTransitions("body", true);
         }, 40);
       }
@@ -278,6 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       // Read the current dark / light value
       let toAlternate = !hasAlternateSentinel();
       toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
       setStyleSentinel(toAlternate);
       toggleGiscusIfUsed(toAlternate, darkModeDefault);
       window.dispatchEvent(new Event('resize'));
@@ -292,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
@@ -303,8 +312,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">FeRx</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -355,8 +363,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode" aria-label="Toggle dark mode"><i class="bi"></i></button>
 </div>
+            <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -365,7 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
@@ -382,7 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -416,31 +425,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_sim =</span> <span class="dv">1</span>L,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">42</span>L,</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">verify =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_decisions =</span> <span class="dv">0</span>L</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_decisions =</span> <span class="dv">0</span>L,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">fit =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">etas =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">unmatched =</span> <span class="fu">c</span>(<span class="st">"refuse"</span>, <span class="st">"draw"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <ul>
 <li><code>model</code>: Path to a .ferx model file containing an <code>[adaptive_dosing]</code> block</li>
-<li><code>data</code>: Path to a NONMEM-format CSV: an observation grid, any covariates, and optionally a pre-scheduled base regimen (dose rows). When omitted, the model file’s <code>[data]</code> block (<code>path = ...</code>) is used. The <code>DV</code> column may be left empty (<code>.</code> / <code>NA</code>) on the sampling rows - the DV is what the simulation produces, so an empty cell means “simulate here” (a placeholder value is not needed). Rows marked <code>MDV = 1</code> are excluded, as always. Kept empty-DV records are reported in the <code>simulation_warnings</code> attribute and re-emitted as an R warning: <code>ferx_fit()</code> skips those same records, so simulated rows at those times have no counterpart in a fit’s <code>sdtab</code> (do not overlay the two, e.g.&nbsp;in a VPC). Every other data-reader diagnostic the engine raises for <code>data</code> - a dose that never landed, a covariate with no value for some subjects, and so on - travels the same channel.</li>
+<li><code>data</code>: Path to a NONMEM-format CSV, or a data.frame (see <code>[ferx_fit](ferx_fit.qmd)</code>): an observation grid, any covariates, and optionally a pre-scheduled base regimen (dose rows). When omitted, the data <code>fit</code> was fitted to (when <code>fit</code> is given and its data can still be found), otherwise the model file’s <code>[data]</code> block (<code>path = ...</code>). The <code>DV</code> column may be left empty (<code>.</code> / <code>NA</code>) on the sampling rows - the DV is what the simulation produces, so an empty cell means “simulate here” (a placeholder value is not needed). Rows marked <code>MDV = 1</code> are excluded, as always. Kept empty-DV records are reported in the <code>simulation_warnings</code> attribute and re-emitted as an R warning: <code>ferx_fit()</code> skips those same records, so simulated rows at those times have no counterpart in a fit’s <code>sdtab</code> (do not overlay the two, e.g.&nbsp;in a VPC). Every other data-reader diagnostic the engine raises for <code>data</code> - a dose that never landed, a covariate with no value for some subjects, and so on - travels the same channel, as do the model/data and ODE-solver findings <code>ferx_simulate()</code> reports. A dataset with no dose rows raises no <code>W_NO_DOSES</code> here: the controller supplies the regimen.</li>
 <li><code>n_sim</code>: Number of simulation replicates</li>
 <li><code>seed</code>: Random seed for reproducibility</li>
 <li><code>verify</code>: Run the frozen-schedule replay verifier after every (subject, replicate) (default <code>TRUE</code>). A divergence is a hard error, not a warning: it means the realized dose ledger does not reproduce the trajectory, so the result is not trustworthy.</li>
 <li><code>max_decisions</code>: Per-run cap on the number of decision points (the runaway / closed-loop guard). <code>0</code> (default) keeps the engine default.</li>
+<li><code>fit</code>: Optional <code>ferx_fit</code> result. When provided, the simulation runs at the fitted estimates (<code>fit$theta</code>, <code>fit$omega</code>, <code>fit$sigma</code>, the IOV omega when the model has one, and the fitted <code>block_sigma</code> correlations) instead of the model file’s initial values, as in <code>[ferx_simulate](ferx_simulate.qmd)</code>. A theta level block is laid out as the fit laid it out (<code>fit$theta_levels</code>), so a design that observes only some of the fit’s levels reads each level’s own fitted value; a level the fit never observed is an error. Random effects are still drawn from the fitted omega - a subject’s own individual estimates are not carried over, and the per-occasion kappas are drawn per decision window, so the fit’s IOV occasion rule plays no part. To simulate each subject at its own estimates instead, pass <code>etas = fit$ebe_etas</code>.</li>
+<li><code>etas</code>: Optional data frame of each known subject’s own random effects: an <code>ID</code> column plus one column per eta, named and ordered as the model declares them (<code>fit$ebe_etas</code> has exactly this shape, so <code>ferx_simulate_adaptive(model, fit = fit, etas = fit$ebe_etas)</code> simulates every fitted subject at its EBEs). A subject with a row is simulated at those etas in every replicate instead of a draw from omega; its kappas (IOV, drawn per decision window) and the controller’s assay error are still drawn, so without either its replicates are identical. Rows are matched to the data’s subjects by <code>ID</code>; a row whose subject is not in the data is ignored. A row gives every eta of the model - there is no partial row, since under a block omega the missing eta would need a conditional draw. Each supplied subject still consumes its eta draw, so the drawn subjects get the etas the same <code>seed</code> gives without <code>etas</code>. Works with and without <code>fit</code>. Refused, coded <code>E_SUPPLIED_ETAS</code>: eta columns that are not the model’s names in its order, a repeated <code>ID</code>, a non-finite value, and a <code>[mixture]</code> model (each subject’s eta was estimated under its own class, but the run draws each subject’s class). A repeated column name is refused before the engine is called. Supplied etas are point estimates treated as exact, which is optimistic for a subject with few observations (high shrinkage).</li>
+<li><code>unmatched</code>: What to do with a data subject that has no row in <code>etas</code>: <code>"refuse"</code> (the default) errors with <code>E_SUPPLIED_ETAS</code>, listing the subjects; <code>"draw"</code> draws their etas from omega, so known patients and virtual ones run in one population. Under <code>"draw"</code>, an <code>etas</code> whose IDs match no data subject (<code>"01"</code> against <code>"1"</code>, say) is warned about, since every subject was then drawn. IDs are matched as text; a numeric <code>ID</code> is spelled as a data.frame <code>data</code> writes it. Passing <code>unmatched</code> without <code>etas</code> has no effect and warns.</li>
 </ul>
 </section>
 <section id="details" class="level2">
 <h2 class="anchored" data-anchor-id="details">Details</h2>
-<p>The data may carry a <strong><em>pre-scheduled base regimen</em></strong> - ordinary dose rows (<code>EVID = 1</code> or <code>4</code>, with <code>AMT</code>, and optionally <code>RATE</code>, <code>SS</code>, <code>II</code>) such as a loading or maintenance dose. The controller then <em>augments</em> that standing prescription: at each decision time it reads the simulated (optionally assay-noised) state and appends its own dose. A dose-free base subject (observation grid only) is equally valid - the controller simply supplies the entire regimen. A model without an <code>[adaptive_dosing]</code> block is an error. <strong><em>The dose ledger (<code>$doses</code>) holds controller-issued doses only.</em></strong>Pre-scheduled base doses never appear in it, so <code>$metrics$CUM_DOSE</code> and <code>$metrics$N_DOSES</code><em>exclude</em> the base regimen (e.g.&nbsp;a 1500 mg loading dose is not counted). The full realized regimen is the union of <code>$doses</code> with the input CSV’s <code>EVID = 1/4</code> rows. In contrast <code>$trajectories</code>, <code>$decisions</code>, <code>PCT_TIME_IN_WINDOW</code>, and the <code>auc_target</code> attainment metric <em>do</em> reflect the base regimen. A base dose scheduled exactly at a decision time is read <strong><em>pre-dose</em></strong> (the trough), and a base dose scheduled after a <code>stop</code> still lands - a <code>stop</code> ends controller augmentation, not the standing prescription. <strong><em>System resets.</em></strong> An <code>EVID = 3</code> row zeroes the compartments (and re-seeds any <code>init(state) = expr</code>) at its time; <code>EVID = 4</code> does the same and then doses. Ordering at a shared time is reset, then dose, then observation. Some combinations remain rejected with a typed error rather than silently mis-integrated: a base regimen combined with a reset <em>under</em> a time-varying covariate or IOV; a steady-state, lag-timed, or modeled-rate (<code>RATE</code>) base dose <em>under</em> a time-varying covariate or IOV (these are supported on the constant-covariate path); and an <code>auc_target</code> metric combined with a time-varying covariate, a <code>TIME</code>-dependent PK parameter, IOV, or a reset.</p>
+<p>The data may carry a <strong><em>pre-scheduled base regimen</em></strong> - ordinary dose rows (<code>EVID = 1</code> or <code>4</code>, with <code>AMT</code>, and optionally <code>RATE</code>, <code>SS</code>, <code>II</code>) such as a loading or maintenance dose. The controller then <em>augments</em> that standing prescription: at each decision time it reads the simulated (optionally assay-noised) state and appends its own dose. A dose-free base subject (observation grid only) is equally valid - the controller simply supplies the entire regimen. A model without an <code>[adaptive_dosing]</code> block is an error. <strong><em>The dose ledger (<code>$doses</code>) holds controller-issued doses only.</em></strong>Pre-scheduled base doses never appear in it, so <code>$metrics$CUM_DOSE</code> and <code>$metrics$N_DOSES</code><em>exclude</em> the base regimen (e.g.&nbsp;a 1500 mg loading dose is not counted). The full realized regimen is the union of <code>$doses</code> with the input CSV’s <code>EVID = 1/4</code> rows. In contrast <code>$trajectories</code>, <code>$decisions</code>, <code>PCT_TIME_IN_WINDOW</code>, and the <code>auc_target</code> attainment metric <em>do</em> reflect the base regimen. A base dose scheduled exactly at a decision time is read <strong><em>pre-dose</em></strong> (the trough), and a base dose scheduled after a <code>stop</code> still lands - a <code>stop</code> ends controller augmentation, not the standing prescription. <strong><em>System resets.</em></strong> An <code>EVID = 3</code> row zeroes the compartments (and re-seeds any <code>init(state) = expr</code>) at its time; <code>EVID = 4</code> does the same and then doses. Ordering at a shared time is reset, then dose, then observation. A base regimen combined with resets runs on the constant-covariate path and under a time-varying covariate or IOV. One combination remains rejected with a typed error rather than silently mis-integrated: a steady-state, lag-timed, or modeled-rate (<code>RATE</code>) base dose <em>under</em> a time-varying covariate or IOV (supported on the constant-covariate path). An <code>auc_target</code> metric is accepted on a subject with resets, under a time-varying covariate, a <code>TIME</code>-dependent PK parameter, or IOV: the window AUC is integrated on the run’s own trajectory, so a dose or reset inside a decision window is integrated exactly.</p>
 </section>
 <section id="errors-raised-by-the-engine" class="level2">
 <h2 class="anchored" data-anchor-id="errors-raised-by-the-engine">Errors raised by the engine</h2>
-<p>A model or dataset the engine refuses is an R error, never a <code>NULL</code>result. Where the engine’s validation pass names the finding, the error has class <code>ferx_engine_error</code> and carries <code>code</code>, <code>block</code>, <code>line</code> and <code>suggestion</code> - the same condition a refused <code>[ferx_fit](ferx_fit.qmd)</code> raises, so one <code>tryCatch(..., ferx_engine_error = )</code> handler covers every entry point. A failure the validation pass cannot attribute to one diagnostic is raised as an ordinary error carrying the engine’s message.</p>
+<p>A model or dataset the engine refuses is an R error, never a <code>NULL</code>result. Where the engine’s validation pass names the finding, the error has class <code>ferx_engine_error</code> and carries <code>code</code>, <code>block</code>, <code>line</code> and <code>suggestion</code> - the same condition a refused <code>[ferx_fit](ferx_fit.qmd)</code> raises, so one <code>tryCatch(..., ferx_engine_error = )</code> handler covers every entry point. Its message ends with the code in square brackets and, when there is a suggestion, a <code>hint: ...</code> line, as a refused fit’s does. A failure the validation pass cannot attribute to one diagnostic is raised as an ordinary error carrying the engine’s message.</p>
 </section>
 <section id="seealso" class="level2">
 <h2 class="anchored" data-anchor-id="seealso">Seealso</h2>
-<p>Other simulation: <code>[ferx_calc_npde](ferx_calc_npde.qmd)</code>, <code>[ferx_predict](ferx_predict.qmd)</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)</code>, <code>[ferx_simulate](ferx_simulate.qmd)</code>, <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)</code></p>
+<p>Other simulation: <code>[ferx_calc_npde](ferx_calc_npde.qmd)</code>, <code>[ferx_contrast_vpc](ferx_contrast_vpc.qmd)</code>, <code>[ferx_predict](ferx_predict.qmd)</code>, <code>[ferx_predict_survival](ferx_predict_survival.qmd)</code>, <code>[ferx_sim_parameters](ferx_sim_parameters.qmd)</code>, <code>[ferx_simulate](ferx_simulate.qmd)</code>, <code>[ferx_simulate_with_uncertainty](ferx_simulate_with_uncertainty.qmd)</code>, <code>[ferx_vpc_tte](ferx_vpc_tte.qmd)</code></p>
 </section>
 <section id="concept" class="level2">
 <h2 class="anchored" data-anchor-id="concept">Concept</h2>
@@ -450,10 +465,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="value">Value</h2>
 <p>A list of four data frames:</p>
 <ul>
-<li><code>trajectories</code>: DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM, OBSERVED - the per-observation predictions, as in <code>[ferx_simulate](ferx_simulate.qmd)</code> (<code>OBSERVED</code> is <code>NA</code> here: the adaptive path has no time-to-event endpoint).</li>
+<li><code>trajectories</code>: DRAW, SIM, ID, TIME, CMT, IPRED, DV_SIM, OBSERVED - the per-observation predictions, as in <code>[ferx_simulate](ferx_simulate.qmd)</code> (<code>OBSERVED</code> is <code>NA</code> here: the adaptive path has no time-to-event endpoint). A <code>[mixture]</code> model adds an integer <code>MIXNUM</code> column, the class each subject was drawn into for that replicate; it is absent otherwise.</li>
 <li><code>doses</code>: The realized dose ledger, <strong><em>controller-issued doses only</em></strong> (pre-scheduled base doses are excluded): DRAW, SIM, ID, TIME, AMT, CMT, RATE, DECISION, SIGNAL (the value the controller titrated on - assay-noised when <code>with_assay_error</code>), RULE (the rule that fired).</li>
-<li><code>decisions</code>: One row per decision including holds: DRAW, SIM, ID, DECISION, TIME, SIGNAL, OUTCOME (“dosed” / “hold” / “stop”), N_DOSED.</li>
-<li><code>metrics</code>: One row per realized run (subject x draw x replicate) - the per-subject outcome summary: DRAW, SIM, ID, CUM_DOSE (sum of controller-issued doses; excludes the base regimen), N_DOSES (controller doses only), N_INCREASES / N_DECREASES (realized dose-change counts, by dose delta), N_HOLDS, DISCONTINUED, TIME_TO_DISCONT, SIGNAL_MIN / SIGNAL_MAX / SIGNAL_MEAN (over the decisions that recorded a signal), and PCT_TIME_IN_WINDOW - the fraction of signal-bearing decisions whose observed value fell inside the model’s <code>[adaptive_dosing]</code> <code>target_window</code> (NA when no <code>target_window</code> is declared).</li>
+<li><code>decisions</code>: One row per review-grid point including holds: DRAW, SIM, ID, DECISION, TIME, SIGNAL, OUTCOME (“dosed” / “hold” / “not_due” / “stop”), N_DOSED, INTERVAL. “not_due” marks a grid point at which no dose was due under the dosing interval in force (the block declares <code>intervals</code> and <code>start_interval</code>): the controller was not consulted and gave no dose, but SIGNAL still holds what the monitor read. INTERVAL is the dosing interval in force after the decision, NA when the block declares no <code>intervals</code>.</li>
+<li><code>metrics</code>: One row per realized run (subject x draw x replicate) - the per-subject outcome summary: DRAW, SIM, ID, CUM_DOSE (sum of controller-issued doses; excludes the base regimen), N_DOSES (controller doses only), N_INCREASES / N_DECREASES (realized dose-change counts, by dose delta), N_HOLDS (consulted decisions that gave no dose; not-due points are not counted), N_NOT_DUE (grid points that were not due), DISCONTINUED, TIME_TO_DISCONT, SIGNAL_MIN / SIGNAL_MAX / SIGNAL_MEAN (over the decisions that recorded a signal), and PCT_TIME_IN_WINDOW - the fraction of signal-bearing decisions whose observed value fell inside the model’s <code>[adaptive_dosing]</code> <code>target_window</code> (NA when no <code>target_window</code> is declared), AUC_TARGET_ATTAINMENT - the fraction of windows between consecutive realized decisions whose area under the monitored signal fell inside the <code>auc_target</code> band (NA when no <code>auc_target</code> is declared, or with fewer than two decisions), ETA_SUPPLIED (<code>TRUE</code> when the run used the subject’s row of <code>etas</code>, <code>FALSE</code> when its eta was drawn), and DOSE_ORACLE (<code>TRUE</code> for a subject whose eta was drawn and whose dose expressions read its drawn individual parameters, under the block’s <code>dose_knowledge = oracle</code>: a perfect-information comparison arm, never a dosing rule).</li>
 </ul>
 </section>
 <section id="examples" class="level2">
@@ -461,7 +476,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ex  <span class="ot">&lt;-</span> <span class="fu">ferx_example</span>(<span class="st">"adaptive_tdm"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">ferx_simulate_adaptive</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">20</span>L, <span class="at">seed =</span> <span class="dv">1</span>L)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res<span class="sc">$</span>doses)         <span class="co"># how the dose was titrated per decision</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res<span class="sc">$</span>trajectories)  <span class="co"># the resulting concentration-time profiles</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res<span class="sc">$</span>trajectories)  <span class="co"># the resulting concentration-time profiles</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Subjects 1 and 2 at known etas; the other subjects draw theirs.</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>known <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ID =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>), <span class="at">ETA_CL =</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="sc">-</span><span class="fl">0.2</span>))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">ferx_simulate_adaptive</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">n_sim =</span> <span class="dv">20</span>L, <span class="at">seed =</span> <span class="dv">1</span>L,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                              <span class="at">etas =</span> known, <span class="at">unmatched =</span> <span class="st">"draw"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(res<span class="sc">$</span>metrics<span class="sc">$</span>ID, res<span class="sc">$</span>metrics<span class="sc">$</span>ETA_SUPPLIED)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># With a fit to observed data, each fitted subject at its own EBEs:</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ferx_simulate_adaptive(model, data, fit = fit, etas = fit$ebe_etas)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
@@ -471,15 +495,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Toggle dark mode");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
       const i = window.document.createElement("i");
       i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Toggle dark mode");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
     }
     setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
@@ -558,7 +617,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -567,8 +627,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -582,6 +703,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -744,44 +866,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -879,6 +1011,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script>
 </div> <!-- /content -->
 <footer class="footer">

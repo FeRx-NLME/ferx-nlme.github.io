@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,18 +74,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../assets/ferx-favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-31632d092df9090a2ed68f79c078059d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-51776f957f81c5a6b38322b65a6a6987.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-62b633921dd11b6f4f90199e75d354ed.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-8e54f3b44ae85a4e33659ff2791ab8dc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-62b633921dd11b6f4f90199e75d354ed.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-bce9ac5131b28a06f2bac66cf12fad62.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-c732ebd5cd30270671b22a7aed1dc761.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-af06e4422519c5c746443d297c09a816.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-bda8ad48b1ba5e36b62affdcd0106382.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-af06e4422519c5c746443d297c09a816.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -126,7 +127,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="canonical" href="https://ferx-nlme.org/reference/ferx_example.html">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -149,6 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       for (let i=0; i < toggles.length; i++) {
         const toggle = toggles[i];
         if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
           if (alternate) {
             toggle.classList.add("alternate");
           } else {
@@ -178,13 +180,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       manageTransitions('#quarto-margin-sidebar .nav-link', true);
       // Switch the toggles
       setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
       if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
         manageTransitions("body", false);
-        window.scrollTo(0, 1);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
         setTimeout(() => {
-          window.scrollTo(0, 0);
+          window.scrollTo(0, scrollY);
           manageTransitions("body", true);
         }, 40);
       }
@@ -278,6 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       // Read the current dark / light value
       let toAlternate = !hasAlternateSentinel();
       toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
       setStyleSentinel(toAlternate);
       toggleGiscusIfUsed(toAlternate, darkModeDefault);
       window.dispatchEvent(new Event('resize'));
@@ -292,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
@@ -303,8 +312,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">FeRx</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -355,8 +363,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode" aria-label="Toggle dark mode"><i class="bi"></i></button>
 </div>
+            <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -365,7 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
@@ -381,7 +390,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -463,19 +472,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>transit_savic: One-compartment oral ODE model with Savic transit-compartment absorption via the built-in <code>transit(n, mtt)</code> input rate. The number of transit compartments <code>n</code> is a single continuous (estimable) parameter, in contrast to <code>transit_2cpt</code>’s hand-coded chain of fixed integer compartments. Paired with the ferx-core transit anchor dataset (correct-specification parameter recovery).</li>
 <li>one_cpt_transit: One-compartment model with Savic transit-compartment absorption as a fast <em>analytic</em> closed form – <code>pk   one_cpt_transit(cl, v, n, mtt)</code> (ferx-core #611). The Gamma(N+1, KTR) absorption time feeds central directly (no first-order <code>ka</code>, no ODE solve), with exact FOCE/FOCEI sensitivities and a continuous, estimable <code>N</code>; the closed-form counterpart to <code>transit_savic</code>’s ODE <code>transit()</code> input rate. With <code>N = 0</code> it reduces to first-order oral. Shares the transit anchor dataset; because that data adds a first-order <code>ka</code> this <code>ka</code>-free fit is mildly mis-specified (syntax / workflow demo). Ships a <code>.ferxsearch</code> <em>residual-error</em> search as <code>$search</code>: that mis-specification is what <code>[ferx_ruvsearch](ferx_ruvsearch.qmd)</code> has something to find in the absorption-phase residuals</li>
 <li>two_cpt_transit: Two-compartment analytic Savic transit-compartment absorption – <code>pk two_cpt_transit(cl, v1, q, v2, n, mtt)</code> (ferx-core #634). The same Gamma(N+1, KTR) transit closed form as <code>one_cpt_transit</code>, superposed bi-exponentially onto a two-compartment disposition, with exact FOCE/FOCEI sensitivities and a continuous, estimable <code>N</code> (no ODE solve); the analytic counterpart to <code>transit_2cpt</code>’s hand-coded ODE transit chain. With <code>N = 0</code> it reduces to 2-cpt first-order oral. Paired with a 2-cpt transit-truth dataset simulated from the model - a genuine parameter-recovery example, in contrast to <code>one_cpt_transit</code>’s transit+<code>ka</code>-simulated anchor.</li>
-<li>one_cpt_transit_iov: Analytic Savic transit-compartment absorption (<code>pk one_cpt_transit</code>) carrying <em>inter-occasion variability</em> (IOV) on clearance – a <code>kappa KAPPA_CL</code> random effect with <code>iov_column = OCC</code> (ferx-core #719). The analytic absorption closed forms previously rejected IOV; a subject with IOV is now transparently rerouted, per subject, to the model’s exact <code>transit()</code> ODE twin, which integrates the cross-occasion dose carryover the closed-form superposition cannot express – so no switch to a hand-written ODE model is needed. Paired with an 8-subject subset of the ferx-core transit+IOV NONMEM anchor dataset (three doses per subject, 48 h apart, near-complete washout) simulated from the model, so the fit recovers the data-generating parameters; the subset is kept small because each IOV subject integrates an ODE twin, so a larger dataset is markedly slower.</li>
+<li>one_cpt_transit_iov: Analytic Savic transit-compartment absorption (<code>pk one_cpt_transit</code>) carrying <em>inter-occasion variability</em> (IOV) on clearance – a <code>kappa KAPPA_CL</code> random effect with <code>iov_column = OCC</code>. The analytic absorption closed forms originally rejected IOV; ferx-core #719 rerouted an IOV subject to the model’s exact <code>transit()</code> ODE twin, and since ferx-core #1560 it stays analytic, on an exact event-driven walk that carries each dose’s drug across the occasion boundary with closed-form predictions and FOCE/FOCEI gradients – so no switch to a hand-written ODE model is needed. Paired with an 8-subject subset of the ferx-core transit+IOV NONMEM anchor dataset (three doses per subject, 48 h apart, near-complete washout) simulated from the model, so the fit recovers the data-generating parameters; the fit, standard errors included, takes well under a second.</li>
 <li>one_cpt_ig: One-compartment oral model with inverse-Gaussian (Freijer &amp; Post) absorption as an <em>analytic</em> closed form – <code>pk   one_cpt_ig(cl, v, mat, cv2)</code> (ferx-core #790). The exponential-tilting closed form of the same IG absorption-time density that <code>igd_inverse_gaussian</code> reaches through the ODE <code>igd()</code>, with exact FOCE/FOCEI sensitivities independent of any ODE-solver tolerance and a uniform pk-line interface. Paired with an in-domain IG-truth dataset (NONMEM <code>$DES</code> anchored) - a genuine parameter-recovery example, in contrast to <code>igd_inverse_gaussian</code>’s transit-simulated data.</li>
 <li>two_cpt_ig: Two-compartment oral model with analytic inverse-Gaussian absorption – <code>pk two_cpt_ig(cl, v1, q, v2, mat, cv2)</code> (ferx-core #790). The same IG closed form as <code>one_cpt_ig</code> convolved onto a two-compartment disposition. Paired with a 2-cpt IG-truth dataset simulated from the model.</li>
 <li>tte_exponential: Standalone time-to-event (TTE) model with an exponential hazard via the <code>[event_model]</code> block. Event times on CMT 2 follow <code>Exp(LAMBDA)</code> with <code>LAMBDA = TVLAMBDA *   exp(ETA_LAMBDA)</code>; DV codes the censoring status (0 = right-censored, 1 = exact event). Paired with the ferx-core TTE anchor dataset (administrative censoring at t = 30 h; recovers TVLAMBDA = 0.05).</li>
 <li>tte_weibull: Standalone TTE model with a Weibull hazard via the <code>[event_model]</code> block, written in the compact TTE-only form (no <code>[structural_model]</code> / <code>[error_model]</code> / <code>[individual_parameters]</code> blocks). Event times on CMT 2 follow <code>Weibull(scale, shape)</code> with <code>scale = TVSCALE * exp(ETA_SCALE)</code> and <code>shape = TVSHAPE</code>. Paired with the ferx-core TTE anchor dataset (censoring at t = 60 h; recovers TVSCALE = 20, TVSHAPE = 1.5). The compact TTE-only syntax requires a recent ferx-r; older builds need placeholder PK blocks (cf.&nbsp;<code>tte_exponential</code>).</li>
 <li>tte_gompertz: Standalone TTE model with a Gompertz hazard (<code>h(t) = alpha * exp(gamma * t)</code>) via the <code>[event_model]</code> block, compact TTE-only form. BSV is on the growth rate <code>gamma</code> (not the intercept <code>alpha</code>, which is collinear with it). Paired with the ferx-core TTE anchor dataset (recovers TVALPHA = 0.002, TVGAMMA = 0.05).</li>
 <li>tte_competing_risks: Competing-risks TTE with two cause-specific exponential hazards on separate compartments (CMT 2 / CMT 3) linked by a shared frailty <code>ETA_F</code>, via two named <code>[event_model]</code> blocks. The observed event is whichever cause occurs first. <code>ferx_predict_survival()</code> reports per-cause cumulative incidence (<code>cif</code>) alongside all-cause survival (<code>survival_all</code>). Recovers the cause-specific rates TVLAMBDA_A = 0.10, TVLAMBDA_B = 0.06.</li>
-<li>pktte_joint: Joint PK-TTE: a time-to-event endpoint whose hazard depends on the drug concentration, fit jointly with the PK. The <code>[event_model]</code> block’s <code>hazard = H0 * exp(BETA * (central / V))</code> references the ODE PK state; ferx appends it as a cumulative-hazard ODE state (<code>d/dt(__chz) = hazard</code>) and estimates PK + TTE together by FOCEI, sharing the CL random effect (ferx-core #564). Oral dose on CMT 1, PK observed on CMT 2, event on CMT 3. <code>ferx_fit()</code> and <code>ferx_predict_survival()</code> are supported; simulating an ODE-accumulated hazard is not yet (a later slice adds the event-time root-finder).</li>
+<li>pktte_joint: Joint PK-TTE: a time-to-event endpoint whose hazard depends on the drug concentration, fit jointly with the PK. The <code>[event_model]</code> block’s <code>hazard = H0 * exp(BETA * (central / V))</code> references the ODE PK state; ferx appends it as a cumulative-hazard ODE state (<code>d/dt(__chz) = hazard</code>) and estimates PK + TTE together by FOCEI, sharing the CL random effect (ferx-core #564). Oral dose on CMT 1, PK observed on CMT 2, event on CMT 3. <code>ferx_fit()</code>, <code>ferx_predict_survival()</code> and <code>ferx_simulate()</code> are supported; simulating the event needs a finite <code>horizon</code> (administrative censoring time), e.g.&nbsp;<code>ferx_simulate(..., horizon = 24)</code>.</li>
 <li>binary_logistic: Binary / logistic endpoint (<code>[binary_model]</code>, ferx-core #760). A fixed-effects (<code>n_eta = 0</code>) logistic regression: the 0/1 outcome DV on CMT 3 is Bernoulli with <code>logit P(DV = 1) = TH0 + THX * X + THT * TIME</code> - the exact analogue of base-R <code>glm(DV ~ X + TIME, family = binomial)</code> (reference intercept -0.775, X 0.870, TIME 0.827). <code>ferx_simulate()</code> draws a fresh 0/1 outcome per record and returns it in <code>DV_SIM</code> on CMT 3 (ferx-r #271).</li>
 <li>two_cpt_oral_cov_ode_template: Two-compartment oral PK with covariates written with <code>ode_template two_cpt_oral(...)</code> in <code>[structural_model]</code>: ferx generates the standard disposition ODE (states, micro-constant RHS, and <code>obs_scale = V1</code>) instead of you hand-writing it. Identical predictions to the analytical <code>two_cpt_oral_cov</code> and the hand-ODE <code>two_cpt_oral_cov_ode</code> forms. Re-declaring a <code>d/dt(X)</code> in <code>[odes]</code> overrides only that compartment – the standard way to attach a built-in absorption input such as <code>transit(...)</code>. (Requires ferx-core with FeRx-NLME/ferx-core#363.)</li>
 <li>warfarin_ode_lagtime: One-compartment oral (warfarin) as an ODE model demonstrating the <code>LAGTIME</code> keyword in <code>[individual_parameters]</code>. Assigning to the reserved name <code>LAGTIME</code> delays every dose event for that subject by the individual lag time; no change to the ODE equations is needed. IIV on <code>LAGTIME</code> is log-normal; individual lag times are recovered in <code>fit$individual_estimates</code>. Contrast with the <code>lagtime=</code> argument used in analytical PK solvers (<code>warfarin_additive_eta</code>).</li>
-<li>emax_pkpd: Simultaneous PK/PD: oral 1-compartment PK plus an effect-compartment Emax PD readout, fit jointly with a SEPARATE residual error model per endpoint via a per-CMT <code>[error_model]</code> block (<code>CMT=2: DV ~ proportional(...)</code> for plasma, <code>CMT=3: DV ~ additive(...)</code> for the PD effect). Demonstrates multi-endpoint fitting; requires <code>gradient = fd</code>.</li>
+<li>emax_pkpd: Simultaneous PK/PD: oral 1-compartment PK plus an effect-compartment Emax PD readout, fit jointly with a SEPARATE residual error model per endpoint via a per-CMT <code>[error_model]</code> block (<code>CMT=2: DV ~ proportional(...)</code> for plasma, <code>CMT=3: DV ~ additive(...)</code> for the PD effect). Demonstrates multi-endpoint fitting. Both per-CMT readouts are differentiated analytically, so the default <code>gradient = auto</code> applies.</li>
 <li>emax_timecourse: Compartment-free Emax response-time model – the NONMEM <code>$PRED</code> equivalent. The assignments in <code>[structural_model]</code> calculate <code>y</code> directly for each observation, with no <code>pk</code>, <code>ode</code>, compartments, doses, or integration. Paired with a fully synthetic 30-subject dataset generated from a fixed seed and anchored against the equivalent NONMEM model.</li>
+<li>mbma_placebo: Compartment-free model-based meta-analysis (MBMA) of arm-level summary data: 6 synthetic studies with a placebo arm and 2-3 dose arms each, observed at 4 visits. A study-by-visit placebo level block <code>PLACEBO[STUDY, TIME]</code> (<code>contrast = sum_to_zero_within</code>, so <code>TVE0</code> is each study’s mean placebo level over its visits), an Emax dose-response over time, between-study variability on the baseline, between-arm variability weighted by arm size (<code>weight = NARM</code>), and inverse-variance weighting (<code>weight = SE</code>, sigma fixed to 1). The data come from a seeded base-R generator, <code>mbma_placebo/simulate_dataset.R</code>, shaped with <code>[ferx_mbma_data](ferx_mbma_data.qmd)</code>. The fitted levels cover only the (study, visit) cells in the data, so simulate on that grid.</li>
+<li>nested_levels: Compartment-free Emax model on arm-level means with three nested levels of random effects: 12 sponsors (the subject, <code>ID</code>), 2 studies per sponsor and 2 arms per study, 5 visits per arm. <code>level STUDY by STUDY in ID</code> and <code>level ARM by ARM in STUDY</code> declare the levels (the labels are local, nested by key), <code>kappa K_ST ... at STUDY</code> and <code>kappa K_ARM ... at ARM weight = NARM</code> put a kappa at each, the arm one scaled by arm size. The data are synthetic: ferx-core’s NONMEM anchor <code>nested_levels_3</code> (MIT). FOCEI from the model’s initial estimates reaches NONMEM 7.6.0’s optimum, OFV 107.04357.</li>
 <li>warfarin_derived: One-compartment oral (warfarin) with a <code>[derived]</code> block demonstrating per-row expressions (KE, T_HALF), aggregates (CMAX, TMAX, CMAX_D1), numeric integration (AUC_0_72, AUC_TAU, AUC_DV_72), and an <code>[output]</code> block echoing CL, V, KA. Uses TAFD and TAD as built-in context variables.</li>
 <li>warfarin_derived_pkpd: One-compartment oral (warfarin) with PD effect and time-above-MEC derived quantities. Demonstrates TAD-gated Cmax and <code>integral(1.0, IPRED &gt; MEC, window=24)</code> for time above minimum effective concentration.</li>
 <li>two_cpt_oral_derived: Two-compartment oral PK with micro-rate constants and day-specific Cmax computed in <code>[derived]</code>. Demonstrates <code>integral(IPRED, from=0, to=168)</code> and periodic AUC.</li>
@@ -531,15 +542,50 @@ file.edit(system.file("examples", "ex_warfarin_dcm.R",  package = "ferx"))</code
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Toggle dark mode");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
       const i = window.document.createElement("i");
       i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Toggle dark mode");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
     }
     setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
@@ -618,7 +664,8 @@ file.edit(system.file("examples", "ex_warfarin_dcm.R",  package = "ferx"))</code
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -627,8 +674,69 @@ file.edit(system.file("examples", "ex_warfarin_dcm.R",  package = "ferx"))</code
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -642,6 +750,7 @@ file.edit(system.file("examples", "ex_warfarin_dcm.R",  package = "ferx"))</code
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -804,44 +913,54 @@ file.edit(system.file("examples", "ex_warfarin_dcm.R",  package = "ferx"))</code
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -939,6 +1058,9 @@ file.edit(system.file("examples", "ex_warfarin_dcm.R",  package = "ferx"))</code
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script>
 </div> <!-- /content -->
 <footer class="footer">
