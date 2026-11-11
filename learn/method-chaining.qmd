@@ -172,11 +172,15 @@ fit_gn <- ferx_fit(ex$model, ex$data, method = "gn")
 ```
 
 With `optimizer_trace = TRUE`, the `lm_lambda` column of `ferx_trace()` holds
-the trust radius at each iteration. The column name is kept from the
-Levenberg-Marquardt loop that GN replaced in 0.1.0.
+the trust radius: the radius a rejected step was tried with, or the radius
+after the update on an accepted step
+([details](https://ferx-nlme.org/ferx-core/estimation/gauss-newton.html#convergence)).
+The column name is kept from the Levenberg-Marquardt loop that GN replaced in
+0.1.0.
 
-`gn_lambda`, the damping factor of that older loop, has no effect. ferx still
-accepts it but warns when it is set, and the next minor release removes it. See
+`gn_lambda`, the damping factor of that older loop, has no effect. Setting it
+adds a notice to `fit$warnings`, on any method, and the next minor release
+rejects it, so remove it from your `settings`. See
 [Gauss-Newton (BHHH)](https://ferx-nlme.org/ferx-core/estimation/gauss-newton.html#trust-region)
 in the ferx-core docs for the algorithm.
 

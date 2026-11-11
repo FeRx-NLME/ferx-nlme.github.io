@@ -126,13 +126,15 @@ during model building. Does **not** accept an outer `optimizer` key.
 ```
 
 The trust region has no user setting: the starting radius, its cap and the CG
-budget are fixed. See
+budget are fixed (`steihaug_max_iters` belongs to `optimizer = trust_region`,
+not to GN). See
 [Gauss-Newton (BHHH)](https://ferx-nlme.org/ferx-core/estimation/gauss-newton.html#trust-region)
 in the ferx-core docs.
 
 **Deprecated:** `gn_lambda`, the Levenberg-Marquardt damping factor of the loop
 GN replaced in 0.1.0, has no effect. ferx still accepts the key but warns when
-it is set, on any method, and the next minor release removes it.
+it is set, on any method, and the next minor release rejects it. Remove it from
+your model file or `settings`.
 
 **Works with:** IOV · BLOQ M3 · multi-start · NCA inits
 
