@@ -132,9 +132,9 @@ not to GN). See
 in the ferx-core docs.
 
 **Deprecated:** `gn_lambda`, the Levenberg-Marquardt damping factor of the loop
-GN replaced in 0.1.0, has no effect. ferx still accepts the key but warns when
-it is set, on any method, and the next minor release rejects it. Remove it from
-your model file or `settings`.
+GN replaced in 0.1.0, has no effect. Remove it from your model file or
+`settings`: depending on the ferx version the key is ignored, with or without a
+warning, or rejected.
 
 **Works with:** IOV · BLOQ M3 · multi-start · NCA inits
 

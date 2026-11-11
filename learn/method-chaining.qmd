@@ -178,9 +178,9 @@ after the update on an accepted step
 The column name is kept from the Levenberg-Marquardt loop that GN replaced in
 0.1.0.
 
-`gn_lambda`, the damping factor of that older loop, has no effect. Setting it
-adds a notice to `fit$warnings`, on any method, and the next minor release
-rejects it, so remove it from your `settings`. See
+`gn_lambda`, the damping factor of that older loop, has no effect. Remove it
+from your `settings`: depending on the ferx version it is ignored, with or
+without a notice in `fit$warnings`, or rejected. See
 [Gauss-Newton (BHHH)](https://ferx-nlme.org/ferx-core/estimation/gauss-newton.html#trust-region)
 in the ferx-core docs for the algorithm.
 
