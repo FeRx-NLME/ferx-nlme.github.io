@@ -390,7 +390,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#convergence-tuning" id="toc-convergence-tuning" class="nav-link" data-scroll-target="#convergence-tuning">Convergence tuning</a></li>
   <li><a href="#optimizer-trace" id="toc-optimizer-trace" class="nav-link" data-scroll-target="#optimizer-trace">Optimizer trace</a></li>
-  <li><a href="#gauss-newton-with-damping" id="toc-gauss-newton-with-damping" class="nav-link" data-scroll-target="#gauss-newton-with-damping">Gauss-Newton with damping</a></li>
+  <li><a href="#gauss-newton" id="toc-gauss-newton" class="nav-link" data-scroll-target="#gauss-newton">Gauss-Newton</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -596,14 +596,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_trace)   <span class="co"># two-panel: OFV and convergence metric vs iteration</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ferx_trace</span>(fit_trace)        <span class="co"># returns the raw data frame</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="gauss-newton-with-damping" class="level2">
-<h2 class="anchored" data-anchor-id="gauss-newton-with-damping">Gauss-Newton with damping</h2>
-<p>For <code>method = "gn"</code>, the Levenberg-Marquardt damping parameter <code>gn_lambda</code> controls the step size. Increase it when GN steps are too aggressive:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_gn <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  ex<span class="sc">$</span>model, ex<span class="sc">$</span>data,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">method   =</span> <span class="st">"gn"</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">settings =</span> <span class="fu">list</span>(<span class="at">gn_lambda =</span> <span class="fl">1e-3</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="gauss-newton" class="level2">
+<h2 class="anchored" data-anchor-id="gauss-newton">Gauss-Newton</h2>
+<p><code>method = "gn"</code> takes trust-region steps on the BHHH approximation of the Hessian. The step size is set by the trust radius, which ferx grows or shrinks from how well each step’s predicted OFV reduction matched the actual one. There is no step-size setting to tune:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_gn <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data, <span class="at">method =</span> <span class="st">"gn"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>With <code>optimizer_trace = TRUE</code>, the <code>lm_lambda</code> column of <code>ferx_trace()</code> holds the trust radius: the radius a rejected step was tried with, or the radius after the update on an accepted step (<a href="https://ferx-nlme.org/ferx-core/estimation/gauss-newton.html#convergence">details</a>). The column name is kept from the Levenberg-Marquardt loop that GN replaced in 0.1.0.</p>
+<p><code>gn_lambda</code>, the damping factor of that older loop, has no effect. Remove it from your <code>settings</code>: depending on the ferx version it is ignored, with or without a notice in <code>fit$warnings</code>, or rejected. See <a href="https://ferx-nlme.org/ferx-core/estimation/gauss-newton.html#trust-region">Gauss-Newton (BHHH)</a> in the ferx-core docs for the algorithm.</p>
 </section>
 <section id="see-also" class="level2">
 <h2 class="anchored" data-anchor-id="see-also">See also</h2>
