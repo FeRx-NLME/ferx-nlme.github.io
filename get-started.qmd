@@ -17,7 +17,9 @@ FeRx fits nonlinear mixed-effects models defined in a small, readable DSL
 - **From the command line** — the `ferx` CLI reads a `.ferx` model plus a CSV
   and writes results to disk. No R involved.
 
-Both call the same engine and produce the **same estimates**.
+Both call the same engine and produce the **same estimates**. If you'd rather
+not install Rust at all, both also come prebuilt in a
+[Docker image](#run-with-docker).
 
 ---
 
@@ -95,7 +97,7 @@ print(fit)
 
 `ferx_example()` (no argument) lists all bundled examples.
 
-For installation options (Docker, platform notes) and the full R workflow —
+For platform notes, [Docker](#run-with-docker), and the full R workflow —
 diagnostics, simulation, covariates, IOV —
 see the **[ferx-r book](https://ferx-nlme.org/ferx-book/)**.
 
@@ -115,3 +117,30 @@ It writes the fit results (estimates, predictions) to disk next to the inputs.
 
 For building the CLI, estimation settings, the `.ferx` DSL spec, and using the
 engine as a Rust library, see the **[ferx-core book](https://ferx-nlme.org/ferx-core/)**.
+
+---
+
+## Run with Docker
+
+A prebuilt image with R, the ferx package and the `ferx` CLI — no Rust
+toolchain, no compile step — is published for `linux/amd64` and `linux/arm64`:
+
+```bash
+docker pull ghcr.io/ferx-nlme/ferx-r:latest
+```
+
+Mount your project at `/work` and run an R script or the CLI there:
+
+```bash
+docker run --rm -v "$PWD:/work" ghcr.io/ferx-nlme/ferx-r:latest Rscript fit.R
+docker run --rm -v "$PWD:/work" ghcr.io/ferx-nlme/ferx-r:latest \
+  ferx model.ferx --data data.csv
+```
+
+`:latest` tracks the development branch. The `:release` tag and fixed version
+tags (e.g. `:0.5.0`) arrive with the next release; validated work should pin a
+version tag rather than `:latest`.
+
+For tags, pinning by digest, thread settings and the RStudio Server image, see
+the **[installation chapter](https://ferx-nlme.org/ferx-book/chapters/01-installation.html)**
+of the ferx-r book.
