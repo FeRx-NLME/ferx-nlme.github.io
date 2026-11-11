@@ -160,18 +160,29 @@ plot(fit_trace)   # two-panel: OFV and convergence metric vs iteration
 ferx_trace(fit_trace)        # returns the raw data frame
 ```
 
-## Gauss-Newton with damping
+## Gauss-Newton
 
-For `method = "gn"`, the Levenberg-Marquardt damping parameter `gn_lambda`
-controls the step size. Increase it when GN steps are too aggressive:
+`method = "gn"` takes trust-region steps on the BHHH approximation of the
+Hessian. The step size is set by the trust radius, which ferx grows or shrinks
+from how well each step's predicted OFV reduction matched the actual one. There
+is no step-size setting to tune:
 
 ```r
-fit_gn <- ferx_fit(
-  ex$model, ex$data,
-  method   = "gn",
-  settings = list(gn_lambda = 1e-3)
-)
+fit_gn <- ferx_fit(ex$model, ex$data, method = "gn")
 ```
+
+With `optimizer_trace = TRUE`, the `lm_lambda` column of `ferx_trace()` holds
+the trust radius: the radius a rejected step was tried with, or the radius
+after the update on an accepted step
+([details](https://ferx-nlme.org/ferx-core/estimation/gauss-newton.html#convergence)).
+The column name is kept from the Levenberg-Marquardt loop that GN replaced in
+0.1.0.
+
+`gn_lambda`, the damping factor of that older loop, has no effect. Remove it
+from your `settings`: depending on the ferx version it is ignored, with or
+without a notice in `fit$warnings`, or rejected. See
+[Gauss-Newton (BHHH)](https://ferx-nlme.org/ferx-core/estimation/gauss-newton.html#trust-region)
+in the ferx-core docs for the algorithm.
 
 ## See also
 
