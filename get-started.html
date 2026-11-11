@@ -385,6 +385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#install" id="toc-install" class="nav-link" data-scroll-target="#install">Install</a></li>
   </ul></li>
   <li><a href="#run-from-the-cli" id="toc-run-from-the-cli" class="nav-link" data-scroll-target="#run-from-the-cli">Run from the CLI</a></li>
+  <li><a href="#run-with-docker" id="toc-run-with-docker" class="nav-link" data-scroll-target="#run-with-docker">Run with Docker</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/FeRx-NLME/ferx-r/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -416,7 +417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>From R</strong> — the <code>ferx-r</code> package wraps the engine, takes a <code>data.frame</code>, and returns a fit object you can plot and report on.</li>
 <li><strong>From the command line</strong> — the <code>ferx</code> CLI reads a <code>.ferx</code> model plus a CSV and writes results to disk. No R involved.</li>
 </ul>
-<p>Both call the same engine and produce the <strong>same estimates</strong>.</p>
+<p>Both call the same engine and produce the <strong>same estimates</strong>. If you’d rather not install Rust at all, both also come prebuilt in a <a href="#run-with-docker">Docker image</a>.</p>
 <hr>
 <section id="run-from-r" class="level2">
 <h2 class="anchored" data-anchor-id="run-from-r">Run from R</h2>
@@ -458,7 +459,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ferx_fit</span>(ex<span class="sc">$</span>model, ex<span class="sc">$</span>data)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>ferx_example()</code> (no argument) lists all bundled examples.</p>
-<p>For installation options (Docker, platform notes) and the full R workflow — diagnostics, simulation, covariates, IOV — see the <strong><a href="https://ferx-nlme.org/ferx-book/">ferx-r book</a></strong>.</p>
+<p>To skip the Rust build, see <a href="#run-with-docker">Run with Docker</a>. For platform notes and the full R workflow — diagnostics, simulation, covariates, IOV — see the <strong><a href="https://ferx-nlme.org/ferx-book/">ferx-r book</a></strong>.</p>
 <hr>
 </section>
 </section>
@@ -468,6 +469,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ferx</span> warfarin.ferx <span class="at">--data</span> warfarin.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>It writes the fit results (estimates, predictions) to disk next to the inputs.</p>
 <p>For building the CLI, estimation settings, the <code>.ferx</code> DSL spec, and using the engine as a Rust library, see the <strong><a href="https://ferx-nlme.org/ferx-core/">ferx-core book</a></strong>.</p>
+<hr>
+</section>
+<section id="run-with-docker" class="level2">
+<h2 class="anchored" data-anchor-id="run-with-docker">Run with Docker</h2>
+<p>A prebuilt image with R, the ferx package and the <code>ferx</code> CLI — no Rust toolchain, no compile step — is published for <code>linux/amd64</code> and <code>linux/arm64</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> pull ghcr.io/ferx-nlme/ferx-r:latest</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Mount your project at <code>/work</code> and run an R script or the CLI there:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="st">"</span><span class="va">$PWD</span><span class="st">:/work"</span> ghcr.io/ferx-nlme/ferx-r:latest Rscript fit.R</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="st">"</span><span class="va">$PWD</span><span class="st">:/work"</span> ghcr.io/ferx-nlme/ferx-r:latest <span class="dt">\</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  ferx model.ferx <span class="at">--data</span> data.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>:latest</code> tracks the development branch. The <code>:release</code> tag and fixed version tags (e.g.&nbsp;<code>:0.5.0</code>) arrive with the next release; validated work should pin a version tag and record its digest rather than use <code>:latest</code>.</p>
+<p>For tags, pinning by digest, thread settings and the RStudio Server image, see the <strong><a href="https://ferx-nlme.org/ferx-book/chapters/01-installation.html#sec-docker">installation chapter</a></strong> of the ferx-r book.</p>
 
 
 </section>
