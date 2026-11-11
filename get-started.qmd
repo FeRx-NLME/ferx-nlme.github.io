@@ -97,8 +97,8 @@ print(fit)
 
 `ferx_example()` (no argument) lists all bundled examples.
 
-For platform notes, [Docker](#run-with-docker), and the full R workflow —
-diagnostics, simulation, covariates, IOV —
+To skip the Rust build, see [Run with Docker](#run-with-docker). For platform
+notes and the full R workflow — diagnostics, simulation, covariates, IOV —
 see the **[ferx-r book](https://ferx-nlme.org/ferx-book/)**.
 
 ---
@@ -139,8 +139,8 @@ docker run --rm -v "$PWD:/work" ghcr.io/ferx-nlme/ferx-r:latest \
 
 `:latest` tracks the development branch. The `:release` tag and fixed version
 tags (e.g. `:0.5.0`) arrive with the next release; validated work should pin a
-version tag rather than `:latest`.
+version tag and record its digest rather than use `:latest`.
 
 For tags, pinning by digest, thread settings and the RStudio Server image, see
-the **[installation chapter](https://ferx-nlme.org/ferx-book/chapters/01-installation.html)**
+the **[installation chapter](https://ferx-nlme.org/ferx-book/chapters/01-installation.html#sec-docker)**
 of the ferx-r book.
